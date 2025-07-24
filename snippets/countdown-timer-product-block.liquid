@@ -1,0 +1,152 @@
+{%- assign expiration_date = '2025-05-01T23:59:00+05:30' -%}
+{%- assign accessibility_expiration_date = expiration_date | date: format: 'date_at_time' -%}
+{%- assign accessibility_text = 'sections.countdown_timer.expires_accessibility_text' | t: expiration_date: accessibility_expiration_date -%}
+
+<div class="offer-card">
+  <!-- Pre-order block -->
+  <div class="offer-details h-stack justify-between">
+    <div class="pairs">
+      <div class="h3" style="font-weight:600;">
+     ORDER NOW
+      </div>
+      <div class="p1">
+        Act Fast – One-Time Only!
+      </div>
+    </div>
+    <div class="price-section v-stack align-center justify-center gap-.5">
+    
+      <div class="prices h-stack gap-3">
+        <span class="mrp h5">MRP {{ product.compare_at_price | money_without_trailing_zeros }}</span>
+        <span class="offer-price h3">{{ product.price | money_without_trailing_zeros }}/-</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Countdown timer block -->
+  <div id="countdown" class="countdown-wrapper">
+    <countdown-timer
+      class="countdown__timer"
+      role="timer"
+      aria-label="{{ accessibility_text | escape }}"
+      expires-at="{{ expiration_date }}"
+      expiration-behavior="{{ block.settings.expiration_behavior }}"
+    >
+      <!-- Days -->
+      <div class="countdown__timer-item" aria-hidden="true">
+        <countdown-timer-flip type="days" {% if block.settings.animate_number %} animate {% endif %} class="countdown__timer-flip{% if has_flip_background %} countdown__timer-flip--background{% endif %}">00</countdown-timer-flip>
+        <span class="countdown__timer-unit">d</span>
+      </div>
+      <span class="countdown__timer-item-separator" aria-hidden="true">:</span>
+      <!-- Hours -->
+      <div class="countdown__timer-item" aria-hidden="true">
+        <countdown-timer-flip type="hours" {% if block.settings.animate_number %} animate {% endif %} class="countdown__timer-flip{% if has_flip_background %} countdown__timer-flip--background{% endif %}">00</countdown-timer-flip>
+        <span class="countdown__timer-unit">h</span>
+      </div>
+      <span class="countdown__timer-item-separator" aria-hidden="true">:</span>
+      <!-- Minutes -->
+      <div class="countdown__timer-item" aria-hidden="true">
+        <countdown-timer-flip type="minutes" {% if block.settings.animate_number %} animate {% endif %} class="countdown__timer-flip{% if has_flip_background %} countdown__timer-flip--background{% endif %}">00</countdown-timer-flip>
+        <span class="countdown__timer-unit">m</span>
+      </div>
+      <span class="countdown__timer-item-separator" aria-hidden="true">:</span>
+      <!-- Seconds -->
+      <div class="countdown__timer-item" aria-hidden="true">
+        <countdown-timer-flip type="seconds" {% if block.settings.animate_number %} animate {% endif %} class="countdown__timer-flip{% if has_flip_background %} countdown__timer-flip--background{% endif %}">00</countdown-timer-flip>
+        <span class="countdown__timer-unit">s</span>
+      </div>
+    </countdown-timer>
+  </div>
+
+  
+</div>
+
+<style>
+.p1{
+  font-size:10px;
+}
+@media (max-width: 768px) {
+.p1{
+  font-size:9px;
+}
+  .mrp {
+    font-size:12px;
+  }
+}
+
+
+  
+/* Timer padding if needed */
+div[data-block-type="timer"] {
+  padding-top: 20px;
+}
+
+/* Pre-order block styling */
+.offer-card .offer-details {
+    padding: 0.6rem 1rem;
+    background: #faf004;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+    z-index: 2;
+}
+
+.discount {
+  background-color:#1C1C1C;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 8px;
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.prices {
+  text-align: right;
+}
+
+.mrp {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.offer-price {
+  font-weight: 500;
+  color : #D50052;
+}
+
+/* Countdown block styling */
+.countdown-wrapper {
+    background: #1C1C1C;
+    color: white;
+    padding: 4px 65px;
+    border-radius: 0 0 12px 12px;
+    text-align: center;
+    /* margin-top: 10px; */
+    font-size: 10px;
+  font-weight:600;
+}
+
+.countdown__timer-item {
+  display: flex;
+  gap: 1px;
+}
+
+.countdown__timer {
+  column-gap: 0.3rem;
+}
+
+.countdown__timer-unit {
+  text-transform: lowercase;
+}
+
+/* One Time Only Price styling */
+.time-offer {
+  background-color: #1C1C1C;
+  color: #fff;
+  padding: 10px;
+  border-radius: 0 0 20px 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 5px;
+  font-size: 10px;
+}
+</style>

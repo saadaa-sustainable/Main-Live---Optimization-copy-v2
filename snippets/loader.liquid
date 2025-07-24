@@ -1,0 +1,38 @@
+<div class="loading hidden">
+  <!-- <span class="loading_close">close</span> -->
+  <div class="loader"></div>
+</div>
+
+<style>
+ .loading {
+        position: fixed;
+    z-index: 6;
+    top: 0;
+    /* bottom: 0; */
+    background: rgba(0,0,0,.7);
+    width: 100vw;
+     /* display: none !important;  */
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    color: wheat;
+  }
+  .loader {
+    border: 10px solid white;
+    border-top: 10px solid gray;
+    border-radius: 50%;
+    width: 75px;
+    height: 75px;
+    animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+ .loading_close {
+    background: black;
+    padding: 10px;
+  }
+</style>

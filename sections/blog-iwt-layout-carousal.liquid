@@ -1,0 +1,262 @@
+{% if section.blocks.size > 0 %}
+  {% assign carousal_id = 'blog-carousal-' | append: section.id %}
+  <div
+    class="blog-iwt {% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}"
+  >
+    <div
+      class="{% unless section.settings.page_width == 'full' %}container container--{{ section.settings.page_width }}{% endunless %}"
+    >
+      <div class="section-stack">
+        {% if section.settings.show_navigatio_bar %}
+          <carousel-navigation class="page-dots gap-3 align-self-center" aria-controls="{{ carousal_id }}">
+            {%- for i in (1..section.blocks.size) -%}
+              <button
+                type="button"
+                class="tap-area"
+                aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+              >
+                <span class="sr-only">{{ 'general.accessibility.go_to_item' | t: index: forloop.index }}</span>
+              </button>
+            {%- endfor -%}
+          </carousel-navigation>
+        {% endif %}
+
+        {% assign article = section.settings.blogs.articles[0] %}
+        <scroll-carousel
+          {% if section.settings.blog_number == '2' %}
+            group-cells="{{ section.settings.blog_number }}"
+          {% endif %}
+          id="{{ carousal_id }}"
+          class="blog-items-carousal scroll-area"
+          role="region"
+          style="--mobile-bolg:{{ section.settings.blog_number }}"
+        >
+          {%- for block in section.blocks -%}
+            {% assign article = block.settings.article %}
+            {%- capture placeholder_name -%}product-{{ forloop.index }}{%- endcapture -%}
+            <div class="v-stack gap-12">
+              <div class="hidden sm:block">
+                <p class="blog_title">{{- block.settings.caption -}}</p>
+                <p class="h1">{{ article.title }}</p>
+              </div>
+              <div class="blog-item gap-8 snap-center">
+                <div>
+                  {% if article.image != blank %}
+                    {{ article.image | image_url: width: 1000 | image_tag }}
+                  {% else %}
+                    <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/SDE0240_2_1.png?v=1738574014&width=1000">
+                  {% endif %}
+                </div>
+
+                <div class="blog_content_warpper v-stack gap-4 text-{{ section.settings.text_position }}">
+                  <p class="blog_title sm:hidden">{{- block.settings.caption -}}</p>
+                  <p class="h1 sm:hidden">{{ article.title }}</p>
+                  <div class="h4 blog_content">{{ article.content | truncatewords: 50 }}</div>
+                  <div class="button-group justify-{{ section.settings.text_position }}">
+                    <a href="{{ article.url }}" type="button" class="button button--outline"
+                      ><span>Read More</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <g clip-path="url(#clip0_47_45)">
+                          <path d="M3.75 12H20.25" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M13.5 5.25L20.25 12L13.5 18.75" stroke="#333333" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_47_45">
+                            <rect width="24" height="24" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% comment %}
+                {{- placeholder_name | placeholder_svg_tag: 'placeholder' -}}
+              {% endcomment %}
+            </div>
+          {% endfor %}
+        </scroll-carousel>
+        {% if section.settings.show_progress_bar %}
+          <div class="progress-bar" id="{{ carousal_id }}" style="--progress: 0.2;overflow: hidden;"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <style>
+        #shopify-section- {{section.id}}{
+          background: {{ section.settings.section_color }};
+        }
+
+       .blog-iwt scroll-carousel.blog-items-carousal {
+          display: grid;
+          grid-auto-flow: column;
+          gap: 24px;
+          grid-auto-columns: 100%;
+        }
+    .blog-iwt  .blog-item {
+          display: grid;
+        }
+       .blog-iwt .page-dots>* {
+          width: 45px;
+          height: 2px;
+          border-radius: var(--rounded-full);
+          place-content: center;
+          display: grid;
+          }
+
+        .blog-iwt  .blog_content_warpper .button-group {
+            margin-top:53px;
+          }
+
+          @media screen and (min-width: 700px) {
+                 .blog-iwt  .blog-item {
+          grid-template-columns:1fr 1fr;
+                   gap:84px;
+        }
+           .blog-iwt .blog_content_warpper{
+             position:relative;
+            }
+         .blog-iwt .blog_content_warpper .button-group {
+           position:absolute;
+           bottom:2px;
+            }
+
+          }
+  </style>
+{% endif %}
+{% schema %}
+{
+  "name": "Blog iwt layout",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress_bar",
+      "label": "Progress Bar",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigatio_bar",
+      "label": "Show Navigation",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "blog_number",
+      "label": "Number of blogs in mobile",
+      "options": [
+        {
+          "label": "1",
+          "value": "1"
+        },
+        {
+          "label": "2",
+          "value": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "color",
+      "id": "section_color",
+      "label": "Section Background color"
+    },
+    {
+      "type": "select",
+      "id": "page_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:global.sizes.x_small"
+        },
+        {
+          "value": "sm",
+          "label": "t:global.sizes.small"
+        },
+        {
+          "value": "md",
+          "label": "t:global.sizes.medium"
+        },
+        {
+          "value": "lg",
+          "label": "t:global.sizes.large"
+        },
+        {
+          "value": "xl",
+          "label": "t:global.sizes.x_large"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "full",
+          "label": "t:global.image.width_options.full_width"
+        }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "t:global.position.content_position",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:global.position.left"
+        },
+        {
+          "value": "center",
+          "label": "t:global.position.center"
+        },
+        {
+          "value": "end",
+          "label": "t:global.position.right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article_type",
+      "name": "Article",
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "Select Article"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "caption",
+          "label": "Blog Caption",
+          "default": "SAADAA JEEVAN"
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Blog iwt layout carousal" }]
+}
+{% endschema %}

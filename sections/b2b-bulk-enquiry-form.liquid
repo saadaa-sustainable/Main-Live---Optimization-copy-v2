@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Planning to Order BIG?</title>
+  <style>
+    /* Hero section */
+    .order-hero {
+      color: #000;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .order-hero-title {
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+      color: #000;
+    }
+    .order-hero-subtitle {
+      font-size: 1rem;
+      color: #7C7C7C;
+    }
+
+    /* Form Container */
+    .order-form-container {
+      max-width: 600px;
+      background: #fff;
+      margin: 10px auto;
+      padding: 21px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form Fields */
+    .order-form-group {
+      margin-bottom: 20px;
+    }
+    .order-form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+    .order-form-group input,
+    .order-form-group select {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: border-color 0.3s;
+    }
+    .order-form-group input:focus,
+    .order-form-group select:focus {
+      border-color: #007BFF;
+      outline: none;
+    }
+
+    /* Button Styles */
+    .order-button-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    #submit-button {
+      background-color: #0056b3;
+    }
+    .order-button {
+      background-color: #007BFF;
+      color: #fff;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .order-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Message Styles */
+    #message {
+      display: none;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 12px;
+      text-align: center;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    #message.success {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    #message.error {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    @media (max-width: 768px) {
+      .order-hero {
+        color: #000;
+        padding: 30px 20px;
+        text-align: left;
+      }
+      .order-hero-title {
+        font-size: 1.8rem;
+      }
+      .order-hero-subtitle {
+        font-size: 1rem;
+        color: #7C7C7C;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Header -->
+  <section class="order-hero">
+    <div class="order-hero-title">Planning to Order BIG?</div>
+    <div class="order-hero-subtitle">Please fill in your details and our team will reach out to you</div>
+  </section>
+  
+  <!-- Form Section -->
+  <div class="order-form-container">
+    <form id="orderForm" method="POST" novalidate>
+      <!-- Full Name -->
+      <div class="order-form-group">
+        <label for="fullName">Full Name <span style="color:red">*</span></label>
+        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+      </div>
+      
+      <!-- Brand/Company Name -->
+      <div class="order-form-group">
+        <label for="brandName">Brand / Company Name <span style="color:red">*</span></label>
+        <input type="text" id="brandName" name="brandName" placeholder="Enter your brand or company name" required>
+      </div>
+      
+      <!-- Nature of Your Business -->
+      <div class="order-form-group">
+        <label for="natureOfBusiness">Nature Of Your Business <span style="color:red">*</span></label>
+        <select id="natureOfBusiness" name="natureOfBusiness" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="LargeFormatStore">Large Format Store</option>
+          <option value="Distributor">Distributor</option>
+          <option value="Franchisee">Franchisee</option>
+          <option value="Retailer">Retailer</option>
+          <option value="Wholesale">Wholesale</option>
+          <option value="Resell">Re-Sell</option>
+        </select>
+      </div>
+      
+      <!-- City & Postal Code -->
+      <div class="order-form-group">
+        <label for="cityPostal">City & Postal Code <span style="color:red">*</span></label>
+        <input type="text" id="cityPostal" name="cityPostal" placeholder="e.g. Mumbai, 400001" required>
+      </div>
+      
+      <!-- Phone -->
+      <div class="order-form-group">
+        <label for="phone">Phone <span style="color:red">*</span></label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your 10-digit phone number" required>
+      </div>
+      
+      <!-- Email -->
+      <div class="order-form-group">
+        <label for="email">Email <span style="color:red">*</span></label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+      </div>
+      
+      <!-- Product Quantity -->
+      <div class="order-form-group">
+        <label for="productQuantity">What product quantities are you looking to order? <span style="color:red">*</span></label>
+        <select id="productQuantity" name="productQuantity" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="0-50">0-50 pcs</option>
+          <option value="51-100">51-100 pcs</option>
+          <option value="101-250">101-250 pcs</option>
+          <option value="250-500">250-500 pcs</option>
+          <option value="500-1000">500-1000 pcs</option>
+          <option value="Above1000">Above 1000 pcs</option>
+        </select>
+      </div>
+      
+      <!-- Submit Button -->
+      <div class="order-button-container">
+        <button type="submit" id="submit-button" class="order-button">Submit</button>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Message Container -->
+  <div id="message"></div>
+  
+  <!-- JavaScript (unchanged) -->
+  <script>
+    document.getElementById("orderForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      
+      var messageDiv = document.getElementById("message");
+      messageDiv.textContent = "";
+      messageDiv.className = "";
+      messageDiv.style.display = "none";
+      
+      var phoneInput = document.getElementById("phone");
+      var emailInput = document.getElementById("email");
+      var cityPostalInput = document.getElementById("cityPostal");
+
+      var phoneValue = phoneInput.value.trim();
+      var emailValue = emailInput.value.trim();
+      var cityPostalValue = cityPostalInput.value.trim();
+      
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var phoneRegex = /^\d{10}$/;
+
+      if (!phoneRegex.test(phoneValue)) {
+        messageDiv.textContent = "Please enter a valid 10-digit phone number.";
+        messageDiv.className = "error";
+        messageDiv.style.display = "block";
+        phoneInput.focus();
+        return;
+      }
+      
+      if (!emailRegex.test(emailValue)) {
+        messageDiv.textContent = "Please enter a valid email address.";
+        messageDiv.className = "error";
+        messageDiv.style.display = "block";
+        emailInput.focus();
+        return;
+      }
+      
+      var cityPostalRegex = /^[A-Za-z\s]+,\s*\d{6}$/;
+      if (!cityPostalRegex.test(cityPostalValue)) {
+        messageDiv.textContent = "Please enter a valid City & Postal Code (e.g. Mumbai, 400001).";
+        messageDiv.className = "error";
+        messageDiv.style.display = "block";
+        cityPostalInput.focus();
+        return;
+      }
+      
+      messageDiv.textContent = "Submitting...";
+      messageDiv.style.display = "block";
+      document.getElementById("submit-button").disabled = true;
+
+      var formData = new FormData(this);
+      var keyValuePairs = [];
+      for (var pair of formData.entries()) {
+        keyValuePairs.push(encodeURIComponent(pair[0]) + "=" + encodeURIComponent(pair[1]));
+      }
+      var formDataString = keyValuePairs.join("&");
+
+      var scriptURL = "https://script.google.com/macros/s/AKfycbx1vEJRUT6lMYWrlw932tH4o9YegxkPvEgAmWP01fk76Z1Ms0FDRvoRjzVseIX80E-SLw/exec";
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: formDataString,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+      })
+      .then(function (response) {
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw new Error("Failed to submit the form.");
+        }
+      })
+      .then(function (data) {
+        messageDiv.textContent = "Data submitted successfully!";
+        messageDiv.className = "success";
+        document.getElementById("orderForm").reset();
+        document.getElementById("submit-button").disabled = false;
+        setTimeout(function () {
+          messageDiv.textContent = "";
+          messageDiv.style.display = "none";
+        }, 1000);
+      })
+      .catch(function (error) {
+        console.error("Error:", error);
+        messageDiv.textContent = "An error occurred while submitting the form.";
+        messageDiv.className = "error";
+        document.getElementById("submit-button").disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+{% schema %}
+  {
+    "name": "b2b-bulk-enquiry-form",
+    "class": "section-upf",
+      "settings": [
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ],
+    "presets": [
+      {"name":"b2b-bulk-enquiry-form"}
+    ]
+  }
+{% endschema %}

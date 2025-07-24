@@ -1,0 +1,506 @@
+{% assign bundles2 = product.metafields.custom.bundles.value %}
+{% assign bundles3 = product.metafields.custom.bundle2.value %}
+{% assign bundles4 = product.metafields.custom.bundle3.value %}
+
+{% assign show2 = false %}
+{% assign show3 = false %}
+{% assign show4 = false %}
+
+{% if bundles2 != blank %}{% assign show2 = true %}{% endif %}
+{% if bundles3 != blank %}{% assign show3 = true %}{% endif %}
+{% if bundles4 != blank %}{% assign show4 = true %}{% endif %}
+
+{% assign total = 0 %}
+{% if show2 %}{% assign total = total | plus: 1 %}{% endif %}
+{% if show3 %}{% assign total = total | plus: 1 %}{% endif %}
+{% if show4 %}{% assign total = total | plus: 1 %}{% endif %}
+
+{% if total > 0 %}
+  {% assign price_inr = product.price | divided_by: 100.0 %}
+  {% assign price_pack_2 = price_inr | times: 2 | times: 0.85 %}
+  {% assign price_pack_3 = price_inr | times: 3 | times: 0.80 %}
+  {% assign price_pack_4 = price_inr | times: 4 | times: 0.75 %}
+
+  <style>
+    .bundle-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+      margin-bottom: 25px;
+    }
+    .bundle-item { position: relative; cursor: pointer; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: #fff; transition: border 0.2s, transform 0.2s; }
+    .bundle-item[data-active="true"] { border-color: #c97300; }
+    .bundle-item img { width: 100%; height: 115px; display: block; border-radius: 12px; }
+    .bundle-badge { position: absolute; top: 6px; left: 5px; background: black; color: white; font-size: 0.5rem; padding: 4px 8px; border-radius: 8px; z-index: 1; }
+    .pack-btn { background: #fff; color: #222; border: 2px solid #222; border-radius: 7px; font-size: 1rem; padding: 5px 29px; cursor: pointer; transition: background 0.15s, color 0.15s, border 0.15s; }
+    .pack-btn.active{ background: #222; color: #fff; }
+    .pack-btn[disabled] { opacity: 0.4; pointer-events: none; }
+    .pack-btn:hover { border-color: #c97300; }
+    .pack-price { font-size: 1rem; }
+    .pack-price b { color: #c97300; }
+    @media(max-width:780px){
+      .bundle-item img { height: 85px; border-radius: 5px; }
+      .bundle-badge { top: -1px; left: -1px; font-size: 0.5rem; padding: 2px 4px; border-radius: 5px; }
+    }
+    #bundle-outofstock-modal,
+    #bundle-error-modal,
+    #bundle-size-error-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,.5);
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+    }
+    #bundle-outofstock-modal .modal-inner,
+    #bundle-error-modal .modal-inner,
+    #bundle-size-error-modal .modal-inner {
+      background: white;
+      border-radius: 18px !important;
+      width: 350px !important;
+      max-width: 90vw !important;
+      padding: 30px 20px 24px 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 8px 40px 0 rgba(0,0,0,0.12);
+      margin: 0 auto !important;
+      animation: none !important;
+    }
+    #bundle-outofstock-modal .modal-close,
+    #bundle-error-modal .modal-close,
+    #bundle-size-error-modal .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #555;
+      line-height: 1;
+    }
+    #bundle-outofstock-modal #outofstock-message,
+    #bundle-error-modal #error-message,
+    #bundle-size-error-modal #size-error-message {
+      margin-bottom: 24px;
+      font-size: 1rem;
+    }
+    #bundle-outofstock-modal #add-other-products-btn,
+    #bundle-error-modal #error-ok-btn {
+      background: #000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #bundle-size-error-modal #size-error-ok-btn { display: none; }
+    @media(max-width:786px){
+      .pack-btn { padding: 4px 11px; }
+      .pack-toggle{ gap:6px; }
+    }
+  </style>
+
+  <div id="pack-toggle-wrap" style="margin: 18px 0 10px 0;">
+    <div id="pack-toggle" style="display: flex; gap:12px;">
+      {% if show2 %}
+        <button class="pack-btn active" data-pack="2">Pack of 2</button>
+      {% endif %}
+      {% if show3 %}
+        <button class="pack-btn{% unless show2 %} active{% endunless %}" data-pack="3">Pack of 3</button>
+      {% endif %}
+      {% if show4 %}
+        <button class="pack-btn{% if show2 or show3 %}{% else %} active{% endif %}" data-pack="4">Pack of 4</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- COLOR LABEL -->
+  <div id="bundle-color-label" style="font-size:1.15rem; margin:10px 0 16px 0;">
+    Color
+  </div>
+
+  <div id="bundle-grids" style="display:none;">
+    {% if show2 %}
+      <div id="bundle-grid-2">
+        <div class="bundle-grid">
+          {% for bundle in bundles2 %}
+            <div
+              class="bundle-item"
+              data-bundle="{{ bundle.id }}"
+              data-sizes="{{ bundle.sizes | escape }}"
+              data-variants="{{ bundle.variant_ids }}"
+              data-product-titles="{{ bundle.product_titles | join: ',' }}"
+              data-color="{% if bundle.color %}{{ bundle.color | join: ', ' }}{% endif %}"
+            >
+              {% if bundle.bundle != blank %}
+                <div class="bundle-badge">{{ bundle.bundle }}</div>
+              {% endif %}
+              <img src="{{ bundle.image | image_url: width:320 }}" alt="Combo image" />
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if show3 %}
+      <div id="bundle-grid-3">
+        <div class="bundle-grid">
+          {% for bundle in bundles3 %}
+            <div
+              class="bundle-item"
+              data-bundle="{{ bundle.id }}"
+              data-sizes="{{ bundle.sizes | escape }}"
+              data-variants="{{ bundle.variant_ids }}"
+              data-product-titles="{{ bundle.product_titles | join: ',' }}"
+              data-color="{% if bundle.color %}{{ bundle.color | join: ', ' }}{% endif %}"
+            >
+              {% if bundle.bundle != blank %}
+                <div class="bundle-badge">{{ bundle.bundle }}</div>
+              {% endif %}
+              <img src="{{ bundle.image | image_url: width:320 }}" alt="Combo image" />
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if show4 %}
+      <div id="bundle-grid-4">
+        <div class="bundle-grid">
+          {% for bundle in bundles4 %}
+            <div
+              class="bundle-item"
+              data-bundle="{{ bundle.id }}"
+              data-sizes="{{ bundle.sizes | escape }}"
+              data-variants="{{ bundle.variant_ids }}"
+              data-product-titles="{{ bundle.product_titles | join: ',' }}"
+              data-color="{% if bundle.color %}{{ bundle.color | join: ', ' }}{% endif %}"
+            >
+              {% if bundle.bundle != blank %}
+                <div class="bundle-badge">{{ bundle.bundle }}</div>
+              {% endif %}
+              <img src="{{ bundle.image | image_url: width:320 }}" alt="Combo image" />
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div id="bundle-grid-display"></div>
+  <div id="combo-error-msg" style="color:#c97300; font-weight:500; margin:8px 0 0 0; display:none;">Please Select a Combo</div>
+  <!-- ^-- Error message container -->
+
+  <!-- Overlay Modals (unchanged) -->
+  <div id="bundle-outofstock-modal">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal('bundle-outofstock-modal')">&times;</button>
+      <div id="outofstock-message"></div>
+      <button id="add-other-products-btn">ADD TO CART</button>
+    </div>
+  </div>
+  <div id="bundle-error-modal">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal('bundle-error-modal')">&times;</button>
+      <div id="error-message"></div>
+      <button id="error-ok-btn">OK</button>
+    </div>
+  </div>
+  <div id="bundle-size-error-modal">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal('bundle-size-error-modal')">&times;</button>
+      <div id="size-error-message"></div>
+    </div>
+  </div>
+
+<script>
+  let selectedBundle = null;
+  let selectedSize = null;
+  let selectedBundleIdByPackAndSize = {};
+  let currentPack = null;
+
+  function showComboErrorMsg(show) {
+    const err = document.getElementById('combo-error-msg');
+    if (!err) return;
+    err.style.display = show ? '' : 'none';
+  }
+
+  function getSelectionKey(pack, size) {
+    return `${pack}-${size || ''}`;
+  }
+
+  function hideGokwikLoader() {
+    const loader = document.querySelector('.gokwik-loader');
+    if (loader) loader.style.display = 'none';
+
+    const overlay = document.querySelector('.gokwik-loader-overlay');
+    if (overlay) overlay.style.display = 'none';
+
+    document.querySelectorAll('.loading').forEach(function(el) {
+      el.style.display = 'none';
+    });
+
+    document.querySelectorAll('.loading.hidden').forEach(function(el) {
+      el.classList.remove('hidden');
+      el.style.display = 'none';
+    });
+  }
+
+  function showPackPrice(pack) {
+    document.querySelectorAll('.pack-price').forEach(el => el.style.display = 'none');
+    const priceEl = document.querySelector('.price-' + pack);
+    if (priceEl) priceEl.style.display = 'block';
+  }
+
+  function updateBundleColorLabel(color) {
+    const colorLabel = document.getElementById('bundle-color-label');
+    colorLabel.innerHTML = color && color.trim()
+      ? 'Color :- ' + color
+      : 'Color';
+  }
+
+  // MODIFIED: Don't auto-select any combo on page load
+  function showBundleGrid(pack, autoSelectFirstBundle = false) {
+    currentPack = pack;
+    const grid = document.getElementById('bundle-grid-' + pack);
+    if (!grid) return;
+    document.getElementById('bundle-grid-display').innerHTML = grid.innerHTML;
+
+    const bundleItems = document.querySelectorAll('#bundle-grid-display .bundle-item');
+    const key = getSelectionKey(pack, selectedSize);
+
+    // Always start with nothing selected (user must pick)
+    selectedBundle = null;
+    bundleItems.forEach(i => i.setAttribute('data-active', 'false'));
+    updateBundleColorLabel('');
+
+    bundleItems.forEach(item => {
+      item.addEventListener('click', function() {
+        bundleItems.forEach(i => i.setAttribute('data-active', 'false'));
+        this.setAttribute('data-active', 'true');
+        selectedBundle = this;
+        selectedBundleIdByPackAndSize[getSelectionKey(pack, selectedSize)] = this.getAttribute('data-bundle');
+        updateBundleColorLabel(selectedBundle.getAttribute('data-color'));
+        showComboErrorMsg(false); // Hide error when user selects
+      });
+    });
+  }
+
+  function openModal(id) {
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(id) {
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.style.display = 'none';
+    setTimeout(() => {
+      const any = ['bundle-outofstock-modal','bundle-error-modal','bundle-size-error-modal']
+        .some(x => {
+          const modal = document.getElementById(x);
+          return modal && modal.style.display === 'flex';
+        });
+      if (!any) {
+        document.body.style.overflow = '';
+        document.body.classList.remove('overflow-hidden');
+        document.body.style.touchAction = '';
+      }
+    }, 10);
+    document.body.style.overflow = '';
+    document.body.classList.remove('overflow-hidden');
+    document.body.style.touchAction = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    let activePack = null;
+    document.querySelectorAll('.pack-btn').forEach(btn => {
+      if (!btn.disabled && btn.classList.contains('active')) {
+        activePack = btn.getAttribute('data-pack');
+      }
+    });
+    if (!activePack) {
+      const first = document.querySelector('.pack-btn');
+      if (first) {
+        first.classList.add('active');
+        activePack = first.getAttribute('data-pack');
+      }
+    }
+
+    document.querySelectorAll('input[name="option1"]').forEach(input => {
+      if (input.checked) selectedSize = input.value;
+    });
+
+    currentPack = activePack || '2';
+
+    showBundleGrid(currentPack, false); // Do NOT auto-select first bundle
+    showPackPrice(currentPack);
+
+    document.querySelectorAll('.pack-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.pack-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const pack = this.getAttribute('data-pack');
+        currentPack = pack;
+        showPackPrice(pack);
+        showBundleGrid(pack, false); // Do NOT auto-select first bundle
+      });
+    });
+
+    document.querySelectorAll('input[name="option1"]').forEach(input => {
+      input.addEventListener('change', function() {
+        selectedSize = this.value;
+        showBundleGrid(currentPack || '2', false);
+      });
+    });
+
+    updateBundleColorLabel('');
+
+    const productForm = document.querySelector('form.product_page_form');
+    if (productForm) {
+      productForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        // Combo error logic:
+        if (!selectedBundle) {
+          showComboErrorMsg(true);
+          hideGokwikLoader();
+          return false;
+        } else {
+          showComboErrorMsg(false);
+        }
+
+        // Size error logic:
+        if (!selectedSize) {
+          showSizeErrorModal('Please select a size.');
+          hideGokwikLoader();
+          return false;
+        }
+
+        const sizes = selectedBundle.getAttribute('data-sizes')
+          .split(',').map(s => s.trim()).filter(Boolean);
+        const variantGroups = selectedBundle.getAttribute('data-variants')
+          .split('|').map(group => group.split(',').map(id => id.trim()).filter(Boolean));
+        const productTitlesRaw = selectedBundle.getAttribute('data-product-titles') || '';
+        const titleGroups = productTitlesRaw.split('|').map(group => group.split(',').map(t => t.trim()));
+        const sizeIndex = sizes.indexOf(selectedSize);
+        if (sizeIndex < 0 || sizeIndex >= variantGroups.length) {
+          showSizeErrorModal('Selected size is not available for this bundle.');
+          hideGokwikLoader();
+          return false;
+        }
+        const variantIds = (variantGroups[sizeIndex] || []).filter(Boolean);
+        const titlesForSize = titleGroups[sizeIndex] || [];
+        if (!variantIds || variantIds.length === 0) {
+          showSizeErrorModal('No variants found for this size.');
+          hideGokwikLoader();
+          return false;
+        }
+
+        Promise.all(
+          variantIds.map(id => fetch(`/variants/${id}.js`).then(r => r.json()))
+        )
+        .then(variants => {
+          const outOfStock = [], inStock = [], outOfStockNames = [], inStockNames = [];
+          variants.forEach((variant, i) => {
+            if (!variant.available) {
+              outOfStock.push(variant);
+              outOfStockNames.push(titlesForSize[i] || variant.title || variant.id);
+            } else {
+              inStock.push(variant);
+              inStockNames.push(titlesForSize[i] || variant.title || variant.id);
+            }
+          });
+          if (outOfStock.length > 0) {
+            const oosNames = outOfStockNames.map(name => `<b>${name}</b>`).join(', ');
+            let inStockNamesHtml = '';
+            if (inStockNames.length > 0) {
+              inStockNamesHtml = `but rest of the product${inStockNames.length > 1 ? 's' : ''} (<b>${inStockNames.join(', ')}</b>) ${inStockNames.length > 1 ? 'are' : 'is'} in stock. Click on Add to Cart to buy those.`;
+            } else {
+              inStockNamesHtml = "and none of the products are in stock for this size.";
+            }
+            const oosMsg = `${oosNames} from the combo selected is out of stock for Size <b>${selectedSize}</b> ${inStockNamesHtml}`;
+            document.getElementById('outofstock-message').innerHTML = oosMsg;
+            openModal('bundle-outofstock-modal');
+            hideGokwikLoader();
+            document.getElementById('add-other-products-btn').onclick = function() {
+              closeModal('bundle-outofstock-modal');
+              if (inStock.length > 0) {
+                fetch('/cart/add.js', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ items: inStock.map(v => ({ id: v.id, quantity: 1 })) })
+                })
+                .then(res => res.json())
+                .then(() => {
+                  window.dispatchEvent(new CustomEvent('gokwik-cart:open'));
+                  if (window.gokwik_cart && typeof window.gokwik_cart.openDrawer === "function") window.gokwik_cart.openDrawer();
+                  if (window.GK_CART && typeof window.GK_CART.openDrawer === "function") window.GK_CART.openDrawer();
+                })
+                .catch(err => {
+                  showErrorModal('Error adding available products to cart.');
+                  console.error(err);
+                });
+              }
+            };
+          } else {
+            fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items: variantIds.map(id => ({ id: id, quantity: 1 })) })
+            })
+            .then(res => res.json())
+            .then(() => {
+              window.dispatchEvent(new CustomEvent('gokwik-cart:open'));
+              if (window.gokwik_cart && typeof window.gokwik_cart.openDrawer === "function") window.gokwik_cart.openDrawer();
+              if (window.GK_CART && typeof window.GK_CART.openDrawer === "function") window.GK_CART.openDrawer();
+            })
+            .catch(err => {
+              showErrorModal('Error adding bundle to cart.');
+              console.error(err);
+            });
+          }
+        })
+        .catch(err => {
+          showErrorModal('Error checking inventory.');
+          console.error(err);
+        });
+      }, true);
+    }
+
+    // close modals on overlay click or ESC (unchanged)
+    ['bundle-outofstock-modal','bundle-error-modal','bundle-size-error-modal'].forEach(id => {
+      const m = document.getElementById(id);
+      if (m) {
+        m.addEventListener('mousedown', e => {
+          if (e.target === m) closeModal(id);
+        });
+        document.addEventListener('keydown', ev => {
+          if ((ev.key==='Escape'||ev.key==='Esc') && m.style.display==='flex') {
+            closeModal(id);
+          }
+        });
+      }
+    });
+  });
+
+  function showErrorModal(msg) {
+    document.getElementById('error-message').innerHTML = msg;
+    openModal('bundle-error-modal');
+    hideGokwikLoader();
+    document.getElementById('error-ok-btn').onclick = () => closeModal('bundle-error-modal');
+  }
+  function showSizeErrorModal(msg) {
+    document.getElementById('size-error-message').innerHTML = msg;
+    openModal('bundle-size-error-modal');
+    hideGokwikLoader();
+  }
+</script>
+{% endif %}

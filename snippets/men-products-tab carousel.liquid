@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pill Toggle Menu (Fully Preloaded)</title>
+  <style>
+    .toggle-menu-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .toggle-buttons-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-bottom: 17px;
+      justify-content: center;
+    }
+    .toggle-button {
+      background-color: #f6f3f1;
+      color: #000;
+      border-radius: 12px;
+      padding: 3px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      white-space: nowrap;
+      border: none;
+    }
+    .toggle-button.active {
+      background-color: #fff;
+      color: #000;
+    }
+    .menu-items-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    @media (max-width: 768px) {
+      .menu-items-container.single-last-row {
+        justify-content: flex-start;
+      }
+      .toggle-buttons-wrapper .toggle-button:first-of-type {
+        margin-left: 358px;
+      }
+    }
+    .menu-item {
+      flex: 0 0 calc(20% - 20px);
+      text-align: center;
+      cursor: pointer;
+    }
+    .menu-item a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .menu-item img {
+      width: 100%;
+      max-width: 220px;
+      display: block;
+      margin: 0 auto 10px;
+      border-radius: 7px;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    .menu-item img.loaded {
+      opacity: 1;
+    }
+    .menu-item p {
+      font-size: 15px;
+      color: #333;
+      margin: 0;
+    }
+    @media (min-width: 769px) {
+      .menu-item img {
+        height: 300px;
+        object-fit: cover;
+      }
+      .menu-items-container.topwear .menu-item {
+        flex: 0 0 calc(25% - 20px);
+      }
+    }
+    @media (max-width: 768px) {
+      .menu-item {
+        flex: 0 0 calc(34% - 12px);
+      }
+      .menu-item img {
+        height: 150px;
+        object-fit: cover;
+      }
+      .menu-items-container {
+        gap: 6px;
+        padding: 0 4px;
+      }
+      .menu-item p {
+        font-size: 12px;
+      }
+      .toggle-buttons-wrapper {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 10px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        padding-left: 58px;
+      }
+      .toggle-buttons-wrapper::-webkit-scrollbar {
+        display: none;
+      }
+      .toggle-button {
+        flex: 0 0 auto;
+      }
+    }
+    .view-all-bar {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .view-all-bar .toggle-button {
+      display: inline-block;
+      padding: 10px 154px;
+      color: #000;
+      border: 1px solid #1F1F1D;
+      border-radius: 0px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      text-decoration: none;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .menu-item img {
+        transition:
+          transform 0.21s cubic-bezier(.41,1.51,.37,1.11),
+          box-shadow 0.22s cubic-bezier(.41,1.51,.37,1.11);
+        will-change: transform, box-shadow;
+      }
+      .menu-item:hover img,
+      .menu-item:focus-within img {
+        transform: scale(1.045) rotateZ(-0.7deg);
+        box-shadow:
+          0 10px 28px 0 rgba(195,106,78,0.21),
+          0 2px 8px rgba(195,106,78,0.13);
+        z-index: 3;
+      }
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .toggle-button {
+        transition:
+          background 0.22s cubic-bezier(.44,1.34,.38,1.11),
+          color 0.22s cubic-bezier(.44,1.34,.38,1.11),
+          transform 0.23s cubic-bezier(.44,1.34,.38,1.11),
+          box-shadow 0.22s cubic-bezier(.44,1.34,.38,1.11);
+        will-change: transform, box-shadow, background, color;
+        position: relative;
+        z-index: 1;
+      }
+      .toggle-button:hover,
+      .toggle-button:focus-visible {
+        background: #fff8f3;
+        color: #c36a4e;
+        transform: scale(1.07) translateY(-3px);
+        box-shadow:
+          0 4px 14px 0 rgba(195,106,78,0.21),
+          0 1.5px 6px rgba(195,106,78,0.14);
+        outline: none;
+      }
+      .toggle-button.active {
+        background: #fff;
+        color: #c36a4e;
+        transform: scale(1.10);
+        box-shadow: 0 1px 4px 0 rgba(195,106,78,0.13);
+      }
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .view-all-bar .toggle-button {
+        transition:
+          background 0.21s cubic-bezier(.44,1.34,.38,1.11),
+          color 0.21s cubic-bezier(.44,1.34,.38,1.11),
+          box-shadow 0.21s cubic-bezier(.44,1.34,.38,1.11),
+          transform 0.21s cubic-bezier(.44,1.34,.38,1.11);
+        will-change: background, color, box-shadow, transform;
+        border-radius: 7px;
+      }
+      .view-all-bar .toggle-button:hover,
+      .view-all-bar .toggle-button:focus-visible {
+        background: #fff8f3;
+        color: #c36a4e;
+        transform: scale(1.04) translateY(-3px);
+        box-shadow:
+          0 4px 18px 0 rgba(195,106,78,0.21),
+          0 2px 8px rgba(195,106,78,0.13);
+        outline: none;
+        border: 1.5px solid #c36a4e;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toggle-menu-container">
+    <div class="toggle-buttons-wrapper">
+      <button class="toggle-button active" data-category="bestsellers">Best Sellers</button>
+      <button class="toggle-button" data-category="newarrival">New Arrival</button>
+      <button class="toggle-button" data-category="shortkurta">Airy Linen Short Kurta</button>
+      <button class="toggle-button" data-category="longKurta">Airy Linen Long Kurta</button>
+      <button class="toggle-button" data-category="formalShirt">Formal Shirt</button>
+      <button class="toggle-button" data-category="linenFull">100% Linen Full Sleeve Shirt</button>
+      <button class="toggle-button" data-category="linenHalf">100% Linen Half Sleeve Shirt</button>
+    </div>
+    <div id="itemsContainer" class="menu-items-container"></div>
+    <div class="view-all-bar">
+      <a id="viewAllLink" class="toggle-button"
+         href="https://saadaa.in/collections/men">
+        VIEW ALL ➝
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ─────────── Shopify credentials ───────────
+    const SHOP_DOMAIN             = "saadaa-design.myshopify.com";
+    const STOREFRONT_ACCESS_TOKEN = "388bd37219d8ab7daee1c58a23c03cc8";
+
+    // ─────────── Map each toggle to its base Shopify tag ───────────
+    const tagMap = {
+      bestsellers: "men_home_best_sellers",
+      newarrival:  "men_home_new_arrival",
+      shortkurta:  "men_home_MALSK",
+      longKurta:   "men_home_MALLK",
+      formalShirt: "men_home_MFS",
+      linenFull:   "men_home_MLFS",    // Update if your tag is different
+      linenHalf:   "men_home_MLHS"     // Update if your tag is different
+    };
+
+    // ─────────── VIEW ALL links ───────────
+    const viewAllLinks = {
+      bestsellers: "https://saadaa.in/collections/men",
+      newarrival:  "https://saadaa.in/collections/men",
+      shortkurta:  "https://saadaa.in/collections/men-airy-linen-short-kurtas",
+      longKurta:   "https://saadaa.in/collections/airy-linen-long-kurtas-1",
+      formalShirt: "https://saadaa.in/collections/formal-shirts",
+      linenFull:   "https://saadaa.in/collections/men-100-linen-full-sleeve-shirt",  // Update if your URL is different
+      linenHalf:   "https://saadaa.in/collections/men-100-linen-half-sleeve-shirt"   // Update if your URL is different
+    };
+
+    // ─────────── In-memory cache & loaded flags ───────────
+    let cache = {
+      bestsellers: [],
+      newarrival:  [],
+      shortkurta:  [],
+      longKurta:   [],
+      formalShirt: [],
+      linenFull:   [],
+      linenHalf:   []
+    };
+    let cacheLoaded = {
+      bestsellers: false,
+      newarrival:  false,
+      shortkurta:  false,
+      longKurta:   false,
+      formalShirt: false,
+      linenFull:   false,
+      linenHalf:   false
+    };
+
+    // ─────────── Fetch (max 9) products for a given base tag, filtering out drafts ───────────
+    async function fetchProductsByTag(baseTag) {
+      const query = `
+        {
+          products(first: 30, query: "tag:'${baseTag}'") {
+            edges {
+              node {
+                id
+                title
+                handle
+                tags
+                publishedAt
+                images(first: 1) {
+                  edges {
+                    node {
+                      url
+                      altText
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+      const resp = await fetch(`https://${SHOP_DOMAIN}/api/2023-10/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": STOREFRONT_ACCESS_TOKEN
+        },
+        body: JSON.stringify({ query })
+      });
+      const { data } = await resp.json();
+      if (!data || !data.products) return [];
+      // Remove any unpublished/draft product (publishedAt === null)
+      return data.products.edges
+        .map(edge => edge.node)
+        .filter(node => node.publishedAt !== null);
+    }
+
+    // ─────────── Move any product carrying `${baseTag}-#1` to index 0 ───────────
+    function prioritizeHashOne(products, baseTag) {
+      const specialTag = baseTag + "-#1";
+      products.sort((a, b) => {
+        const aHas = a.tags.includes(specialTag);
+        const bHas = b.tags.includes(specialTag);
+        if (aHas && !bHas) return -1;
+        if (bHas && !aHas) return 1;
+        return 0;
+      });
+    }
+
+    // ─────────── Build HTML from a list of product nodes ───────────
+    function buildHTMLFromProducts(products) {
+      return products.map(prod => {
+        const imgUrl = prod.images.edges[0]?.node.url || "";
+        const altTxt = prod.images.edges[0]?.node.altText || prod.title;
+        return `
+          <div class="menu-item">
+            <a href="/products/${prod.handle}">
+              <img src="${imgUrl}" alt="${altTxt}" loading="lazy" />
+              <p>${prod.title}</p>
+            </a>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ─────────── Add fade-in class when each image finishes loading ───────────
+    function addImageLoadListeners() {
+      itemsContainer.querySelectorAll("img").forEach(img => {
+        if (img.complete) {
+          img.classList.add("loaded");
+        } else {
+          img.addEventListener("load", () => img.classList.add("loaded"));
+        }
+      });
+    }
+
+    const itemsContainer  = document.getElementById("itemsContainer");
+    const toggleButtons   = document.querySelectorAll(".toggle-button[data-category]");
+    const viewAllLinkElem = document.getElementById("viewAllLink");
+
+    // ─────────── Handler for toggles ───────────
+    toggleButtons.forEach(button => {
+      button.addEventListener("click", async () => {
+        // 1) Mark clicked toggle as active
+        toggleButtons.forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+
+        // 2) Update “View All” link immediately
+        const key = button.getAttribute("data-category");
+        viewAllLinkElem.href = viewAllLinks[key] || "#";
+
+        // 3) Clear container at once (instant feedback)
+        itemsContainer.innerHTML = "";
+
+        // 4) If category is already loaded, render from cache
+        if (cacheLoaded[key]) {
+          const cached = cache[key];
+          if (cached.length === 0) {
+            itemsContainer.innerHTML = `<div class="no-results">No products found.</div>`;
+          } else {
+            itemsContainer.innerHTML = buildHTMLFromProducts(cached);
+            addImageLoadListeners();
+          }
+          return;
+        }
+
+        // 5) Otherwise, fetch now, store in cache, prioritize “-#1,” then render
+        const baseTag = tagMap[key];
+        const prods = await fetchProductsByTag(baseTag);
+        cache[key] = prods;
+        cacheLoaded[key] = true;
+
+        if (prods.length === 0) {
+          itemsContainer.innerHTML = `<div class="no-results">No products found.</div>`;
+          return;
+        }
+
+        prioritizeHashOne(prods, baseTag);
+        itemsContainer.innerHTML = buildHTMLFromProducts(prods);
+        addImageLoadListeners();
+      });
+    });
+
+    // ─────────── On initial load, fetch & cache ALL categories ───────────
+    (async () => {
+      // 1) Immediately mark “Best Sellers” as active
+      const defaultKey = "bestsellers";
+      document.querySelector(`.toggle-button[data-category="${defaultKey}"]`).classList.add("active");
+      viewAllLinkElem.href = viewAllLinks[defaultKey];
+
+      // 2) Fetch bestsellers first (so user sees actual data as soon as possible)
+      const defaultProds = await fetchProductsByTag(tagMap[defaultKey]);
+      cache[defaultKey] = defaultProds;
+      cacheLoaded[defaultKey] = true;
+
+      if (defaultProds.length === 0) {
+        itemsContainer.innerHTML = `<div class="no-results">No products found.</div>`;
+      } else {
+        prioritizeHashOne(defaultProds, tagMap[defaultKey]);
+        itemsContainer.innerHTML = buildHTMLFromProducts(defaultProds);
+        addImageLoadListeners();
+      }
+
+      // 3) In parallel, fetch each of the other six categories and cache them
+      const otherKeys = [
+        "newarrival", "shortkurta", "longKurta", "formalShirt", "linenFull", "linenHalf"
+      ];
+      await Promise.all(
+        otherKeys.map(async key => {
+          const prods = await fetchProductsByTag(tagMap[key]);
+          cache[key] = prods;
+          cacheLoaded[key] = true;
+          if (prods.length) {
+            prioritizeHashOne(prods, tagMap[key]);
+          }
+          // Do not overwrite the DOM here—only cache.
+        })
+      );
+    })();
+  </script>
+</body>
+</html>

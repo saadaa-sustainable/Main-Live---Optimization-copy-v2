@@ -1,0 +1,233 @@
+<div class="stats-section-wrapper">
+  <!-- Left Arrow (hidden by default) -->
+  <button class="carousel-arrow left-arrow" id="leftArrow">&#10094;</button>
+  
+  <!-- Carousel Container -->
+  <div class="stats-section" id="statsCarousel">
+    <div class="stat-item">
+      <div class="stat-content">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275222.svg?v=1744103366" alt="Icon 1" />
+        <p>Comfort<br>Fit</p>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-content">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275226.svg?v=1744103607" alt="Icon 2" />
+        <p>Skin<br>Friendly</p>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-content">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Vector.svg?v=1744103606" alt="Icon 3" />
+        <p>Made<br>to Last</p>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-content">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275227.svg?v=1744103606" alt="Icon 4" />
+        <p>Natural<br>Fibers</p>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-content">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Vector_1.svg?v=1744103607" alt="Icon 5" />
+        <p>Sizes<br>upto 5XL</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Right Arrow -->
+  <button class="carousel-arrow right-arrow" id="rightArrow">&#10095;</button>
+</div>
+
+<style>
+  .stats-section-wrapper {
+    position: relative;
+  }
+
+  .stats-section {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    flex-wrap: nowrap;
+  }
+
+  .stat-item {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 140px;
+    text-align: center;
+  }
+
+  .stat-content img {
+    width: 50px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .stat-content p {
+    font-size: 18px;
+    color: #616064;
+    margin: 0;
+    line-height: 1.2;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Mobile-only styles */
+  @media (max-width: 768px) {
+    .stats-section {
+      overflow-x: auto;
+      padding: 20px 10px;
+      gap: 20px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .stats-section::-webkit-scrollbar {
+      display: none;
+    }
+    .stat-item {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      min-width: calc(100% / 3 - 15px);
+    }
+    .stat-content {
+      height: 104px;
+    }
+    .stat-content img {
+      width: 40px;
+    }
+    .stat-content p {
+      font-size: 14px;
+      height: 36px;
+    }
+
+    /* Basic arrow styling without extra decoration */
+    .carousel-arrow {
+      display: block;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 11px;
+      cursor: pointer;
+      padding: 4px;
+      color: #7C7C7C;
+    }
+    .left-arrow {
+      left: 5px;
+    }
+    .right-arrow {
+      right: 5px;
+    }
+  }
+
+
+
+
+
+@media (hover: hover) and (pointer: fine) {
+  .stat-content {
+    cursor: pointer;
+    /* This disables tap highlight on mobile for cleanliness */
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stat-content img {
+    transition: 
+      transform 0.22s cubic-bezier(.32,1.56,.43,1.06),
+      filter 0.18s;
+    will-change: transform, filter;
+  }
+  .stat-content:hover img,
+  .stat-content:focus-visible img {
+    transform: scale(1.15) rotateZ(-6deg);
+    filter: drop-shadow(0 3px 12px rgba(195,106,78,0.18));
+  }
+
+  .stat-content p {
+    transition: color 0.19s cubic-bezier(.41,1.51,.37,1.11);
+    position: relative;
+    font-weight: 500;
+  }
+  .stat-content:hover p,
+  .stat-content:focus-visible p {
+    color: #c36a4e;
+  }
+  
+  .stat-content:hover p::after,
+  .stat-content:focus-visible p::after {
+    transform: scaleX(1);
+    left: 15%;
+    right: 15%;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+  
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("statsCarousel");
+    const leftArrow = document.getElementById("leftArrow");
+    const rightArrow = document.getElementById("rightArrow");
+    
+    // Amount to scroll; adjust if needed.
+    const scrollAmount = container.offsetWidth * 0.7;
+    
+    // On click, scroll the container.
+    leftArrow.addEventListener("click", () => {
+      container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    });
+    rightArrow.addEventListener("click", () => {
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    });
+    
+    // Update arrow visibility: hide left arrow when at the far left.
+    function updateArrows() {
+      if (container.scrollLeft <= 0) {
+        leftArrow.style.display = "none";
+      } else {
+        leftArrow.style.display = "block";
+      }
+      
+      // Right arrow is kept visible as long as there is content to scroll.
+      if (container.scrollLeft + container.offsetWidth >= container.scrollWidth - 1) {
+        rightArrow.style.display = "none";
+      } else {
+        rightArrow.style.display = "block";
+      }
+    }
+    
+    // Initial update.
+    updateArrows();
+    
+    // Listen for scroll changes.
+    container.addEventListener("scroll", updateArrows);
+    window.addEventListener("resize", updateArrows);
+  });
+</script>

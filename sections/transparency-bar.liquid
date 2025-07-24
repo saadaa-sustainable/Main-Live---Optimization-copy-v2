@@ -1,0 +1,95 @@
+<div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}">
+  <div class="container container--xs">
+    <div class="section-stack">
+      <div class="v-stack gap-6">
+        <p class="text-center">WHEN YOU BUY JUST <b>ONE PRODUCT</b></p>
+        <div class="h-stack bar-container align-start text-center justify-center">
+          <div class="product_cost" style="--bar-width:22%;--bg-color:#333">
+            <p>PRODUCT COST</p>
+          </div>
+          <div class="product_cost" style="--bar-width:18%;--bg-color:#FFCF6E">
+            <p>LOGISTICS</p>
+          </div>
+          <div class="product_cost" style="--bar-width:14%;--bg-color:#F4EFE3">
+            <p>PACKAGING COST</p>
+          </div>
+          <div class="product_cost" style="--bar-width:28%;--bg-color:#E4E2DE">
+            <p>MARKETING DISTRIBUTION</p>
+          </div>
+          <div class="saving" style="--bar-width:18%;--bg-color:transparent">
+            <p>YOUR SAVINGS</p>
+          </div>
+        </div>
+      </div>
+      <div class="v-stack gap-6">
+        <p class="text-center">WHEN YOU GET <b>MORE TOGETHER</b></p>
+        <div class="h-stack bar-container align-start text-center justify-center">
+          <div class="product_cost" style="--bar-width:22%;--bg-color:#333">
+            <p>PRODUCT COST</p>
+          </div>
+          <div class="product_cost" style="--bar-width:13%;--bg-color:#FFCF6E">
+            <p>LOGISTICS</p>
+          </div>
+          <div class="product_cost" style="--bar-width:13%;--bg-color:#F4EFE3">
+            <p>PACKAGING COST</p>
+          </div>
+          <div class="product_cost" style="--bar-width:27%;--bg-color:#E4E2DE">
+            <p>MARKETING DISTRIBUTION</p>
+          </div>
+          <div class="saving" style="--bar-width:25%;--bg-color:transparent">
+            <p>YOUR SAVINGS</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+      .bar-container{
+        font-size:8px;
+      }
+      .bar-container > div::before{
+        content: '';
+        display: block;
+        width: 100%;
+        height: 7px;
+        border: 1px solid;
+        background:var(--bg-color)
+      }
+      .bar-container > div.saving::before{
+    border: 0.5px dashed #000;
+      }
+      .bar-container > div >p{
+        padding-top:10px;
+      }
+      .bar-container > div{
+        width:var(--bar-width);
+      }
+    @media screen and (min-width:1000px){
+      .bar-container {
+      font-size: 11px;
+  }
+    }
+</style>
+{% schema %}
+{
+  "name": "transparency bar",
+  "settings": [
+       {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ],
+  "presets":[
+    {"name":"Transparency bars"}
+  ]
+}
+{% endschema %}

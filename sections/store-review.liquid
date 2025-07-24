@@ -1,0 +1,433 @@
+{%- if section.blocks.size > 0 -%}
+  <style>
+    #shopify-section-{{ section.id }} {
+      {%- if section.settings.section_width == 'full' -%}
+        --container-gutter: var(--media-grid-gap);
+      {%- endif -%}
+
+      {%- if section.settings.subheading == blank and section.settings.title == blank and section.settings.content == blank and section.settings.section_width == 'full' -%}
+        --section-vertical-spacing-override: var(--media-grid-gap);
+      {%- endif -%}
+    }
+  </style>
+  {% assign product_gallery_carousel_id = 'media_grid_carousal' | append: section.id %}
+
+  <div
+    class="store_review_container {% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} media_grid_crousal {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' and section.settings.background != settings.background %}section-spacing--padded{% endif %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}"
+    style="{% render 'surface', background: section.settings.background, text_color: section.settings.text_color %}"
+  >
+      <div class="{% unless section.settings.page_width == 'full' %}container container--{{ section.settings.page_width }}{% endunless %}">
+    <div class="section-stack">
+        {% comment %}{%- render 'section-header', subheading: section.settings.subheading, heading: section.settings.title, content: section.settings.content,text_alignment:section.settings.text_position -%}{% endcomment %}
+        <div class="text-{{ section.settings.text_position }}">
+          {%- if section.settings.subheading != blank -%}
+            <p class="h6">{{- section.settings.subheading -}}</p>
+          {%- endif -%}
+
+          {%- if section.settings.title != blank -%}
+            <h2 class="h2">{{- section.settings.title -}}</h2>
+          {%- endif -%}
+          {{- section.settings.content -}}
+        </div>
+    
+    <div class="floating-controls-container logo-list-container floating-controls-container--inside floating-controls-container--on-hover">
+      <scroll-carousel
+        id="{{ product_gallery_carousel_id }}"
+        class="store-review_carousal gd_craousal-{{ section.id }} scroll-area"
+        role="region"
+      >
+        {%- for block in section.blocks -%}
+        
+        {% render 'store-review-card',block :block %}
+        {%- endfor -%}
+      </scroll-carousel>
+      <button
+        is="carousel-prev-button"
+        type="button"
+        class="prev-next-button prev-next-button--prev circle-button hover:animate-icon-inline"
+        aria-controls="{{ product_gallery_carousel_id }}"
+        disabled
+      >
+        <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+        {%- render 'icon' with 'arrow-left', direction_aware: true -%}
+      </button>
+
+      <button
+        is="carousel-next-button"
+        type="button"
+        class="prev-next-button prev-next-button--next circle-button hover:animate-icon-inline"
+        aria-controls="{{ product_gallery_carousel_id }}"
+      >
+        <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+        {%- render 'icon' with 'arrow-right', direction_aware: true -%}
+      </button>
+    </div>
+    {%- if section.settings.link_text != blank -%}
+      <div class="button-group h-stack justify-center">
+        {%- if section.settings.link_text != blank -%}
+          {%- render 'button',
+            href: section.settings.link_url,
+            content: section.settings.link_text,
+            style: section.settings.link_style,
+            background: section.settings.button_background,
+            text_color: section.settings.button_text_color
+          -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+        </div>
+  </div>
+  </div>
+{%- endif -%}
+
+<style>
+.store-review_carousal{
+      display: flex;
+    gap: 20px;
+}
+
+  .sc_container{
+    min-height: 380px;
+    min-width: 78%;
+    max-width: 80%;
+    background: #F4F4F4;
+     cursor:pointer;
+    transition:border-radius .3s ease-in-out;
+  }
+  .sc_content_wrapper{
+    display: grid;
+    padding: 15px;
+    gap: 8px;
+  }
+  .sc_content_wrapper:hover  .sc_image_box img {
+    scale:1.03;
+  }
+  .sc_container:hover{
+    border-radius:10px;
+  }
+ .sc_container.open:hover  .sc_image_box img {
+    scale:1;
+  }
+  .sc_container.open:hover{
+    border-radius:10px;
+  }
+  .sc_image_box{
+        border-radius: 5px;
+    overflow: hidden;
+  }
+  .sc_image_box img{
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    object-fit:cover;
+    transition: scale .3s ease-in-out;
+  }
+  .review_text{
+    font-size:14px;
+  }
+  .review_text > p{
+    margin-top: 10px;
+  }
+ .sc_container.open{
+  position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    background: rgba(0, 0, 0, .4);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  .sc_container.open .sc_content_wrapper {
+    display: grid;
+    padding: 10px;
+    gap: 8px;
+    background: white;
+    width: 90%;
+    max-width: 320px;
+    position:relative;
+  }
+  .full-content{
+    display:none;
+  }
+  .sc_container.open .full-content{
+    display:block;
+  }
+  .sc_container.open .trucate-content{
+    display:none;
+  }
+  .cross{
+    position:absolute;
+  }
+ .sc_container.open .cross {
+    top: 12px;
+    left: 12px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,.8);
+    border-radius: 5px;
+   cursor:pointer;
+   z-index:1;
+  }
+ .sc_container.open .sc_image_box{
+        margin: -10px -10px 0 -10px;
+  }
+ .sc_container.open .cross::before{
+    display: inline-block;
+    content: "";
+    width: 3px;
+    height: 27px;
+    background: white;
+    rotate: 45deg;
+    position: relative;
+    left: 19px;
+    top: 8px;
+  }
+  .sc_container.open .sc_image_box {
+    border-radius:0;
+  }
+ .sc_container.open .cross::after{
+     display: inline-block;
+    content: "";
+    width: 3px;
+    height: 27px;
+    background: white;
+    rotate: -45deg;
+    position: relative;
+    left: 16px;
+    top: 8px;
+  }
+    @media screen and (min-width:1000px){
+    .review_text{
+    font-size:16px;
+  }
+   .sc_container.open .review_text{
+      width:40%;
+  }
+      .sc_container.open .sc_image_box{
+            max-width: 60%;
+      }
+    .sc_container {
+    min-width: calc(100% / 4 - 20px);
+}
+      
+        .sc_container.open .sc_content_wrapper {
+      display: flex;
+    gap: 30px;
+    width: 90%;
+    max-width: 768px;
+  }
+       .sc_container.open .sc_image_box{
+        margin: -10px;
+  }
+  }
+</style>
+<script>
+  Array.from(document.getElementsByClassName('sc_container')).forEach(element=>element.addEventListener('click',function(e){
+    element.classList.add('open')
+    document.body.style.overflow = 'hidden'
+    element.querySelector('.cross').addEventListener('click',function(e){
+      e.stopPropagation()
+       element.classList.remove('open')
+      document.body.style.overflow = 'auto'
+    })
+  }))
+</script>
+{% schema %}
+{
+  "name": "Store review carousal",
+  "class": "shopify-section--media-grid",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+  
+       {
+      "type": "select",
+      "id": "text_position",
+      "label": "t:global.position.content_position",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:global.position.left"
+        },
+        {
+          "value": "center",
+          "label": "t:global.position.center"
+        },
+        {
+          "value": "end",
+          "label": "t:global.position.right"
+        }
+      ],
+      "default": "center"
+    },
+     {
+      "type": "select",
+      "id": "page_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:global.sizes.x_small"
+        },
+        {
+          "value": "sm",
+          "label": "t:global.sizes.small"
+        },
+        {
+          "value": "md",
+          "label": "t:global.sizes.medium"
+        },
+        {
+          "value": "lg",
+          "label": "t:global.sizes.large"
+        },
+        {
+          "value": "xl",
+          "label": "t:global.sizes.x_large"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "full",
+          "label": "t:global.image.width_options.full_width"
+        }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "header",
+      "content": "t:global.section.header_category"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "t:global.text.subheading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "t:global.text.heading",
+      "default": "Media grid"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "t:global.text.content"
+    },
+    {
+      "type": "header",
+      "content": "t:global.colors.category"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "t:global.colors.background"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:global.text.text"
+    },
+     {
+          "type": "text",
+          "id": "link_text",
+          "label": "t:global.text.button_text"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "t:global.text.button_link"
+        },
+        {
+          "type": "select",
+          "id": "link_style",
+          "label": "t:global.text.button_style",
+          "options": [
+            {
+              "value": "outline",
+              "label": "t:global.text.link_style_options.outline"
+            },
+            {
+              "value": "solid",
+              "label": "t:global.text.link_style_options.solid"
+            },
+            {
+              "value": "link",
+              "label": "t:global.text.link_style_options.link"
+            }
+          ],
+          "default": "link"
+        },
+      {
+          "type": "color",
+          "id": "button_background",
+          "label": "t:global.colors.button_background"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "t:global.colors.button_text"
+        },
+      {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review_card",
+      "name": "Review card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:global.image.image",
+          "info": "t:sections.media_grid.blocks.image.image_recommendation"
+        },
+        {
+          "type": "header",
+          "content": "t:global.text.content"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "t:global.text.heading",
+          "default":"Heading text"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:global.text.content",
+          "default":"<p>Lorem ipsum dolor sit amet,consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Store review carousal"
+    }
+  ]
+}
+{% endschema %}

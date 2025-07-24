@@ -1,0 +1,79 @@
+<div class="saadaa-menu-toggle-buttons">
+  <a href="#" id="womenButton" class="saadaa-active">Women</a>
+  <a href="https://saadaa.in/pages/men-showcase" id="menButton">Men</a>
+</div>
+
+<style>
+  .saadaa-menu-toggle-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+  }
+
+  .saadaa-menu-toggle-buttons a {
+    text-decoration: none;
+    color: #7C7C7C;
+    padding: 5px 10px;
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+    text-align: center;
+  }
+
+  .saadaa-menu-toggle-buttons a.saadaa-active {
+    color: #000;
+  }
+
+  .saadaa-menu-toggle-buttons a:not(.saadaa-active):hover {
+    color: #1F1F1F;
+  }
+
+  .saadaa-menu-toggle-buttons a::after {
+    display: block;
+    width: 0%;
+    height: 2px;
+    background: #000;
+    transition: width 0.3s;
+    position: relative;
+    bottom: 0;
+    left: 7px;
+  }
+
+  .saadaa-menu-toggle-buttons a:hover::after,
+  .saadaa-menu-toggle-buttons a.saadaa-active::after {
+    width: 82%;
+  }
+@media (min-width: 768px) {
+ .saadaa-menu-toggle-buttons  {
+display:none;
+}
+
+
+
+
+  @media (max-width: 768px) {
+    .saadaa-menu-toggle-buttons {
+      gap: 52px;
+    }
+
+    .saadaa-menu-toggle-buttons a {
+      font-size: 14px;
+      padding: 4px 8px;
+      max-width: 80px;
+      white-space: normal;
+      word-wrap: break-word;
+      text-align: center;
+    }
+  }
+
+  #shopify-section-template--19351938695414__custom_liquid_NRKr7j {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 70px;
+    z-index: 999;
+    background-color: #fff;
+    transition: none;
+  }
+</style>

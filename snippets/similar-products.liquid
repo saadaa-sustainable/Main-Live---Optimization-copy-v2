@@ -1,0 +1,39 @@
+
+{% for collection in product.collections %}
+ {% if collection.title contains 'AIRY-LINEN SHORT KURTAS' 
+ or collection.title contains 'AIRY LINEN LONG KURTAS' 
+ or collection.title contains 'AIRY - LINEN SHIRTS'
+ or collection.title contains 'EVERYDAY COTTON TOP'
+ or collection.title contains '4-WAY STRETCHABLE PANTS'
+ or collection.title contains 'EVERYDAY COTTON PANTS'
+ or collection.title contains 'THE FORMAL PANTS'
+ or collection.title contains 'PALAZZO PANTS'
+ or collection.title contains 'AIRY-LINEN SHORTS'
+ or collection.title contains 'TOTE BAGS'
+ or collection.title contains 'V-NECK SLEEVELESS TOP'
+ or collection.title contains 'WIDE LEG PANTS'
+ or collection.title contains 'AIRY LINEN PANTS'
+ or collection.title contains 'VISCOSE PLEATED TOP'
+ or collection.title contains 'THE FORMAL SHIRTS'
+ or collection.title contains 'AIRY-LINEN LONG KURTAS VWO'
+ or collection.title contains '100% Cotton - Everyday Pants'
+ or collection.title contains 'Viscose Palazzo Pants'   
+ or collection.title contains 'EVERYDAY COTTON PANT'
+    or collection.title contains 'Airy Linen Wide Leg Pant'
+    or collection.title contains 'MEN AIRY-LINEN SHORT KURTAS'
+    or collection.title contains 'Men 100% Linen Full Sleeve Shirt'
+ %}
+    {% assign selected_collection = collection %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+
+
+{% if selected_collection %}
+
+        {% render 'similar-style', collection1: selected_collection %}
+      
+   
+{%  endif %}
+

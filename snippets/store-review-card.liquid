@@ -1,0 +1,23 @@
+<div class="sc_container">
+  <div class="sc_content_wrapper">
+    <div class="cross"></div>
+    <div class="sc_image_box">
+      {% if block.settings.image != blank %}
+    <img src={{ block.settings.image | image_url:width:section.setting.width }} />
+    {% else %}
+        {{ 'image' | placeholder_svg_tag }}
+      {% endif %}
+    </div>
+    <div class="review_text">
+      {% if block.settings.title != blank  %}
+      <div>{{ block.settings.title }}</div>
+        {% endif %}
+      <div class="full-content">
+      {{- block.settings.content -}}
+      </div> 
+      <div class="trucate-content">
+      {{- block.settings.content |truncatewords:15,"<small><i>...Read more</i></small>" -}}
+      </div>
+    </div>
+  </div>
+</div>

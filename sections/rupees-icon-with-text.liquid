@@ -1,0 +1,1083 @@
+{%- if section.blocks.size > 0 -%}
+  <div
+    class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}"
+    style="{% render 'surface', background: section.settings.section_color %}"
+  >
+    <div class="container container--xs">
+      <div class="section-stack">
+        {%- if section.settings.text != blank -%}
+          <div class="text-start sm:text-{{ section.settings.text_alignment }}">
+            <p class="{{ section.settings.heading_tag }}">{{ section.settings.text }}</p>
+          </div>
+        {%- endif -%}
+        <div class="v-stack gap-8">
+          {%- capture section_content -%}
+          {%- for block in section.blocks -%}
+            {% case block.type %}
+              {% when 'item' %}
+            <div class="text-with-icons__item {% if section.settings.verticle_line %}vertical_line {% endif %}  {% if forloop.first %}is-selected{% endif %} {% unless section.settings.stack_on_mobile %}snap-center{% endunless %}" role="group" aria-label="{{ 'general.accessibility.item_nth_of_count' | t: index: forloop.index, count: section.blocks.size }}" {{ block.shopify_attributes }}>
+              
+              <div class="h-stack gap-8 justify-items-center sm:justify-items-{{ section.settings.text_alignment }} item_content">
+                <div class="rupees-svg">
+                   
+      
+  <svg xmlns="http://www.w3.org/2000/svg" width="34" height="13" viewBox="0 0 34 13" fill="none" class="hidden double_ruppes">
+  <path d="M16.2072 3.19438H14.8613C14.7829 2.30128 14.3895 1.47334 13.7609 0.878011H16.2092C16.4361 0.878011 16.6205 0.681143 16.6205 0.439006C16.6205 0.196868 16.4361 0 16.2092 0L8.78983 0.0226369H8.74998C8.73584 0.021951 8.7217 0.021951 8.70756 0.0226369C8.69535 0.0253807 8.68314 0.0288104 8.67092 0.033612L8.62979 0.047331L8.59508 0.0685946L8.56037 0.0878019L8.52759 0.115926L8.49931 0.141993C8.48966 0.152282 8.48131 0.16463 8.47102 0.176976C8.46138 0.189323 8.45431 0.196184 8.44788 0.207159H8.44917C8.44146 0.220192 8.43503 0.23391 8.42925 0.24763L8.41125 0.281242L8.39839 0.3272V0.326515C8.39389 0.338862 8.39068 0.351208 8.38811 0.363556C8.38747 0.379333 8.38747 0.39511 8.38811 0.410886C8.38747 0.424605 8.38747 0.439011 8.38811 0.452729C8.38747 0.469192 8.38747 0.484968 8.38811 0.500745C8.38747 0.513778 8.38747 0.527497 8.38811 0.54053C8.39132 0.556993 8.39582 0.572769 8.40161 0.588546L8.41125 0.62353C8.41896 0.640679 8.42796 0.656456 8.4376 0.672232C8.44017 0.681149 8.44403 0.68938 8.44917 0.696925L8.48388 0.742883C8.48388 0.742883 8.49352 0.756602 8.50059 0.762091H8.49995C8.5128 0.775123 8.52694 0.787471 8.54108 0.799132L8.56101 0.816966V0.81628C8.57708 0.827255 8.59315 0.836173 8.6105 0.844405L8.63043 0.856752L8.67992 0.872528L8.7082 0.881446H8.70756C8.7352 0.888305 8.76283 0.892421 8.79111 0.891735H11.6545C12.2452 0.900652 12.8134 1.13937 13.2518 1.56259C13.6901 1.98582 13.9685 2.56543 14.0353 3.19239H8.78777C8.56088 3.19239 8.37641 3.38926 8.37641 3.63139C8.37641 3.87422 8.56088 4.0704 8.78777 4.0704H14.0057C13.9041 4.66032 13.6136 5.19397 13.1842 5.58017C12.7549 5.96704 12.213 6.18244 11.6513 6.18999H8.78784C8.63422 6.19479 8.49539 6.29014 8.4279 6.43762C8.36041 6.5851 8.37583 6.76001 8.46711 6.8924L12.4837 12.2023C12.5614 12.3058 12.6784 12.3662 12.8031 12.3662C12.9612 12.3648 13.1046 12.2667 13.1727 12.1145C13.2408 11.9615 13.2209 11.7811 13.1219 11.6494L9.64853 7.06793H11.6514C12.4291 7.05901 13.1779 6.75307 13.7622 6.205C14.3464 5.65761 14.7276 4.90445 14.8368 4.08267H16.2072C16.4347 4.08267 16.6185 3.8858 16.6185 3.64367C16.6185 3.40153 16.4347 3.20466 16.2072 3.20466L16.2072 3.19438Z" fill="black"/>
+  <path d="M24.5836 3.19438H23.2377C23.1593 2.30128 22.7659 1.47334 22.1373 0.878011H24.5856C24.8125 0.878011 24.997 0.681143 24.997 0.439006C24.997 0.196868 24.8125 0 24.5856 0L17.1662 0.0226369H17.1264C17.1123 0.021951 17.0981 0.021951 17.084 0.0226369C17.0718 0.0253807 17.0595 0.0288104 17.0473 0.033612L17.0062 0.047331L16.9715 0.0685946L16.9368 0.0878019L16.904 0.115926L16.8757 0.141993C16.8661 0.152282 16.8577 0.16463 16.8474 0.176976C16.8378 0.189323 16.8307 0.196184 16.8243 0.207159H16.8256C16.8179 0.220192 16.8114 0.23391 16.8057 0.24763L16.7877 0.281242L16.7748 0.3272V0.326515C16.7703 0.338862 16.7671 0.351208 16.7645 0.363556C16.7639 0.379333 16.7639 0.39511 16.7645 0.410886C16.7639 0.424605 16.7639 0.439011 16.7645 0.452729C16.7639 0.469192 16.7639 0.484968 16.7645 0.500745C16.7639 0.513778 16.7639 0.527497 16.7645 0.54053C16.7677 0.556993 16.7722 0.572769 16.778 0.588546L16.7877 0.62353C16.7954 0.640679 16.8044 0.656456 16.814 0.672232C16.8166 0.681149 16.8204 0.68938 16.8256 0.696925L16.8603 0.742883C16.8603 0.742883 16.8699 0.756602 16.877 0.762091H16.8764C16.8892 0.775123 16.9034 0.787471 16.9175 0.799132L16.9374 0.816966V0.81628C16.9535 0.827255 16.9696 0.836173 16.9869 0.844405L17.0068 0.856752L17.0563 0.872528L17.0846 0.881446H17.084C17.1116 0.888305 17.1392 0.892421 17.1675 0.891735H20.0309C20.6216 0.900652 21.1898 1.13937 21.6282 1.56259C22.0665 1.98582 22.3449 2.56543 22.4117 3.19239H17.1642C16.9373 3.19239 16.7528 3.38926 16.7528 3.63139C16.7528 3.87422 16.9373 4.0704 17.1642 4.0704H22.3821C22.2805 4.66032 21.99 5.19397 21.5606 5.58017C21.1313 5.96704 20.5894 6.18244 20.0277 6.18999H17.1643C17.0106 6.19479 16.8718 6.29014 16.8043 6.43762C16.7368 6.5851 16.7522 6.76001 16.8435 6.8924L20.8601 12.2023C20.9378 12.3058 21.0548 12.3662 21.1795 12.3662C21.3376 12.3648 21.481 12.2667 21.5491 12.1145C21.6172 11.9615 21.5973 11.7811 21.4983 11.6494L18.0249 7.06793H20.0278C20.8055 7.05901 21.5543 6.75307 22.1386 6.205C22.7228 5.65761 23.104 4.90445 23.2132 4.08267H24.5836C24.8111 4.08267 24.995 3.8858 24.995 3.64367C24.995 3.40153 24.8111 3.20466 24.5836 3.20466L24.5836 3.19438Z" fill="black"/>
+  <path d="M32.9601 3.19438H31.6141C31.5357 2.30128 31.1424 1.47334 30.5137 0.878011H32.962C33.1889 0.878011 33.3734 0.681143 33.3734 0.439006C33.3734 0.196868 33.1889 0 32.962 0L25.5427 0.0226369H25.5028C25.4887 0.021951 25.4745 0.021951 25.4604 0.0226369C25.4482 0.0253807 25.436 0.0288104 25.4238 0.033612L25.3826 0.047331L25.3479 0.0685946L25.3132 0.0878019L25.2804 0.115926L25.2521 0.141993C25.2425 0.152282 25.2341 0.16463 25.2239 0.176976C25.2142 0.189323 25.2071 0.196184 25.2007 0.207159H25.202C25.1943 0.220192 25.1879 0.23391 25.1821 0.24763L25.1641 0.281242L25.1512 0.3272V0.326515C25.1467 0.338862 25.1435 0.351208 25.1409 0.363556C25.1403 0.379333 25.1403 0.39511 25.1409 0.410886C25.1403 0.424605 25.1403 0.439011 25.1409 0.452729C25.1403 0.469192 25.1403 0.484968 25.1409 0.500745C25.1403 0.513778 25.1403 0.527497 25.1409 0.54053C25.1442 0.556993 25.1487 0.572769 25.1544 0.588546L25.1641 0.62353C25.1718 0.640679 25.1808 0.656456 25.1904 0.672232C25.193 0.681149 25.1969 0.68938 25.202 0.696925L25.2367 0.742883C25.2367 0.742883 25.2464 0.756602 25.2534 0.762091H25.2528C25.2656 0.775123 25.2798 0.787471 25.2939 0.799132L25.3138 0.816966V0.81628C25.3299 0.827255 25.346 0.836173 25.3633 0.844405L25.3833 0.856752L25.4327 0.872528L25.461 0.881446H25.4604C25.488 0.888305 25.5157 0.892421 25.5439 0.891735H28.4074C28.998 0.900652 29.5663 1.13937 30.0046 1.56259C30.443 1.98582 30.7213 2.56543 30.7881 3.19239H25.5406C25.3137 3.19239 25.1292 3.38926 25.1292 3.63139C25.1292 3.87422 25.3137 4.0704 25.5406 4.0704H30.7585C30.6569 4.66032 30.3664 5.19397 29.9371 5.58017C29.5077 5.96704 28.9659 6.18244 28.4041 6.18999H25.5407C25.3871 6.19479 25.2482 6.29014 25.1807 6.43762C25.1132 6.5851 25.1287 6.76001 25.2199 6.8924L29.2365 12.2023C29.3143 12.3058 29.4312 12.3662 29.5559 12.3662C29.7141 12.3648 29.8574 12.2667 29.9255 12.1145C29.9937 11.9615 29.9737 11.7811 29.8747 11.6494L26.4014 7.06793H28.4042C29.1819 7.05901 29.9307 6.75307 30.515 6.205C31.0993 5.65761 31.4804 4.90445 31.5897 4.08267H32.96C33.1876 4.08267 33.3714 3.8858 33.3714 3.64367C33.3714 3.40153 33.1876 3.20466 32.96 3.20466L32.9601 3.19438Z" fill="black"/>
+  <path d="M7.83083 3.19438H6.4849C6.40648 2.30128 6.01311 1.47334 5.3845 0.878011H7.83277C8.05966 0.878011 8.24413 0.681143 8.24413 0.439006C8.24413 0.196868 8.05966 0 7.83277 0L0.413421 0.0226369H0.37357C0.35943 0.021951 0.345288 0.021951 0.331149 0.0226369C0.318936 0.0253807 0.306724 0.0288104 0.294511 0.033612L0.253375 0.047331L0.218666 0.0685946L0.183956 0.0878019L0.151176 0.115926L0.122894 0.141993C0.113252 0.152282 0.104896 0.16463 0.0946115 0.176976C0.0849703 0.189323 0.0779004 0.196184 0.0714732 0.207159H0.0727587C0.0650457 0.220192 0.0586181 0.23391 0.052834 0.24763L0.0348362 0.281242L0.0219811 0.3272V0.326515C0.0174818 0.338862 0.014268 0.351208 0.011697 0.363556C0.0110543 0.379333 0.0110543 0.39511 0.011697 0.410886C0.0110543 0.424605 0.0110543 0.439011 0.011697 0.452729C0.0110543 0.469192 0.0110543 0.484968 0.011697 0.500745C0.0110543 0.513778 0.0110543 0.527497 0.011697 0.54053C0.0149107 0.556993 0.0194098 0.572769 0.0251946 0.588546L0.0348362 0.62353C0.0425493 0.640679 0.0515474 0.656456 0.0611898 0.672232C0.0637608 0.681149 0.0676173 0.68938 0.0727594 0.696925L0.107468 0.742883C0.107468 0.742883 0.11711 0.756602 0.12418 0.762091H0.123537C0.136392 0.775123 0.150532 0.787471 0.164673 0.799132L0.184598 0.816966V0.81628C0.200667 0.827255 0.216735 0.836173 0.23409 0.844405L0.254015 0.856752L0.303507 0.872528L0.331789 0.881446H0.331146C0.358784 0.888305 0.386423 0.892421 0.414703 0.891735H3.27812C3.86881 0.900652 4.43701 1.13937 4.87536 1.56259C5.31373 1.98582 5.59204 2.56543 5.65888 3.19239H0.411363C0.184472 3.19239 0 3.38926 0 3.63139C0 3.87422 0.184472 4.0704 0.411363 4.0704H5.62926C5.5277 4.66032 5.23718 5.19397 4.80782 5.58017C4.37845 5.96704 3.83662 6.18244 3.27485 6.18999H0.411429C0.257811 6.19479 0.118983 6.29014 0.0514863 6.43762C-0.0160036 6.5851 -0.000577572 6.76001 0.0906941 6.8924L4.10724 12.2023C4.18502 12.3058 4.302 12.3662 4.42669 12.3662C4.58481 12.3648 4.72814 12.2667 4.79628 12.1145C4.86441 11.9615 4.84448 11.7811 4.7455 11.6494L1.27211 7.06793H3.27496C4.0527 7.05901 4.8015 6.75307 5.38575 6.205C5.97001 5.65761 6.35117 4.90445 6.46042 4.08267H7.83077C8.05831 4.08267 8.24214 3.8858 8.24214 3.64367C8.24214 3.40153 8.05831 3.20466 7.83077 3.20466L7.83083 3.19438Z" fill="black"/>
+</svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="13" viewBox="0 0 9 13" fill="none" class="single_rupees">
+  <path d="M7.83083 3.19438H6.4849C6.40648 2.30128 6.01311 1.47334 5.3845 0.878011H7.83277C8.05966 0.878011 8.24413 0.681143 8.24413 0.439006C8.24413 0.196868 8.05966 0 7.83277 0L0.413421 0.0226369H0.37357C0.35943 0.021951 0.345288 0.021951 0.331149 0.0226369C0.318936 0.0253807 0.306724 0.0288104 0.294511 0.033612L0.253375 0.047331L0.218666 0.0685946L0.183956 0.0878019L0.151176 0.115926L0.122894 0.141993C0.113252 0.152282 0.104896 0.16463 0.0946115 0.176976C0.0849703 0.189323 0.0779004 0.196184 0.0714732 0.207159H0.0727587C0.0650457 0.220192 0.0586181 0.23391 0.052834 0.24763L0.0348362 0.281242L0.0219811 0.3272V0.326515C0.0174818 0.338862 0.014268 0.351208 0.011697 0.363556C0.0110543 0.379333 0.0110543 0.39511 0.011697 0.410886C0.0110543 0.424605 0.0110543 0.439011 0.011697 0.452729C0.0110543 0.469192 0.0110543 0.484968 0.011697 0.500745C0.0110543 0.513778 0.0110543 0.527497 0.011697 0.54053C0.0149107 0.556993 0.0194098 0.572769 0.0251946 0.588546L0.0348362 0.62353C0.0425493 0.640679 0.0515474 0.656456 0.0611898 0.672232C0.0637608 0.681149 0.0676173 0.68938 0.0727594 0.696925L0.107468 0.742883C0.107468 0.742883 0.11711 0.756602 0.12418 0.762091H0.123537C0.136392 0.775123 0.150532 0.787471 0.164673 0.799132L0.184598 0.816966V0.81628C0.200667 0.827255 0.216735 0.836173 0.23409 0.844405L0.254015 0.856752L0.303507 0.872528L0.331789 0.881446H0.331146C0.358784 0.888305 0.386423 0.892421 0.414703 0.891735H3.27812C3.86881 0.900652 4.43701 1.13937 4.87536 1.56259C5.31373 1.98582 5.59204 2.56543 5.65888 3.19239H0.411363C0.184472 3.19239 0 3.38926 0 3.63139C0 3.87422 0.184472 4.0704 0.411363 4.0704H5.62926C5.5277 4.66032 5.23718 5.19397 4.80782 5.58017C4.37845 5.96704 3.83662 6.18244 3.27485 6.18999H0.411429C0.257811 6.19479 0.118983 6.29014 0.0514863 6.43762C-0.0160036 6.5851 -0.000577572 6.76001 0.0906941 6.8924L4.10724 12.2023C4.18502 12.3058 4.302 12.3662 4.42669 12.3662C4.58481 12.3648 4.72814 12.2667 4.79628 12.1145C4.86441 11.9615 4.84448 11.7811 4.7455 11.6494L1.27211 7.06793H3.27496C4.0527 7.05901 4.8015 6.75307 5.38575 6.205C5.97001 5.65761 6.35117 4.90445 6.46042 4.08267H7.83077C8.05831 4.08267 8.24214 3.8858 8.24214 3.64367C8.24214 3.40153 8.05831 3.20466 7.83077 3.20466L7.83083 3.19438Z" fill="black"/>
+</svg>
+                </div>
+                {%- if block.settings.custom_icon != blank -%}
+                  {%- capture sizes -%}{{ block.settings.icon_width }}px{%- endcapture -%}
+                  {%- capture widths -%}{{ block.settings.icon_width }}, {{ block.settings.icon_width | times: 2 | at_most: block.settings.custom_icon.width }}{%- endcapture -%}
+                  {%- capture style -%}--image-mobile-max-width: {{ block.settings.mobile_icon_width }}px; --image-max-width: {{ block.settings.icon_width }}px{%- endcapture -%}
+                  {{- block.settings.custom_icon | image_url: width: block.settings.custom_icon.width | image_tag: loading: 'lazy', sizes: sizes, widths: widths, class: 'constrained-image icon_image', style: style -}}
+                {%- else -%}
+                  <div style="{% render 'surface', text_color: section.settings.icon_color %}">
+                    {%- render 'icon' with block.settings.icon, width: block.settings.mobile_icon_width, class: 'sm:hidden' -%}
+                    {%- render 'icon' with block.settings.icon, width: block.settings.icon_width, class: 'hidden sm:block' -%}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank or block.settings.content != blank -%}
+                  <div class="v-stack gap-2 text-start sm:text-{{ section.settings.text_alignment }}">
+                    {%- if block.settings.title != blank -%}
+                      <p class="">{{ block.settings.title }}</p>
+                    {%- endif -%}
+
+                    {%- if block.settings.content != blank -%}
+                      <div class="prose">
+                        {{- block.settings.content -}}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+        {% endcase %}
+          {%- endfor -%}
+        {%- endcapture -%}
+          {%- capture section_content_2 -%}
+          {%- for block in section.blocks -%}
+            {% case block.type %}
+              {% when 'item-side-2' %}
+            <div class="text-with-icons__item {% if section.settings.verticle_line %}vertical_line {% endif %}  {% if forloop.first %}is-selected{% endif %} {% unless section.settings.stack_on_mobile %}snap-center{% endunless %}" role="group" aria-label="{{ 'general.accessibility.item_nth_of_count' | t: index: forloop.index, count: section.blocks.size }}" {{ block.shopify_attributes }}>
+              
+              <div class="h-stack gap-8 justify-items-center sm:justify-items-{{ section.settings.text_alignment }} item_content">
+                <div class="rupees-svg">
+                {% if forloop.last %}
+<svg xmlns="http://www.w3.org/2000/svg" width="17" height="13" viewBox="0 0 17 13" fill="none">
+  <path d="M7.83083 3.19438H6.4849C6.40648 2.30128 6.01311 1.47334 5.3845 0.878011H7.83277C8.05966 0.878011 8.24413 0.681143 8.24413 0.439006C8.24413 0.196868 8.05966 0 7.83277 0L0.413421 0.0226369H0.37357C0.35943 0.021951 0.345288 0.021951 0.331149 0.0226369C0.318936 0.0253807 0.306724 0.0288104 0.294511 0.033612L0.253375 0.047331L0.218666 0.0685946L0.183956 0.0878019L0.151176 0.115926L0.122894 0.141993C0.113252 0.152282 0.104896 0.16463 0.0946115 0.176976C0.0849703 0.189323 0.0779004 0.196184 0.0714732 0.207159H0.0727587C0.0650457 0.220192 0.0586181 0.23391 0.052834 0.24763L0.0348362 0.281242L0.0219811 0.3272V0.326515C0.0174818 0.338862 0.014268 0.351208 0.011697 0.363556C0.0110543 0.379333 0.0110543 0.39511 0.011697 0.410886C0.0110543 0.424605 0.0110543 0.439011 0.011697 0.452729C0.0110543 0.469192 0.0110543 0.484968 0.011697 0.500745C0.0110543 0.513778 0.0110543 0.527497 0.011697 0.54053C0.0149107 0.556993 0.0194098 0.572769 0.0251946 0.588546L0.0348362 0.62353C0.0425493 0.640679 0.0515474 0.656456 0.0611898 0.672232C0.0637608 0.681149 0.0676173 0.68938 0.0727594 0.696925L0.107468 0.742883C0.107468 0.742883 0.11711 0.756602 0.12418 0.762091H0.123537C0.136392 0.775123 0.150532 0.787471 0.164673 0.799132L0.184598 0.816966V0.81628C0.200667 0.827255 0.216735 0.836173 0.23409 0.844405L0.254015 0.856752L0.303507 0.872528L0.331789 0.881446H0.331146C0.358784 0.888305 0.386423 0.892421 0.414703 0.891735H3.27812C3.86881 0.900652 4.43701 1.13937 4.87536 1.56259C5.31373 1.98582 5.59204 2.56543 5.65888 3.19239H0.411363C0.184472 3.19239 0 3.38926 0 3.63139C0 3.87422 0.184472 4.0704 0.411363 4.0704H5.62926C5.5277 4.66032 5.23718 5.19397 4.80782 5.58017C4.37845 5.96704 3.83662 6.18244 3.27485 6.18999H0.411429C0.257811 6.19479 0.118983 6.29014 0.0514863 6.43762C-0.0160036 6.5851 -0.000577572 6.76001 0.0906941 6.8924L4.10724 12.2023C4.18502 12.3058 4.302 12.3662 4.42669 12.3662C4.58481 12.3648 4.72814 12.2667 4.79628 12.1145C4.86441 11.9615 4.84448 11.7811 4.7455 11.6494L1.27211 7.06793H3.27496C4.0527 7.05901 4.8015 6.75307 5.38575 6.205C5.97001 5.65761 6.35117 4.90445 6.46042 4.08267H7.83077C8.05831 4.08267 8.24214 3.8858 8.24214 3.64367C8.24214 3.40153 8.05831 3.20466 7.83077 3.20466L7.83083 3.19438Z" fill="black"/>
+  <path d="M16.2072 3.19438H14.8613C14.7829 2.30128 14.3895 1.47334 13.7609 0.878011H16.2092C16.4361 0.878011 16.6205 0.681143 16.6205 0.439006C16.6205 0.196868 16.4361 0 16.2092 0L8.78983 0.0226369H8.74997C8.73583 0.021951 8.72169 0.021951 8.70755 0.0226369C8.69534 0.0253807 8.68313 0.0288104 8.67091 0.033612L8.62978 0.047331L8.59507 0.0685946L8.56036 0.0878019L8.52758 0.115926L8.4993 0.141993C8.48966 0.152282 8.4813 0.16463 8.47102 0.176976C8.46137 0.189323 8.4543 0.196184 8.44788 0.207159H8.44916C8.44145 0.220192 8.43502 0.23391 8.42924 0.24763L8.41124 0.281242L8.39838 0.3272V0.326515C8.39389 0.338862 8.39067 0.351208 8.3881 0.363556C8.38746 0.379333 8.38746 0.39511 8.3881 0.410886C8.38746 0.424605 8.38746 0.439011 8.3881 0.452729C8.38746 0.469192 8.38746 0.484968 8.3881 0.500745C8.38746 0.513778 8.38746 0.527497 8.3881 0.54053C8.39131 0.556993 8.39581 0.572769 8.4016 0.588546L8.41124 0.62353C8.41895 0.640679 8.42795 0.656456 8.43759 0.672232C8.44016 0.681149 8.44402 0.68938 8.44916 0.696925L8.48387 0.742883C8.48387 0.742883 8.49351 0.756602 8.50058 0.762091H8.49994C8.5128 0.775123 8.52694 0.787471 8.54108 0.799132L8.561 0.816966V0.81628C8.57707 0.827255 8.59314 0.836173 8.61049 0.844405L8.63042 0.856752L8.67991 0.872528L8.70819 0.881446H8.70755C8.73519 0.888305 8.76283 0.892421 8.79111 0.891735H11.6545C12.2452 0.900652 12.8134 1.13937 13.2518 1.56259C13.6901 1.98582 13.9684 2.56543 14.0353 3.19239H8.78777C8.56088 3.19239 8.3764 3.38926 8.3764 3.63139C8.3764 3.87422 8.56088 4.0704 8.78777 4.0704H14.0057C13.9041 4.66032 13.6136 5.19397 13.1842 5.58017C12.7549 5.96704 12.213 6.18244 11.6513 6.18999H8.78783C8.63422 6.19479 8.49539 6.29014 8.42789 6.43762C8.3604 6.5851 8.37583 6.76001 8.4671 6.8924L12.4836 12.2023C12.5614 12.3058 12.6784 12.3662 12.8031 12.3662C12.9612 12.3648 13.1045 12.2667 13.1727 12.1145C13.2408 11.9615 13.2209 11.7811 13.1219 11.6494L9.64852 7.06793H11.6514C12.4291 7.05901 13.1779 6.75307 13.7622 6.205C14.3464 5.65761 14.7276 4.90445 14.8368 4.08267H16.2072C16.4347 4.08267 16.6185 3.8858 16.6185 3.64367C16.6185 3.40153 16.4347 3.20466 16.2072 3.20466L16.2072 3.19438Z" fill="black"/>
+</svg>
+{% else %}
+  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="13" viewBox="0 0 9 13" fill="none">
+  <path d="M7.83083 3.19438H6.4849C6.40648 2.30128 6.01311 1.47334 5.3845 0.878011H7.83277C8.05966 0.878011 8.24413 0.681143 8.24413 0.439006C8.24413 0.196868 8.05966 0 7.83277 0L0.413421 0.0226369H0.37357C0.35943 0.021951 0.345288 0.021951 0.331149 0.0226369C0.318936 0.0253807 0.306724 0.0288104 0.294511 0.033612L0.253375 0.047331L0.218666 0.0685946L0.183956 0.0878019L0.151176 0.115926L0.122894 0.141993C0.113252 0.152282 0.104896 0.16463 0.0946115 0.176976C0.0849703 0.189323 0.0779004 0.196184 0.0714732 0.207159H0.0727587C0.0650457 0.220192 0.0586181 0.23391 0.052834 0.24763L0.0348362 0.281242L0.0219811 0.3272V0.326515C0.0174818 0.338862 0.014268 0.351208 0.011697 0.363556C0.0110543 0.379333 0.0110543 0.39511 0.011697 0.410886C0.0110543 0.424605 0.0110543 0.439011 0.011697 0.452729C0.0110543 0.469192 0.0110543 0.484968 0.011697 0.500745C0.0110543 0.513778 0.0110543 0.527497 0.011697 0.54053C0.0149107 0.556993 0.0194098 0.572769 0.0251946 0.588546L0.0348362 0.62353C0.0425493 0.640679 0.0515474 0.656456 0.0611898 0.672232C0.0637608 0.681149 0.0676173 0.68938 0.0727594 0.696925L0.107468 0.742883C0.107468 0.742883 0.11711 0.756602 0.12418 0.762091H0.123537C0.136392 0.775123 0.150532 0.787471 0.164673 0.799132L0.184598 0.816966V0.81628C0.200667 0.827255 0.216735 0.836173 0.23409 0.844405L0.254015 0.856752L0.303507 0.872528L0.331789 0.881446H0.331146C0.358784 0.888305 0.386423 0.892421 0.414703 0.891735H3.27812C3.86881 0.900652 4.43701 1.13937 4.87536 1.56259C5.31373 1.98582 5.59204 2.56543 5.65888 3.19239H0.411363C0.184472 3.19239 0 3.38926 0 3.63139C0 3.87422 0.184472 4.0704 0.411363 4.0704H5.62926C5.5277 4.66032 5.23718 5.19397 4.80782 5.58017C4.37845 5.96704 3.83662 6.18244 3.27485 6.18999H0.411429C0.257811 6.19479 0.118983 6.29014 0.0514863 6.43762C-0.0160036 6.5851 -0.000577572 6.76001 0.0906941 6.8924L4.10724 12.2023C4.18502 12.3058 4.302 12.3662 4.42669 12.3662C4.58481 12.3648 4.72814 12.2667 4.79628 12.1145C4.86441 11.9615 4.84448 11.7811 4.7455 11.6494L1.27211 7.06793H3.27496C4.0527 7.05901 4.8015 6.75307 5.38575 6.205C5.97001 5.65761 6.35117 4.90445 6.46042 4.08267H7.83077C8.05831 4.08267 8.24214 3.8858 8.24214 3.64367C8.24214 3.40153 8.05831 3.20466 7.83077 3.20466L7.83083 3.19438Z" fill="black"/>
+</svg>
+    {% endif %}
+                </div>
+                {%- if block.settings.custom_icon != blank -%}
+                  {%- capture sizes -%}{{ block.settings.icon_width }}px{%- endcapture -%}
+                  {%- capture widths -%}{{ block.settings.icon_width }}, {{ block.settings.icon_width | times: 2 | at_most: block.settings.custom_icon.width }}{%- endcapture -%}
+                  {%- capture style -%}--image-mobile-max-width: {{ block.settings.mobile_icon_width }}px; --image-max-width: {{ block.settings.icon_width }}px{%- endcapture -%}
+                  {{- block.settings.custom_icon | image_url: width: block.settings.custom_icon.width | image_tag: loading: 'lazy', sizes: sizes, widths: widths, class: 'constrained-image icon_image', style: style -}}
+                {%- else -%}
+                  <div style="{% render 'surface', text_color: section.settings.icon_color %}">
+                    {%- render 'icon' with block.settings.icon, width: block.settings.mobile_icon_width, class: 'sm:hidden' -%}
+                    {%- render 'icon' with block.settings.icon, width: block.settings.icon_width, class: 'hidden sm:block' -%}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank or block.settings.content != blank -%}
+                  <div class="v-stack gap-2 text-start sm:text-{{ section.settings.text_alignment }}">
+                    {%- if block.settings.title != blank -%}
+                      <p class="">{{ block.settings.title }}</p>
+                    {%- endif -%}
+
+                    {%- if block.settings.content != blank -%}
+                      <div class="prose">
+                        {{- block.settings.content -}}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+        {% endcase %}
+          {%- endfor -%}
+        {%- endcapture -%}
+
+          {%- if section.settings.stack_on_mobile -%}
+            <div class="v-stack icon-wrapper">
+              <div class="rit_content_wrapper">
+                <p class="h2">OTHER BRAND</p>
+                <div
+                  class="text-with-icons text-with-icons_2 icon-side-1 justify-start text-with-icons--stacked"
+                  role="region"
+                  style="{% render 'surface', text_color: section.settings.text_color %}"
+                >
+                  {{- section_content -}}
+                </div>
+              </div>
+              <div class="rit_content_wrapper">
+                <p class="h2">SAADAA</p>
+                <div
+                  class="text-with-icons text-with-icons_2 icon-side-2 justify-start text-with-icons--stacked"
+                  role="region"
+                  style="{% render 'surface', text_color: section.settings.text_color %}"
+                >
+                  {{- section_content_2 -}}
+                </div>
+              </div>
+            </div>
+          {%- else -%}
+            {%- assign carousel_id = 'text-with-icons-' | append: section.id -%}
+
+            <text-with-icons-carousel
+              disabled-on="sm"
+              allow-swipe
+              id="{{ carousel_id }}"
+              class="text-with-icons full-bleed sm:unbleed"
+              role="region"
+              style="{% render 'surface', text_color: section.settings.text_color %}"
+            >
+              {{- section_content -}}
+            </text-with-icons-carousel>
+
+            {%- if section.blocks.size > 1 -%}
+              <carousel-navigation aria-controls="{{ carousel_id }}" class="page-dots sm:hidden">
+                {%- for i in (1..section.blocks.size) -%}
+                  <button class="tap-area" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+                    <span class="sr-only">{{ 'general.accessibility.go_to_item' | t: index: forloop.index }}</span>
+                  </button>
+                {%- endfor -%}
+              </carousel-navigation>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+<style>
+            .icon-wrapper{
+              grid-template-columns:1fr 1fr;
+              gap:20px;
+            }
+
+          .rit_content_wrapper .h2{
+            margin-bottom:56px;
+          }
+             .text-with-icons_2 {
+                --text-with-icons-items-per-row: 1;
+               --text-with-icons-row-gap: 2.5rem;
+            }
+        .rit_content_wrapper .text-with-icons {
+          gap: 0;
+          font-size: 11px;
+          flex-wrap: nowrap;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 83%;
+        }
+
+             .icon-side-1 .text-with-icons__item.vertical_line:not(:last-child) .rupees-svg::after{
+                content: "";
+                display: block;
+                width: 1px;
+                height: 58px;
+                background: #DFD8C8;
+                position: relative;
+              }
+             .icon-side-1 .text-with-icons__item.vertical_line:last-child .double_ruppes{
+                display: inline-block;
+              }
+             .icon-side-1 .text-with-icons__item.vertical_line:last-child .single_rupees{
+                display: none;
+              }
+             .icon-side-2 .text-with-icons__item.vertical_line:not(:last-child) .rupees-svg::after{
+             content: "";
+              display: block;
+              width: 1px;
+              height: 89%;
+              background: #DFD8C8;
+              position: absolute;
+              }
+            .icon-side-2{
+              position:relative;
+            }
+          .text-with-icons>* {
+            flex-basis:unset;
+          }
+           .item_content{
+                  align-items:start;
+                }
+        .rupees-svg {
+        margin-right: 12px;
+      }
+              @media screen and (min-width:1000px){
+                .rit_content_wrapper{
+  text-align:center;
+                }
+            .rit_content_wrapper .text-with-icons{
+              flex-direction:row;
+            }
+            .icon-wrapper {
+          grid-template-columns: auto;
+                      justify-content: center;
+
+
+            }
+        .icon-side-2 .text-with-icons__item.vertical_line:not(:last-child) .rupees-svg::after,.icon-side-1 .text-with-icons__item.vertical_line:not(:last-child) .rupees-svg::after{
+                  width: 88%;
+        height: 1px;
+        position: absolute;
+        top: 5px;
+        z-index: 1;
+        left: 54%;
+              }
+                    .icon-side-2 .text-with-icons__item.vertical_line:not(:last-child) .rupees-svg::after{
+                       width: 480%;
+                    }
+                .item_content{
+                  flex-direction:column;
+                  align-items:center;
+                }
+
+                .rupees-svg {
+                    position:relative;
+        margin-right: 0;
+                  width:100%;
+                  display:flex;
+                  justify-content:center;
+                  align-items: center:
+      }
+
+               .rit_content_wrapper .text-with-icons{
+                  justify-content:center;
+                }
+               .rit_content_wrapper .text-with-icons > div{
+                          width: 131px;
+                }
+                .rit_content_wrapper .icon-side-2.text-with-icons {
+                   justify-content:space-between;
+                 }
+          }
+</style>
+
+{% schema %}
+{
+  "name": "text with icon 2",
+  "class": "shopify-section--text-with-icons",
+  "tag": "section",
+  "max_blocks": 8,
+  "disabled_on": {
+    "groups": ["header", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "stack_on_mobile",
+      "label": "t:sections.text_with_icons.stack_on_mobile",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "t:sections.text_with_icons.icon_color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:global.text.text"
+    },
+      {
+      "type": "color",
+      "id": "section_color",
+      "label": "Section background"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "t:global.text.alignment",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:global.position.left"
+        },
+        {
+          "value": "center",
+          "label": "t:global.position.center"
+        },
+        {
+          "value": "end",
+          "label": "t:global.position.right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "verticle_line",
+      "label": "Icon with verticle Line",
+      "default":false
+    },
+    {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "t:global.text.text",
+          "default": "Heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "t:global.text.style",
+          "options": [
+            {
+              "value": "h1",
+              "label": "H1"
+            },
+            {
+              "value": "h2",
+              "label": "H2"
+            },
+            {
+              "value": "h3",
+              "label": "H3"
+            },
+            {
+              "value": "h4",
+              "label": "H4"
+            },
+            {
+              "value": "h5",
+              "label": "H5"
+            },
+            {
+              "value": "h6",
+              "label": "H6"
+            }
+          ],
+          "default": "h1"
+        },
+      {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.text_with_icons.blocks.item.name",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:global.icons.icon",
+          "options": [
+            {
+              "value": "picto-award-gift",
+              "label": "t:global.icons.award_gift",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-bag-handle",
+              "label": "t:global.icons.bag_handle",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-building",
+              "label": "t:global.icons.building",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-coupon",
+              "label": "t:global.icons.coupon",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-gift",
+              "label": "t:global.icons.gift",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-info",
+              "label": "t:global.icons.info",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-love",
+              "label": "t:global.icons.love",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-percent",
+              "label": "t:global.icons.percent",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-star",
+              "label": "t:global.icons.star",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-box",
+              "label": "t:global.icons.box",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-delivery-truck",
+              "label": "t:global.icons.delivery_truck",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-pin",
+              "label": "t:global.icons.pin",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-plane",
+              "label": "t:global.icons.plane",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-return",
+              "label": "t:global.icons.return",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-credit-card",
+              "label": "t:global.icons.credit_card",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-lock",
+              "label": "t:global.icons.lock",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-money",
+              "label": "t:global.icons.money",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-secure-profile",
+              "label": "t:global.icons.secure_profile",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-shield",
+              "label": "t:global.icons.shield",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-earth",
+              "label": "t:global.icons.earth",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-leaf",
+              "label": "t:global.icons.leaf",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-recycle",
+              "label": "t:global.icons.recycle",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-tree",
+              "label": "t:global.icons.tree",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-at-sign",
+              "label": "t:global.icons.at_sign",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-bluetooth",
+              "label": "t:global.icons.bluetooth",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-camera",
+              "label": "t:global.icons.camera",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-printer",
+              "label": "t:global.icons.printer",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-smart-watch",
+              "label": "t:global.icons.smart_watch",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-wifi",
+              "label": "t:global.icons.wifi",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-avatar",
+              "label": "t:global.icons.avatar",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-chat",
+              "label": "t:global.icons.chat",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-calendar",
+              "label": "t:global.icons.calendar",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-comment",
+              "label": "t:global.icons.comment",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-customer-support",
+              "label": "t:global.icons.customer_support",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-happy-face",
+              "label": "t:global.icons.happy_face",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-mailbox",
+              "label": "t:global.icons.mailbox",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-mobile-phone",
+              "label": "t:global.icons.mobile_phone",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-operator",
+              "label": "t:global.icons.operator",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-phone",
+              "label": "t:global.icons.phone",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-send",
+              "label": "t:global.icons.send",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-user",
+              "label": "t:global.icons.user",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-burger",
+              "label": "t:global.icons.burger",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-beer",
+              "label": "t:global.icons.beer",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-coffee",
+              "label": "t:global.icons.coffee",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-pizza",
+              "label": "t:global.icons.pizza",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-bottle",
+              "label": "t:global.icons.bottle",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-document",
+              "label": "t:global.icons.document",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-error",
+              "label": "t:global.icons.error",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-file",
+              "label": "t:global.icons.file",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-jewelry",
+              "label": "t:global.icons.jewelry",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-mask",
+              "label": "t:global.icons.mask",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-music",
+              "label": "t:global.icons.music",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-not-allowed",
+              "label": "t:global.icons.not_allowed",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-target",
+              "label": "t:global.icons.target",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-timer",
+              "label": "t:global.icons.timer",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-success",
+              "label": "t:global.icons.success",
+              "group": "t:global.icons.other_category"
+            }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "t:global.icons.custom_icon",
+          "info": "t:global.icons.custom_icon_info"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 16,
+          "max": 64,
+          "step": 4,
+          "unit": "px",
+          "label": "t:global.icons.icon_width",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "mobile_icon_width",
+          "min": 16,
+          "max": 64,
+          "step": 4,
+          "unit": "px",
+          "label": "t:global.icons.mobile_icon_width",
+          "default": 24
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "t:global.text.heading",
+          "default": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:global.text.content",
+          "default": "<p>Short content about your store</p>"
+        }
+      ]
+    },
+    {
+      "type": "item-side-2",
+      "name": "item-side-2",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:global.icons.icon",
+          "options": [
+            {
+              "value": "picto-award-gift",
+              "label": "t:global.icons.award_gift",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-bag-handle",
+              "label": "t:global.icons.bag_handle",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-building",
+              "label": "t:global.icons.building",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-coupon",
+              "label": "t:global.icons.coupon",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-gift",
+              "label": "t:global.icons.gift",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-info",
+              "label": "t:global.icons.info",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-love",
+              "label": "t:global.icons.love",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-percent",
+              "label": "t:global.icons.percent",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-star",
+              "label": "t:global.icons.star",
+              "group": "t:global.icons.shop_category"
+            },
+            {
+              "value": "picto-box",
+              "label": "t:global.icons.box",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-delivery-truck",
+              "label": "t:global.icons.delivery_truck",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-pin",
+              "label": "t:global.icons.pin",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-plane",
+              "label": "t:global.icons.plane",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-return",
+              "label": "t:global.icons.return",
+              "group": "t:global.icons.shipping_category"
+            },
+            {
+              "value": "picto-credit-card",
+              "label": "t:global.icons.credit_card",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-lock",
+              "label": "t:global.icons.lock",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-money",
+              "label": "t:global.icons.money",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-secure-profile",
+              "label": "t:global.icons.secure_profile",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-shield",
+              "label": "t:global.icons.shield",
+              "group": "t:global.icons.payment_and_security_category"
+            },
+            {
+              "value": "picto-earth",
+              "label": "t:global.icons.earth",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-leaf",
+              "label": "t:global.icons.leaf",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-recycle",
+              "label": "t:global.icons.recycle",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-tree",
+              "label": "t:global.icons.tree",
+              "group": "t:global.icons.ecology_category"
+            },
+            {
+              "value": "picto-at-sign",
+              "label": "t:global.icons.at_sign",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-bluetooth",
+              "label": "t:global.icons.bluetooth",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-camera",
+              "label": "t:global.icons.camera",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-printer",
+              "label": "t:global.icons.printer",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-smart-watch",
+              "label": "t:global.icons.smart_watch",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-wifi",
+              "label": "t:global.icons.wifi",
+              "group": "t:global.icons.tech_category"
+            },
+            {
+              "value": "picto-avatar",
+              "label": "t:global.icons.avatar",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-chat",
+              "label": "t:global.icons.chat",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-calendar",
+              "label": "t:global.icons.calendar",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-comment",
+              "label": "t:global.icons.comment",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-customer-support",
+              "label": "t:global.icons.customer_support",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-happy-face",
+              "label": "t:global.icons.happy_face",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-mailbox",
+              "label": "t:global.icons.mailbox",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-mobile-phone",
+              "label": "t:global.icons.mobile_phone",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-operator",
+              "label": "t:global.icons.operator",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-phone",
+              "label": "t:global.icons.phone",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-send",
+              "label": "t:global.icons.send",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-user",
+              "label": "t:global.icons.user",
+              "group": "t:global.icons.communication_category"
+            },
+            {
+              "value": "picto-burger",
+              "label": "t:global.icons.burger",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-beer",
+              "label": "t:global.icons.beer",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-coffee",
+              "label": "t:global.icons.coffee",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-pizza",
+              "label": "t:global.icons.pizza",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-bottle",
+              "label": "t:global.icons.bottle",
+              "group": "t:global.icons.food_category"
+            },
+            {
+              "value": "picto-document",
+              "label": "t:global.icons.document",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-error",
+              "label": "t:global.icons.error",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-file",
+              "label": "t:global.icons.file",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-jewelry",
+              "label": "t:global.icons.jewelry",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-mask",
+              "label": "t:global.icons.mask",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-music",
+              "label": "t:global.icons.music",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-not-allowed",
+              "label": "t:global.icons.not_allowed",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-target",
+              "label": "t:global.icons.target",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-timer",
+              "label": "t:global.icons.timer",
+              "group": "t:global.icons.other_category"
+            },
+            {
+              "value": "picto-success",
+              "label": "t:global.icons.success",
+              "group": "t:global.icons.other_category"
+            }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "t:global.icons.custom_icon",
+          "info": "t:global.icons.custom_icon_info"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 16,
+          "max": 64,
+          "step": 4,
+          "unit": "px",
+          "label": "t:global.icons.icon_width",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "mobile_icon_width",
+          "min": 16,
+          "max": 64,
+          "step": 4,
+          "unit": "px",
+          "label": "t:global.icons.mobile_icon_width",
+          "default": 24
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "t:global.text.heading",
+          "default": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:global.text.content",
+          "default": "<p>Short content about your store</p>"
+        }
+      ]
+    }
+
+  ],
+  "presets": [
+    {
+      "name": "Rupees icon with text",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "icon": "picto-delivery-truck",
+            "title": "Free shipping",
+            "content": "<p>Free worldwide shipping and returns - customs and duties taxes included</p>"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "picto-customer-support",
+            "title": "Customer service",
+            "content": "<p>We are available from monday to friday to answer your questions.</p>"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "picto-shield",
+            "title": "Secure payment",
+            "content": "<p>Your payment information is processed securely.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

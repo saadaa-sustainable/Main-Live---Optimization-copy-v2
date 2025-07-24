@@ -1,0 +1,213 @@
+<style>
+  /* Pair it With slider styles with unique- prefix */
+
+  .unique-pw-pw-container {
+    margin: 14px 0;
+  }
+  .unique-pw-pw-heading {
+    margin-bottom: 20px;
+    font-size: 32px;
+    text-align: center;
+    font-weight: 400;
+  }
+  .unique-pw-pw-wrapper {
+    position: relative;
+    overflow: hidden; /* hide overflow for true carousel */
+  }
+  .unique-pw-pw-slider {
+    display: flex;
+    gap: 0.5rem;
+    will-change: transform;
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    cursor: grab;
+    user-select: none;
+    touch-action: pan-y;
+  }
+  .unique-pw-pw-slider.grabbing {
+    cursor: grabbing;
+    transition: none;
+  }
+
+  /* Hide native scrollbar since we're not using scroll anymore */
+  .unique-pw-pw-slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .unique-pw-product-title {
+      font-size: 12px;
+      color: #1F1F1F;
+      text-shadow: none;
+    }
+
+     .unique-pw-pw-heading {
+    margin-bottom: 20px;
+    font-size: 22px;
+
+     }
+    .unique-pw-pw-item {
+      flex: 0 0 auto;
+      width: 145px;
+    }
+
+    .unique-pw-pw-container {
+    margin: 0px 0;
+  }
+  }
+</style>
+
+<!-- Pair It With Carousel (new, vanilla js) -->
+{%- assign swp_list = product.metafields.custom.style_with_product.value -%}
+{% if swp_list and swp_list != blank %}
+  <!-- Pair It With Carousel (new, vanilla js) -->
+  <div class="unique-pw-featured-collections-carousel__item  navigate" id="pair-it-with1">
+    <div class="unique-pw-pw-container" id="pair-it-with">
+      <div class="unique-pw-pw-heading "> Pair it With </div>
+      <div class="unique-pw-pw-wrapper">
+        <div class="unique-pw-pw-slider">
+          {%- for swp_prod in swp_list -%}
+            {%- if swp_prod and swp_prod.available -%}
+              <div class="unique-pw-pw-item">
+                {%- render 'product-card',
+                  product: swp_prod,
+                  show_quick_buy: false,
+                  show_rating: true,
+                  show_prices: true,
+                  show_badges: true
+                -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const outer = document.querySelector('.unique-pw-pw-wrapper');
+  const track = document.querySelector('.unique-pw-pw-slider');
+  if (!track || !outer) return;
+  const slides = Array.from(track.children);
+
+  let currentIndex = 0;
+  let slideWidth = 0;
+  let gap = 0;
+  let perView = 1;
+
+  // 1. Calculate widths responsively
+  function calculateDimensions() {
+    if (!slides.length) return;
+    const style = window.getComputedStyle(track);
+    gap = parseFloat(style.gap) || 0;
+    slideWidth = slides[0].getBoundingClientRect().width;
+    perView = Math.floor(outer.clientWidth / (slideWidth + gap)) || 1;
+  }
+
+  // 2. Snap to correct index
+  function updateTransform() {
+    // Clamp: don't allow scroll past ends!
+    const rawOffset = currentIndex * (slideWidth + gap);
+    const maxOffset = Math.max(track.scrollWidth - outer.clientWidth, 0);
+    const offset = Math.min(rawOffset, maxOffset);
+
+    track.style.transform = `translateX(-${offset}px)`;
+  }
+
+  // 3. Responsive on resize
+  window.addEventListener('resize', () => {
+    calculateDimensions();
+    // Clamp index if window resized smaller
+    if (currentIndex > slides.length - perView) {
+      currentIndex = Math.max(slides.length - perView, 0);
+    }
+    updateTransform();
+  });
+
+  // 4. Initial calculation
+  calculateDimensions();
+  updateTransform();
+
+  // 5. Touch drag/swipe (like your reference)
+  let startX = null;
+
+  track.addEventListener('touchstart', (e) => {
+    if (!e.touches.length) return;
+    startX = e.touches[0].clientX;
+  });
+
+  track.addEventListener('touchend', (e) => {
+    if (startX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const diff = endX - startX;
+    if (diff > 50 && currentIndex > 0) {
+      currentIndex--;
+    } else if (diff < -50 && currentIndex < slides.length - perView) {
+      currentIndex++;
+    }
+    updateTransform();
+    startX = null;
+  });
+
+  // 6. Mouse drag (for desktop UX)
+  let mouseDown = false;
+  let mouseStartX = 0;
+  let lastTransform = 0;
+
+  track.addEventListener('mousedown', (e) => {
+    mouseDown = true;
+    mouseStartX = e.pageX;
+    const style = window.getComputedStyle(track);
+    const matrix = style.transform;
+    lastTransform = 0;
+    if (matrix && matrix !== 'none') {
+      lastTransform = parseFloat(matrix.split(',')[4]);
+    }
+    track.style.transition = 'none';
+    track.classList.add('grabbing');
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!mouseDown) return;
+    const dx = e.pageX - mouseStartX;
+    // Resistance at edges
+    let minTranslate = -((slides.length - perView) * (slideWidth + gap));
+    let next = lastTransform + dx;
+    if (next > 0) next = next * 0.3;
+    if (next < minTranslate) next = minTranslate + (next - minTranslate) * 0.3;
+    track.style.transform = `translateX(${next}px)`;
+  });
+
+  document.addEventListener('mouseup', (e) => {
+    if (!mouseDown) return;
+    mouseDown = false;
+    track.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+    track.classList.remove('grabbing');
+    document.body.style.userSelect = '';
+    const dx = e.pageX - mouseStartX;
+    // Snap logic
+    if (dx > 50 && currentIndex > 0) {
+      currentIndex--;
+    } else if (dx < -50 && currentIndex < slides.length - perView) {
+      currentIndex++;
+    }
+    updateTransform();
+  });
+
+  // Optional: Mouse leave (cancel drag if user drags out)
+  document.addEventListener('mouseleave', () => {
+    if (mouseDown) {
+      mouseDown = false;
+      track.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+      track.classList.remove('grabbing');
+      document.body.style.userSelect = '';
+      updateTransform();
+    }
+  });
+});
+
+
+</script>

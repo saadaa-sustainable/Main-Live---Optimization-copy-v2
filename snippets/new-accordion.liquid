@@ -1,0 +1,18 @@
+                      <div class="accodion_wrapper">
+                       <div class="new_accordion">
+                         {{ svg_icon | default:'  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 18 22" fill="none">
+                            <path d="M16.5 13.25V10.625C16.5 9.72989 16.1444 8.87145 15.5115 8.23851C14.8786 7.60558 14.0201 7.25 13.125 7.25H11.625C11.3266 7.25 11.0405 7.13147 10.8295 6.9205C10.6185 6.70952 10.5 6.42337 10.5 6.125V4.625C10.5 3.72989 10.1444 2.87145 9.51149 2.23851C8.87855 1.60558 8.02011 1.25 7.125 1.25H5.25M5.25 14H12.75M5.25 17H9M7.5 1.25H2.625C2.004 1.25 1.5 1.754 1.5 2.375V19.625C1.5 20.246 2.004 20.75 2.625 20.75H15.375C15.996 20.75 16.5 20.246 16.5 19.625V10.25C16.5 7.86305 15.5518 5.57387 13.864 3.88604C12.1761 2.19821 9.88695 1.25 7.5 1.25Z" stroke="#1A1E31" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                          </svg>' }}
+                        
+                          <div>
+                           <span class="acc_button_text">{{ heading_bold }} </span>
+                            <span class="acc_button_text_sm">{{ heading_small }}</span>
+                          </div>
+                             <svg class="p_up_arrow" fill="#000000" height="12px" width="12px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="XMLID_225_" d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"></path> </g></svg>
+                           </div>
+                              <div class="panel">
+                                <p>{{- collaps_content -}}</p>
+                             </div>
+                      </div>
+
+                      {% comment %} {% render 'new-accordion' ,heading_bold:'',heading_small:'',collaps_content:''  %} {% endcomment %}

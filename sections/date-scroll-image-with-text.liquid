@@ -1,0 +1,402 @@
+{%- if section.settings.image != blank or section.blocks.size > 0 -%}
+  {%- comment -%}
+    ------------------------------------------------------------------------------------------------------------------------
+    CSS
+    ------------------------------------------------------------------------------------------------------------------------
+  {%- endcomment -%}
+
+  <style>
+    #shopify-section-{{ section.id }} {
+      --image-with-text-content-max-width: {% if section.settings.content_width == 'sm' %}430px{% elsif section.settings.content_width == 'md' %}780px{% else %}100%{% endif %};
+    }
+  </style>
+
+  {%- comment -%}
+    ------------------------------------------------------------------------------------------------------------------------
+    LIQUID
+    ------------------------------------------------------------------------------------------------------------------------
+  {%- endcomment -%}
+
+  <div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}">
+    <div class="container container--{{ section.settings.page_width }}">
+      <div class="h-stack align-start gap-8 sm:gap-14">
+        <div class="date-nav-menu h-stack justify-start cloumn gap-4 sm:gap-6">
+          <div class="line"></div>
+          {% for block in section.blocks %}
+            {% if block.settings.navigation_text != blank %}
+              <button id="{{ block.settings.navigation_text|append:forloop.index }}">
+                {{ block.settings.navigation_text }}
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="image_with_text_block_wrapper">
+          {% for block in section.blocks %}
+            <image-with-text
+              class="image-with-text {% if block.settings.image_position == 'end' %}image-with-text--reverse{% endif %}"
+              data-nav-content="{{ block.settings.navigation_text |append:forloop.index }}"
+            >
+              {%- if block.settings.image != blank -%}
+                <picture>
+                  {%- assign sizes = '(max-width: 699px) 100vw, 50vw' -%}
+
+                  {%- if block.settings.mobile_image != blank -%}
+                    <source
+                      media="(max-width: 699px)"
+                      srcset="{{ block.settings.mobile_image | image_url: width: '400x' }} 400w, {{ block.settings.mobile_image | image_url: width: '600x' }} 600w, {{ block.settings.mobile_image | image_url: width: '800x' }} 800w, {{ block.settings.mobile_image | image_url: width: '1000x' }} 1000w"
+                      width="{{ block.settings.mobile_image.width }}"
+                      height="{{ block.settings.mobile_image.height }}"
+                    >
+                  {%- endif -%}
+
+                  {{-
+                    block.settings.image
+                    | image_url: width: block.settings.image.width
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: sizes,
+                      widths: '200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000,3200',
+                      reveal-on-scroll: section.settings.reveal_on_scroll
+                  -}}
+                </picture>
+              {%- else -%}
+                {{- 'lifestyle-1' | placeholder_svg_tag: 'placeholder' -}}
+              {%- endif -%}
+
+              <div class="prose text-{{ block.settings.text_position }}">
+                {%- if block.settings.text != blank -%}
+                  <h3 class="h6" {{ block.shopify_attributes }}>{{ block.settings.text }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.headin_text != blank -%}
+                  <h2 class="{{ block.settings.heading_tag }}" {{ block.shopify_attributes }}>
+                    {{ block.settings.headin_text }}
+                  </h2>
+                {%- endif -%}
+
+                {%- if block.settings.content != blank -%}
+                  <div {{ block.shopify_attributes }}>
+                    {{- block.settings.content -}}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.page.content != blank -%}
+                  <div {{ block.shopify_attributes }}>
+                    {{- block.settings.page.content -}}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.liquid != blank -%}
+                  <div {{ block.shopify_attributes }}>
+                    {{- block.settings.liquid -}}
+                  </div>
+                {%- endif -%}
+
+                <a
+                  {% if block.settings.url %}
+                    href="{{ block.settings.url }}"
+                  {% endif %}
+                  class="link"
+                  {{ block.shopify_attributes }}
+                >
+                  {{- block.settings.button_text | escape -}}
+                </a>
+
+                {%- if block.settings.button_text != blank -%}
+                  {% render 'button',
+                    content: block.settings.button_text,
+                    href: block.settings.url,
+                    style: block.settings.style,
+                    background: block.settings.background,
+                    text_color: block.settings.text_color,
+                    block: block
+                  %}
+                {%- endif -%}
+              </div>
+            </image-with-text>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+<div></div>
+<style>
+    .date-nav-menu{
+  border-left: 1px solid #d9d0d0;
+          position: sticky;
+    top: 112px;
+          min-width: 50px;
+  }
+  .date-nav-menu > .line{
+    background: black;
+    height: 0%;
+    width: 1px;
+    position: absolute;
+    left: 0px;
+    top: 0;
+  }
+    .date-nav-menu > button{
+      padding-inline-start: 10px;
+          padding-block: 5px;
+    }
+  .is-active-navigation{
+        font-weight: 700;
+    font-size: 16px;
+  }
+</style>
+<script>
+ const navButton =  document.querySelectorAll('.date-nav-menu > button ')
+  const navContainer =  document.querySelector('.image_with_text_block_wrapper')
+  const line =  document.querySelector('.date-nav-menu > .line')
+  document.addEventListener('scroll',function(){
+  navButton.forEach(elemen=>{
+  const element = document.querySelector(`[data-nav-content="${elemen.getAttribute('id')}"]`);
+ if((element.offsetTop < window.scrollY + (window.screen.height / 2.5)) && ((element.offsetTop + element.clientHeight - (window.screen.height / 2.5) ) > window.scrollY )){
+elemen.classList.add('is-active-navigation')
+  }else{
+    elemen.classList.remove('is-active-navigation')
+  }
+})
+
+    if((navContainer.offsetTop < window.scrollY + (window.screen.height / 2.5)) && (((window.scrollY + (window.screen.height / 2.5) - navContainer.offsetTop) * 100) / navContainer.clientHeight ) <= 101){
+      line.style.height = `${ ((window.scrollY + (window.screen.height / 1.9) - navContainer.offsetTop) * 100) / navContainer.clientHeight }%`
+    }
+  })
+</script>
+{% schema %}
+{
+  "name": "Date scroll journey",
+   "class": "shopify-section--date-scroll-image-with-text",
+  "tag": "section",
+  "settings": [
+     {
+    "type": "checkbox",
+    "id": "separate_section_with_border",
+    "label": "t:global.section.separate_section_with_border",
+    "default": true
+  },
+      {
+      "type": "checkbox",
+      "id": "reveal_on_scroll",
+      "label": "t:global.animation.reveal_image_on_scroll",
+      "default": true
+    },
+  {
+    "type": "select",
+    "id": "content_width",
+    "label": "t:global.sizes.content_width",
+    "options": [
+      {
+        "value": "sm",
+        "label": "t:global.sizes.small"
+      },
+      {
+        "value": "md",
+        "label": "t:global.sizes.medium"
+      },
+      {
+        "value": "lg",
+        "label": "t:global.sizes.large"
+      }
+    ],
+    "default": "sm"
+  },
+      {
+    "type": "select",
+    "id": "page_width",
+    "label": "Section width",
+    "options": [
+      {
+        "value": "xs",
+        "label": "t:global.sizes.x_small"
+      },
+      {
+        "value": "sm",
+        "label": "t:global.sizes.small"
+      },
+      {
+        "value": "md",
+        "label": "t:global.sizes.medium"
+      },
+      {
+        "value": "lg",
+        "label": "t:global.sizes.large"
+      },
+      {
+        "value": "xl",
+        "label": "t:global.sizes.x_large"
+      },
+      {
+        "value": "full",
+        "label": "t:global.sizes.full_width"
+      }
+    ],
+    "default": "sm"
+  },
+  {
+    "type": "checkbox",
+    "id": "remove_upper_vertical_spacing",
+    "label": "Remove upper verticle spacing",
+    "default": false
+  },
+    {
+    "type": "checkbox",
+    "id": "remove_lower_vertical_spacing",
+    "label": "Remove lower verticle spacing",
+    "default": false
+  }
+  ],
+  "blocks": [
+     {
+      "type": "text-with-image",
+      "name": "t:sections.image_with_text.name",
+      "settings": [
+            {
+          "type": "inline_richtext",
+          "id": "navigation_text",
+          "label": "Navigation text",
+          "default": "2020"
+        },
+           {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:global.image.image",
+      "info": "t:sections.image_with_text.image_size_recommendation"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "t:global.image.mobile_image",
+      "info": "t:sections.image_with_text.mobile_image_size_recommendation"
+    },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "t:global.text.subheading",
+          "default": "Subheading"
+        },
+          {
+          "type": "inline_richtext",
+          "id": "headin_text",
+          "label": "t:global.text.text",
+          "default": "Heading"
+        },
+           {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "t:global.text.style",
+          "options": [
+            {
+              "value": "h1",
+              "label": "H1"
+            },
+            {
+              "value": "h2",
+              "label": "H2"
+            },
+            {
+              "value": "h3",
+              "label": "H3"
+            },
+            {
+              "value": "h4",
+              "label": "H4"
+            },
+            {
+              "value": "h5",
+              "label": "H5"
+            },
+            {
+              "value": "h6",
+              "label": "H6"
+            }
+          ],
+          "default": "h1"
+        },
+         {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:global.text.content",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+           {
+      "type": "select",
+      "id": "image_position",
+      "label": "t:sections.image_with_text.image_position",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:global.position.left"
+        },
+        {
+          "value": "end",
+          "label": "t:global.position.right"
+        }
+      ]
+    },
+          {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:global.position.left"
+        },
+        {
+          "value": "center",
+          "label": "t:global.position.center"
+        },
+        {
+          "value": "end",
+          "label": "t:global.position.right"
+        }
+      ],
+      "default": "center"
+    },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "t:global.text.text",
+          "default": "Button text"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:global.text.link"
+        },
+           {
+          "type": "select",
+          "id": "style",
+          "label": "t:global.text.style",
+          "options": [
+            {
+              "value": "outline",
+              "label": "t:global.text.button_style_options.outline"
+            },
+            {
+              "value": "solid",
+              "label": "t:global.text.button_style_options.solid"
+            }
+          ],
+          "default": "solid"
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "t:global.colors.background"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "t:global.text.text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {"name": "Date scroll journey"}
+  ]
+}
+{% endschema %}

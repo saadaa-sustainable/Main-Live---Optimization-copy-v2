@@ -1,0 +1,69 @@
+<script
+  async
+  src="https://cdn.nector.io/nector-static/no-cache/reward-widget/mainloader.min.js"
+  data-op="reward"
+  data-api_key="0a68586cc2c48e09b7dd8ecb287ef08349fcd518e165a14d8bfa27aee7e9aec0"
+  data-customer_id="{{customer.id}}"
+  data-platform="shopify"
+></script>
+
+<script>
+let counter = 0;
+let interval_id = setInterval(() => {
+if (counter >= 400) {
+clearInterval(interval_id);
+interval_id = null;
+return;
+}
+
+counter++;
+
+const target_element_id = 'nector-reward-page-container';
+const target_element = document.getElementById(target_element_id);
+let shadow_root = target_element.shadowRoot;
+if (!shadow_root) {
+return;
+}
+
+const styles = `
+#nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content > div > span.nector-title.nector-banner-title{
+display: none !important;
+}
+#nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content > div > span.nector-subtitle.nector-banner-description{
+display: none !important;
+}
+.nector-banner-content{
+    left: unset !important;
+    right: 0 !important;
+    justify-content: flex-end  !important;
+    margin-right: 150px  !important;
+    margin-top: 20px  !important;
+}
+@media only screen and (max-width: 600px) {
+.nector-banner-content{
+  right : unset !important;
+  }
+  #nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content{
+height : 150% !important;
+}
+}
+#nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content > div > div > div{
+background-color: transparent !important;
+border: 1px solid #fff !important;
+font-size: 16px  !important;
+}
+
+.nector-banner-overlay{
+background: none  !important;
+}
+
+`;
+
+const style_element = document.createElement('style');
+style_element.appendChild(document.createTextNode(styles.trim()));
+shadow_root.appendChild(style_element);
+
+clearInterval(interval_id);
+interval_id = null;
+}, 200);
+</script>

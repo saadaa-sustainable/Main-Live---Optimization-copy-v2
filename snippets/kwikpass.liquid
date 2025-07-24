@@ -1,0 +1,86 @@
+<script>
+    let token = null;
+
+   function getCustomerId() {
+      {% if customer %}
+        return {{ customer.id | json }};
+      {% else %}
+        return null
+      {% endif %}
+    }
+
+    function getThemeId() {
+      {% if theme %}
+        return {{ theme.id | json }};
+      {% else %}
+        return null
+      {% endif %}
+    }
+
+    function updateCustomer() {
+      token = getValueFromCookiesOrLocalStorage(XGokwikCoreToken(window.merchantInfo.environment));
+      const isLoginTagUpdate = sessionStorage.getItem('isLoginTagUpdate');
+      const phoneNumber = getValueFromCookiesOrLocalStorage('notify_phone_number');
+      const customerId = getCustomerId();
+      if (token && isLoginTagUpdate !== 'true' && customerId !== null) {
+        const event = new CustomEvent('customer-tag', {detail: {
+            customerId
+          }});
+        window.dispatchEvent(event);
+      }
+      if (token && phoneNumber && customerId !== null) {
+        let customerPhone = {{ customer.phone | json }};
+        if (customerPhone !== null) {
+          customerPhone = customerPhone.startsWith('+91')
+            ? customerPhone.slice(3)
+            : customerPhone.phone;
+        }
+        const needsToUpdatePhone = localStorage.getItem('needsToUpdatePhone');
+        if (needsToUpdatePhone === 'true') {
+            const event = new CustomEvent('update-customer');
+            window.dispatchEvent(event);
+            localStorage.removeItem('needsToUpdatePhone');
+        }
+      }
+  }
+    function updateDOM(isKwikpassLogin = true) {
+      token = getValueFromCookiesOrLocalStorage(XGokwikCoreToken(window.merchantInfo.environment));
+      const isLogout = sessionStorage.getItem('isLogout');
+      const phoneNumber = getValueFromCookiesOrLocalStorage('notify_phone_number');
+
+      if ((!token && !isLogout) || (token && !phoneNumber)) {
+             openIframe('kp_sso_token')
+      }
+
+    // shopify logout
+     const logoutLink = document.querySelectorAll('a[href*="/account/logout"]');
+      logoutLink.forEach((element) => {
+            element.addEventListener("click", (event) => {
+              event.preventDefault()
+              handleLogout()
+            })
+  	});
+    }
+
+   let isElementsWithAccountClickable = true;
+
+      const elementsWithAccount = document.querySelectorAll('a[href="/account"]');
+  	elementsWithAccount.forEach((element) => {
+  		element.addEventListener('click', async (e) => {
+            e.preventDefault();
+            handleShopifyLogin(e,"/account")
+  		});
+  	});
+
+      document.addEventListener('DOMContentLoaded', function() {
+          updateDOM();
+          updateCustomer();
+      });
+
+     window.addEventListener('update-dom', function() {
+          updateDOM();
+          updateCustomer();
+      });
+</script>
+
+<script defer src="https://pdp.gokwik.co/kwikpass/plugin/build/kp-merchant-v2.js"></script>

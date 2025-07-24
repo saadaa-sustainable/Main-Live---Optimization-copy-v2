@@ -1,0 +1,305 @@
+{%- assign swp_list = product.metafields.custom.product_variants.value -%}
+{% if swp_list and swp_list != blank %}
+  <style>
+    .unique-unique-pw-pw-container {
+      margin: 24px 0;
+      position: relative;
+    }
+    .unique-pw-pw-heading {
+      margin-bottom: 20px;
+      font-size: 32px;
+      text-align: center;
+      font-weight: 400;
+    }
+    .unique-unique-pw-pw-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+    .unique-unique-pw-pw-slider {
+      display: flex;
+      gap: 0.5rem;
+      will-change: transform;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+      cursor: grab;
+      user-select: none;
+      touch-action: pan-y;
+    }
+    .unique-unique-pw-pw-slider.grabbing {
+      cursor: grabbing;
+      transition: none;
+    }
+    .unique-unique-pw-pw-slider::-webkit-scrollbar {
+      display: none;
+    }
+    .unique-unique-pw-pw-item {
+      flex: 0 0 auto;
+      width: 285px;
+    }
+    @media (max-width: 768px) {
+      .unique-unique-pw-pw-item {
+        width: 145px;
+      }
+      .unique-pw-pw-heading {
+        margin-bottom: 20px;
+        font-size: 22px;
+      }
+    }
+    .unique-unique-pw-arrows {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      pointer-events: none;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 10px;
+      box-sizing: border-box;
+      z-index: 1;
+    }
+    .unique-unique-pw-arrow-btn {
+      pointer-events: all;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      position: relative;
+      bottom: 50px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      cursor: pointer;
+      user-select: none;
+      transition: box-shadow 0.3s ease, opacity 0.3s ease;
+      opacity: 1;
+    }
+    .unique-unique-pw-arrow-btn:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+    .unique-unique-pw-arrow-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: black;
+    }
+    @media (max-width: 768px) {
+      .unique-unique-pw-arrows {
+        display: none;
+      }
+    }
+    .unique-prev {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .unique-next {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .unique-unique-pw-pw-container:hover .unique-next {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .unique-prev.visible {
+      opacity: 1 !important;
+      pointer-events: all !important;
+    }
+    .product-card__figure .nav-badge-new1 {
+      top: 355px;
+      left: 0px;
+      max-width: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <div class="unique-unique-pw-featured-collections-carousel__item unique-navigate" id="unique-pair-it-with1">
+    <div class="unique-unique-pw-pw-container" id="unique-pair-it-with">
+      <!-- Heading only appears if metafield has values -->
+      <div class="unique-pw-pw-heading">More Colors</div>
+
+      <!-- Arrows -->
+      <div class="unique-unique-pw-arrows">
+        <button class="unique-unique-pw-arrow-btn unique-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
+        <button class="unique-unique-pw-arrow-btn unique-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="unique-unique-pw-pw-wrapper">
+        <div class="unique-unique-pw-pw-slider">
+          {%- for swp_prod in swp_list -%}
+            {%- if swp_prod and swp_prod.available -%}
+              <div class="unique-unique-pw-pw-item">
+                {%- render 'product-card',
+                  product: swp_prod,
+                  show_quick_buy: false,
+                  show_rating: true,
+                  show_prices: true,
+                  show_badges: true
+                -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const outer = document.querySelector('.unique-unique-pw-pw-wrapper');
+      const track = document.querySelector('.unique-unique-pw-pw-slider');
+      const slides = track ? Array.from(track.children) : [];
+      const prevBtn = document.querySelector('.unique-prev');
+      const nextBtn = document.querySelector('.unique-next');
+      if (!track || !outer || !slides.length) return;
+
+      let currentIndex = 0;
+      let slideWidth = 0;
+      let gap = 0;
+      let perView = 1;
+
+      function calculateDimensions() {
+        if (!slides.length) return;
+        const style = window.getComputedStyle(track);
+        gap = parseFloat(style.gap) || 0;
+        slideWidth = slides[0].getBoundingClientRect().width;
+        perView = Math.floor(outer.clientWidth / (slideWidth + gap)) || 1;
+      }
+
+      function updateTransform() {
+        const rawOffset = currentIndex * (slideWidth + gap);
+        const maxOffset = Math.max(track.scrollWidth - outer.clientWidth, 0);
+        const offset = Math.min(rawOffset, maxOffset);
+        track.style.transform = `translateX(-${offset}px)`;
+
+        // Show/hide arrows based on position
+        if (prevBtn) {
+          if (currentIndex > 0) {
+            prevBtn.classList.add('visible');
+          } else {
+            prevBtn.classList.remove('visible');
+          }
+        }
+        if (nextBtn) {
+          if (currentIndex >= slides.length - perView) {
+            nextBtn.style.opacity = '0';
+            nextBtn.style.pointerEvents = 'none';
+          } else {
+            // Right arrow is visible only on hover, so reset styles to allow that
+            nextBtn.style.opacity = '';
+            nextBtn.style.pointerEvents = '';
+          }
+        }
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (currentIndex > 0) {
+            currentIndex--;
+            updateTransform();
+          }
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (currentIndex < slides.length - perView) {
+            currentIndex++;
+            updateTransform();
+          }
+        });
+      }
+
+      window.addEventListener('resize', () => {
+        calculateDimensions();
+        if (currentIndex > slides.length - perView) {
+          currentIndex = Math.max(slides.length - perView, 0);
+        }
+        updateTransform();
+      });
+
+      calculateDimensions();
+      updateTransform();
+
+      // Touch drag/swipe handlers
+      let startX = null;
+      track.addEventListener('touchstart', (e) => {
+        if (!e.touches.length) return;
+        startX = e.touches[0].clientX;
+      });
+      track.addEventListener('touchend', (e) => {
+        if (startX === null) return;
+        const endX = e.changedTouches[0].clientX;
+        const diff = endX - startX;
+        if (diff > 50 && currentIndex > 0) {
+          currentIndex--;
+        } else if (diff < -50 && currentIndex < slides.length - perView) {
+          currentIndex++;
+        }
+        updateTransform();
+        startX = null;
+      });
+
+      // Mouse drag handlers for desktop UX
+      let mouseDown = false;
+      let mouseStartX = 0;
+      let lastTransform = 0;
+
+      track.addEventListener('mousedown', (e) => {
+        mouseDown = true;
+        mouseStartX = e.pageX;
+        const style = window.getComputedStyle(track);
+        const matrix = style.transform;
+        lastTransform = 0;
+        if (matrix && matrix !== 'none') {
+          lastTransform = parseFloat(matrix.split(',')[4]);
+        }
+        track.style.transition = 'none';
+        track.classList.add('grabbing');
+        document.body.style.userSelect = 'none';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!mouseDown) return;
+        const dx = e.pageX - mouseStartX;
+        const minTranslate = -((slides.length - perView) * (slideWidth + gap));
+        let next = lastTransform + dx;
+        if (next > 0) next = next * 0.3;
+        if (next < minTranslate) next = minTranslate + (next - minTranslate) * 0.3;
+        track.style.transform = `translateX(${next}px)`;
+      });
+
+      document.addEventListener('mouseup', (e) => {
+        if (!mouseDown) return;
+        mouseDown = false;
+        track.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+        track.classList.remove('grabbing');
+        document.body.style.userSelect = '';
+        const dx = e.pageX - mouseStartX;
+        if (dx > 50 && currentIndex > 0) {
+          currentIndex--;
+        } else if (dx < -50 && currentIndex < slides.length - perView) {
+          currentIndex++;
+        }
+        updateTransform();
+      });
+
+      document.addEventListener('mouseleave', () => {
+        if (mouseDown) {
+          mouseDown = false;
+          track.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+          track.classList.remove('grabbing');
+          document.body.style.userSelect = '';
+          updateTransform();
+        }
+      });
+    });
+  </script>
+{% endif %}

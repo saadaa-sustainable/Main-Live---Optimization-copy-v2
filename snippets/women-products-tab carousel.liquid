@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pill Toggle Menu (Mixed: Static & API)</title>
+  <style>
+    .toggle-menu-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .toggle-buttons-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-bottom: 17px;
+      justify-content: center;
+    }
+    .toggle-button {
+      background-color: #f6f3f1;
+      color: #000;
+      border-radius: 12px;
+      padding: 3px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      white-space: nowrap;
+      border: none;
+      text-decoration: none;
+    }
+    .toggle-button.active {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .menu-items-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    @media (max-width: 768px) {
+      .toggle-buttons-wrapper .toggle-button:first-of-type {
+        margin-left: 160px;
+      }
+    }
+    .menu-item {
+      flex: 0 0 calc(20% - 20px);
+      text-align: center;
+      cursor: pointer;
+    }
+    .menu-item a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .menu-item img {
+      width: 100%;
+      max-width: 220px;
+      display: block;
+      margin: 0 auto 10px;
+      border-radius: 7px;
+      opacity: 0; 
+      transition: opacity 0.5s ease-in-out;
+    }
+    .menu-item img.loaded {
+      opacity: 1;
+    }
+    .menu-item p {
+      font-size: 15px;
+      color: #333;
+      margin: 0;
+    }
+    @media (min-width: 769px) {
+      .menu-item img {
+        height: 300px;
+        object-fit: cover;
+      }
+      .menu-items-container.topwear .menu-item {
+        flex: 0 0 calc(25% - 20px);
+      }
+    }
+    @media (max-width: 768px) {
+      .menu-item {
+        flex: 0 0 calc(34% - 12px);
+      }
+      .menu-item img {
+        height: 150px;
+        object-fit: cover;
+      }
+      .menu-items-container {
+        gap: 6px;
+        padding: 0 4px;
+      }
+      .menu-item p {
+        font-size: 12px;
+      }
+      .toggle-buttons-wrapper {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 10px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .toggle-buttons-wrapper::-webkit-scrollbar {
+        display: none;
+      }
+      .toggle-button {
+        flex: 0 0 auto;
+      }
+    }
+    .view-all-bar {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .view-all-bar .toggle-button {
+      display: inline-block;
+      padding: 10px 154px;
+      color: #000;
+      border: 1px solid #1F1F1D;
+      border-radius: 0px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .menu-item img {
+        transition: 
+          transform 0.21s cubic-bezier(.41,1.51,.37,1.11), 
+          box-shadow 0.22s cubic-bezier(.41,1.51,.37,1.11);
+        will-change: transform, box-shadow;
+      }
+      .menu-item:hover img,
+      .menu-item:focus-within img {
+        transform: scale(1.045) rotateZ(-0.7deg);
+        box-shadow:
+          0 10px 28px 0 rgba(195,106,78,0.21),
+          0 2px 8px rgba(195,106,78,0.13);
+        z-index: 3;
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .toggle-button {
+        transition:
+          background 0.22s cubic-bezier(.44,1.34,.38,1.11),
+          color 0.22s cubic-bezier(.44,1.34,.38,1.11),
+          transform 0.23s cubic-bezier(.44,1.34,.38,1.11),
+          box-shadow 0.22s cubic-bezier(.44,1.34,.38,1.11);
+        will-change: transform, box-shadow, background, color;
+        position: relative;
+        z-index: 1;
+      }
+      .toggle-button:hover,
+      .toggle-button:focus-visible {
+        background: #fff8f3;
+        color: #c36a4e;
+        transform: scale(1.07) translateY(-3px);
+        box-shadow:
+          0 4px 14px 0 rgba(195,106,78,0.21),
+          0 1.5px 6px rgba(195,106,78,0.14);
+        outline: none;
+      }
+      .toggle-button.active {
+        background: #fff;
+        color: #c36a4e;
+        transform: scale(1.10);
+        box-shadow: 0 1px 4px 0 rgba(195,106,78,0.13);
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .view-all-bar .toggle-button {
+        transition:
+          background 0.21s cubic-bezier(.44,1.34,.38,1.11),
+          color 0.21s cubic-bezier(.44,1.34,.38,1.11),
+          box-shadow 0.21s cubic-bezier(.44,1.34,.38,1.11),
+          transform 0.21s cubic-bezier(.44,1.34,.38,1.11);
+        will-change: background, color, box-shadow, transform;
+        border-radius: 7px;
+      }
+      .view-all-bar .toggle-button:hover,
+      .view-all-bar .toggle-button:focus-visible {
+        background: #fff8f3;
+        color: #c36a4e;
+        transform: scale(1.04) translateY(-3px);
+        box-shadow:
+          0 4px 18px 0 rgba(195,106,78,0.21),
+          0 2px 8px rgba(195,106,78,0.13);
+        outline: none;
+        border: 1.5px solid #c36a4e;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toggle-menu-container">
+    <div class="toggle-buttons-wrapper">
+      <!-- Category toggles -->
+      <button class="toggle-button active" data-category="bottoms">Bottom Wear</button>
+      <button class="toggle-button" data-category="bestsellers">Best Sellers</button>
+      <button class="toggle-button" data-category="new">New Arrival</button>
+      <button class="toggle-button" data-category="tops">Top Wear</button>
+    </div>
+    <div id="itemsContainer" class="menu-items-container"></div>
+    <div class="view-all-bar">
+      <a id="viewAllLink" class="toggle-button"
+         href="https://saadaa.in/collections/shop-bottoms">
+        VIEW ALL ➝
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ─────────── Shopify credentials ───────────
+    const SHOP_DOMAIN = "saadaa-design.myshopify.com";
+    const STOREFRONT_ACCESS_TOKEN = "388bd37219d8ab7daee1c58a23c03cc8";
+
+    // ─────────── Tag / Static-HTML mappings ───────────
+    const tagMap = {
+      bestsellers: "women_home_toggle_best_sellers",
+      new:         "women_home_new_arrival"
+      // “bottoms” + “longKurta” use static HTML below
+    };
+
+    // ─────────── Hard‐coded HTML for Bottom Wear and Top Wear ───────────
+    const bottomsHTML =
+       '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/airy-linen-straight-pant">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/150_e224e4bc-663c-452c-b45b-f80ace8d6699.webp?v=1751612035" alt="AWP" />' +
+          '<p>Airy Linen Straight Pants</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/airy-linen-wide-leg-pant">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_84486c5e-6c02-4e28-9870-b1a65debd2c3.jpg?v=1745563753" alt="AWP" />' +
+          '<p>Airy Linen Wide Leg Pant</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/4-way-stretchable-pants">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6_17bf1b01-c39e-42de-b4fe-6fe3b28a036f.jpg?v=1744191968" alt="4-Way" />' +
+          '<p>4-Way Stretchable Pants</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/cotton-trousers">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/SDCPRTRoseTaupe_1_98f96bd0-b954-4ae8-bf62-6d3ba2c0c67f.jpg?v=1744191968" alt="ECP" />' +
+          '<p>Everyday Cotton Pant</p>' +
+        '</a>' +
+      '</div>' +
+     
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/viscose-palazzo-pants">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_091a3f84-383b-4be2-9537-940997cb565b.jpg?v=1744191968" alt="VPP" />' +
+          '<p>Viscose Palazzo Pants</p>' +
+        '</a>' +
+      '</div>' +
+     
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/wide-leg-pants">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Artboard3copy6_4b975e75-38f7-4ad4-8103-f1274fac7a97.png?v=1744191968" alt="WLP" />' +
+          '<p>Wide Leg Pants</p>' +
+        '</a>' +
+     
+      '</div>';
+
+        const topwearHTML =
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/short-kurtas">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_635b9b22-0d5b-4da8-892e-e29d45c096ec.webp?v=1744193131" ' +
+               'alt="Airy-Linen Short Kurtas" />' +
+          '<p>Airy-Linen Short Kurtas</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/airy-linen-long-kurtas">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_39f6db1e-5354-4d52-9b1a-b723ec43e40e.webp?v=1744193354" ' +
+               'alt="Airy Linen Long Kurtas" />' +
+          '<p>Airy Linen Long Kurtas</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/airy-linen-shirts">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_6_daeca3f8-6a4e-46e0-b3d7-6c91bb0a1ebb.webp?v=1744193466" ' +
+               'alt="Airy-Linen Shirts" />' +
+          '<p>Airy-Linen Shirts</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/v-neck-sleeveless-top">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_c1738934-aba3-40a0-920e-bddf4a25311f.webp?v=1744193571" ' +
+               'alt="V-Neck Sleeveless Top" />' +
+          '<p>V-Neck Sleeveless Top</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/everyday-cotton-top">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_c6be4a36-9d8d-444b-a4ad-ecd9b0c44f76.webp?v=1744193696" ' +
+               'alt="Everyday Cotton Top" />' +
+          '<p>Everyday Cotton Top</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="https://saadaa.in/collections/viscose-pleated-top">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/3_0b364a38-824e-4456-9cb2-fbf14b7fcd20.webp?v=1744193776" ' +
+               'alt="Viscose Pleated Top" />' +
+          '<p>Viscose Pleated Top</p>' +
+        '</a>' +
+      '</div>';
+
+
+    // ─────────── VIEW ALL link per category ───────────
+    const viewAllLinks = {
+      bottoms:     "https://saadaa.in/collections/shop-all-bottoms",
+      bestsellers: "https://saadaa.in/collections/best-sellers-women",
+      new:         "https://saadaa.in/collections/best-sellers-women",
+      tops:   "https://saadaa.in/collections/shop-all-tops-1"
+    };
+
+    // ─────────── Cache for “bestsellers” + “new” ───────────
+    let cache = {
+      bestsellers: [],
+      new: []
+    };
+    let cacheLoaded = {
+      bestsellers: false,
+      new: false
+    };
+
+    // ─────────── Fetch products by Shopify tag (including `publishedAt`) ───────────
+    async function fetchProductsByTag(tag) {
+      const query = `
+        {
+          products(first: 30, query: "tag:'${tag}'") {
+            edges {
+              node {
+                id
+                title
+                handle
+                tags
+                publishedAt
+                images(first: 1) {
+                  edges {
+                    node {
+                      url
+                      altText
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+
+      const response = await fetch(`https://${SHOP_DOMAIN}/api/2023-10/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": STOREFRONT_ACCESS_TOKEN
+        },
+        body: JSON.stringify({ query })
+      });
+
+      const json = await response.json();
+      if (!json.data || !json.data.products) return [];
+      // Keep only published products (drafts have null publishedAt)
+      return json.data.products.edges
+        .map(edge => edge.node)
+        .filter(prod => prod.publishedAt);
+    }
+
+    // ─────────── Pre‐fetch “bestsellers” + “new” on page load ───────────
+    async function prefetchCategory(key) {
+      const tag = tagMap[key];
+      if (!tag) return;
+      const products = await fetchProductsByTag(tag);
+      cache[key] = products;
+      cacheLoaded[key] = true;
+    }
+    // Kick off both in parallel:
+    prefetchCategory("bestsellers");
+    prefetchCategory("new");
+
+    // ─────────── Render products (or static HTML) ───────────
+    function renderProducts(itemsHTML, categoryKey) {
+      if (categoryKey === "tops") {
+        itemsContainer.classList.add("topwear");
+      } else {
+        itemsContainer.classList.remove("topwear");
+      }
+      itemsContainer.innerHTML = itemsHTML;
+      // Once images load, add “loaded” class so they fade in
+      itemsContainer.querySelectorAll("img").forEach(img => {
+        if (img.complete) {
+          img.classList.add("loaded");
+        } else {
+          img.addEventListener("load", () => img.classList.add("loaded"));
+        }
+      });
+    }
+
+    // ─────────── Build HTML snippet from an array of fetched products ───────────
+    function buildFetchedHTML(products) {
+      return products.map(prod => {
+        const imgUrl = prod.images.edges[0]?.node.url || "";
+        const altTxt = prod.images.edges[0]?.node.altText || prod.title;
+        return `
+          <div class="menu-item">
+            <a href="/products/${prod.handle}">
+              <img src="${imgUrl}" alt="${altTxt}" loading="lazy" />
+              <p>${prod.title}</p>
+            </a>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ─────────── Handle toggle‐button clicks ───────────
+    const itemsContainer = document.getElementById("itemsContainer");
+    const toggleButtons  = document.querySelectorAll(".toggle-button[data-category]");
+    const viewAllLinkElm = document.getElementById("viewAllLink");
+
+    toggleButtons.forEach(btn => {
+      btn.addEventListener("click", async () => {
+        // 1) Reset “active” class
+        toggleButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // 2) Determine which category was clicked
+        const key = btn.getAttribute("data-category");
+        viewAllLinkElm.href = viewAllLinks[key]; // update “VIEW ALL”
+
+        // 3) If “bottoms” or “longKurta,” just show static HTML
+        if (key === "bottoms") {
+          renderProducts(bottomsHTML, key);
+          return;
+        }
+        if (key === "tops") {
+          renderProducts(topwearHTML, key);
+          return;
+        }
+
+        // 4) Otherwise (bestsellers / new), render from cache immediately
+        if (key === "bestsellers" || key === "new") {
+          // If cache not yet ready, show a quick “loading” message
+          if (!cacheLoaded[key]) {
+            renderProducts(`<div class="no-results">Loading…</div>`, key);
+            // Wait for prefetch to complete
+            await prefetchCategory(key);
+          }
+
+          // Grab cached, then sort #1‐tagged to front
+          const products = cache[key].slice(); // copy array
+          if (key === "bestsellers") {
+            products.sort((a, b) => {
+              const aHas = a.tags.includes("women_home_toggle_best_sellers-#1");
+              const bHas = b.tags.includes("women_home_toggle_best_sellers-#1");
+              if (aHas && !bHas) return -1;
+              if (bHas && !aHas) return 1;
+              return 0;
+            });
+          }
+          if (key === "new") {
+            products.sort((a, b) => {
+              const aHas = a.tags.includes("women_home_new_arrival-#1");
+              const bHas = b.tags.includes("women_home_new_arrival-#1");
+              if (aHas && !bHas) return -1;
+              if (bHas && !aHas) return 1;
+              return 0;
+            });
+          }
+
+          // Build HTML from sorted array and render
+          const fetchedHTML = buildFetchedHTML(products);
+          renderProducts(fetchedHTML, key);
+        }
+      });
+    });
+
+    // ─────────── Initial load: “Bottom Wear” by default ───────────
+    (async () => {
+      const defaultKey = "bottoms";
+      document.querySelector(`.toggle-button[data-category="${defaultKey}"]`).classList.add("active");
+      viewAllLinkElm.href = viewAllLinks[defaultKey];
+      renderProducts(bottomsHTML, defaultKey);
+    })();
+  </script>
+</body>
+</html>

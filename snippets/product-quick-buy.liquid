@@ -1,0 +1,726 @@
+{%- comment -%}
+  ----------------------------------------------------------------------------------------------------------------------
+  PRODUCT QUICK BUY
+  ----------------------------------------------------------------------------------------------------------------------
+
+  This component is used to render the quick buy content. It is important to note that this snippet must always be
+  included inside a product template (you can find an example in the "main-product.liquid" section). The reason is that
+  we want to re-use the settings of the merchant on their product page (which info they want to make it visible). To do
+  that, we need to re-use the whole product page, and extract the quick-buy part (rendered here).
+
+  ********************************************
+  Supported variables
+  ********************************************
+
+  * product: the product to render
+  * section: the section is implicitly available. Here, the section is always a "product" template section, so you can
+  access all the information from the section
+{%- endcomment -%}
+{%- capture product_form_id -%}product-form-{{ product.id }}-{{ section.id }}{%- endcapture -%}
+<template id="quick-buy-content">
+  <p class="h5" slot="header">{{ 'product.general.choose_options' | t }}</p>
+
+  <div class="quick-buy-modal__content .product-info">
+    <style>
+      .all_taxes_text {
+        font-size: 10px;
+        margin-top: 14px;
+        padding-bottom: 0.1px;
+      }
+
+      
+#color-variant{
+  display:none;
+}
+
+
+
+#style_with{
+  display:none;
+}
+
+.service_main_container{
+  display:none;
+}
+
+.overlay_content{
+  display:none;
+}
+
+.quick-buy-modal__info-wrapper>:not(:last-child) {
+    margin-block-start: 1rem;
+}
+
+
+.quick-buy-modal__info-wrapper .quantity-selector {
+    --quantity-selector-height: 2rem;
+    --quantity-selector-input-width: 1.2rem;
+    border-width: 0px;
+}
+
+      
+      .quick-buy-modal__info-wrapper .text-subdued,
+      .quick-buy-modal__info-wrapper legend {
+        color: #757575;
+      }
+      .quick-buy-modal__info-wrapper .text-subdued ~ span {
+        color: #344791;
+      }
+      .quick-buy-modal__gallery-wrapper {
+        position: relative;
+        height: max-content;
+      }
+      .quick-buy_rating {
+        padding-inline: 9px;
+        height: 33px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.85);
+        position: absolute;
+        right: 16px;
+        bottom: calc(1.5rem + 20px);
+        font-size: 12px;
+      }
+      .quick-buy_rating .loox-icon:not(:first-child) {
+        display: none;
+      }
+      .quick-buy_rating .loox-rating-label {
+        padding-left: 5px;
+      }
+      .quick-buy_rating .review_count {
+        border-left: 1px solid #c8c3c3;
+        margin-left: 8px;
+        padding-left: 5px;
+      }
+      product-bundle-cart fieldset {
+        font-size: 12px;
+      }
+      .product-bundle-cart .button_wrapper {
+        margin-inline-start: calc(-1* var(--modal-body-padding-inline));
+        margin-inline-end: calc(-1* var(--modal-body-padding-inline));
+      }
+      .quick-buy_extra_text {
+    flex-shrink: 0;
+    /* display: flex
+; */
+    /* flex-direction: column; */
+    align-items: end;
+    color: #02542d;
+    background: #cff7d3;
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 12px;
+    margin-bottom: 30px;
+}
+      .quick-buy-modal__info-wrapper .product_belongs_collection {
+        display: none;
+      }
+      .quick-buy-modal__info-wrapper .variant-picker__option-values {
+        gap: 11px;
+      }
+      .quick-buy-modal__info-wrapper .color-swatch {
+        border-radius: 0;
+        width: 20px;
+        height: 20px;
+        padding: 0;
+        box-sizing: content-box;
+        
+      }
+      .quick-buy-modal__info-wrapper .size_chart_container .variant-picker__option-values {
+        font-size: 12px;
+        gap: 8px;
+      }
+      .quick-buy-modal__info-wrapper .block-swatch {
+        border: 1px solid #000;
+  border-radius: 50%;
+  min-width: fit-content;
+  min-height: 2.6rem;
+  min-width: 2.6rem;
+        font-size: 14px;
+      }
+      .block-swatch.is-disabled {
+    color: #000;
+    content: "";
+    background: linear-gradient(to bottom right, transparent calc(50% - 1px), black calc(50% - .5px) calc(50% + 0px), transparent calc(50% + 1px));
+   
+}
+      .quick-buy-modal__info-wrapper:checked + .color-swatch,
+      .quick-buy-modal__info-wrapper .color-swatch.is-selected {
+        padding: 4px;
+      }
+      .quick-buy-modal__info-wrapper:checked + .block-swatch,
+      .quick-buy-modal__info-wrapper .block-swatch.is-selected {
+        --swatch-disabled-strike-color: currentColor;
+        border-color: currentColor;
+        background: none;
+        border-bottom: 1px solid;
+      }
+      .qb_button_wrapper {
+        margin-inline: -1.25rem;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        justify-content: end;
+      }
+      .qb_button_wrapper .button {
+        padding-inline: 2px;
+        min-width: max-content;
+      }
+      .qb_variant_wrapper {
+        position: relative;
+        padding: 2px 4px;
+        border-radius: 4px;
+        border: 0.5px solid #A3A3A3;
+        max-width: 13rem;
+        font-size: 14px;
+        height: 34px;
+        margin-top: 1rem;
+
+      }
+      .qb_variant_wrapper .qb_input {
+        outline: none;
+        cursor: pointer;
+        max-width: 80%;
+      }
+
+      .qb_variants {
+        position: absolute;
+        top: calc(100% + 2px);
+        left: 0;
+        width: 100%;
+        height: 9rem;
+        overflow: auto;
+        padding: 2px;
+        background: white;
+        box-shadow: 0 0 7px antiquewhite;
+        z-index: -2;
+        visibility: hidden;
+        opacity: 0;
+      }
+      .qb_variant_wrapper.open .qb_variants {
+        z-index: 1;
+        visibility: visible;
+        opacity: 1;
+      }
+      .quick-buy-modal__info-wrapper .qb_variants .block-swatch {
+        border: none;
+        border-radius: 0;
+        min-width: fit-content;
+        padding: 0;
+        min-height: 2rem;
+        border-bottom: 1px solid antiquewhite;
+      }
+      .quick-buy-modal__info-wrapper  .block-swatch.is-disabled::before {
+        content: none;
+      }
+      .quick-buy-modal__info-wrapper .qb_variants .block-swatch.is-disabled {
+        color: rgb(var(--text-color) / 0.5) !important;
+      }
+      .qb_dic_code_wrapper,.qb_dis_text_wrapper{
+        padding:6px 20px;
+      }
+      .qb_dic_code_wrapper{
+        border-bottom: 1px dashed #FFCF6E;
+      }
+      .qb_dis_code{
+        font-size:12px;
+        border-radius: 4px;
+        background: #FCF7F1;
+        padding:4px 10px;
+      }
+      .qb_code_button{
+        border-radius: 6px;
+        background: #FFCF6E;
+        padding:6px 10px;
+        min-width: max-content;
+      }
+      .qb_dic_code_carousal{
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(90% , 520px);
+        gap: 24px;
+      }
+      .qb_dic_code_carousal > div{
+        position:relative;
+        border-radius: 9px;
+        border: 1px solid antiquewhite;
+        background: #FFF;
+        box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+      }
+      .qb_dic_code_carousal > div::before, .qb_dic_code_carousal > div::after{
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: white;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        border-radius: 50%;
+        border-right: 1px solid antiquewhite;
+        transform: translate(-50%, -18%);
+      }
+      .qb_dic_code_carousal > div::after{
+        right:0;
+        left:unset;
+        transform: translate(50%, -18%);
+        border-left: 1px solid antiquewhite;
+        border-right: none;
+      }
+      .qb_upi_b_text{
+        padding-right: 8px;
+        border-right: 1px solid #333;
+      }
+      .qb_upi_wrapper{
+        padding:6px;
+        background:#FCF7F1;
+      }
+      .qb_color_variant_wrapper  select{
+        border: 1px solid antiquewhite;
+        padding: 10px 12px;
+        box-sizing: border-box;
+        outline:none;
+      }
+
+
+
+
+
+
+
+
+
+
+    </style>
+    <button
+      type="button"
+      class="quick-buy-modal__close-button sm-max:hidden"
+      is="dialog-close-button"
+    >
+      <span class="sr-only">{{ 'general.accessibility.close' | t }}</span>
+      {%- render 'icon' with 'close' -%}
+    </button>
+    {% liquid
+      for tag in product.tags
+        if tag contains 'bundle-top'
+          assign thandle = tag | split: '__' | last
+          assign top_product = all_products[thandle]
+        endif
+
+        if tag contains 'bundle-bottom'
+          assign bhandle = tag | split: '__' | last
+          assign bottom_product = all_products[bhandle]
+        endif
+      endfor
+    %}
+    <div class="quick-buy-modal__gallery-wrapper">
+      {%- render 'product-gallery',
+        product: product,
+        mobile_controls: 'dots',
+        enable_media_autoplay: section.settings.enable_media_autoplay,
+        enable_video_looping: section.settings.enable_video_looping,
+        enable_image_zoom: false
+      -%}
+      {% if product.tags contains 'product--bundle' %}
+        <div class="quick-buy_rating h-stack justify-center">
+          <div
+            class="loox-rating"
+            data-id="{{ bottom_product.id }}"
+            data-rating="{{ bottom_product.metafields.loox.avg_rating  }}"
+            data-raters="{{ bottom_product.metafields.loox.num_reviews }}"
+            data-pattern='[rating] <span class="review_count">[count]</span> '
+          ></div>
+        </div>
+      {% else %}
+        <div class="quick-buy_rating h-stack justify-center">
+          <div
+            class="loox-rating"
+            data-id="{{ product.id }}"
+            data-rating="{{ product.metafields.loox.avg_rating  }}"
+            data-raters="{{ product.metafields.loox.num_reviews }}"
+            data-pattern='[rating] <span class="review_count">[count]</span> '
+          ></div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="quick-buy-modal__info-wrapper">
+      {% if product.tags contains 'product--bundle' %}
+        <div class="h-stack justify-between align-start gap-2">
+          <div class="v-stack gap-2">
+            <p class="text-subdued text-xss">{{ product.title }}</p>
+            <h3 class="product-title h3">Get the Look</h3>
+          </div>
+          <div class="quick-buy_extra_text">
+            <p class="h4">Saved 15%</p>
+          </div>
+        </div>
+
+        <div class="h-stack gap-4">
+          <div class="text-subdued text-xxs">
+            <s>{{ product.compare_at_price | money_without_trailing_zeros }}</s>
+          </div>
+          <div class="h3">
+            {%- if settings.currency_code_enabled -%}
+              {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros -}}
+            {%- else -%}
+              {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros -}}
+            {%- endif -%}
+          </div>
+          <p class="all_taxes_text underline">
+            <i>Inclusive of all taxes</i>
+          </p>
+        </div>
+
+      {% else %}
+        <div class="h-stack justify-between gap-2">
+          <h3 class="product-title h3">{{ product.title }}</h3>
+          <div class="quick-buy_extra_text">
+            <span>Add more</span>
+            <span style="margin-top: -9px;">to save more</span>
+          </div>
+        </div>
+
+        <div class="h-stack justify-between">
+          <div>
+            <div class="h3">
+              {%- if settings.currency_code_enabled -%}
+                {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros -}}
+              {%- else -%}
+                {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros -}}
+              {%- endif -%}
+            </div>
+            <p class="all_taxes_text underline">
+              <i>Inclusive of all taxes</i>
+            </p>
+          </div>
+          {%- if product.available -%}
+            {% unless product.tags contains '1_Product_Multiple_Color' %}
+              {% render 'quantity-selector',
+                variant: product.selected_or_first_available_variant,
+                form: product_form_id
+              %}
+            {% endunless %}
+          {%- endif -%}
+        </div>
+      {% endif %}
+
+      {% if product.tags contains 'product--bundle' %}
+        <div class="h-stack justify-between">
+          <p class="h3 text-start">Your look, simplified!</p>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="22"
+            viewBox="0 0 24 22"
+            fill="none"
+          >
+            <path d="M2.77216 2.77216C0.40928 5.13503 0.409282 8.96602 2.77216 11.3289L11.937 20.4937L12 20.4307L12.0631 20.4938L21.2279 11.329C23.5908 8.96609 23.5908 5.13511 21.2279 2.77223C18.865 0.409358 15.034 0.40936 12.6712 2.77224L12.3536 3.08978C12.1584 3.28505 11.8418 3.28505 11.6465 3.08978L11.3289 2.77216C8.96601 0.409281 5.13503 0.409282 2.77216 2.77216Z" stroke="#CA232D" />
+          </svg>
+        </div>
+        <small
+          style="
+            display: block;
+            margin-top: -1rem;
+          "
+        >
+          Select top & bottom</small
+        >
+        <product-bundle-atc class="v-stack gap-4 product-bundle-atc">
+          <div class="h-stack align-start justify-between">
+            <fieldset class="h-stack gap-5 align-start">
+              <div>
+                {{ bottom_product.featured_image | image_url: width: 150 | image_tag }}
+              </div>
+              <div>
+                <div class="h5">{{ bottom_product.title }}</div>
+                <div class="qb_variant_wrapper bottom_variants h-stack justify-center">
+                  <input
+                    class="qb_input"
+                    type="text"
+                    name="selected_bottom_product"
+                    value="Select Bottom"
+                    readonly
+                  >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M5 7.5L10 12.5L15 7.5"
+                      stroke="#1E1E1E"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                  <div class="v-stack qb_variants">
+                    {% for variant in bottom_product.variants %}
+                      <input
+                        class="sr-only {% unless variant.available %}is-disabled{% endunless %}"
+                        type="radio"
+                        name="product-bundle-bottom"
+                        value="{{ variant.id }}"
+                        data-value="{{- variant.title -}}"
+                        id="product-{{ variant.id }}"
+                      >
+                      <label
+                        class="block-swatch {% unless variant.available %}is-disabled link-faded{% endunless %}"
+                        for="product-{{ variant.id }}"
+                      >
+                        {{- variant.title -}}
+                      </label>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="h-stack align-start justify-between">
+            <fieldset class="h-stack gap-5 align-start">
+              <div>
+                {{ top_product.featured_image | image_url: width: 150 | image_tag }}
+              </div>
+              <div>
+                <div class="h5">{{ top_product.title }}</div>
+                <div class="qb_variant_wrapper top_variants h-stack justify-center">
+                  <input
+                    class="qb_input"
+                    type="text"
+                    name="selected_top_product"
+                    value="Select top"
+                    readonly
+                  >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M5 7.5L10 12.5L15 7.5"
+                      stroke="#1E1E1E"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                  <div class="v-stack qb_variants">
+                    {% for variant in top_product.variants %}
+                      <input
+                        class="sr-only {% unless variant.available %}is-disabled{% endunless %}"
+                        type="radio"
+                        name="product-bundle-top"
+                        data-value="{{- variant.title -}}"
+                        value="{{ variant.id }}"
+                        id="product-{{ variant.id }}"
+                      >
+                      <label
+                        class="block-swatch {% unless variant.available %}is-disabled link-faded{% endunless %}"
+                        for="product-{{ variant.id }}"
+                      >
+                        {{- variant.title -}}
+                      </label>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="qb_button_wrapper">
+            <button class="button button--outline">
+              Get this Combo Deal at
+              {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros | prepend: ' ' -}}
+            </button>
+            <div>
+              <button class="button w-full  slect_button">SELECT BOTH SIZES</button>
+              <button class="button w-full h-stack justify-center act_button hidden">ADD TO CART</button>
+            </div>
+          </div>
+        </product-bundle-atc>
+      {% elsif product.tags contains '1_Product_Multiple_Color' %}
+        <div class="v-stack gap-5">
+          <scroll-carousal class="scroll-area qb_dic_code_carousal">
+            <div>
+              <div class="qb_dic_code_wrapper h-stack justify-between">
+                <h3><b>Voucher</b></h3>
+                <div class="qb_dis_code">Use Code: RAHOSAADAA</div>
+              </div>
+              <div class="qb_dis_text_wrapper h-stack justify-between">
+                <div>
+                  <div class="h-stack gap-2">
+                    <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16" fill="none">
+                        <g clip-path="url(#clip0_173_959)">
+                          <path d="M1.6575 4.93896H12.0822C12.7365 4.93896 13.2669 5.46672 13.2669 6.11774L13.7407 15.0764C13.7407 15.7274 13.2103 16.2552 12.5561 16.2552H1.18365C0.5294 16.2552 -0.000976562 15.7274 -0.000976562 15.0764L0.472875 6.11774C0.472875 5.46672 1.00325 4.93896 1.6575 4.93896Z" fill="#FFCF6E"/>
+                          <path d="M3.35693 7.51819V4.16992C3.35693 2.85501 4.41541 1.78906 5.7211 1.78906H7.87243C9.17812 1.78906 10.2366 2.85501 10.2366 4.16992V7.51819" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                          <path d="M3.35693 4.62343V4.16992C3.35693 2.85501 4.41541 1.78906 5.7211 1.78906H7.87243C9.17812 1.78906 10.2366 2.85501 10.2366 4.16992V4.62343" stroke="#FFCF6E" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_173_959">
+                            <rect width="14" height="16" fill="white"/>
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </span>
+                    <h3><b>First Purchase</b></h3>
+                  </div>
+                  <small><b>15% off for your next order</b></small>
+                </div>
+                <button class="qb_code_button">Copy Code</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="qb_dic_code_wrapper h-stack justify-between">
+                <h3><b>Voucher</b></h3>
+                <div class="qb_dis_code">Use Code: RAHOSAADAA</div>
+              </div>
+              <div class="qb_dis_text_wrapper h-stack justify-between">
+                <div>
+                  <div class="h-stack gap-2">
+                    <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16" fill="none">
+                        <g clip-path="url(#clip0_173_959)">
+                          <path d="M1.6575 4.93896H12.0822C12.7365 4.93896 13.2669 5.46672 13.2669 6.11774L13.7407 15.0764C13.7407 15.7274 13.2103 16.2552 12.5561 16.2552H1.18365C0.5294 16.2552 -0.000976562 15.7274 -0.000976562 15.0764L0.472875 6.11774C0.472875 5.46672 1.00325 4.93896 1.6575 4.93896Z" fill="#FFCF6E"/>
+                          <path d="M3.35693 7.51819V4.16992C3.35693 2.85501 4.41541 1.78906 5.7211 1.78906H7.87243C9.17812 1.78906 10.2366 2.85501 10.2366 4.16992V7.51819" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                          <path d="M3.35693 4.62343V4.16992C3.35693 2.85501 4.41541 1.78906 5.7211 1.78906H7.87243C9.17812 1.78906 10.2366 2.85501 10.2366 4.16992V4.62343" stroke="#FFCF6E" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_173_959">
+                            <rect width="14" height="16" fill="white"/>
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </span>
+                    <h3><b>First Purchase</b></h3>
+                  </div>
+                  <small><b>15% off for your next order</b></small>
+                </div>
+                <button class="qb_code_button">Copy Code</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="qb_dic_code_wrapper h-stack justify-between">
+                <h3><b>Voucher</b></h3>
+                <div class="qb_dis_code">Use Code: RAHOSAADAA</div>
+              </div>
+              <div class="qb_dis_text_wrapper h-stack justify-between">
+                <div>
+                  <div class="h-stack gap-2">
+                    <span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16" fill="none">
+                        <g clip-path="url(#clip0_173_959)">
+                          <path d="M1.6575 4.93896H12.0822C12.7365 4.93896 13.2669 5.46672 13.2669 6.11774L13.7407 15.0764C13.7407 15.7274 13.2103 16.2552 12.5561 16.2552H1.18365C0.5294 16.2552 -0.000976562 15.7274 -0.000976562 15.0764L0.472875 6.11774C0.472875 5.46672 1.00325 4.93896 1.6575 4.93896Z" fill="#FFCF6E"/>
+                          <path d="M3.35693 7.51819V4.16992C3.35693 2.85501 4.41541 1.78906 5.7211 1.78906H7.87243C9.17812 1.78906 10.2366 2.85501 10.2366 4.16992V7.51819" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                          <path d="M3.35693 4.62343V4.16992C3.35693 2.85501 4.41541 1.78906 5.7211 1.78906H7.87243C9.17812 1.78906 10.2366 2.85501 10.2366 4.16992V4.62343" stroke="#FFCF6E" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_173_959">
+                            <rect width="14" height="16" fill="white"/>
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </span>
+                    <h3><b>First Purchase</b></h3>
+                  </div>
+                  <small><b>15% off for your next order</b></small>
+                </div>
+                <button class="qb_code_button">Copy Code</button>
+              </div>
+            </div>
+          </scroll-carousal>
+
+          <div class="qb_upi_wrapper text-center">
+            <div class="h-stack gap-3 h5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <g clip-path="url(#clip0_479_717)">
+                  <path d="M5.8335 2.50008V10.0001C5.8335 10.4584 6.2085 10.8334 6.66683 10.8334H8.3335V16.7917C8.3335 17.2167 8.89183 17.3667 9.1085 17.0001L13.4335 9.58341C13.7585 9.02508 13.3585 8.33341 12.7168 8.33341H10.8335L12.9085 2.79175C13.1168 2.25008 12.7168 1.66675 12.1335 1.66675H6.66683C6.2085 1.66675 5.8335 2.04175 5.8335 2.50008Z" fill="#333333"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_479_717">
+                    <rect width="20" height="20" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
+              <div class="qb_upi_b_text"><b>Extra 5% Off on UPI Payment</b></div>
+              <div>Sitewide Applicable</div>
+            </div>
+          </div>
+
+          <div class="qb_color_variant_wrapper v-stack gap-5">
+            {% for i in (1..4) %}
+              <div class="h-stack justify-between">
+                <div class="v-stack gap-2">
+                  <label>color {{ i }}</label>
+                  <select class="color_select-{{ i }}">
+                    <option>select</option>
+                    {% for product in product.metafields.custom.product_variants.value %}
+                      <option value="{{ product.id }}">{{ product.metafields.custom.product_variant_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="v-stack gap-2">
+                  <label>size {{ i }}</label>
+                  <select class="size_select-{{ i }}">
+                    <option>select</option>
+                    {% for product in product.metafields.custom.product_variants.value %}
+                      <option value="{{ product.id }}">{{ product.metafields.custom.product_variant_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% else %}
+        {%- assign allow_blocks = 'product_variations,variant_picker' | split: ',' -%}
+        {%- render 'product-info',
+          product: product,
+          allow_blocks: allow_blocks,
+          update_url: false,
+          selected_collection: selected_collection
+        -%}
+        <div style="margin-block:1.25rem">
+          {%- render 'buy-buttons'
+            , product: product,
+            form_id: product_form_id,
+             block:block,
+            show_payment_button: block.settings.show_payment_button,
+            show_gift_card_recipient: block.settings.show_gift_card_recipient,
+            atc_button_background: block.settings.atc_button_background,
+            atc_button_text_color: block.settings.atc_button_text_color,
+            payment_button_background: block.settings.payment_button_background,
+            payment_button_text_color: block.settings.payment_button_text_color -%}
+        </div>
+        <div class="text-center" style="color:#757575">
+          <a href="{{ product.url }}" class="quick-buy-modal__view-more link">
+            {{- 'product.general.view_details' | t -}}
+          </a>
+        </div>
+        {% if product.metafields.custom.style_with_product.value %}
+          <p class="h3 text-start">You may also like</p>
+          <div class="h-stack gap-2 align-start">
+            {% for product in product.metafields.custom.style_with_product.value %}
+              {% if product_count == 2 %}
+                {% break %}
+              {% endif %}
+              {% if product.available %}
+                <a href="{{product.url  }}">
+                  <div class="v-stack gap-1.5">
+                    {{ product.featured_image | image_url: width: 300 | image_tag }}
+                    <div class="text-xxs">
+                      <div class="text-center">{{ product.title }}</div>
+                    </div>
+                  </div>
+                </a>
+                <div class="hidden">{% increment product_count %}</div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</template>

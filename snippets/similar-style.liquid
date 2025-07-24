@@ -1,0 +1,377 @@
+<style>
+
+  @media screen and (max-width: 999px){
+    .product-list--carousel-{{section.id}} {
+        --product-list-card-width: min(300px, 47%);
+        gap: 4%;
+    }
+  }
+  @media screen and (max-width: 999px){
+    .product-list:not(.product-list--carousel) {
+        margin-inline: 0;
+        display: grid;
+        grid-template-columns: repeat(2, .5fr);
+    }
+  }
+
+  .product-list--carousel-{{section.id}} {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .product-list--carousel-{{section.id}} > * {
+    flex: 0 0 var(--product-list-card-width, 300px);
+    scroll-snap-align: start;
+  }
+
+  /* General styles for the carousels */
+  .featured-collections-carousel {
+    overflow-x: hidden; /* Prevent horizontal scroll on container */
+    position: relative;
+  }
+
+  /* Hide all carousel items by default */
+  .featured-collections-carousel__item {
+    display: none;
+  }
+  /* Show only active carousel item */
+  .featured-collections-carousel__item.is-selected {
+    display: block;
+  }
+
+  /* Pair it With slider styles */
+  .pw-container {
+    margin: 24px 0;
+  }
+ .pw-wrapper {
+  position: relative;
+  overflow: hidden; /* critical: hide overflow for a true carousel */
+}
+.pw-slider {
+  display: flex;
+  gap: 12px;
+  /* REMOVE: overflow-x: auto; */
+  /* REMOVE: scroll-snap-type, scroll-behavior, -webkit-overflow-scrolling */
+  /* REMOVE: scroll-snap-type: x mandatory; */
+  /* REMOVE: scroll-behavior: smooth; */
+  /* REMOVE: -webkit-overflow-scrolling: touch; */
+  /* REMOVE: scroll-snap-align from .pw-item if you wish, but it doesn't harm */
+  will-change: transform;
+  user-select: none;
+  cursor: grab;
+  touch-action: pan-y; /* allow vertical swipe only */
+}
+.pw-slider.grabbing {
+  cursor: grabbing;
+}
+.pw-slider::-webkit-scrollbar {
+  display: none;
+}
+
+  .pw-slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* arrows */
+  .pw-arrow {
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 30px;
+    color: rgba(0,0,0,0.6);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+  }
+  .pw-wrapper:hover .pw-arrow {
+    opacity: 1;
+  }
+  .pw-arrow--left { left: 10px; }
+  .pw-arrow--right { right: 10px; }
+  .pw-arrow:hover { color: rgba(0,0,0,0.9); }
+
+  @media only screen and (max-width: 768px) {
+    .pw-arrow { display: none; }
+    .pw-heading {
+      margin-bottom: 20px;
+      font-size: 16px;
+      text-align: center;
+      font-weight: 400;
+    }
+  }
+
+  .pw-item {
+    flex: 0 0 auto;
+    width: 145px; /* adjust if needed */
+    scroll-snap-align: start;
+  }
+</style>
+
+{% assign preorder_product = 'ecru-airy-linen-long-kurta-copy__navy-blue-airy-linen-long-kurta-copy-1__ecru-airy-linen-short-kurta-1__navy-blue-airy-linen-short-kurta-1__white-airy-linen-short-kurta-1__white-airy-linen-long-kurta-1' %}
+{% assign pre_p_url = preorder_product | split: '__' %}
+
+<div class="">
+  <div class="section-stack">
+    {%- assign wrapper_carousel_id = 'featured-collections-carousel-' | append: section.id -%}
+
+    <div class="v-stack justify-self-center gap-4 text-center sm:gap-5">
+      <carousel-navigation
+        align-selected
+        class="featured-collections-navigation scroll-area bleed"
+        aria-controls="{{ wrapper_carousel_id }}"
+      >
+        <button class="h4 featured-carousel-btn" data-target="similar-style" aria-current="true">Similar style</button>
+        <!-- <button class="h4 featured-carousel-btn" data-target="pair-it-with" aria-current="false">Pair it With</button> -->
+      </carousel-navigation>
+    </div>
+
+    <featured-collections-carousel id="{{ wrapper_carousel_id }}" class="featured-collections-carousel">
+
+      <!-- Similar Style Carousel -->
+      <div class="featured-collections-carousel__item is-selected" data-carousel-item="similar-style">
+        {%- capture product_list -%}
+          {%- for product in collection1.products  -%}
+            {% if pre_p_url contains product.handle %}{% continue %}{% endif %}
+            {%- render 'product-card', product: product, reveal: true, hide_product_information: false -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- assign product_carousel_id = 'featured-collections-product-list-carousel-' | append: 'sndmfjwnbevfmnjwhvnncvjhwev' -%}
+        {% if collection1.products.size > 0 %}
+          <product-list class="floating-controls-container floating-controls-container--inside floating-controls-container--on-hover">
+            <scroll-carousel
+              id="{{ product_carousel_id }}"
+              group-cells
+              allow-drag
+              class="product-list product-list--carousel product-list--carousel-{{section.id}} scroll-area bleed md:unbleed"
+            >
+              {{- product_list -}}
+            </scroll-carousel>
+            <button
+              is="carousel-prev-button"
+              type="button"
+              class="prev-next-button prev-next-button--prev circle-button hover:animate-icon-inline"
+              aria-controls="{{ product_carousel_id }}"
+              disabled
+            >
+              <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+              {%- render 'icon' with 'arrow-left', direction_aware: true -%}
+            </button>
+            <button
+              is="carousel-next-button"
+              type="button"
+              class="prev-next-button prev-next-button--next circle-button hover:animate-icon-inline"
+              aria-controls="{{ product_carousel_id }}"
+            >
+              <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+              {%- render 'icon' with 'arrow-right', direction_aware: true -%}
+            </button>
+          </product-list>
+        {% else %}
+          <h2 class="">NO PRODUCTS</h2>
+        {% endif %}
+      </div>
+
+      <!-- Pair It With Carousel -->
+      <div class="featured-collections-carousel__item" data-carousel-item="pair-it-with">
+        <div class="pw-container" id="pair-it-with">
+          <div class="pw-wrapper">
+            <button class="pw-arrow pw-arrow--left" aria-label="Scroll left">‹</button>
+            
+            {%- assign pair_it_with_carousel_id = 'pair-it-with-carousel-' | append: section.id -%}
+            
+            <scroll-carousel
+              id="{{ pair_it_with_carousel_id }}"
+              group-cells
+              allow-drag
+              class="pw-slider product-list--carousel product-list--carousel-{{section.id}} scroll-area bleed"
+              tabindex="0"
+              role="region"
+              aria-label="Pair it With products carousel"
+            >
+              {%- assign swp_list = product.metafields.custom.style_with_product.value -%}
+              {%- for swp_prod in swp_list -%} 
+                {%- if swp_prod and swp_prod.available -%}
+                  <div class="pw-item">
+                    {%- render 'product-card',
+                      product: swp_prod,
+                      show_quick_buy: false,
+                      show_rating: true,
+                      show_prices: true,
+                      show_badges: true
+                    -%}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </scroll-carousel>
+            
+            <button class="pw-arrow pw-arrow--right" aria-label="Scroll right">›</button>
+          </div>
+        </div>
+      </div>
+      
+    </featured-collections-carousel>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Tab buttons switching carousel content
+  const buttons = document.querySelectorAll('.featured-carousel-btn');
+  const items = document.querySelectorAll('.featured-collections-carousel__item');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+
+      buttons.forEach(b => b.setAttribute('aria-current', 'false'));
+      btn.setAttribute('aria-current', 'true');
+
+      items.forEach(item => {
+        if (item.getAttribute('data-carousel-item') === target) {
+          item.classList.add('is-selected');
+        } else {
+          item.classList.remove('is-selected');
+        }
+      });
+    });
+  });
+
+  // ---- PAIR IT WITH CAROUSEL LOGIC ----
+  const wrapper = document.querySelector('.pw-wrapper');
+  if (wrapper) {
+    const slider = wrapper.querySelector('.pw-slider');
+    const leftBtn = wrapper.querySelector('.pw-arrow--left');
+    const rightBtn = wrapper.querySelector('.pw-arrow--right');
+    const items = Array.from(slider.querySelectorAll('.pw-item'));
+    if (!items.length) return;
+
+    let currentIndex = 0;
+    let itemWidth = 0;
+    let gap = 0;
+    let visibleCount = 1;
+
+    function updateMetrics() {
+      gap = parseFloat(window.getComputedStyle(slider).gap) || 0;
+      itemWidth = items[0].offsetWidth + gap;
+
+      const width = wrapper.offsetWidth || window.innerWidth;
+      if (width < 768) visibleCount = Math.floor(width / itemWidth) || 1;
+      else if (width < 1024) visibleCount = Math.floor(width / itemWidth) || 2;
+      else visibleCount = Math.floor(width / itemWidth) || 3;
+    }
+    function clamp(idx) {
+      return Math.max(0, Math.min(idx, items.length - visibleCount));
+    }
+    function goTo(idx, withTransition = true) {
+      currentIndex = clamp(idx);
+      slider.style.transition = withTransition ? 'transform 0.35s cubic-bezier(.4,0,.2,1)' : 'none';
+      slider.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
+      updateArrows();
+    }
+    function updateArrows() {
+      leftBtn.style.opacity = currentIndex > 0 ? '1' : '0';
+      rightBtn.style.opacity = currentIndex < (items.length - visibleCount) ? '1' : '0';
+    }
+
+    // ARROW BUTTONS
+    leftBtn.addEventListener('click', () => goTo(currentIndex - 1));
+    rightBtn.addEventListener('click', () => goTo(currentIndex + 1));
+    wrapper.addEventListener('mouseenter', updateArrows);
+    wrapper.addEventListener('mouseleave', () => {
+      leftBtn.style.opacity = '0';
+      rightBtn.style.opacity = '0';
+    });
+
+    // DRAG/SWIPE LOGIC (no vertical scroll trap!)
+    let dragging = false;
+    let startX = 0, startY = 0, dragDelta = 0, locked = false, isHorizontal = false;
+    function pointerDown(e) {
+      dragging = true;
+      startX = (e.touches ? e.touches[0].pageX : e.pageX);
+      startY = (e.touches ? e.touches[0].pageY : e.pageY);
+      dragDelta = 0;
+      locked = false;
+      isHorizontal = false;
+      slider.classList.add('grabbing');
+      slider.style.transition = 'none';
+    }
+    function pointerMove(e) {
+      if (!dragging) return;
+      const x = (e.touches ? e.touches[0].pageX : e.pageX);
+      const y = (e.touches ? e.touches[0].pageY : e.pageY);
+      const dx = x - startX;
+      const dy = y - startY;
+
+      if (!locked) {
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+          isHorizontal = Math.abs(dx) > Math.abs(dy);
+          locked = true;
+        }
+      }
+
+      if (locked && isHorizontal) {
+        dragDelta = dx;
+        slider.style.transform = `translateX(-${currentIndex * itemWidth - dragDelta}px)`;
+        if (e.cancelable) e.preventDefault();
+      }
+      // if not horizontal, allow vertical scroll as normal
+    }
+    function pointerUp(e) {
+      if (!dragging) return;
+      dragging = false;
+      slider.classList.remove('grabbing');
+      slider.style.transition = '';
+
+      if (locked && isHorizontal) {
+        let movedSlides = 0;
+        if (Math.abs(dragDelta) > itemWidth * 0.25) {
+          movedSlides = dragDelta > 0 ? -1 : 1;
+        }
+        goTo(currentIndex + movedSlides);
+      } else {
+        goTo(currentIndex);
+      }
+    }
+
+    // Mouse events
+    slider.addEventListener('mousedown', pointerDown);
+    document.addEventListener('mousemove', pointerMove);
+    document.addEventListener('mouseup', pointerUp);
+
+    // Touch events
+    slider.addEventListener('touchstart', pointerDown, { passive: true });
+    slider.addEventListener('touchmove', pointerMove, { passive: false });
+    slider.addEventListener('touchend', pointerUp);
+
+    // Resize
+    window.addEventListener('resize', () => {
+      updateMetrics();
+      goTo(currentIndex, false);
+    });
+
+    // Initial setup
+    updateMetrics();
+    goTo(0, false);
+  }
+
+  // ---- "Similar Style" CAROUSEL BUTTON LOGIC (unchanged) ----
+  const carousels = document.querySelectorAll('.product-list--carousel-{{section.id}}');
+  carousels.forEach(carousel => {
+    const prevButton = carousel.parentElement.querySelector('[is="carousel-prev-button"]');
+    const nextButton = carousel.parentElement.querySelector('[is="carousel-next-button"]');
+    if (prevButton && nextButton) {
+      prevButton.addEventListener('click', () => {
+        carousel.scrollBy({ left: -carousel.offsetWidth, behavior: 'smooth' });
+      });
+      nextButton.addEventListener('click', () => {
+        carousel.scrollBy({ left: carousel.offsetWidth, behavior: 'smooth' });
+      });
+    }
+  });
+});
+</script>

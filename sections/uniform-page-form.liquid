@@ -1,0 +1,203 @@
+<style>
+  .upf input ,.upf .input{
+    border-bottom: .5px solid #333;
+    outline: none;
+    height:24px;
+    font-size:11px;
+    font-weight:300;
+    
+  }
+  .upf_container .h6{
+    color:#8D8D8D;
+    font-weight:300;
+  }
+  .upf_container .h2{
+    font-weight:500;
+  }
+  .upf label{
+    font-size:10px;
+        color: black;
+  }
+ .upf .upf_container{
+        background: white;
+    padding: 31px 22px;
+  }
+  .section-upf{
+    position: relative;
+    z-index: 2;
+    margin-top: -32px;
+  }
+  .upf .button{
+    margin-top:20px;
+    margin-inline:24px;
+    font-size:14px;
+    font-weight:500;
+  }
+  .city_phone{
+display:grid;
+    grid-template-columns:1fr 1fr;
+    align-items:start;
+  }
+</style>
+<div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %}">
+  
+<div class="container container--xs upf">
+  <div class="upf_container v-stack gap-10"> 
+  <div class="text-center v-stack gap-2">
+  <p class="h2">Register Now</p>
+  <p class="h6">Let’s get started</p>
+  </div>
+  
+  <form class="v-stack gap-5" id="uc_myForm">
+    <div class="v-stack">
+      <label for="name">Name</label>
+      <input type="text" id="uc_name" required />
+      <small style="color:red;font-size:10px"></small>
+    </div>
+    <div class="v-stack">
+      <label for="org_name">Organization Name</label>
+      <input type="text" id="uc_org_name" required />
+      <small style="color:red;font-size:10px"></small>
+    </div>
+    <div class="gap-4 city_phone">
+    <div class="v-stack">
+      <label for="city">City</label>
+      <input type="text" id="uc_city" required />
+      <small style="color:red;font-size:10px"></small>
+    </div>
+    <div class="v-stack">
+      <label for="mobile">Contact No.</label>
+      <div class="h-stack gap-1">
+        <span class="" style="font-size:11px;">+91</span>
+      <input type="tel" placeholder="" id="uc_mobile" required />
+      </div>
+      <small style="color:red;font-size:10px"></small>
+    </div>
+    </div>
+      <div class="v-stack">
+      <label for="email">Email</label>
+      <input type="email" id="uc_email" required />
+      <small style="color:red;font-size:10px"></small>
+    </div>
+      <div class="v-stack">
+      <label for="quantity">Product Quantity</label>
+      <input type="tel" id="uc_quantity" required />
+        <small style="color:red;font-size:10px"></small>
+    </div>
+
+    <button class="button" id="uc_submit">Enquire Now</button>
+  </form>
+  </div>
+</div>
+</div>
+   <script>
+
+     function navigateToElement(element) {
+    const defaults = {
+        behavior: 'smooth', // or 'auto'
+        block: 'start',    // or 'center', 'end', 'nearest'
+        inline: 'nearest'  // or 'start', 'center', 'end'
+    };
+
+    // Merge default options with provided options
+    const scrollOptions = { ...defaults };
+    element.innerHTML = 'Please enter a correct value!';
+    // element.scrollIntoView(scrollOptions);
+}
+
+        function isValidPhoneNumber(info){
+              const regex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+             return regex.test(info) && info[0] !== '0';
+            }
+  function formValidation(element){
+    if(element.id == 'uc_mobile'){
+    if(isValidPhoneNumber(element.value.trim())){
+      return element.value.trim()
+    }else{
+      navigateToElement(element.parentElement.nextElementSibling)
+    }
+}
+    if(element.value.trim()){
+      return element.value.trim()
+    }else{
+      navigateToElement(element.nextElementSibling)
+    }
+  }
+    document.getElementById("uc_myForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const  date = new Date();
+          const formData = {
+            date:`${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`,
+            time:`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`,
+            name: formValidation(document.getElementById("uc_name")),
+            organisationName: formValidation(document.getElementById("uc_org_name")),
+            city: formValidation(document.getElementById("uc_city")),
+            mobile: formValidation(document.getElementById("uc_mobile")),
+            email: formValidation(document.getElementById("uc_email")),
+            quantity: formValidation(document.getElementById("uc_quantity")),
+          };
+          
+          console.log(formData)
+          
+          // Check if all values are non-empty
+const allHaveValues = Object.values(formData).every(value => {
+  return value !== null && value !== undefined && value !== "";
+});
+      if(allHaveValues){
+        console.log(allHaveValues);
+        return;
+      }
+          // Replace with your Google Apps Script Web App URL
+          const scriptURL =
+            "https://script.google.com/macros/s/AKfycbyH7ciS20h54QFl2uayseHrX6Y81OtJZrI5iFKf8Aw3JUmE2UxmH1iMit1BslRVPxea/exec";
+            uc_myForm.querySelectorAll('small').forEach(e=>e.innerHTML="");
+          fetch(scriptURL, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify(formData),
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => response.text())
+            .then((data) => {
+              alert("Data saved successfully!");
+              document.getElementById("uc_myForm").reset();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            })
+        });
+    </script>
+
+{% schema %}
+  {
+    "name": "uniform page form",
+    "class": "section-upf",
+      "settings": [
+    {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ],
+    "presets": [
+      {"name":"Uniform page form"}
+    ]
+  }
+{% endschema %}

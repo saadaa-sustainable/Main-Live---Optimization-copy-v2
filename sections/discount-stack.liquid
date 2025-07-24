@@ -1,0 +1,98 @@
+  <div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}">
+      <div class="{% unless section.settings.page_width == 'full' %}container container--{{ section.settings.page_width }}{% endunless %}">
+        <div class="section-stack">
+          {% if section.settings.heading != blank %}
+        <p class="h2 text-center">{{ section.settings.heading }}</p>
+          {% endif %}
+          <div class="discount-offer-wrapper h-stack gap-5 align-end justify-center">
+            <div>
+              <div class="d-child d-child-1 h-stack justify-center">BUY 4 OR MORE</div>
+              <div class="d-child d-child-2 h-stack justify-center">BUY 3</div>
+              <div class="d-child d-child-3 h-stack justify-center">BUY 2</div>
+              <div class="d-child d-child-4 h-stack justify-center">Buy more</div>
+            </div>
+            <div >
+              <div class="d-child d-child-1 h-stack justify-center"style="height:137px;">25%</div>
+              <div class="d-child d-child-2 h-stack justify-center">20%</div>
+              <div class="d-child d-child-3 h-stack justify-center">15%</div>
+              <div class="d-child d-child-4 h-stack justify-center">Get even more</div>
+            </div>
+          </div>
+          {% if section.settings.content != blank %}
+          <div class="d-content text-center">{{ section.settings.content }}</div>
+            {% endif %}
+        </div>
+      </div>
+  </div>
+<style>
+  .container {
+    margin-inline:40px;
+    --distance-to-bleed: max(40px, 50% - var(--container-max-width) / 2);
+  }
+  .d-child {
+    width:83px;
+    font-weight:500;
+    flex-shrink:0;
+    text-align:center;
+    font-style: italic;
+  }
+  .d-child-1{
+    background: #FFFBF0;
+    height:117px;
+  }
+  .d-child-2{
+    background: #FFF8E5;
+    height:108px;
+  }
+  .d-child-3{
+    background: #F5F1E8;
+    height:77px;
+  }
+  .d-child-4{
+    background: #E6E1D3;
+    height:54px;
+    margin-top:8px;
+  }
+  
+</style>
+{% schema %}
+  {
+    "name": "Section name",
+    "settings": [
+        {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+     {
+       "type":"inline_richtext",
+       "id":"heading",
+       "label": "Heading",
+       "default":"Heading"
+     } ,
+     {
+       "type":"richtext",
+       "id":"content",
+       "label": "Content",
+       "default":"<p>Paste content here</p>"
+     } ,
+      
+    {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+    ],
+    "presets": [
+      {"name":"Discount Offer Stack"}
+    ]
+  }
+{% endschema %}

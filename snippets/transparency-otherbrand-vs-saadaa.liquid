@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Saadaa vs Other Brands</title>
+  <style>
+    :root {
+      --step-gap: 40px;         /* vertical space between steps */
+      --icon-size: 24px;        /* size of your icons */
+      --text-size: 16px;        /* label font-size */
+      --rupee-size: 18px;       /* ₹ font-size */
+      --brand-color: #C36A4E;   /* Saadaa accent color */
+    }
+
+    /* container */
+    .comparison {
+      padding: 20px;
+      color: #333;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    /* tabs – desktop default (mobile unchanged) */
+    .tabs {
+      display: flex;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      background: #fff;
+      color: #666;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    .tab.active {
+      background: #faf9f7;
+      color: var(--brand-color);
+    }
+
+    /* two columns side by side */
+    .columns {
+      display: flex;
+      gap: 10px;
+    }
+    .column {
+      flex: 1;
+      min-width: 0;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Other Brands vertical connectors */
+    .column.other .step:not(:last-child) .rupee-wrapper::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: 0.5px;
+      height: 33px;
+      background: var(--brand-color);
+    }
+
+    /* Saadaa continuous connector */
+    .column.saadaa::before {
+      content: "";
+      position: absolute;
+      left: calc(10px + var(--rupee-size) / 2);
+      top: calc(var(--rupee-size) + 8px);
+      bottom: calc(var(--rupee-size) + 9px);
+      width: 0.5px;
+      background: var(--brand-color);
+    }
+    .column.saadaa .step.spacer {
+      visibility: hidden;
+      margin-bottom: calc(var(--step-gap) * 7.2);
+      height: 0;
+    }
+
+    /* step list */
+    .step-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      margin-bottom: var(--step-gap);
+    }
+    .step:last-child {
+      margin-bottom: 0;
+    }
+
+    /* rupee wrapper */
+    .rupee-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: var(--icon-size);
+      margin-right: 10px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* icon */
+    .icon {
+      width: var(--icon-size);
+      height: var(--icon-size);
+      flex-shrink: 0;
+      margin-right: 8px;
+      object-fit: contain;
+    }
+
+    /* label text */
+    .text {
+      font-size: var(--text-size);
+      font-weight: bold;
+      flex-shrink: 1;
+      word-break: break-word;
+    }
+    .column.other .text {
+      font-weight: 400;
+    }
+    .column.other .step:first-child .text,
+    .column.other .step:last-child .text {
+      font-weight: 700;
+    }
+    .column.saadaa .text {
+      color: var(--brand-color);
+    }
+
+    /* tagline */
+    .tagline {
+      text-align: center;
+      margin-top: 40px;
+      font-style: italic;
+      color: #555;
+    }
+    .tagline strong {
+      display: block;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* mobile tweaks & pill-tabs (unchanged) */
+    @media (max-width: 500px) {
+      :root {
+        --step-gap: 30px;
+        --icon-size: 20px;
+        --text-size: 11px;
+        --rupee-size: 16px;
+      }
+
+.tabs.desktop-tabs {
+  display: none;
+}
+
+
+      .tabs {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin: 0 auto 20px;
+        background: transparent;
+        border: none;
+      }
+      .tab {
+        flex: 0 0 auto;
+        padding: 6px 20px;
+        background: #fff;
+        border: 1px solid #EEE3DD;
+        border-radius: 5px;
+        color: #666;
+        font-size: 14px;
+      }
+      .tab.active {
+        padding: 0;
+        background: none;
+        border: none;
+      }
+      .tab.active::before {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: url('https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Untitled-4_3_1.png?v=1746849951') center/cover no-repeat;
+        border-radius: 30px;
+      }
+      .tab.active span {
+        position: relative;
+        z-index: 1;
+        color: #333;
+      }
+      .columns {
+        gap: 6px;
+      }
+      .tab:last-child {
+        background: #F6F3F1;
+      }
+    }
+
+    /* desktop layout updates only */
+    @media (min-width: 768px) {
+      /* hide original top tabs except desktop-tabs */
+      .tabs:not(.desktop-tabs) {
+        display: none;
+      }
+      /* remove old pseudo-headings */
+      .column.other::before,
+      .column.saadaa::before {
+        content: none !important;
+      }
+      /* desktop-only tabs above columns */
+      .desktop-tabs {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 42px;
+        margin-top: 42px;
+    }
+.desktop-tabs .tabactive {
+        flex: 0 0 auto;
+        padding: 6px 20px;
+       
+        border: 1px solid #EEE3DD;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+      }
+
+
+
+
+
+
+      .desktop-tabs .tab {
+        flex: 0 0 auto;
+        padding: 6px 20px;
+        background: #faf9f7;
+        border: 1px solid #EEE3DD;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      /* original desktop columns */
+      .columns {
+        flex-direction: column;
+        gap: 0;
+      }
+      .column.other,
+      .column.saadaa {
+        width: 100%;
+      }
+      
+    .comparison {
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+
+      .column.other .step-list,
+      .column.saadaa .step-list {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+      }
+      .column.other .step-list::before,
+      .column.saadaa .step-list::before {
+        content: "";
+        position: absolute;
+        top: calc(var(--rupee-size) / 2);
+        left: 7px;
+        right: 21px;
+        height: 1px;
+        background: var(--brand-color);
+        z-index: 0;
+      }
+      .column.other .step:not(:last-child) .rupee-wrapper::after {
+        content: none;
+      }
+      .column.other .step,
+      .column.saadaa .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+      }
+      .rupee-wrapper {
+        margin-bottom: 8px;
+        background: #fff;
+        padding: 0 4px;
+        width: 48px;
+      }
+      .icon { margin-bottom: 8px; }
+      .column.saadaa .step.spacer { display: none; }
+      .tagline {
+        margin-top: 65px;
+        font-size: 24px;
+        display: flex;
+        justify-content: left;
+        align-items: center;
+      }
+      .tagline br { display: none; }
+      .tagline strong { margin-left: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="comparison">
+    <!-- original mobile tabs (unchanged) -->
+    <div class="tabs">
+      <button class="tab">OTHER BRANDS</button>
+      <button class="tab">
+        <img
+          class="tab-img"
+          src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Untitled-4_3.png?v=1746849590"
+          alt="सादा | SAADAA"
+        />
+      </button>
+    </div>
+
+    <div class="columns">
+      <!-- Other Brands Column -->
+      <div class="column other">
+        <!-- desktop-only tab above this column -->
+        <div class="tabs desktop-tabs">
+          <button class="tabactive">OTHER BRANDS</button>
+        </div>
+        <ul class="step-list">
+          <li class="step">
+            <span class="rupee-wrapper">₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Vector_4.svg?v=1746788656"
+              alt="Factory"
+            />
+            <span class="text">Factory</span>
+          </li>
+          <li class="step">
+            <span class="rupee-wrapper">₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Vector_5.svg?v=1746788656"
+              alt="Sourcing Agent"
+            />
+            <span class="text">Sourcing Agent</span>
+          </li>
+          <li class="step">
+            <span class="rupee-wrapper">₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Vector_6.svg?v=1746788656"
+              alt="Warehouse"
+            />
+            <span class="text">Warehouse</span>
+          </li>
+          <li class="step">
+            <span class="rupee-wrapper">₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Vector_7.svg?v=1746788656"
+              alt="Brand Markup"
+            />
+            <span class="text">Brand Markup</span>
+          </li>
+          <li class="step">
+            <span class="rupee-wrapper">₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275100.svg?v=1746788656"
+              alt="Marketplace / Retail store"
+            />
+            <span class="text">Market Place / Retail store</span>
+          </li>
+          <li class="step">
+            <span class="rupee-wrapper">₹₹₹₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275102.svg?v=1746788656"
+              alt="Consumer"
+            />
+            <span class="text">Consumer</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Saadaa Column -->
+      <div class="column saadaa">
+        <!-- desktop-only tab above this column -->
+        <div class="tabs desktop-tabs">
+          <button class="tab">
+            <img
+              class="tab-img"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Untitled-4_3.png?v=1746849590"
+              alt="सादा | SAADAA"
+            />
+          </button>
+        </div>
+        <ul class="step-list">
+          <li class="step">
+            <span class="rupee-wrapper">₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Vector_8.svg?v=1746788656"
+              alt="Factory"
+            />
+            <span class="text">Factory</span>
+          </li>
+          <li class="step spacer"></li>
+          <li class="step">
+            <span class="rupee-wrapper">₹</span>
+            <img
+              class="icon"
+              src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275117.svg?v=1746788656"
+              alt="Consumer"
+            />
+            <span class="text">Consumer</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tagline -->
+    <p class="tagline">
+      Through it all,<br />
+      <strong>we never compromise on quality.</strong>
+    </p>
+  </div>
+</body>
+</html>

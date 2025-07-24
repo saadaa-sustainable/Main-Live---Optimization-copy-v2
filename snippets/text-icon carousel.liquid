@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive Icon Quote</title>
+  <style>
+    .testimonial-section {
+      text-align: center;
+    }
+
+    .testimonial-quote-text {
+      font-size: 28px;
+      margin-bottom: 80px;
+    }
+
+    .testimonial-icons-container {
+      display: flex;
+      gap: 30px;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 0 10px 10px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .testimonial-icons-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .testimonial-icon {
+      scroll-snap-align: center;
+      cursor: pointer;
+      position: relative;
+      padding-bottom: 16px;
+      flex: none;
+      transition: filter 0.3s ease;
+    }
+
+    .testimonial-icon img {
+      height: 40px;
+      filter: grayscale(70%) brightness(110%) contrast(90%);
+      transition: filter 0.3s ease;
+    }
+
+    .testimonial-icon.active img {
+      filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0%) contrast(100%);
+    }
+
+    @media (min-width: 769px) {
+      .testimonial-icon {
+        flex: 0 0 auto;
+      }
+      .testimonial-icons-container {
+        justify-content: center;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .testimonial-quote-text {
+        font-size: 20px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+
+      .testimonial-icon {
+        flex: 0 0 calc((100% - 60px) / 3);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="testimonial-section">
+    <p class="testimonial-quote-text">Featured On</p>
+
+    <div class="testimonial-icons-container" id="iconContainer">
+      <div class="testimonial-icon active">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Untitled-1-02_1.svg?v=1744090771" alt="Icon 1" />
+      </div>
+      <div class="testimonial-icon">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275289.svg?v=1744288908" alt="Icon 2" />
+      </div>
+      <div class="testimonial-icon">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275268.svg?v=1744126695" alt="Icon 4" />
+      </div>
+      <div class="testimonial-icon">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group.svg?v=1744126740" alt="Icon 5" />
+      </div>
+      <div class="testimonial-icon">
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275271.svg?v=1744126695" alt="Icon 6" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const icons = document.querySelectorAll(".testimonial-icon");
+      const container = document.getElementById("iconContainer");
+      let currentIndex = 0;
+      let interval;
+
+      const rotateIcons = () => {
+        icons.forEach(icon => icon.classList.remove("active"));
+        const activeIcon = icons[currentIndex];
+        activeIcon.classList.add("active");
+
+        const offset = activeIcon.offsetLeft - container.offsetWidth / 2 + activeIcon.offsetWidth / 2;
+        container.scrollTo({ left: offset, behavior: "smooth" });
+      };
+
+      const startRotation = () => {
+        interval = setInterval(() => {
+          currentIndex = (currentIndex + 1) % icons.length;
+          rotateIcons();
+        }, 3000);
+      };
+
+      startRotation();
+
+      icons.forEach((icon, index) => {
+        icon.addEventListener("click", () => {
+          clearInterval(interval);
+          currentIndex = index;
+          rotateIcons();
+          startRotation();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

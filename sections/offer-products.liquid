@@ -1,0 +1,124 @@
+<div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}">
+  <div
+    class="{% unless section.settings.page_width == 'full' %}container container--{{ section.settings.page_width }}{% endunless %}"
+    id="{{section.settings.nav_id }}"
+  >
+    <div class="op_product_container">
+      {%- for product in section.settings.products_list -%}
+        {%- render 'product-card', product: product, reveal: false, hide_product_information: false, stacked: true -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+<style>
+       .op_product_container{
+         display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap:2.5rem;
+         column-gap:.8rem;
+  align-items: flex-start;
+       }
+       @media screen and (min-width:699px){
+               .op_product_container{
+                 display: grid;
+                 grid-template-columns: 1fr 1fr 1fr;
+                 row-gap:2.5rem;
+                 column-gap:1.2rem;
+                align-items: center;
+       }
+       }
+       @media screen and (min-width:1200px){
+               .op_product_container{
+                 display: grid;
+                 grid-template-columns: 1fr 1fr 1fr;
+                 row-gap:2.5rem;
+                 column-gap:2rem;
+                align-items: center;
+       }        
+       }
+
+
+
+  @media screen and (max-width:644px){
+.product-card__figure .nav-badge-new {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0px;
+}
+ }
+</style>
+{% schema %}
+{
+  "name": "Offer product",
+  "settings": [
+  {
+    "type": "checkbox",
+    "id": "separate_section_with_border",
+    "label": "t:global.section.separate_section_with_border",
+    "default": true
+  },
+  {
+       "type": "color",
+    "id":"section_color",
+    "label":"Section Background color"
+  },
+    {
+      "type":"product_list",
+      "id":"products_list",
+      "label": "select Product",
+    },
+  {
+    "type": "select",
+    "id": "page_width",
+    "label": "Section width",
+    "options": [
+      {
+        "value": "xs",
+        "label": "t:global.sizes.x_small"
+      },
+      {
+        "value": "sm",
+        "label": "t:global.sizes.small"
+      },
+      {
+        "value": "md",
+        "label": "t:global.sizes.medium"
+      },
+      {
+        "value": "lg",
+        "label": "t:global.sizes.large"
+      },
+      {
+        "value": "xl",
+        "label": "t:global.sizes.x_large"
+      },
+      {
+        "value": "container",
+        "label": "Container"
+      },
+      {
+        "value": "full",
+        "label": "t:global.image.width_options.full_width"
+      }
+    ],
+    "default": "sm"
+  },
+  {
+    "type": "checkbox",
+    "id": "remove_upper_vertical_spacing",
+    "label": "Remove upper verticle spacing",
+    "default": false
+  },
+    {
+    "type": "checkbox",
+    "id": "remove_lower_vertical_spacing",
+    "label": "Remove lower verticle spacing",
+    "default": false
+  }
+],
+  "presets": [
+    {"name":"offer product"}
+  ]
+}
+{% endschema %}

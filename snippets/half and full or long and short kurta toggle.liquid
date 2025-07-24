@@ -1,0 +1,223 @@
+{%- comment -%}
+  Normalize product title:
+{%- endcomment -%}
+{% assign normalized_title = product.title | downcase | replace: '
+', ' ' | replace: '  ', ' ' | replace: '  ', ' ' %}
+
+{%- comment -%}
+  Detect product type
+{%- endcomment -%}
+{% assign is_shirt = false %}
+{% assign is_full_sleeve = false %}
+{% assign is_half_sleeve = false %}
+{% assign is_kurta = false %}
+{% assign is_short_kurta = false %}
+{% assign is_long_kurta = false %}
+
+{% if normalized_title contains '100% linen shirt' %}
+  {% assign is_shirt = true %}
+  {% assign is_full_sleeve = true %}
+{% endif %}
+{% if normalized_title contains 'half sleeve shirt' %}
+  {% assign is_shirt = true %}
+  {% assign is_half_sleeve = true %}
+{% endif %}
+{% if normalized_title contains 'short kurta' %}
+  {% assign is_kurta = true %}
+  {% assign is_short_kurta = true %}
+{% endif %}
+{% if normalized_title contains 'long kurta' %}
+  {% assign is_kurta = true %}
+  {% assign is_long_kurta = true %}
+{% endif %}
+
+{%- comment -%}
+  Product reference metafields
+{%- endcomment -%}
+{% assign full_sleeve_product = product.metafields.custom.full_sleeve_toggle_link1.value %}
+{% assign half_sleeve_product = product.metafields.custom.half_sleeve_toggle_link1.value %}
+{% assign short_kurta_product = product.metafields.custom.short_kurta_toggle_link1.value %}
+{% assign long_kurta_product = product.metafields.custom.long_kurta_toggle_link1.value %}
+
+{%- comment -%}
+  Draft check
+{%- endcomment -%}
+{% assign is_draft = false %}
+{% if product.status and product.status == 'draft' %}
+  {% assign is_draft = true %}
+{% endif %}
+{% assign full_sleeve_is_draft = false %}
+{% if full_sleeve_product and full_sleeve_product.status == 'draft' %}
+  {% assign full_sleeve_is_draft = true %}
+{% endif %}
+{% assign half_sleeve_is_draft = false %}
+{% if half_sleeve_product and half_sleeve_product.status == 'draft' %}
+  {% assign half_sleeve_is_draft = true %}
+{% endif %}
+{% assign short_kurta_is_draft = false %}
+{% if short_kurta_product and short_kurta_product.status == 'draft' %}
+  {% assign short_kurta_is_draft = true %}
+{% endif %}
+{% assign long_kurta_is_draft = false %}
+{% if long_kurta_product and long_kurta_product.status == 'draft' %}
+  {% assign long_kurta_is_draft = true %}
+{% endif %}
+
+{%- comment -%}
+  Show toggles only if all involved products are not drafts
+{%- endcomment -%}
+{% assign show_shirt_toggle = false %}
+{% assign show_kurta_toggle = false %}
+
+{% if is_shirt
+      and full_sleeve_product and full_sleeve_is_draft == false
+      and half_sleeve_product and half_sleeve_is_draft == false
+      and is_draft == false %}
+  {% assign show_shirt_toggle = true %}
+{% endif %}
+
+{% if is_kurta
+      and short_kurta_product and short_kurta_is_draft == false
+      and long_kurta_product and long_kurta_is_draft == false
+      and is_draft == false %}
+  {% assign show_kurta_toggle = true %}
+{% endif %}
+
+{% if show_shirt_toggle or show_kurta_toggle %}
+<style>
+  .toggle-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .toggle-btn {
+    padding: 5px 41px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    background: white;
+    color: black;
+    transition: all 0.3s ease;
+  }
+  .toggle-btn.active {
+    background: black;
+    color: white;
+    border-color: black;
+  }
+@media(min-width:786px){
+.toggle-btn {
+    padding: 3px 52px;
+}
+}
+</style>
+
+<div>
+  <label>Product Type :</label>
+  <div class="toggle-container">
+    {% if show_shirt_toggle %}
+      <button type="button" id="btnFullSleeve" class="toggle-btn">Full Sleeve</button>
+      <button type="button" id="btnHalfSleeve" class="toggle-btn">Half Sleeve</button>
+    {% elsif show_kurta_toggle %}
+      <button type="button" id="btnShortKurta" class="toggle-btn">Short Kurta</button>
+      <button type="button" id="btnLongKurta" class="toggle-btn">Long Kurta</button>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+{% raw %}
+  function normalizeTitle(str) {
+    return str.toLowerCase().replace(/\n/g, ' ').replace(/  +/g, ' ').trim();
+  }
+  const productTitleRaw = "{% endraw %}{{ product.title | escape }}{% raw %}";
+  const productTitle = normalizeTitle(productTitleRaw);
+
+  const fullSleeveLink = "{% endraw %}{% if full_sleeve_product %}{{ full_sleeve_product.url }}{% endif %}{% raw %}";
+  const halfSleeveLink = "{% endraw %}{% if half_sleeve_product %}{{ half_sleeve_product.url }}{% endif %}{% raw %}";
+  const shortKurtaLink = "{% endraw %}{% if short_kurta_product %}{{ short_kurta_product.url }}{% endif %}{% raw %}";
+  const longKurtaLink = "{% endraw %}{% if long_kurta_product %}{{ long_kurta_product.url }}{% endif %}{% raw %}";
+
+  function setActiveToggle(type) {
+    var btnFull = document.getElementById('btnFullSleeve');
+    var btnHalf = document.getElementById('btnHalfSleeve');
+    var btnShort = document.getElementById('btnShortKurta');
+    var btnLong = document.getElementById('btnLongKurta');
+    if(type === 'full' && btnFull && btnHalf){
+      btnFull.classList.add('active');
+      btnHalf.classList.remove('active');
+    } else if(type === 'half' && btnFull && btnHalf){
+      btnHalf.classList.add('active');
+      btnFull.classList.remove('active');
+    } else if(type === 'short' && btnShort && btnLong){
+      btnShort.classList.add('active');
+      btnLong.classList.remove('active');
+    } else if(type === 'long' && btnShort && btnLong){
+      btnLong.classList.add('active');
+      btnShort.classList.remove('active');
+    }
+  }
+
+  function updateToggleBasedOnTitle() {
+    if(productTitle.includes('100% linen shirt')) {
+      setActiveToggle('full');
+    } else if(productTitle.includes('half sleeve shirt')) {
+      setActiveToggle('half');
+    } else if(productTitle.includes('short kurta')) {
+      setActiveToggle('short');
+    } else if(productTitle.includes('long kurta')) {
+      setActiveToggle('long');
+    }
+  }
+
+  updateToggleBasedOnTitle();
+
+  if(document.getElementById('btnFullSleeve')) {
+    document.getElementById('btnFullSleeve').addEventListener('click', function() {
+      if(fullSleeveLink && fullSleeveLink.trim() !== '') {
+        if(!productTitle.includes('100% linen shirt')) {
+          window.location.href = fullSleeveLink;
+        }
+        setActiveToggle('full');
+      }
+    });
+  }
+  if(document.getElementById('btnHalfSleeve')) {
+    document.getElementById('btnHalfSleeve').addEventListener('click', function() {
+      if(halfSleeveLink && halfSleeveLink.trim() !== '') {
+        if(!productTitle.includes('half sleeve shirt')) {
+          window.location.href = halfSleeveLink;
+        }
+        setActiveToggle('half');
+      }
+    });
+  }
+  if(document.getElementById('btnShortKurta')) {
+    document.getElementById('btnShortKurta').addEventListener('click', function() {
+      if(shortKurtaLink && shortKurtaLink.trim() !== '') {
+        if(!productTitle.includes('short kurta')) {
+          window.location.href = shortKurtaLink;
+        }
+        setActiveToggle('short');
+      }
+    });
+  }
+  if(document.getElementById('btnLongKurta')) {
+    document.getElementById('btnLongKurta').addEventListener('click', function() {
+      if(longKurtaLink && longKurtaLink.trim() !== '') {
+        if(!productTitle.includes('long kurta')) {
+          window.location.href = longKurtaLink;
+        }
+        setActiveToggle('long');
+      }
+    });
+  }
+
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+      updateToggleBasedOnTitle();
+    }
+  });
+{% endraw %}
+</script>
+{% endif %}

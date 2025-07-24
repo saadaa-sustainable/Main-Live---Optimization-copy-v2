@@ -1,0 +1,256 @@
+{% if request.path contains 'return_prime' %}
+  <script>
+    // State management - use proper scoping
+    const ReturnPrime = {
+      options: [],
+      selectedOptionValue: sessionStorage.getItem('selectedOptionValue') || "",
+      lastSelectedReason: sessionStorage.getItem('lastSelectedReason') || "",
+      isSecondDropdownValid: false,
+      initialized: false,
+
+      getOptions(selectedReason) {
+        const optionsMap = {
+          "I don't Like it": [
+            "It doesn't look good on me",
+            "Color is Different", 
+            "Not as shown in the image",
+            "Poor Quality",
+            "Not worth the price",
+            "Received wrong item"
+          ],
+          "Ordered by mistake": [
+            "Selected wrong product / size / color",
+            "Exchange already placed",
+            "No longer needed",
+            "Not needed anymore", 
+            "Changed mind",
+            "Someone else ordered"
+          ],
+          "Delivery Issue / Wrong Item Delivered": [
+            "Damaged by Carrier / Parcel was open",
+            "Delivered to someone else",
+            "Missing Items",
+            "Wrong Product Delivered",
+            "Packaging not intact"
+          ],
+          "TOO SMALL / TIGHT": [
+            "Length", "Waist", "Hip", "Chest", "Shoulder", 
+            "Sleeve", "Thigh", "Calf", "Foot Length"
+          ],
+          "TOO BIG / LOOSE": [
+            "Length", "Waist", "Hip", "Chest", "Shoulder",
+            "Sleeve", "Thigh", "Calf", "Foot Length"
+          ],
+          "FABRIC QUALITY IS NOT UPTO EXPECTATION": [
+            "What concerns you about fabric -",
+            "I don't like the fabric",
+            "Fabric looks old / dull", 
+            "Fabric doesn't feel Good on skin",
+            "Spots / Stains",
+            "Fabric is See Through / Transparent",
+            "Fabric is too heavy"
+          ],
+          "Defective Product Delivered": [
+            "Spots / Stains",
+            "Holes or Torn",
+            "Zip, Button, etc were Broken / Missing",
+            "Stitch Broke before or after wearing"
+          ]
+        };
+        return optionsMap[selectedReason] || [];
+      },
+
+      sendPayload(payload) {
+        document.dispatchEvent(new CustomEvent("returnprime_custom_field", { detail: payload }));
+      },
+
+      initializeReasonDropdown() {
+        if (this.initialized) return;
+        
+        console.log('Initializing reason dropdown');
+        const reasonFields = document.querySelectorAll(".select__field");
+        
+        for (const item of reasonFields) {
+          const label = item?.querySelector("label div")?.textContent?.trim() || 
+                        item?.querySelector("label")?.textContent?.trim();
+                        
+          if (label === "Reason") {
+            console.log('Found reason field');
+            const selectElement = item.querySelector("select");
+            if (!selectElement) continue;
+
+            // Restore previous selection
+            if (this.lastSelectedReason) {
+              const optionToSelect = Array.from(selectElement.options).find(
+                option => option.textContent.trim() === this.lastSelectedReason
+              );
+              if (optionToSelect) {
+                optionToSelect.selected = true;
+                this.options = this.getOptions(this.lastSelectedReason);
+                this.updateSecondDropdown();
+              }
+            }
+
+            // Add change listener
+            selectElement.addEventListener("change", (event) => {
+              const selectedOption = selectElement.selectedOptions[0];
+              const selectedReason = selectedOption?.textContent?.trim();
+              
+              console.log('Reason selected:', selectedReason);
+              this.lastSelectedReason = selectedReason;
+              sessionStorage.setItem("lastSelectedReason", selectedReason);
+              
+              this.options = this.getOptions(selectedReason);
+              this.selectedOptionValue = ""; // Reset second dropdown selection
+              sessionStorage.removeItem("selectedOptionValue");
+              this.isSecondDropdownValid = false;
+              this.updateSecondDropdown();
+            });
+
+            this.initialized = true;
+            break;
+          }
+        }
+      },
+
+      updateSecondDropdown() {
+        if (this.options.length === 0) {
+          this.removeSecondDropdown();
+          return;
+        }
+
+        console.log('Updating second dropdown with options:', this.options);
+        let secondDropDown = document.getElementById("secondDropdownContainer");
+        
+        if (!secondDropDown) {
+          secondDropDown = document.createElement("div");
+          secondDropDown.style.marginBottom = '12px';
+          secondDropDown.className = "select__field";
+          secondDropDown.id = "secondDropdownContainer";
+
+          const parentElement = document.querySelector(".line__items-list");
+          if (parentElement) {
+            parentElement.appendChild(secondDropDown);
+            console.log('Added second dropdown to parent');
+          } else {
+            console.log('Parent element not found for second dropdown');
+            return;
+          }
+        }
+
+        secondDropDown.innerHTML = `
+          <label for="more_info">Please tell us more:</label>
+          <select id="more_info">
+            <option disabled ${!this.selectedOptionValue ? 'selected' : ''} value="">-- Select an option --</option>
+            ${this.options.map(option => 
+              `<option value="${option}" ${option === this.selectedOptionValue ? "selected" : ""}>${option}</option>`
+            ).join("")}
+          </select>
+        `;
+
+        // Add event listener to the new select element
+        const moreInfoSelect = document.getElementById("more_info");
+        if (moreInfoSelect) {
+          moreInfoSelect.addEventListener("change", (event) => {
+            this.selectedOptionValue = event.target.value;
+            this.isSecondDropdownValid = Boolean(this.selectedOptionValue);
+            sessionStorage.setItem("selectedOptionValue", this.selectedOptionValue);
+            console.log('Second dropdown value selected:', this.selectedOptionValue);
+          });
+        }
+      },
+
+      removeSecondDropdown() {
+        const secondDropDown = document.getElementById("secondDropdownContainer");
+        if (secondDropDown) {
+          secondDropDown.remove();
+          this.isSecondDropdownValid = false;
+          this.selectedOptionValue = "";
+          sessionStorage.removeItem("selectedOptionValue");
+        }
+      },
+
+      validateAndSubmit() {
+        // Check if second dropdown is required and valid
+        if (this.options.length > 0 && !this.isSecondDropdownValid) {
+          alert("Please provide more information");
+          return false;
+        }
+
+        if (this.selectedOptionValue) {
+          const payload = [{ key: "Second Reason", value: this.selectedOptionValue }];
+          this.sendPayload(payload);
+        }
+        
+        return true;
+      },
+
+      handleNavigation(event) {
+        // Check if this is a next button click
+        if (event.target.classList.contains("next__btn")) {
+          if (!this.validateAndSubmit()) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            return false;
+          }
+        }
+      },
+
+      handleBackButton(event) {
+        if (event.target.classList.contains("back__btn")) {
+          // Reset initialization flag so dropdown can be re-initialized
+          this.initialized = false;
+          setTimeout(() => this.initializeReasonDropdown(), 100);
+        }
+      },
+
+      resetState() {
+        console.log('Resetting return prime state');
+        sessionStorage.removeItem("selectedOptionValue");
+        sessionStorage.removeItem("lastSelectedReason");
+        this.selectedOptionValue = "";
+        this.lastSelectedReason = "";
+        this.options = [];
+        this.isSecondDropdownValid = false;
+        this.initialized = false;
+        this.removeSecondDropdown();
+      },
+
+      init() {
+        console.log('Initializing return prime functionality');
+        
+        // Initialize with delay to ensure DOM is ready
+        setTimeout(() => this.initializeReasonDropdown(), 100);
+        
+        // Add single event listener for navigation
+        document.addEventListener("click", (event) => this.handleNavigation(event), true);
+        document.addEventListener("click", (event) => this.handleBackButton(event));
+        
+        // Handle form submissions
+        document.addEventListener("submit", (event) => {
+          if (!this.validateAndSubmit()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }, true);
+      }
+    };
+
+    // Initialize only if on return prime page
+    if (window.location.pathname.includes("return_prime")) {
+      console.log('On return prime page - setting up functionality');
+      
+      // Handle custom events
+      document.addEventListener("returnprime_return_page", () => ReturnPrime.init());
+      document.addEventListener("returnprime_orderlist_page", () => ReturnPrime.resetState());
+      
+      // Initialize immediately if DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => ReturnPrime.init());
+      } else {
+        ReturnPrime.init();
+      }
+    }
+  </script>
+{% endif %}

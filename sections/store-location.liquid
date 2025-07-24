@@ -1,0 +1,143 @@
+<div class="section-spacing">
+  <div class="{% unless section.settings.page_width == 'full' %}container container--{{ section.settings.page_width }}{% endunless %}">
+    <div class="section-stack">
+    <h2 class="h2 text-start store_heading">Store Location and Contact Information</h2>
+  <div class="location_image_text_wrapper">
+    <div class="location_wrapper">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3557.907544818343!2d75.7939443752242!3d26.906429176650853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db54beb09953d%3A0xfb76b1ed7434ef4f!2z4KS44KS-4KSm4KS-IC8gU0FBREFBIHwgQy1TY2hlbWUgU3RvcmU!5e0!3m2!1sen!2sin!4v1721376668775!5m2!1sen!2sin" width="" height="" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="address_wrapper">
+        <div class="add_item"><b>Address: </b> <div><span>J-2, Jamnalal Bajaj Marg,</span><span>C-Scheme, Ashok Nagar,</span><span> Jaipur, Rajasthan, 302001</span></div></div>
+        <div class="add_item"><b>Phone Number: </b> <div><span>+91 9251984502</span></div></div>
+        <div class="add_item"><b>Email: </b> <div><span>support@saadaa.in</span></div></div>
+        <div class="add_item"><b>Operating Hours: </b> <div><span> 10:30 am - 9 pm ( 7-Days a week )</span></div></div>
+      </div>
+    </div>
+    <div class="street-lamp-image">
+      
+    <img  src="{{ 'store-street-lamp.png' | asset_url }}" width="{{ section.settings.width }}" height="{{ section.settings.height }}" alt="store-strret-lamp" />
+    </div>
+  </div>
+      </div>
+      </div>
+</div>
+<style>
+  .location_image_text_wrapper{
+    display:flex;
+    position:relative;
+    align-items: flex-end;
+  }
+  .location_wrapper{
+    display:flex;
+    align-items: flex-end;
+    width:50%;
+    height:100%;
+  }
+  .location_wrapper iframe{
+      width: -webkit-fill-available;
+    height: -webkit-fill-available;
+  }
+  .address_wrapper{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 53%;
+    gap:6px;
+  }
+  .add_item{
+    display:grid;
+    grid-template-columns:150px auto;
+    font-size:14px;
+    
+  }
+  .add_item  span{
+        min-width: max-content;
+  }
+  .add_item > div{
+    display:flex;
+    flex-direction:column;
+  }
+  .street-lamp-image{
+    position: relative;
+    z-index: -1;
+    width:50%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100%;
+    right:-15px;
+  }
+ .street-lamp-image img{
+        max-height: 630px;
+       height: -webkit-fill-available;
+  }
+  @media screen and (min-width:380px){
+    .store_heading{
+margin-bottom:-10px;
+    }
+  }
+  @media screen and (max-width:999px){
+  .location_wrapper{
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-end;
+            width: 37%;
+  }
+      .address_wrapper{
+        position:static;
+      }
+   .add_item {
+    grid-template-columns: 116px auto;
+    font-size: 12px;
+    }
+      .street-lamp-image{
+        width:auto;
+      }
+  }
+</style>
+{% schema %}
+  {
+    "name": "Store location",
+    "settings": [
+          {
+      "type": "select",
+      "id": "page_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:global.sizes.x_small"
+        },
+        {
+          "value": "sm",
+          "label": "t:global.sizes.small"
+        },
+        {
+          "value": "md",
+          "label": "t:global.sizes.medium"
+        },
+        {
+          "value": "lg",
+          "label": "t:global.sizes.large"
+        },
+        {
+          "value": "xl",
+          "label": "t:global.sizes.x_large"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "full",
+          "label": "t:global.image.width_options.full_width"
+        }
+      ],
+      "default": "sm"
+    }
+    ],
+    "presets": [
+      {"name": "Store location"}
+    ]
+  }
+{% endschema %}

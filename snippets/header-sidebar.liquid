@@ -1,0 +1,573 @@
+<!-- Kwikpass start -->
+<script>
+function updateHeaderLoginBtn() {
+  const sidebar = document.querySelector('header-sidebar');
+  if (!sidebar) return;
+
+  // Get the shadow root (Shopify might use shadow DOM differently, so ensure it's open)
+  const shadowRoot = sidebar.shadowRoot;
+  if (!shadowRoot) return;
+
+  const btn = shadowRoot.getElementById('kp-account');
+  const txt = shadowRoot.getElementById('kwik-pass-text');
+  const userToken = localStorage.getItem('KWIKSESSIONTOKEN');
+
+  if (btn && txt) {
+    if (userToken) {
+      txt.textContent = (typeof window.themeStrings !== "undefined" && window.themeStrings.account_label) ? window.themeStrings.account_label : "Account";
+      btn.classList.remove('kwik-pass-login');
+      btn.classList.add('kwik-pass-account');
+      btn.onclick = function (e) {
+        e.preventDefault();
+        window.location.href = '/account';
+        return false;
+      };
+    } else {
+      txt.textContent = "Log in";
+      btn.classList.remove('kwik-pass-account');
+      btn.classList.add('kwik-pass-login');
+      btn.onclick = function (e) {
+        e.preventDefault();
+        if (typeof kpHandleLogin === "function") {
+          kpHandleLogin('/account');
+        } else if (typeof handleShopifyLogin === "function") {
+          handleShopifyLogin(e, "/account");
+        } else {
+          window.location.href = '/account/login';
+        }
+        return false;
+      };
+    }
+  }
+}
+
+window.addEventListener('user-loggedin', function(event) {
+  const { token } = event?.detail || {};
+  if (token) {
+    updateHeaderLoginBtn();
+  }
+});
+document.addEventListener('DOMContentLoaded', updateHeaderLoginBtn);
+
+
+
+
+function addNoUnderlineToShadowButton() {
+  const sidebar = document.querySelector('header-sidebar');
+  if (!sidebar) return;
+  const shadowRoot = sidebar.shadowRoot;
+  if (!shadowRoot) return;
+
+  // Check if the style is already injected
+  if (!shadowRoot.getElementById('no-underline-style')) {
+    const style = document.createElement('style');
+    style.id = 'no-underline-style';
+    style.textContent = `
+      #kp-account, #kp-account span {
+        text-decoration: none !important;
+        box-shadow: none !important;
+      }
+    `;
+    shadowRoot.appendChild(style);
+  }
+}
+
+// Run after login button updates
+document.addEventListener('DOMContentLoaded', addNoUnderlineToShadowButton);
+window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
+
+
+
+
+
+
+
+
+
+
+
+  
+</script>
+<!-- Kwikpass end -->
+
+<template id="header-sidebar-template">
+  <div part="base">
+    <div part="overlay"></div>
+    <div part="content">
+      <header part="header" class="cp-header">
+        <div class="cp-header-inner" style="display: flex; align-items: center;">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_1.png?v=1749793852"
+            alt="Saadaa logo"
+            class="cp-logo"
+            style="height: 21px; width: 114px; margin-right: 35px;">
+          <a class="text-with-icon kwik-pass-login button sidebarLoginBtn" id="kp-account" href="javascript:void(0);" style="margin-right: 17px;border: 1px solid black;padding: 4px 18px;color: white;background-color: black;border-radius: 17px;align-items: center;display: flex;gap: 5px;">
+            {%- render 'icon' with 'account', width: 20 -%}
+            <span id="kwik-pass-text" style="font-size: 14px;" >Log in</span>
+          </a>
+          <button
+            type="button"
+            is="dialog-close-button"
+            part="close-button tap-area"
+            aria-label="{{ 'general.accessibility.close' | t | escape }}">
+            {%- render 'icon' with 'close', width: 16 -%}
+          </button>
+        </div>
+      </header>
+
+      
+      <div part="panel-list">
+        <slot name="main-panel"></slot>
+        {%- if menu.levels > 0 -%}
+          <slot name="collapsible-panel"></slot>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+
+.sidebarLoginBtn,
+.sidebarLoginBtn span,
+.sidebarLoginBtn:visited,
+.sidebarLoginBtn:hover,
+.sidebarLoginBtn:active,
+.sidebarLoginBtn:focus {
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+
+@media(min-width:780px){
+:where(.modal,.drawer,.popover,.header-search)::part(close-button) {
+    padding-left: 23px;
+}
+
+}
+
+
+
+
+
+  
+
+
+
+.header-sidebar::part(header) {
+    border-block-end: none;
+    border-bottom: 1px solid #cccccc;  /* Slightly darker gray */
+    box-shadow: 0 4px 14px -2px rgba(0,0,0,0.08); /* Fading shadow below */
+    background: #fff; /* Optional, to ensure the header background is white */
+}
+
+
+  /* (same as your previous styles) */
+  .header-sidebar__scroller { padding-inline-start: 0px; }
+  .cp-header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1rem; height: 60px; background: #fff;
+  }
+  .cp-logo { height: 40px; object-fit: contain; }
+  .sidebarLoginBtn {
+    border-radius: 30px; width: auto; min-width: 80px; height: 40px;
+    display: flex; align-items: center; padding: 0 1rem;
+  }
+  .header-sidebar__footer { display: grid; padding-bottom: 10px; }
+  .header-sidebar__group-list,
+  .header-sidebar__section-title,
+  .header-sidebar__linklist,
+  .header-sidebar__linklist > li,
+  .header-sidebar__linklist-button,
+  .sidebar-accordion-item,
+  .sidebar-accordion-item[open] > summary,
+  .sidebar-accordion-list,
+  .sidebar-accordion-list li,
+  .sidebar-accordion-list a {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .header-sidebar__group-list { transition: none !important; }
+  .header-sidebar__section-title {
+    font-weight: bold; font-size: 1.1rem; margin: 16px 0 8px 0;
+    padding-left: 16px; letter-spacing: 0.5px;
+  }
+  .header-sidebar__group-list {
+    background: #fff; border-radius: 12px; overflow: hidden; box-shadow: none;
+  }
+  .header-sidebar__linklist-button,
+  .header-sidebar__linklist > li > a {
+    display: flex; align-items: center; padding: 5px 16px; font-size: 14px;
+    background: none; border: none; width: 100%; text-align: left;
+    cursor: pointer; font-weight: 500; letter-spacing: 0.2px;
+    justify-content: flex-start;
+  }
+  .header-sidebar__linklist > li:not(:last-child) { border-bottom: 1px solid #f3f3f3; }
+  .header-sidebar__linklist .nav-badge-new { margin-left: 8px; }
+  .header-sidebar__section-spacer { height: 12px; background: transparent; }
+  .header-sidebar__quick-info {
+    font-size: 12px; color: #333; text-align: center; margin: 24px 0 8px 0; letter-spacing: 0.2px;
+  }
+  .sidebar-accordion-item summary {
+    cursor: pointer; padding: 2px 16px; padding-right: 20px; font-weight: 500; border-bottom: 1px solid #f3f3f3;
+    list-style: none; display: flex; align-items: center;
+  }
+  .sidebar-accordion-item[open] > summary { background: #f5f5f5; }
+  .sidebar-accordion-list { background: #fff; padding: 0; margin: 0; border-bottom: 1px solid #f3f3f3; }
+  .sidebar-accordion-list li { border-bottom: 1px solid #f3f3f3; }
+  .sidebar-accordion-list a {
+    display: flex; align-items: center; padding: 3px 34px;; font-size: 0.9rem;
+    background: none; border: none; width: 100%; text-align: left; cursor: pointer;
+    font-weight: 400; letter-spacing: 0.2px; color: #111;
+  }
+  .menu-img {
+    width: 32px;
+    margin-right: 12px;
+}
+  .nav-badge-new {
+    background: green; padding: .2px 3px 0px 3px; border-radius: 2px;
+    color: white; letter-spacing: .3px; font-size: 9px; margin-left: 8px;
+  }
+  summary::-webkit-details-marker {display: none;}
+  .saadaa-accordion-section {
+    border-bottom: 1px solid #f3f3f3;
+  }
+  .saadaa-accordion-title {
+    display: flex; align-items: center; justify-content: space-between;
+    padding:13px 9px; background: none; border: none; width: 100%;
+    font-weight: bold; font-size: 0.82rem; cursor: pointer; outline: none;
+    letter-spacing: 0.3px;
+  }
+  .saadaa-accordion-title .icon {
+    font-size: 1rem; margin-right: 14px; transition: transform 0.2s;
+  }
+  .saadaa-accordion-content { display: none; background: #fafafa;    padding: 4px 19px;     padding-right: 2px; }
+  .saadaa-accordion-section.open > .saadaa-accordion-content { display: block; }
+
+
+
+  @media(min-width:768px){
+    .saadaa-accordion-content{
+      font-size:14.5px;
+    }
+  }
+
+  .sidebar-accordion-list,
+.sidebar-accordion-list li {
+  list-style: none !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+
+
+
+
+
+
+.header-sidebar__scroller {
+     padding-block-end: 0px;
+    padding-inline-start:0px;
+    padding-inline-end: 0px;
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Handle main accordions (SHOP WOMEN / SHOP MEN)
+  var mains = document.querySelectorAll('.saadaa-accordion-title[data-main]');
+  mains.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var section = btn.closest('.saadaa-accordion-section');
+      var isOpen = section.classList.contains('open');
+      // Close all main accordions
+      document.querySelectorAll('.saadaa-accordion-section[data-main]').forEach(function (s) {
+        s.classList.remove('open');
+        s.querySelector('.icon').textContent = '+';
+      });
+      if (!isOpen) {
+        section.classList.add('open');
+        btn.querySelector('.icon').textContent = '−';
+      }
+    });
+  });
+
+  // Handle secondary accordions (no data-main)
+  var secs = document.querySelectorAll('.saadaa-accordion-title:not([data-main])');
+  secs.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var section = btn.closest('.saadaa-accordion-section');
+      var isOpen = section.classList.contains('open');
+      // Close only this section
+      if (isOpen) {
+        section.classList.remove('open');
+        btn.querySelector('.icon').textContent = '+';
+      } else {
+        section.classList.add('open');
+        btn.querySelector('.icon').textContent = '−';
+      }
+    });
+  });
+
+  // Set + for all icons on page load (unless open)
+  document.querySelectorAll('.saadaa-accordion-title .icon').forEach(function (icn) {
+    if (!icn.closest('.open')) icn.textContent = '+';
+  });
+
+  // Default open SHOP WOMEN
+  var womenSection = document.getElementById('accordion-shop-women');
+  if (womenSection) {
+    womenSection.classList.add('open');
+    womenSection.querySelector('.icon').textContent = '−';
+  }
+});
+</script>
+
+
+<header-sidebar id="sidebar-menu" class="header-sidebar drawer drawer--sm" template="header-sidebar-template" open-from="left">
+  <div class="header-sidebar__main-panel" slot="main-panel">
+    <div class="header-sidebar__scroller">
+
+      <!-- SHOP WOMEN (Accordion) -->
+      <div class="header-sidebar__group-list saadaa-accordion-section" id="accordion-shop-women" data-main>
+        <button class="saadaa-accordion-title" data-main>
+          SHOP WOMEN <span class="icon"></span>
+        </button>
+        <div class="saadaa-accordion-content">
+          <ul class="header-sidebar__linklist unstyled-list" role="list">
+            <li>
+              <details class="sidebar-accordion-item">
+                <summary class="header-sidebar__linklist-button">
+                  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_3.webp?v=1752564952" class="menu-img" alt="">
+                  All Tops
+                  <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
+                </summary>
+                <ul class="sidebar-accordion-list">
+                  <li><a href="/collections/airy-linen-flared-dress"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_7.webp?v=1753246195" class="menu-img" alt="">Airy Linen Flared Dress</a></li>
+                  <li><a href="/collections/short-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6309ae0851cc4c5f6751bf7b0933229f60eed077.webp?v=1752565415" class="menu-img" alt="">Airy - Linen Short Kurta</a></li>
+                  <li><a href="/collections/airy-linen-long-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2a3f853d163b6760b2f92a575e155f654091e45d.webp?v=1752565415" class="menu-img" alt="">Airy - Linen Long Kurta</a></li>
+                  <li><a href="/collections/airy-linen-shirts"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/11bab64671ebc246fa1d1fa6e9667c9ad27a954b.webp?v=1752565416" class="menu-img" alt="">Airy-Linen Shirts</a></li>
+                  <li><a href="/collections/v-neck-sleeveless-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_4.webp?v=1752565417" class="menu-img" alt="">V-Neck Sleeveless Top</a></li>
+                  <li><a href="/collections/everyday-cotton-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_5.webp?v=1752565415" class="menu-img" alt="">Everyday Cotton Top</a></li>
+                  <li><a href="/collections/viscose-pleated-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_6.webp?v=1752565415" class="menu-img" alt="">Viscose Pleated Top</a></li>
+                  <li><a href="/collections/shop-all-tops-1"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_7.webp?v=1752565415" class="menu-img" alt="">Shop All Tops</a></li>
+                </ul>
+              </details>
+            </li>
+            <li>
+              <details class="sidebar-accordion-item">
+                <summary class="header-sidebar__linklist-button">
+                  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_2.webp?v=1752564952" class="menu-img" alt="">
+                  All Bottoms
+                  <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
+                </summary>
+                <ul class="sidebar-accordion-list">
+                  <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants</a></li>
+                  <li><a href="/collections/4-way-stretchable-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_2.webp?v=1753165204" class="menu-img" alt="">4-Way Stretchable Pants</a></li>
+                  <li><a href="/collections/cotton-trousers"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/SDCPRT.webp?v=1753165204" class="menu-img" alt="">Everyday Cotton Pants</a></li>
+                  <li><a href="/collections/viscose-palazzo-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/3_2.webp?v=1753165204" class="menu-img" alt="">Viscose Palazzo Pants</a></li>
+                  <li><a href="/collections/wide-leg-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/3_4.webp?v=1753165204" class="menu-img" alt="">Wide Leg Pants</a></li>
+                  <li><a href="/collections/airy-linen-wide-leg-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5_2.png?v=1753271491" class="menu-img" alt="">Airy Linen Wide Leg Pants</a></li>
+                  <li><a href="/collections/shop-all-bottoms"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_13.webp?v=1752565969" class="menu-img" alt="">Shop All Bottoms</a></li>
+                </ul>
+              </details>
+            </li>
+            <li>
+              <details class="sidebar-accordion-item">
+                <summary class="header-sidebar__linklist-button">
+                  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_1.webp?v=1752564952" class="menu-img" alt="">
+                  Airy Linen
+                  <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
+                </summary>
+                <ul class="sidebar-accordion-list">
+                   <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants</a></li>
+                  <li><a href="/collections/airy-linen-wide-leg-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5_2.png?v=1753271491" class="menu-img" alt="">Airy Linen Wide Leg Pants</a></li>
+                  <li><a href="/collections/short-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6309ae0851cc4c5f6751bf7b0933229f60eed077.webp?v=1752565415" class="menu-img" alt="">Airy-Linen Short Kurtas</a></li>
+                  <li><a href="/collections/airy-linen-long-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2a3f853d163b6760b2f92a575e155f654091e45d.webp?v=1752565415" class="menu-img" alt="">Airy Linen Long Kurtas</a></li>
+                  <li><a href="/collections/airy-linen-shirts"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/11bab64671ebc246fa1d1fa6e9667c9ad27a954b.webp?v=1752565416" class="menu-img" alt="">Airy-Linen Shirts</a></li>
+                  <li><a href="/collections/shop-airy-linen"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_7.webp?v=1752565415" class="menu-img" alt="">Shop All Airy Linen Products</a></li>
+                </ul>
+              </details>
+            </li>
+            <li>
+              <a href="/collections/all-whites" class="header-sidebar__linklist-button" style="padding: 0px 16px;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/download.webp?v=1752564952" class="menu-img" alt="">
+                All Whites
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SHOP MEN (Accordion) -->
+      <div class="header-sidebar__group-list saadaa-accordion-section" id="accordion-shop-men" data-main>
+        <button class="saadaa-accordion-title" data-main>
+          SHOP MEN <span class="icon"></span>
+        </button>
+        <div class="saadaa-accordion-content">
+          <ul class="header-sidebar__linklist unstyled-list" role="list">
+            <li>
+              <a href="/collections/men-100-linen-full-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5.webp?v=1753246195" class="menu-img" alt="">
+                100% Linen Full Sleeve Shirt
+              </a>
+            </li>
+            <li>
+              <a href="/collections/men-100-linen-half-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_4.webp?v=1753246195" class="menu-img" alt="">
+                100% Linen Half Sleeve Shirt
+              </a>
+            </li>
+            <li>
+              <a href="/collections/airy-linen-long-kurtas-1" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/RK_3628.webp?v=1753165931" class="menu-img" alt="">
+                Airy Linen Long Kurta
+              </a>
+            </li>
+            <li>
+              <a href="/collections/men-airy-linen-short-kurtas" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/RK_4565_2.webp?v=1753272743" class="menu-img" alt="">
+                Airy Linen Short Kurta
+              </a>
+            </li>
+            <li>
+              <a href="/collections/formal-shirts" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/RK_4507.webp?v=1753165931" class="menu-img" alt="">
+                The Formal Shirt
+              </a>
+            </li>
+            <li>
+              <a href="/collections/men" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/RK_3355_1.png?v=1753271493" class="menu-img" alt="">
+                Shop All
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- SECONDARY LINKS - Accordions -->
+      <div class="header-sidebar__group-list">
+
+
+         <div class="saadaa-accordion-section">
+           <a href="/collections/goodbye-edition"><button class="saadaa-accordion-title">THE GOODBYE EDITION <span class="nav-badge-new">NEW</span></button></a>
+          
+        </div>
+
+        <div class="saadaa-accordion-section">
+          <a href="/collections/best-sellers-women"><button class="saadaa-accordion-title">BUILD YOUR WARDROBE</button></a>
+          
+        </div>
+
+        <div class="saadaa-accordion-section">
+          <a href="/apps/return_prime"><button class="saadaa-accordion-title">RETURN & EXCHANGE</button></a>
+          
+        </div>
+
+
+        
+        <div class="saadaa-accordion-section">
+          <button class="saadaa-accordion-title">KNOW US BETTER <span class="icon"></span></button>
+          <div class="saadaa-accordion-content" style="
+    line-height: 32px;
+">
+            <a href="/pages/about-us">About Us</a><br>
+            <a href="/pages/contact-us">Contact Us</a><br>
+            <a href="/pages/our-store">Our Store</a><br>
+            <a href="/pages/our-journey">Our Journey</a>
+          </div>
+        </div>
+        <div class="saadaa-accordion-section" style="
+    line-height: 32px;
+">
+          <button class="saadaa-accordion-title">THE STORY WE SHARE <span class="icon"></span></button>
+          <div class="saadaa-accordion-content">
+            <a href="/pages/transparency-page">Transparency Matters</a><br>
+            <a href="/pages/reviews">Reviews</a>
+          </div>
+        </div>
+        <div class="saadaa-accordion-section" style="
+    line-height: 32px;
+">
+          <button class="saadaa-accordion-title">COLLABORATE WITH US <span class="icon"></span></button>
+          <div class="saadaa-accordion-content">
+            <a href="/pages/b2b-bulk-enquiries-form">For B2b/ Bulk Enquiries</a><br>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScoYIX8AzUL-C7cA219JJURZij7pQJ5RJZvaEYGRp9e9pgdww/viewform">Partner as Supplier</a><br>
+            <a href="/pages/work-with-us">Work with us</a><br>
+            <a href="/pages/uniform">The Collective Thread</a>
+          </div>
+        </div>
+
+        <!-- <div class="saadaa-accordion-section">
+          <a href="/apps/return_prime"><button class="saadaa-accordion-title">PARTNER AS SUPPLIER</button></a>
+          
+        </div> -->
+
+        <div class="saadaa-accordion-section">
+          <a href="/pages/community"><button class="saadaa-accordion-title">SAADAA COMMUNITY</button></a>
+          
+        </div> 
+
+        <div class="saadaa-accordion-section">
+          <a href="/pages/wash-care"><button class="saadaa-accordion-title">WASH CARE</button></a>
+          
+        </div>
+
+
+        {% comment %}
+          
+        
+        <div>
+          <a href="/pages/partner-supplier" class="header-sidebar__linklist-button" style="padding-left:10px;font-weight:500;">Partner As Supplier</a>
+        </div>
+        <div>
+          <a href="/pages/return-exchange" class="header-sidebar__linklist-button" style="padding-left:10px;">Return & Exchange</a>
+        </div>
+        <div>
+          <a href="/pages/build-your-wardrobe" class="header-sidebar__linklist-button" style="padding-left:10px;">Build Your Wardrobe</a>
+        </div>
+        <div>
+          <a href="/pages/community" class="header-sidebar__linklist-button" style="padding-left:10px;">Community</a>
+        </div>
+        <div>
+          <a href="/pages/wash-care" class="header-sidebar__linklist-button" style="padding-left:10px;">Wash Care</a>
+        </div>
+
+
+        {% endcomment %}
+      </div>
+
+      <!-- INFO LINE -->
+     
+
+
+    </div>
+
+     <!-- INFO LINE -->
+<div class="saadaa-sticky-bottom">
+  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_5.webp?v=1752565302" alt="info" style="width:100%;display:block;margin:0 auto;">
+</div>
+  </div>
+</header-sidebar>
+
+
+<style>
+
+
+  .saadaa-sticky-bottom {
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+  z-index: 10;
+  width: 100%;
+  padding-top: 0px;
+  box-shadow: 0 -2px 8px 0 rgba(0,0,0,0.04);
+}
+
+</style>

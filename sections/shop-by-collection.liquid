@@ -1,0 +1,269 @@
+<div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}">
+  <div class="container">
+    <shop-by-swatch>
+      <div class="section-stack">
+        <div class="switch_option_cotainer">
+          
+        
+        <div class="h2 h-stack gap-2">
+          <span>
+            {{ section.settings.heading }}
+          </span>
+          <div class="switch_option">
+            <div class="selected-option h-stack gap-2">
+              <span> Women </span>
+              <span class="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="7"
+                  viewBox="0 0 12 7"
+                  fill="none"
+                >
+                  <path
+                    d="M1 1L6 6L11 1"
+                    stroke="#1E1E1E"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </span>
+            </div>
+            </div>
+                    
+        </div>
+            <div class="options_wrapper h2">
+              <span class="open" data-option-switch="Women">Women</span>
+              <span class="" data-option-switch="Men">Men</span>
+          </div>
+                    </div>
+        <div class="sbs_card_wrapper">
+          <div class="sbs_card Men">
+                    {%- assign wrapper_carousel_id = 'featured-collections-carousel-' | append: "Men" -%}
+             <featured-collections-carousel id="{{ wrapper_carousel_id }}" class="featured-collections-carousel">
+            <div class="featured-collections-carousel__item">
+              {%- capture product_list -%}
+                {%- assign should_reveal = false -%}
+
+
+                {%- for product in section.settings.men_collection.products limit: 8 -%}
+                  {%- render 'product-card', product: product, reveal: should_reveal, hide_product_information: section.settings.hide_product_information, block: block -%}
+                {%- else -%}
+                  {%- for i in (1..8) -%}
+                    {%- render 'product-card-placeholder', reveal: should_reveal, loop_index: forloop.index0, hide_product_information: section.settings.hide_product_information -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              {%- endcapture -%}
+
+                {%- assign product_carousel_id = 'featured-collections-product-list-carousel-' | append: 'men' -%}
+
+                <product-list class="floating-controls-container floating-controls-container--inside floating-controls-container--on-hover">
+                  <scroll-carousel id="{{ product_carousel_id }}" group-cells allow-drag class="product-list {% if flase %}product-list--compact{% endif %} product-list--carousel scroll-area bleed md:unbleed">
+                    {{- product_list -}}
+                  </scroll-carousel>
+
+                  <button is="carousel-prev-button" type="button" class="prev-next-button prev-next-button--prev circle-button hover:animate-icon-inline" aria-controls="{{ product_carousel_id }}" disabled>
+                    <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+                    {%- render 'icon' with 'arrow-left', direction_aware: true -%}
+                  </button>
+
+                  <button is="carousel-next-button" type="button" class="prev-next-button prev-next-button--next circle-button hover:animate-icon-inline" aria-controls="{{ product_carousel_id }}">
+                    <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+                    {%- render 'icon' with 'arrow-right', direction_aware: true -%}
+                  </button>
+                </product-list>
+
+              {%- if section.settings.men_button_text != blank -%}
+                {%- assign button_link = section.settings.men_button_link | default: section.settings.men_collection.url | default: '#' -%}
+
+                <div class="justify-self-center">
+                  {%- render 'button', href: button_link, content: section.settings.men_button_text -%}
+                </div>
+              {%- endif -%}
+            </div>
+        </featured-collections-carousel>
+          </div>
+          
+          <div class="sbs_card Women open">
+          {%- assign wrapper_carousel_id = 'featured-collections-carousel-' | append: section.id -%}
+       <featured-collections-carousel id="{{ wrapper_carousel_id }}" class="featured-collections-carousel">
+            <div class="featured-collections-carousel__item">
+              {%- capture product_list -%}
+                {%- assign should_reveal = false -%}
+
+
+                {%- for product in section.settings.women_collection.products limit: 8 -%}
+                  {%- render 'product-card', product: product, reveal: should_reveal, hide_product_information: false -%}
+                {%- else -%}
+                  {%- for i in (1..8) -%}
+                    {%- render 'product-card-placeholder', reveal: should_reveal, loop_index: forloop.index0, hide_product_information: false -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              {%- endcapture -%}
+
+                {%- assign product_carousel_id = 'featured-collections-product-list-carousel-' | append: 'women' -%}
+
+                <product-list class="floating-controls-container floating-controls-container--inside floating-controls-container--on-hover">
+                  <scroll-carousel id="{{ product_carousel_id }}" group-cells allow-drag class="product-list {% if false %}product-list--compact{% endif %} product-list--carousel scroll-area bleed md:unbleed">
+                    {{- product_list -}}
+                  </scroll-carousel>
+
+                  <button is="carousel-prev-button" type="button" class="prev-next-button prev-next-button--prev circle-button hover:animate-icon-inline" aria-controls="{{ product_carousel_id }}" disabled>
+                    <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+                    {%- render 'icon' with 'arrow-left', direction_aware: true -%}
+                  </button>
+
+                  <button is="carousel-next-button" type="button" class="prev-next-button prev-next-button--next circle-button hover:animate-icon-inline" aria-controls="{{ product_carousel_id }}">
+                    <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+                    {%- render 'icon' with 'arrow-right', direction_aware: true -%}
+                  </button>
+                </product-list>
+
+              {%- if section.settings.women_button_text != blank -%}
+                {%- assign button_link = section.settings.women_button_link | default: section.settings.women_collection.url | default: '#' -%}
+
+                <div class="justify-self-center">
+                  {%- render 'button', href: button_link, content: section.settings.women_button_text -%}
+                </div>
+              {%- endif -%}
+            </div>
+        </featured-collections-carousel>
+          </div>
+        </div>
+      </div>
+    </shop-by-swatch>
+  </div>
+</div>
+
+
+<style>
+    #shopify-section-{{ section.id }} {
+      --product-list-items-per-row: {{ 2 | times: 1 }};
+      --product-list-horizontal-spacing-factor: 1;
+      --product-list-vertical-spacing-factor: 1;
+    }
+
+    @media screen and (min-width: 700px) {
+      #shopify-section-{{ section.id }} {
+        --product-list-items-per-row: 4;
+      }
+    }
+  .switch_option {
+    position: relative;
+  }
+  .options_wrapper {
+    position: relative;
+    z-index: 1;
+    display: none;
+    font-weight: 400;
+    background: white;
+    gap: 4px;
+    width:max-content;
+    left:0;
+  }
+  .options_wrapper.open {
+    display: flex;
+  }
+  .selected-option {
+    border-bottom: 1px solid;
+  }
+  .options_wrapper > span {
+    padding: 7px 20px;
+    color:#999999;
+  }
+  .options_wrapper > span.open {
+    padding: 7px 20px;
+    color:inherit;
+  }
+  .sbs_card_wrapper {
+    position: relative;
+  }
+  .sbs_card {
+    position: absolute;
+    top: 0;
+    z-index: -2;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .sbs_card.open {
+    position: relative;
+    z-index: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+</style>
+{% schema %}
+{
+  "name": "Shop by collection",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by"
+    }, {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Men"
+    },
+      {
+          "type": "collection",
+          "id":"men_collection",
+          "label": "Choose men collection"
+        },
+    {
+      "type": "url",
+      "id": "men_button_link",
+      "label": "Men view all link"
+    },
+    {
+      "type": "text",
+      "id": "men_button_text",
+      "label": "Men view all text",
+      "default":"View All"
+    },
+    {
+      "type": "header",
+      "content": "women"
+    },
+      {
+          "type": "collection",
+          "id":"women_collection",
+          "label": "Choose women collection"
+        },
+    {
+      "type": "url",
+      "id": "women_button_link",
+      "label": "Women view all link"
+    },
+    {
+      "type": "text",
+      "id": "women_button_text",
+      "label": "Women view all text",
+      "default":"View All"
+    }
+    ,{
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    }, {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "Shop by collection"
+    }
+  ]
+}
+{% endschema %}

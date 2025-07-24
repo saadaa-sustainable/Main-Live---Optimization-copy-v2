@@ -1,0 +1,327 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "a2fb2cd4-f19a-4e07-a564-3ca2db9c9042": {
+          "type": "title",
+          "settings": {
+            "heading_tag": "h3"
+          }
+        },
+        "quantity_selector_T9B43K": {
+          "type": "quantity_selector",
+          "disabled": true,
+          "settings": {}
+        },
+        "9e3c23a4-2a1c-4d2a-958e-f66fdfd5bb3d": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-rating/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+          "settings": {
+            "contentSize": 16,
+            "pattern": "",
+            "hideText": false,
+            "alignment": "",
+            "layout": "",
+            "textColor": "#1c1c1c",
+            "starColor": "#ed8a00",
+            "showAllReviews": false,
+            "looxOpenFloatingWidget": false,
+            "emptyRatingWidget": false
+          }
+        },
+        "a09a286f-445f-4be8-9f10-9ad56473f18a": {
+          "type": "product_variations",
+          "settings": {
+            "option_name": "Color",
+            "option_value_metafield": "custom.product_variant_value",
+            "products": "{{ product.metafields.custom.product_variants.value }}",
+            "color_selector_type": "color"
+          }
+        },
+        "108c3e78-c321-46a4-b56f-a08a7263167f": {
+          "type": "variant_picker",
+          "settings": {
+            "hide_sold_out_variants": false,
+            "selector_type": "block",
+            "color_selector_type": "color",
+            "size_chart_page": ""
+          }
+        },
+        "timer_cQrpeQ": {
+          "type": "timer",
+          "settings": {
+            "expiration_date": "2024-10-22 23:59",
+            "animate_number": true,
+            "expiration_behavior": "leave"
+          }
+        },
+        "liquid_BpapDw": {
+          "type": "liquid",
+          "settings": {
+            "liquid": "{%- assign form_id = 'product-form-' | append: product.id -%}\n{%- form 'product', product, is: 'product-form', id: form_id -%}\n\n  <!-- Variant hidden field -->\n  <input\n    type=\"hidden\"\n    name=\"id\"\n    value=\"{{ product.selected_or_first_available_variant.id }}\"\n    id=\"product-variant-id-{{ product.id }}\"\n  >\n\n  <!-- ←– 1) Render your existing quantity selector SNIPPET here, inside the form: -->\n  {% render 'quantity-selector',\n      variant: product.selected_or_first_available_variant,\n      form: form_id %}\n\n  <!-- ←– 2) Your size buttons -->\n  {%- if product.options contains 'Waist Size' -%}\n    <div class=\"size-container\">\n      <div class=\"size-buttons\" data-product-id=\"{{ product.id }}\">\n        {% for variant in product.variants %}\n          {% if variant.available %}\n            <button\n              type=\"button\"\n              class=\"size-btn\"\n              data-variant-id=\"{{ variant.id }}\"\n            >{{ variant.option1 }}</button>\n          {% endif %}\n        {% endfor %}\n      </div>\n    </div>\n  {%- endif -%}\n\n  <!-- ←– 3) Your normal Add to Cart -->\n  <button type=\"submit\" class=\"button button--primary\">\n    ADD TO CART\n  </button>\n\n{%- endform -%}\n\n<style>\n  .size-btn.active { color: #f1bc2a; }\n</style>\n\n<script>\n  document.addEventListener(\"DOMContentLoaded\", function() {\n    const formEl       = document.getElementById('{{ form_id }}');\n    const variantInput = document.getElementById('product-variant-id-{{ product.id }}');\n    const sizeButtons  = formEl.querySelectorAll('.size-btn');\n\n    // 1) Prevent +/– from submitting\n    formEl\n      .querySelectorAll('.quantity-selector button')\n      .forEach(btn => btn.setAttribute('type','button'));\n\n    // 2) Size-button logic (unchanged)\n    sizeButtons.forEach(btn => {\n      btn.addEventListener('click', function(e) {\n        e.preventDefault();\n        sizeButtons.forEach(b => b.classList.remove('active'));\n        this.classList.add('active');\n        variantInput.value = this.dataset.variantId;\n      });\n    });\n\n    // 3) Now only the ADD TO CART button (type=\"submit\") will trigger the form.\n  });\n</script>\n\n\n<style>\n.button, .shopify-challenge__button, .shopify-payment-button__button--unbranded{\npadding: .65rem 2.75rem;\n}\n\n.quantity-selector{\nborder:none;\n\n</style>"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "disabled": true,
+          "settings": {
+            "show_payment_button": false,
+            "show_gift_card_recipient": true,
+            "atc_button_background": "",
+            "atc_button_text_color": "",
+            "payment_button_background": "",
+            "payment_button_text_color": "",
+            "expiration_date": "",
+            "animate_number": true,
+            "expiration_behavior": "leave"
+          }
+        },
+        "whatmore_shoppable_videos_app_block_gc8PC9": {
+          "type": "shopify://apps/whatmore-shoppable-videos/blocks/app-block/20db8a72-315a-4364-8885-64219ee48303",
+          "disabled": true,
+          "settings": {
+            "heading": "Watch and Buy",
+            "template-type": "template-f",
+            "title-font-size": 30,
+            "title-font-size-portrait": 24,
+            "landscape-padding": 0,
+            "top-bottom-padding": 15,
+            "scroll-video-tile-size": 80,
+            "scroll-video-tile-size-portrait": 80,
+            "min-height": 0
+          }
+        },
+        "buy_buttons_2_rCrVgM": {
+          "type": "buy_buttons_2",
+          "settings": {
+            "show_payment_button": false,
+            "show_gift_card_recipient": true,
+            "atc_button_background": "",
+            "atc_button_text_color": "",
+            "payment_button_background": "",
+            "payment_button_text_color": "",
+            "expiration_date": "",
+            "animate_number": true,
+            "expiration_behavior": "leave"
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "collapse_content": false,
+            "show_below_gallery": false
+          }
+        }
+      },
+      "block_order": [
+        "a2fb2cd4-f19a-4e07-a564-3ca2db9c9042",
+        "quantity_selector_T9B43K",
+        "9e3c23a4-2a1c-4d2a-958e-f66fdfd5bb3d",
+        "a09a286f-445f-4be8-9f10-9ad56473f18a",
+        "108c3e78-c321-46a4-b56f-a08a7263167f",
+        "timer_cQrpeQ",
+        "liquid_BpapDw",
+        "buy_buttons",
+        "whatmore_shoppable_videos_app_block_gc8PC9",
+        "buy_buttons_2_rCrVgM",
+        "description"
+      ],
+      "custom_css": [
+        ".product-info__block-list > :not(:last-child) {margin-block-end: 0px;}",
+        "@media (max-width: 768px) {.section-spacing:not(.section-spacing--padded) {padding-block-end: 0px; }}"
+      ],
+      "settings": {
+        "offer_image": "shopify://shop_images/tote_bag_1_fccec717-8707-47c9-a00a-ce4927753d1c.jpg",
+        "free_shipping_text": "<p>सादा | SAADAA is dedicated to providing you with a hassle-free shopping experience, and that means we don't charge any convenience fees. When you shop with us, you can enjoy the freedom of exploring our wide range of products without any extra costs. We believe in transparency and fairness, so rest assured that the price you see is the price you pay. It's our way of ensuring that your shopping journey with सादा | SAADAA is as smooth and budget-friendly as possible. Thank you for choosing us as your trusted shopping destination!</p>",
+        "exchange_return_text": "<p>Items from सादा | SAADAA can be returned / exchanged within 7 days of delivery, in unused condition with original tags and packaging intact. No returns / exchanges are possible after 7 days, and we don't offer second exchanges. For damaged or incorrect items, please request an exchange on our website.</p><p><a href=\"/pages/return-and-exchange-policy\" target=\"_blank\" title=\"Return and Exchange Policy\">Click here to know more</a></p>",
+        "container_size": "lg",
+        "product_info_size": 35,
+        "show_sticky_add_to_cart": true,
+        "center_basic_info": false,
+        "desktop_media_layout": "grid",
+        "desktop_media_grid_gap": 30,
+        "mobile_controls": "dots",
+        "enable_media_autoplay": false,
+        "enable_video_looping": false,
+        "enable_image_zoom": true,
+        "max_image_zoom_level": 3
+      }
+    },
+    "74c1dd3b-c370-4ca6-b5f5-bd43f779317c": {
+      "type": "faq",
+      "blocks": {
+        "template--16955280720118__74c1dd3b-c370-4ca6-b5f5-bd43f779317c-question-3": {
+          "type": "question",
+          "settings": {
+            "question": "Any question?",
+            "answer": "<p>You can contact us through our contact page! We will be happy to assist you.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--16955280720118__74c1dd3b-c370-4ca6-b5f5-bd43f779317c-question-3"
+      ],
+      "custom_css": [
+        ".section-spacing:not(.section-spacing--padded) {padding-block-start: 20px;}"
+      ],
+      "settings": {
+        "separate_section_with_border": false,
+        "show_categories": false,
+        "subheading": "Need help?",
+        "title": "Frequently Asked Questions",
+        "content": "",
+        "content_width": "lg"
+      }
+    },
+    "f0eec0bc-8a02-4d25-a2e6-8445f6aeab84": {
+      "type": "rich-text",
+      "blocks": {
+        "image_986Uaa": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Banner_1800451.jpg",
+            "mobile_image": "shopify://shop_images/Banner_750701.jpg",
+            "width_mode": "full_width",
+            "max_width": 1000,
+            "mobile_max_width": 600
+          }
+        }
+      },
+      "block_order": [
+        "image_986Uaa"
+      ],
+      "settings": {
+        "separate_section_with_border": false,
+        "nav_id": "",
+        "section_color": "",
+        "page_width": "full",
+        "text_position": "center",
+        "remove_upper_vertical_spacing": true,
+        "remove_lower_vertical_spacing": true
+      }
+    },
+    "loox-product-reviews-app-section": {
+      "type": "apps",
+      "blocks": {
+        "loox-product-reviews": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+          "settings": {
+            "only_photos": false,
+            "aggregated": false,
+            "limit": 20,
+            "hide_thumbnails": false,
+            "maxwidth": 1080,
+            "is_sample": true
+          }
+        }
+      },
+      "block_order": [
+        "loox-product-reviews"
+      ],
+      "settings": {
+        "separate_section_with_border": false,
+        "remove_vertical_spacing": true,
+        "remove_horizontal_spacing": false
+      }
+    },
+    "1666468007c3427a00": {
+      "type": "apps",
+      "blocks": {
+        "42b9a6ef-b5e9-44c6-9983-5210b02330aa": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "disabled": true,
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "42b9a6ef-b5e9-44c6-9983-5210b02330aa"
+      ],
+      "settings": {
+        "separate_section_with_border": true,
+        "remove_vertical_spacing": false,
+        "remove_horizontal_spacing": false
+      }
+    },
+    "recently-viewed-products": {
+      "type": "recently-viewed-products",
+      "custom_css": [],
+      "settings": {
+        "separate_section_with_border": true,
+        "hide_product_information": false,
+        "stack_products": false,
+        "products_count": 9,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4,
+        "horizontal_spacing_factor": 1,
+        "vertical_spacing_factor": 1,
+        "subheading": "",
+        "title": "Recently viewed",
+        "content": ""
+      }
+    },
+    "1666281658a37ea665": {
+      "type": "apps",
+      "blocks": {
+        "d273d0c2-3ab2-40fc-ac4a-2d6b46416ce8": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "disabled": true,
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "d273d0c2-3ab2-40fc-ac4a-2d6b46416ce8"
+      ],
+      "settings": {
+        "separate_section_with_border": true,
+        "remove_vertical_spacing": false,
+        "remove_horizontal_spacing": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "74c1dd3b-c370-4ca6-b5f5-bd43f779317c",
+    "f0eec0bc-8a02-4d25-a2e6-8445f6aeab84",
+    "loox-product-reviews-app-section",
+    "1666468007c3427a00",
+    "recently-viewed-products",
+    "1666281658a37ea665"
+  ]
+}

@@ -1,0 +1,692 @@
+{%- assign collection_title = collection.title | strip | downcase -%}
+
+{%- assign show_custom_filter_tab = false -%}
+{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus size edition" -%}
+  {%- assign show_custom_filter_tab = true -%}
+{%- endif -%}
+
+{%- assign show_fabric_filter_tab = false -%}
+{%- if collection_title == "fabric collection v2" -%}
+  {%- assign show_fabric_filter_tab = true -%}
+{%- endif -%}
+
+{%- assign show_color_filter_tab = false -%}
+{%- if collection_title == "shop by color" -%}
+  {%- assign show_color_filter_tab = true -%}
+{%- endif -%}
+
+{%- if show_custom_filter_tab or show_fabric_filter_tab or show_color_filter_tab -%}
+
+  {%- assign visible_count = 0 -%}
+  {%- if show_custom_filter_tab -%}
+    {%- for filter in results.filters -%}
+      {% if filter.label == 'Category' %}
+        {% for filter_value in filter.values %}
+          {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
+            {% continue %}
+          {% endif %}
+          {% if filter_value.label == 'Men' or filter_value.label == 'women' or filter_value.label == 'not_valid' %}
+            {% continue %}
+          {% endif %}
+          {%- assign visible_count = visible_count | plus: 1 -%}
+        {% endfor %}
+      {% endif %}
+    {%- endfor -%}
+  {%- endif -%}
+
+  <style>
+    .c_nav_filter {
+        margin: 0.6rem 0rem;
+        width: 100%;
+        overflow-x: auto;
+        margin-left: -8px;
+    }
+    .c_nav_filter .category-list {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      justify-content: center;
+      scroll-padding-left: 20px;
+      scroll-snap-type: x mandatory;
+    }
+    .c_nav_filter .category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+    }
+    .c_nav_filter .category-list.few-items .category-item {
+      min-width: 132px;
+      max-width: 134px;
+    }
+    .c_nav_filter .category-list.more-than-4 .category-item {
+      min-width: 67px;
+      max-width: 90px;
+    }
+    .c_nav_filter .category-image-wrapper {
+      position: relative;
+      display: inline-block;
+      padding: var(--gap, 2px);
+      border: 2px solid transparent;
+      border-radius: 50%;
+      transition: border 0.2s;
+    }
+    .c_nav_filter .category-image {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+    .c_nav_filter input[type="checkbox"] { display: none; }
+    .c_nav_filter input[type="checkbox"]:checked + .category-image-wrapper {
+      border-color: #C36A4E;
+    }
+    .c_nav_filter input[type="checkbox"]:checked + .category-image-wrapper .category-check {
+      display: block;
+    }
+    .c_nav_filter .category-label {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #444;
+      transition: color 0.2s;
+      white-space: normal;
+      text-align: center;
+      line-height: 21px;
+      font-weight: 600;
+      display: block;
+    }
+    .c_nav_filter input[type="checkbox"]:checked ~ .category-label {
+      color: #C36A4E;
+    }
+    .c_nav_filter .category-check {
+      display: none;
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 18px;
+      height: 18px;
+      background: #C36A4E;
+      border-radius: 50%;
+      padding: 2px;
+      border:1px solid #fff;
+    }
+
+    @media (max-width: 640px) {
+      .c_nav_filter .category-list {
+        gap: 8px;
+        padding-right:2px;
+        scroll-padding-left: 0px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        justify-content: flex-start;
+      }
+      .c_nav_filter .category-list::-webkit-scrollbar { display: none; }
+      .c_nav_filter .category-item {
+        width: 18vw;
+        min-width: 18vw;
+        max-width: 18vw;
+        flex: 0 0 18vw;
+        box-sizing: border-box;
+      }
+      .c_nav_filter .category-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+      }
+      .c_nav_filter .category-label {
+        font-size: 0.55rem;
+        min-height: 2.1em;
+        line-height: 15px;
+      }
+      .c_nav_filter .category-check {
+        width: 15px;
+        height: 15px;
+        bottom: 2px;
+        right: 2px;
+      }
+    }
+
+    .c_nav_filter input[type="radio"] { display: none; }
+    .c_nav_filter input[type="radio"]:checked + .category-image-wrapper {
+      border-color: #C36A4E;
+    }
+    .c_nav_filter input[type="radio"]:checked + .category-image-wrapper .category-check {
+      display: block;
+    }
+    .c_nav_filter input[type="radio"]:checked ~ .category-label {
+      color: #C36A4E;
+    }
+
+    @media(max-width:728px){
+      .c_nav_filter .category-list.few-items {
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: visible;
+}
+.c_nav_filter .category-list.few-items .category-item {
+  min-width: unset;
+  max-width: unset;
+  flex: 1 1 0;
+}
+
+    }
+  </style>
+
+  <form
+    is="facets-form"
+    {% if update_on_change %}
+      update-on-change
+    {% endif %}
+    section-id="{{ section.id }}"
+    method="GET"
+    action="{{ request.path }}"
+    class="facets"
+  >
+    <input type="hidden" name="page" value="">
+
+    {%- if results.current_type != blank or results.current_vendor != blank -%}
+      <input type="hidden" name="q" value="{{ results.current_vendor | default: results.current_type | escape }}">
+    {%- endif -%}
+
+    {%- if results.sort_by != blank -%}
+      <input type="hidden" name="sort_by" value="{{ results.sort_by }}">
+    {%- endif -%}
+
+    {%- if request.page_type == 'search' -%}
+      <input type="hidden" name="q" value="{{ results.terms | escape }}">
+    {%- endif -%}
+
+    <div class="c_nav_filter">
+    {% if show_custom_filter_tab %}
+      {%- for filter in results.filters -%}
+        {% if filter.label == 'Category' %}
+          <div class="category-list{% if visible_count > 4 %} more-than-4{% else %} few-items{% endif %}">
+            {% assign option_index = 0 %}
+            {% for filter_value in filter.values %}
+              {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
+                {% continue %}
+              {% endif %}
+              {% if filter_value.label == 'Men' or filter_value.label == 'women' or filter_value.label == 'not_valid' %}
+                {% continue %}
+              {% endif %}
+
+              {%- assign value_id = 'category-nav-filter-' | append: option_index -%}
+              {%- assign active = filter_value.active -%}
+              {%- assign value_label = filter_value.label -%}
+
+              {%- assign matching_product = blank -%}
+              {%- assign image_url = blank -%}
+
+              {%- comment -%} Manual image assignment for exceptions {%- endcomment -%}
+              {%- case value_label -%}
+                {%- when "Long Kurta" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_25_1b1ab4c5-6588-4c80-b38c-39eeded9d665.webp?v=1751625658" -%}
+                 {%- when "Airy Linen Pants" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_32.webp?v=1752220649" -%}
+                {%- when "Short Kurta" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_106_6044ec44-9694-4e3c-8169-a51269d16390.webp?v=1751625658" -%}
+                 {%- when "Formal Pants" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_33_9ec867b5-1fc4-4d8f-81ff-c281e9c24ae9.webp?v=1752220649" -%}
+                {%- when "Full Sleeve" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_37.webp?v=1752909051" -%}
+                {%- when "Half Sleeve" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_38.webp?v=1752909052" -%}
+                {%- when "Men Short Kurta" -%}
+                {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_23_eb410fbc-92a6-48a5-8d84-d8c1dd0ee7f5.webp?v=1751626499" -%}
+               {%- when "V-Neck Tops" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_110_15eeb79b-b85c-4354-b29f-87f8ed2c1b67.webp?v=1751625658" -%}
+                {%- when "Viscose tops" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_111_b91a9736-f8b7-4077-9876-5a14e491e8d1.webp?v=1751625658" -%}
+                {%- when "Cotton Pants" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_21_1dbb98c8-d1a2-47d9-bef3-b76bc051205b.webp?v=1751623815" -%}
+
+                {%- when "Palazzo" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_19_ce231049-f4e4-49f7-a278-5f4661554b59.webp?v=1751623816" -%}
+                {%- when "Wide Leg Pants" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_23_d6610d4b-6ea0-40f6-b590-a2bcf0a4a0fe.webp?v=1751623815" -%}
+                {%- when "4 Way Pants" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_22_23aab954-c9a5-4201-a6c9-0c70eb45507d.webp?v=1751623815" -%}
+                
+                
+                
+                {% comment %}
+
+                   PLUS SIZE PAGE START
+                
+                {% endcomment %}
+                
+               
+                {%- when "Cotton pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Cotton_Pant_Roundles.webp?v=1752045063" -%}
+                {%- when "Formal pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Formal_Pant_Roundles.webp?v=1752045064" -%}
+                {%- when "V-Neck top" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_V-neck_Sleeveless_Top_Roundles.webp?v=1752045064" -%}
+                {%- when "Palazzo pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Palazzo_Pant_Roundles.webp?v=1752045063" -%}
+                {%- when "Viscose top" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Viscose_Pleated_Top_Roundles.webp?v=1752045064" -%}
+                {%- when "Wide leg pant" -%}
+                  
+                
+                {% comment %}
+
+                   PLUS SIZE PAGE END
+                
+                {% endcomment %}
+                
+                
+                {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Wide_leg_Pant_Roundles.webp?v=1752045064" -%}
+                 {%- when "Airy Linen Shirt" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_26_226a94ee-90e5-4b27-921a-66a5b085338c.webp?v=1751625789" -%}
+                 {%- when "Airy Linen Wide Leg Pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_24.webp?v=1751623815" -%}
+                {%- when "Straight Pants" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_26_44dd514d-1247-4e91-91ad-6fa5c69f70a3.webp?v=1751624460" -%}
+                {%- when "Cotton Tops" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_109_159f241a-e43a-4c6f-8afe-cf1b71c704c2.webp?v=1751625658" -%}
+                {%- when "Airy Linen Flared Dress" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_34.webp?v=1752822898" -%}
+                
+                {%- else -%}
+                  {%- for p in collections.all.products -%}
+                    {% if p.metafields.custom.category_filter_name == value_label and p.metafields.custom.category_filter_image != blank %}
+                      {% assign matching_product = p %}
+                      {% assign image_url = p.metafields.custom.category_filter_image | img_url: '200x200' %}
+                      {% break %}
+                    {% endif %}
+                  {%- endfor -%}
+              {%- endcase -%}
+
+              <label class="category-item">
+                <input
+                  type="radio"
+                  id="{{ value_id }}"
+                  name="{{ filter_value.param_name }}"
+                  value="{{ filter_value.value }}"
+                  {% if active %}checked{% endif %}
+                />
+                <span class="category-image-wrapper">
+                  <img class="category-image" src="{{ image_url | default: 'https://dummyimage.com/80x80/cccccc/fff&text=+' }}" alt="{{ value_label }}">
+                  <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="category-label">{{ value_label }}</span>
+              </label>
+              {% assign option_index = option_index | plus: 1 %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {%- endfor -%}
+    {% endif %}
+
+    {% if show_fabric_filter_tab %}
+      {%- for filter in results.filters -%}
+        {% if filter.label == 'Fabric' %}
+          <div class="category-list{% if filter.values.size > 4 %} more-than-4{% else %} few-items{% endif %}">
+            {% assign option_index = 0 %}
+            {% for filter_value in filter.values %}
+              {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
+                {% continue %}
+              {% endif %}
+
+              {%- assign value_id = 'fabric-nav-filter-' | append: option_index -%}
+              {%- assign value_label = filter_value.label -%}
+
+              {%- assign image_url = blank -%}
+
+
+
+            {%- case value_label -%}
+                {%- when "100% Cotton" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_4.webp?v=1751875923" -%}
+                {%- when "Airy Linen" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_1.webp?v=1751875854" -%}
+                {%- when "Tencel Spandex" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame.webp?v=1751875854" -%}
+               {%- when "Viscose" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_2.webp?v=1751875854" -%}
+                {%- else -%}
+              {%- for p in collections.all.products -%}
+                {% if p.metafields.custom.fabric_filter_name == value_label and p.metafields.custom.fabric_filter_image != blank %}
+                  {% assign image_url = p.metafields.custom.fabric_filter_image | img_url: '200x200' %}
+                  {% break %}
+                {% endif %}
+              {%- endfor -%}
+              {%- endcase -%}
+
+              <label class="category-item">
+                <input
+                  type="radio"
+                  id="{{ value_id }}"
+                  name="{{ filter_value.param_name }}"
+                  value="{{ filter_value.value }}"
+                  {% if filter_value.active %}checked{% endif %}
+                />
+                <span class="category-image-wrapper">
+                  <img class="category-image" src="{{ image_url | default: 'https://dummyimage.com/80x80/cccccc/fff&text=+' }}" alt="{{ value_label }}">
+                  <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="category-label">{{ value_label }}</span>
+              </label>
+              {% assign option_index = option_index | plus: 1 %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {%- endfor -%}
+    {% endif %}
+
+
+
+{% comment %}
+
+FOR SHOP BY COLOR FILTER
+                      
+{% endcomment %}
+
+
+
+{% if show_color_filter_tab %}
+  {%- for filter in results.filters -%}
+    {% if filter.label == 'Color' %}
+      <div class="category-list{% if filter.values.size > 4 %} more-than-4{% else %} few-items{% endif %}">
+        {% assign option_index = 0 %}
+        {% for filter_value in filter.values %}
+          {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
+            {% continue %}
+          {% endif %}
+
+          {%- assign value_id = 'color-nav-filter-' | append: option_index -%}
+          {%- assign value_label = filter_value.label -%}
+
+          {%- assign image_url = blank -%}
+          {%- for p in collections.all.products -%}
+            {% if p.metafields.custom.color_filter_name == value_label and p.metafields.custom.color_image != blank %}
+              {% assign image_url = p.metafields.custom.color_image | img_url: '200x200' %}
+              {% break %}
+            {% endif %}
+          {%- endfor -%}
+
+          <label class="category-item">
+            <input
+              type="radio"
+              id="{{ value_id }}"
+              name="{{ filter_value.param_name }}"
+              value="{{ filter_value.value }}"
+              {% if filter_value.active %}checked{% endif %}
+            />
+            <span class="category-image-wrapper">
+              <img class="category-image" src="{{ image_url | default: 'https://dummyimage.com/80x80/cccccc/fff&text=+' }}" alt="{{ value_label }}">
+              <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </span>
+            <span class="category-label">{{ value_label }}</span>
+          </label>
+          {% assign option_index = option_index | plus: 1 %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {%- endfor -%}
+{% endif %}
+
+
+
+
+
+
+                      
+    </div>
+  </form>
+
+  <script>
+    function handlePrestigeFilterAjax(form) {
+      let checkedIndex = 0;
+      let filterScrollLeft = 0;
+      const filterList = document.querySelector('.category-list');
+      if (filterList) {
+        filterScrollLeft = filterList.scrollLeft;
+        const radios = filterList.querySelectorAll('input[type="radio"]');
+        radios.forEach((r, i) => { if (r.checked) checkedIndex = i; });
+      }
+
+      const url = new URL(window.location.href);
+      const formData = new FormData(form);
+      url.search = new URLSearchParams(formData).toString();
+      const sectionId = form.getAttribute('section-id');
+      if (!sectionId) return;
+
+      const currentScroll = window.scrollY;
+
+      fetch(`${url.pathname}?section_id=${sectionId}&${url.search}`)
+        .then(res => res.text())
+        .then(html => {
+          const tempDom = document.createElement('div');
+          tempDom.innerHTML = html;
+
+          const newForm = tempDom.querySelector('form.facets');
+          if (newForm) {
+            form.replaceWith(newForm);
+            rebindFacetsAjax();
+          }
+
+          const oldGrid = document.querySelector('.collection__products');
+          const newGrid = tempDom.querySelector('.collection__products');
+          if (oldGrid && newGrid) oldGrid.replaceWith(newGrid);
+
+          setTimeout(function() {
+            var af = document.querySelector('.active-facets');
+            if(af){
+              var foc = af.querySelector(':focus');
+              if(foc) foc.blur();
+            }
+            window.scrollTo({ top: currentScroll, behavior: 'auto' });
+
+            const newFilterList = document.querySelector('.category-list');
+            if (newFilterList) {
+              const radios = newFilterList.querySelectorAll('input[type="radio"]');
+              if (radios && radios.length > checkedIndex) {
+                const checkedRadio = radios[checkedIndex];
+                if (checkedRadio && checkedRadio.parentElement) {
+                  const tab = checkedRadio.parentElement;
+                  const left = tab.offsetLeft - (newFilterList.offsetWidth / 2) + (tab.offsetWidth / 2);
+                  newFilterList.scrollTo({ left: left, behavior: "auto" });
+                } else {
+                  newFilterList.scrollLeft = filterScrollLeft;
+                }
+              } else {
+                newFilterList.scrollLeft = filterScrollLeft;
+              }
+            }
+          }, 20);
+
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        });
+    }
+
+
+
+{%- comment -%}  if a person redirect with a selected filter link the view of the selected link displays in mobile {%- endcomment -%}
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // Only run on small screens (mobile), adjust as needed
+    if (window.innerWidth <= 640) {
+      var filterList = document.querySelector('.category-list');
+      if (filterList) {
+        var checkedRadio = filterList.querySelector('input[type="radio"]:checked');
+        if (checkedRadio && checkedRadio.parentElement) {
+          var tab = checkedRadio.parentElement;
+          // Calculate scroll so that selected tab is roughly centered
+          var left = tab.offsetLeft - (filterList.offsetWidth / 2) + (tab.offsetWidth / 2);
+          filterList.scrollTo({ left: left, behavior: "auto" });
+        }
+      }
+    }
+  });
+
+
+  </script>
+  <style>
+    .active-facets{
+      display:none;
+    }
+    .collection__loading-bar,
+    .loading-bar,
+    .collection.is-loading .collection__loading-bar,
+    .collection.is-loading .loading-bar {
+      display: none !important;
+    }
+  </style>
+{%- else -%}
+  {%- comment -%} DEFAULT FILTER BAR (your original default facets) {%- endcomment -%}
+  <style>
+    .c_nav_filter {
+      margin: 2rem 0rem;
+    }
+    .c_nav_filter .checkbox-control label {
+      border: 1px solid;
+      padding: 5px 10px;
+      border-radius: 2px;
+      font-size: 12px;
+    }
+    .c_nav_filter .checkbox-control {
+      min-width: fit-content;
+    }
+    .c_nav_filter .checkbox~label {
+      opacity: 1;
+      transition: opacity .2s, transform .2s;
+      position: relative;
+    }
+    .c_nav_filter .checkbox:checked~label {
+      opacity: 1;
+      transform: translate(0);
+      background: #000;
+      color: white;
+    }
+    .c_nav_filter .checkbox:checked {
+      opacity: 0;
+    }
+    .c_nav_filter .checkbox {
+      position: absolute;
+      clip: rect(0, 0, 0, 0);
+      clip-path: inset(50%);
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      border: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .facets-scroll-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 2rem;
+    }
+    .facets-scroll-inner {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: nowrap;
+    }
+    .facets-scroll-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+    .facets-scroll-wrapper {
+      scrollbar-width: none;
+    }
+    @media (min-width: 768px) {
+      .facets-scroll-wrapper {
+        overflow-x: visible;
+        scrollbar-width: auto;
+      }
+      .facets-scroll-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .facets-scroll-wrapper::-webkit-scrollbar {
+        display: block;
+      }
+    }
+    .active-facets{
+      display:none;
+    }
+    .collection__loading-bar,
+    .loading-bar,
+    .collection.is-loading .collection__loading-bar,
+    .collection.is-loading .loading-bar {
+      display: none !important;
+    }
+    .facets-scroll-wrapper {
+      touch-action: manipulation;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+  {%- assign color_label_list = 'general.label.color' | t | replace: ', ', ',' | downcase | split: ',' -%}
+  {%- capture id_prefix -%}facets-{{ context }}{%- endcapture -%}
+
+  <form
+    is="facets-form"
+    {% if update_on_change %}
+      update-on-change
+    {% endif %}
+    section-id="{{ section.id }}"
+    method="GET"
+    action="{{ request.path }}"
+    class="facets"
+  >
+    <input type="hidden" name="page" value="">
+    {%- if results.current_type != blank or results.current_vendor != blank -%}
+      <input type="hidden" name="q" value="{{ results.current_vendor | default: results.current_type | escape }}">
+    {%- endif -%}
+    {%- if results.sort_by != blank -%}
+      <input type="hidden" name="sort_by" value="{{ results.sort_by }}">
+    {%- endif -%}
+    {%- if request.page_type == 'search' -%}
+      <input type="hidden" name="q" value="{{ results.terms | escape }}">
+    {%- endif -%}
+
+    <div class="c_nav_filter">
+      <div class="facets-scroll-wrapper">
+        <div class="facets-scroll-inner">
+          {%- for filter in results.filters -%}
+            {% if filter.label == 'Category' %}
+              {% liquid
+                for filter_value in filter.values
+                  if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false
+                    continue
+                  endif
+                  if filter_value.label == 'Men' or filter_value.label == 'women' or filter_value.label == 'not_valid'
+                    continue
+                  endif
+
+                  assign value_id_prefix = id_prefix | append: '-' | append: forloop.index
+
+                  if section.settings.show_color_swatch and color_label_list contains downcase_label
+                    render 'swatch' with 'color', allow_multiple: true, selected: filter_value.active, value: filter_value.label, name: filter_value.param_name, show_tooltip: true, id_prefix: value_id_prefix
+                  else
+                    if section.settings.show_filter_values_count
+                      assign label = filter_value.label | append: ' (' | append: filter_value.count | append: ')'
+                    else
+                      assign label = filter_value.label | replace: 'Man', ''
+                    endif
+
+                    render 'checkbox', hide_checkbox: true, label: label, name: filter_value.param_name, type:'radio', value: filter_value.value, checked: filter_value.active, id_prefix: value_id_prefix
+                  endif
+                endfor
+              %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </form>
+{%- endif -%}

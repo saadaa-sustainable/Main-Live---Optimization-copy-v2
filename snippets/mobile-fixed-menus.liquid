@@ -1,0 +1,337 @@
+<!-- FIXED BOTTOM MOBILE NAV -->
+<div class="fixed_nav fixed_nav_mobile hidden-tablet-and-up">
+  <div class="row-nav">
+    <!-- Home -->
+    <div class="fixed-nav-item">
+      <div class="item--box">
+        <a class="fixed_nav--link" href="/" data-nav="home">
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_6.svg?v=1751279889" 
+            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_6.svg?v=1751279889" 
+            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_6.svg?v=1751279889" 
+            alt="Home">
+          <span class="icon_name"> Home </span>
+        </a>
+      </div>
+    </div>
+    <!-- Menu (MODIFIED: triggers sidebar menu) -->
+    <div class="fixed-nav-item">
+      <div class="item--box mobile-custom-account-icon">
+        <a 
+          class="fixed_nav--link"
+          href="javascript:void(0);"
+          data-nav="menu"
+          id="mobile-bottom-menu-trigger"
+        >
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+            alt="Menu">
+          <span class="icon_name"> Menu </span>
+        </a>
+      </div>
+    </div>
+    <!-- Gullak -->
+    <div class="fixed-nav-item">
+      <div class="item--box mobile-custom-account-icon">
+        <a class="fixed_nav--link" href="/#show-nector-rewards" data-nav="gullak">
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+            alt="Gullak">
+          <span class="icon_name"> Gullak </span>
+        </a>
+      </div>
+    </div>
+    <!-- Community -->
+    <div class="fixed-nav-item">
+      <div class="item--box mobile-custom-account-icon">
+        <a class="fixed_nav--link" href="/apps/return_prime" data-nav="community">
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275312.svg?v=1751544289" 
+            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275312.svg?v=1751544289" 
+            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275312.svg?v=1751544289" 
+            alt="Community">
+          <span class="icon_name"> Returns </span>
+        </a>
+      </div>
+    </div>
+    <!-- Account -->
+    <div class="fixed-nav-item">
+      <div class="item--box">
+        <a class="fixed_nav--link"
+           href="javascript:void(0);"
+           id="kp-bottom-account"
+           data-nav="account">
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_12.svg?v=1751280854" 
+            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_12.svg?v=1751280854" 
+            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_12.svg?v=1751280854" 
+            alt="Account">
+          <span class="icon_name" id="kp-bottom-account-text">Log in</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.fixed_nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  right: 0;
+  min-height: 62px;
+  box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.09);
+  background-color: #F6F3F1;
+  padding: 0px 0;
+  text-align: center;
+  z-index: 9999;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+}
+.row-nav {
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.fixed-nav-item {
+  flex: 0 0 16.666667%;
+  max-width: 16.666667%;
+}
+.item--box {
+  position: relative;
+}
+.fixed_nav--link {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-decoration: none;
+  position: relative;
+}
+.fixed_nav--link img {
+  width: 21px !important;
+  height: 21px !important;
+  margin: 0 auto;
+  transition: filter 0.2s;
+}
+.fixed_nav--link .icon_name {
+  display: block;
+  font-size:11px;
+  letter-spacing: -0.2px;
+  margin-top: 4px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #000;
+}
+.fixed_nav--link.active_url .icon_name {
+  color: #000;
+}
+.fixed_nav--link.active_url:after {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #000;
+  position: absolute;
+  bottom: -7px;
+}
+/* Hide fixed bottom nav when sidebar menu is open */
+.fixed_nav_mobile.hide {
+  display: none !important;
+}
+@media (min-width: 769px) {
+  .fixed_nav.fixed_nav_mobile.hidden-tablet-and-up {
+    display: none;
+  }
+}
+</style>
+
+<script>
+(function(){
+  // Helper function to update icon images according to active tab
+  function updateNavIcons() {
+    document.querySelectorAll('.fixed_nav--link').forEach(link => {
+      var img = link.querySelector('img');
+      if (img) {
+        if (link.classList.contains('active_url')) {
+          if (img.dataset.imgBlack) img.src = img.dataset.imgBlack;
+        } else {
+          if (img.dataset.imgGray) img.src = img.dataset.imgGray;
+        }
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.fixed_nav--link');
+    // Set active on click
+    links.forEach(link => {
+      link.addEventListener('click', function() {
+        links.forEach(l => l.classList.remove('active_url'));
+        this.classList.add('active_url');
+        sessionStorage.setItem('activeNavTab', this.getAttribute('data-nav'));
+        updateNavIcons();
+      });
+    });
+
+    // On page load, restore active tab based on session or URL
+    const saved = sessionStorage.getItem('activeNavTab');
+    let setActive = false;
+    if (saved) {
+      links.forEach(link => {
+        if (link.getAttribute('data-nav') === saved) {
+          link.classList.add('active_url');
+          setActive = true;
+        }
+      });
+    }
+    if (!setActive) {
+      const path = window.location.pathname;
+      links.forEach(link => {
+        if (link.getAttribute('href') === path) {
+          link.classList.add('active_url');
+          setActive = true;
+        }
+      });
+    }
+    if (!setActive) {
+      links[0].classList.add('active_url');
+    }
+    updateNavIcons();
+  });
+
+  // ---------------------------
+  // Kwikpass/Account Button Logic
+  // ---------------------------
+
+  function setBottomAccountLogin() {
+    // Use the same label as your translations, fallback to "Account"
+    var label = (typeof window.themeStrings !== "undefined" && window.themeStrings.account_label) ? window.themeStrings.account_label : "Account";
+    var el = document.getElementById('kp-bottom-account');
+    var txt = document.getElementById('kp-bottom-account-text');
+    if (el && txt) {
+      txt.textContent = label;
+      el.classList.remove('kwik-pass-login');
+      el.classList.add('kwik-pass-account');
+      el.onclick = function(e){
+        e.preventDefault();
+        window.location.href = '/account';
+        return false;
+      };
+    }
+  }
+
+  function setBottomAccountLogout() {
+    var el = document.getElementById('kp-bottom-account');
+    var txt = document.getElementById('kp-bottom-account-text');
+    if (el && txt) {
+      txt.textContent = "Log in";
+      el.classList.remove('kwik-pass-account');
+      el.classList.add('kwik-pass-login');
+      el.onclick = function(e){
+        e.preventDefault();
+        if (typeof kpHandleLogin === "function") {
+          kpHandleLogin('/account');
+        } else if (typeof handleShopifyLogin === "function") {
+          handleShopifyLogin(e, "/account");
+        } else {
+          // fallback to login page
+          window.location.href = '/account/login';
+        }
+        return false;
+      };
+    }
+  }
+
+  // On login event or DOM loaded, set the button correctly
+  function setupBottomAccountBtn(){
+    var userToken = localStorage.getItem('KWIKSESSIONTOKEN');
+    if (userToken) {
+      setBottomAccountLogin();
+    } else {
+      setBottomAccountLogout();
+    }
+  }
+
+  // Listen for login event (in case login happens elsewhere and the button should update)
+  window.addEventListener('user-loggedin', function(event) {
+    const { token } = event?.detail || {};
+    if (token) {
+      setBottomAccountLogin();
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setupBottomAccountBtn();
+  });
+
+ // ---------------------------------
+// Prestige Theme Sidebar Menu Trigger
+// ---------------------------------
+document.addEventListener('DOMContentLoaded', function() {
+  var bottomMenuTrigger = document.getElementById('mobile-bottom-menu-trigger');
+  if (bottomMenuTrigger) {
+    bottomMenuTrigger.addEventListener('click', function(e) {
+      // Prevent default action (do NOT navigate)
+      e.preventDefault();
+
+      // Remove 'active_url' class from all links and add to this one
+      document.querySelectorAll('.fixed_nav--link').forEach(l => l.classList.remove('active_url'));
+      this.classList.add('active_url');
+      sessionStorage.setItem('activeNavTab', this.getAttribute('data-nav'));
+      if (typeof updateNavIcons === 'function') updateNavIcons();
+
+      // Use hamburger button by aria-controls selector
+      var sidebarOpener = document.querySelector('button[aria-controls="sidebar-menu"]');
+      if (sidebarOpener) {
+        sidebarOpener.click();
+      }
+    });
+  }
+
+  // ---- HIDE/SHOW bottom nav when sidebar menu is open ----
+  // Try multiple selectors to support various themes!
+  var sidebarMenu =
+      document.getElementById('sidebar-menu') ||
+      document.querySelector('.drawer, .mobile-drawer, .Sidebar, .sidebar, .mobile-menu, .menu-drawer');
+  var bottomNav = document.querySelector('.fixed_nav_mobile');
+  if (sidebarMenu && bottomNav) {
+    var observer = new MutationObserver(function() {
+      // Hide if menu is open (supporting multiple open states)
+      var isOpen = sidebarMenu.classList.contains('opened') ||
+                   sidebarMenu.classList.contains('is-open') ||
+                   sidebarMenu.classList.contains('active') ||
+                   sidebarMenu.getAttribute('aria-hidden') === 'false' ||
+                   (window.getComputedStyle(sidebarMenu).display === 'block' && sidebarMenu.offsetWidth > 0) ||
+                   (window.getComputedStyle(sidebarMenu).transform !== 'none' && window.getComputedStyle(sidebarMenu).transform !== ''); // For slide-in menus
+      if (isOpen) {
+        bottomNav.classList.add('hide');
+      } else {
+        bottomNav.classList.remove('hide');
+      }
+    });
+    observer.observe(sidebarMenu, {
+      attributes: true,
+      attributeFilter: ['class', 'aria-hidden', 'style']
+    });
+    // Also check initial state on page load
+    var isOpen = sidebarMenu.classList.contains('opened') ||
+                 sidebarMenu.classList.contains('is-open') ||
+                 sidebarMenu.classList.contains('active') ||
+                 sidebarMenu.getAttribute('aria-hidden') === 'false' ||
+                 (window.getComputedStyle(sidebarMenu).display === 'block' && sidebarMenu.offsetWidth > 0) ||
+                 (window.getComputedStyle(sidebarMenu).transform !== 'none' && window.getComputedStyle(sidebarMenu).transform !== '');
+    if (isOpen) {
+      bottomNav.classList.add('hide');
+    }
+  }
+});
+
+})();
+</script>

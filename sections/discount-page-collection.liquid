@@ -1,0 +1,401 @@
+{% liquid
+  for collection in collections
+    if collection.url == '/collections/best-sellers-women'
+      assign womenCollection = collection
+    endif
+    if collection.url == '/collections/men'
+      assign menCollection = collection
+    endif
+  endfor
+%}
+
+<div class="dcp_collection {% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %} {% if section.settings.separate_section_with_border %}bordered-section{% endif %}">
+  <div class="container section-stack">
+    <button class="button h-stack justify-between h2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="19" viewBox="0 0 21 19" fill="none">
+        <path d="M18.7934 13.8789H5.66045C5.55149 13.8789 5.45699 13.8035 5.43295 13.6974L3.39291 4.73734C3.18641 3.82991 2.39214 3.1964 1.46161 3.1964H0.233334C0.104534 3.1964 0 3.09187 0 2.96307C0 2.83427 0.104534 2.72974 0.233334 2.72974H1.46161C2.61124 2.72974 3.59265 3.51257 3.84791 4.63374L5.84642 13.4125H18.607L20.4741 5.21218H9.0795C8.9507 5.21218 8.84617 5.10764 8.84617 4.97884C8.84617 4.85004 8.9507 4.74551 9.0795 4.74551H20.7667C20.8379 4.74551 20.9049 4.77794 20.949 4.83324C20.9933 4.88878 21.0101 4.96134 20.994 5.03064L19.0207 13.6974C18.9967 13.8035 18.9024 13.8789 18.7934 13.8789Z" fill="white"/>
+        <path d="M4.53551 17.0976C3.51957 17.0976 2.69287 16.2712 2.69287 15.2552C2.69287 14.2393 3.51934 13.4126 4.53551 13.4126H18.7787C18.9077 13.4126 19.012 13.5169 19.012 13.6459C19.012 13.775 18.9077 13.8793 18.7787 13.8793H4.53551C3.77694 13.8793 3.15954 14.4967 3.15954 15.2552C3.15954 16.0138 3.77694 16.631 4.53551 16.631C4.66431 16.631 4.76885 16.7353 4.76885 16.8643C4.76885 16.9933 4.66431 17.0976 4.53551 17.0976Z" fill="white"/>
+        <path d="M17.1326 18.5776C16.188 18.5776 15.4194 17.809 15.4194 16.8643C15.4194 15.9195 16.188 15.1509 17.1326 15.1509C18.0773 15.1509 18.8459 15.9195 18.8459 16.8643C18.8459 17.809 18.0773 18.5776 17.1326 18.5776ZM17.1326 15.6175C16.4454 15.6175 15.8861 16.1766 15.8861 16.8643C15.8861 17.5519 16.4452 18.111 17.1326 18.111C17.82 18.111 18.3793 17.5519 18.3793 16.8643C18.3793 16.1766 17.82 15.6175 17.1326 15.6175Z" fill="white"/>
+        <path d="M7.92359 18.5776C6.97905 18.5776 6.21045 17.809 6.21045 16.8643C6.21045 15.9195 6.97905 15.1509 7.92359 15.1509C8.86836 15.1509 9.63696 15.9195 9.63696 16.8643C9.63696 17.809 8.86836 18.5776 7.92359 18.5776ZM7.92359 15.6175C7.23619 15.6175 6.67712 16.1766 6.67712 16.8643C6.67712 17.5519 7.23619 18.111 7.92359 18.111C8.61099 18.111 9.17029 17.5519 9.17029 16.8643C9.17029 16.1766 8.61099 15.6175 7.92359 15.6175Z" fill="white"/>
+        <path d="M13.5531 17.0975H9.40374C9.27494 17.0975 9.17041 16.9932 9.17041 16.8642C9.17041 16.7352 9.27494 16.6309 9.40374 16.6309H13.5531C13.6822 16.6309 13.7865 16.7352 13.7865 16.8642C13.7865 16.9932 13.6822 17.0975 13.5531 17.0975Z" fill="white"/>
+        <path d="M18.7786 5.21202H12.6069C12.4778 5.21202 12.3735 5.10749 12.3735 4.97869V1.75494C12.3735 1.62614 12.4778 1.52161 12.6069 1.52161H18.7786C18.9076 1.52161 19.0119 1.62614 19.0119 1.75494V4.97869C19.0119 5.10772 18.9076 5.21202 18.7786 5.21202ZM12.8402 4.74535H18.5452V1.98827H12.8402V4.74535Z" fill="white"/>
+        <path d="M6.48919 5.21199C6.36039 5.21199 6.25586 5.10745 6.25586 4.97865V0.233334C6.25586 0.104534 6.36039 0 6.48919 0H14.5871C14.7161 0 14.8204 0.104534 14.8204 0.233334V1.75491C14.8204 1.88371 14.7161 1.98824 14.5871 1.98824C14.458 1.98824 14.3537 1.88371 14.3537 1.75491V0.466668H6.72253V4.97865C6.72253 5.10769 6.61799 5.21199 6.48919 5.21199Z" fill="white"/>
+        <path d="M12.1401 11.5916C12.011 11.5916 11.9067 11.4873 11.9067 11.3583V7.21942C11.9067 7.09062 12.011 6.98608 12.1401 6.98608C12.2691 6.98608 12.3734 7.09062 12.3734 7.21942V11.3583C12.3734 11.4873 12.2691 11.5916 12.1401 11.5916Z" fill="white"/>
+        <path d="M14.2094 9.52221H10.0707C9.94194 9.52221 9.8374 9.41768 9.8374 9.28888C9.8374 9.16008 9.94194 9.05554 10.0707 9.05554H14.2094C14.3384 9.05554 14.4427 9.16008 14.4427 9.28888C14.4427 9.41768 14.3384 9.52221 14.2094 9.52221Z" fill="white"/>
+      </svg>
+      <span>Bundle Builder</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="13" viewBox="0 0 15 13" fill="none">
+        <path d="M7.8387 9.70784L12.8168 4.61377C12.8999 4.52877 12.9463 4.41585 12.9463 4.29842C12.9463 4.18099 12.8999 4.06806 12.8168 3.98307L12.8112 3.97758C12.7709 3.93623 12.7224 3.90331 12.6687 3.88081C12.6149 3.85831 12.557 3.84671 12.4985 3.84671C12.44 3.84671 12.3822 3.85831 12.3284 3.88081C12.2747 3.90331 12.2262 3.93623 12.1859 3.97758L7.49839 8.77458L2.81277 3.97758C2.77248 3.93623 2.72399 3.90331 2.67024 3.88081C2.61649 3.85831 2.5586 3.84671 2.50011 3.84671C2.44162 3.84671 2.38374 3.85831 2.32999 3.88081C2.27624 3.90331 2.22774 3.93623 2.18745 3.97758L2.18183 3.98307C2.09872 4.06806 2.05236 4.18099 2.05236 4.29842C2.05236 4.41585 2.09872 4.52877 2.18183 4.61377L7.15995 9.70784C7.20373 9.75264 7.25638 9.7883 7.31472 9.81267C7.37306 9.83704 7.43586 9.84961 7.49933 9.84961C7.56279 9.84961 7.6256 9.83704 7.68393 9.81267C7.74227 9.7883 7.79492 9.75264 7.8387 9.70784Z" fill="white"/>
+      </svg>
+    </button>
+    <height-observer
+      variable="collection-toolbar"
+      class="dpc_collection-toolbar h-stack justify-between collection-toolbar "
+    >
+      <scroll-carousal class="scroll-area h-stack gap-6 bleed">
+        <button>SHOP THE LOOK</button>
+        <button>PICK YOUR SHADE</button>
+        <button>CAPSULE WARDROBE</button>
+      </scroll-carousal>
+    </height-observer>
+    <div class="section-stack dpc_tab-1 ">
+      <div class="dpc_collection_wrapper">
+        <div class="title">workwear</div>
+        <scroll-carousal class="dpc_collection scroll-area bleed">
+          {% for product in collections['work-wear'].products %}
+            {%- render 'product-card',
+              product: product,
+              reveal: false,
+              hide_product_information: true,
+              stacked: true
+            -%}
+          {% endfor %}
+        </scroll-carousal>
+      </div>
+      <div class="dpc_collection_wrapper">
+        <div class="title">festive</div>
+        <scroll-carousal class="dpc_collection scroll-area bleed">
+          {% for product in section.settings.collection.products %}
+            {% if product.tags contains 'Festive wear' %}
+              {%- render 'product-card',
+                product: product,
+                reveal: false,
+                hide_product_information: true,
+                stacked: true
+              -%}
+            {% endif %}
+          {% endfor %}
+        </scroll-carousal>
+      </div>
+      <div class="dpc_collection_wrapper">
+        <div class="title">casual</div>
+        <scroll-carousal class="dpc_collection scroll-area bleed">
+          {% for product in section.settings.collection.products %}
+            {% if product.tags contains 'Casual wear' %}
+              {%- render 'product-card',
+                product: product,
+                reveal: false,
+                hide_product_information: true,
+                stacked: true
+              -%}
+            {% endif %}
+          {% endfor %}
+        </scroll-carousal>
+      </div>
+      <div class="dpc_collection_wrapper">
+        <div class="title">co-ord set</div>
+        <scroll-carousal class="dpc_collection scroll-area bleed">
+          {% for product in section.settings.collection.products %}
+            {% if product.tags contains 'Casual wear' %}
+              {%- render 'product-card',
+                product: product,
+                reveal: false,
+                hide_product_information: true,
+                stacked: true
+              -%}
+            {% endif %}
+          {% endfor %}
+        </scroll-carousal>
+      </div>
+      <div class="dpc_iwt">
+        <scroll-carousal class="scroll-area bleed">
+          <div class="h-stack dpc_iwt_item">
+            <img
+              src="https://saadaa.in/cdn/shop/files/everyday_cotton_top_filter_image.jpg?v=1729081545&width=300"
+              width="300"
+              height="auto"
+            >
+            <div class="v-stack text-center">
+              <p class="h2">GET THIS LOOK IN JUST</p>
+              <p class="h3"><sr>2000</sr></p>
+              <p class="h1"><b>1698/-</b></p>
+            </div>
+          </div>
+          <div class="h-stack dpc_iwt_item">
+            <img
+              src="https://saadaa.in/cdn/shop/files/everyday_cotton_top_filter_image.jpg?v=1729081545&width=300"
+              width="300"
+              height="auto"
+            >
+            <div class="v-stack text-center">
+              <p class="h2">GET THIS LOOK IN JUST</p>
+              <p class="h3"><sr>2000</sr></p>
+              <p class="h1"><b>1698/-</b></p>
+            </div>
+          </div>
+          <div class="h-stack dpc_iwt_item">
+            <img
+              src="https://saadaa.in/cdn/shop/files/everyday_cotton_top_filter_image.jpg?v=1729081545&width=300"
+              width="300"
+              height="auto"
+            >
+            <div class="v-stack text-center">
+              <p class="h2">GET THIS LOOK IN JUST</p>
+              <p class="h3"><sr>2000</sr></p>
+              <p class="h1"><b>1698/-</b></p>
+            </div>
+          </div>
+        </scroll-carousal>
+      </div>
+      <div class="dpc_collection_wrapper">
+        <div class="title">comfort</div>
+        <scroll-carousal class="dpc_collection scroll-area bleed">
+          {% for product in section.settings.collection.products %}
+            {% if product.tags contains 'Comfort wear' %}
+              {%- render 'product-card',
+                product: product,
+                reveal: false,
+                hide_product_information: true,
+                stacked: true
+              -%}
+            {% endif %}
+          {% endfor %}
+        </scroll-carousal>
+      </div>
+    </div>
+    <div class="section-stack dpc_tab-2 hidden">
+      {% paginate womenCollection.products by 6 %}
+        <div class="dpc_collection_wrapper" data-paginate-url="{{ paginate.next.url }}">
+          <div class="title">women</div>
+          <div class="dpc_collection" data-content-wrapper="{{ womenCollection.title }}">
+            {% for product in womenCollection.products %}
+              {%- render 'product-card',
+                product: product,
+                reveal: false,
+                hide_product_information: true,
+                stacked: true
+              -%}
+            {% endfor %}
+          </div>
+          {% if paginate.pages > 1 %}
+            {%- if paginate.next.is_link -%}
+              {%- assign next_page = paginate.current_page | plus: 1 -%}
+              <div class="text-end">
+                <a
+                  is="facet-link"
+                  rel="next"
+                  aria-label="{{ 'general.accessibility.go_to_page' | t: index: next_page }}"
+                  href="{{ paginate.next.url }}"
+                  data-content-tab="{{ womenCollection.title }}"
+                >
+                  <small class="underline">view more</small>
+                </a>
+              </div>
+            {%- endif -%}
+          {% endif %}
+        </div>
+        {% comment %}
+          {%- render 'pagination', paginate: paginate, facet: true -%}
+        {% endcomment %}
+      {% endpaginate %}
+      {% paginate menCollection.products by 6 %}
+        <div class="dpc_collection_wrapper" data-paginate-url="{{ paginate.next.url }}">
+          <div class="title">Men</div>
+          <div class="dpc_collection" data-content-wrapper="{{ menCollection.title }}">
+            {% for product in menCollection.products %}
+              {%- render 'product-card',
+                product: product,
+                reveal: false,
+                hide_product_information: true,
+                stacked: true
+              -%}
+            {% endfor %}
+          </div>
+          {% if paginate.pages > 1 %}
+            {%- if paginate.next.is_link -%}
+              {%- assign next_page = paginate.current_page | plus: 1 -%}
+              <div class="text-end">
+                <a
+                  is="facet-link"
+                  rel="next"
+                  aria-label="{{ 'general.accessibility.go_to_page' | t: index: next_page }}"
+                  href="{{ paginate.next.url }}"
+                  data-content-tab="{{ menCollection.title }}"
+                >
+                  <small class="underline">view more</small>
+                </a>
+              </div>
+            {%- endif -%}
+          {% endif %}
+        </div>
+        {% comment %}
+          {%- render 'pagination', paginate: paginate, facet: true -%}
+        {% endcomment %}
+      {% endpaginate %}
+      <div class="dpc_cart v-stack gap-4 full-bleed">
+        <div class="v-stack gap-2 text-center">
+          <small
+            ><b
+              >Add one more product to reach
+              <span style="color:#CA232D;">
+                {%- if cart.item_count == 1 -%}
+                  15%
+                {%- elsif cart.item_count == 2 -%}
+                  20%
+                {%- elsif cart.item_count == 3 -%}
+                  25%
+                {%- endif %}
+                off</span
+              ></b
+            ></small
+          >
+          <div class="progress-bar" style="--progress: 0.2;"></div>
+        </div>
+        <div class="cart_items_wrapper h-stack justify-between">
+          <div class="cart_items h-stack gap-2">
+            {% for line_item in cart.items %}
+              <div class="cart_item">
+                {% if line_item.quantity > 1 %}
+                  <span class="cart_badges h-stack justify-center">{{ line_item.quantity }}</span>
+                {% endif %}
+                <img src="{{ line_item.image | image_url: width: 100 }}" width="60px" height="auto" alt="">
+              </div>
+            {% endfor %}
+            {% assign loopValue = 4 | minus: cart.item_count %}
+            {% if loopValue > 0 %}
+              {% for i in (1..loopValue) %}
+                <div class="cart_item">
+                  <span>{{ cart.item_count | plus: i }}</span>
+                </div>
+              {% endfor %}
+            {% endif %}
+            <div class="cart_item">
+              <span>+</span>
+            </div>
+          </div>
+          <div class="cart_icon h-stack">
+            <span class="cart_badges h-stack justify-center">{{ cart.item_count }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" fill="none">
+              <g clip-path="url(#clip0_238_9554)">
+              <path d="M0.833984 0.833008H4.16732L6.40065 11.9913C6.47685 12.375 6.68557 12.7196 6.99027 12.9649C7.29497 13.2102 7.67623 13.3405 8.06732 13.333H16.1673C16.5584 13.3405 16.9397 13.2102 17.2444 12.9649C17.5491 12.7196 17.7578 12.375 17.834 11.9913L19.1673 4.99967H5.00065M8.33398 17.4997C8.33398 17.9599 7.96089 18.333 7.50065 18.333C7.04041 18.333 6.66732 17.9599 6.66732 17.4997C6.66732 17.0394 7.04041 16.6663 7.50065 16.6663C7.96089 16.6663 8.33398 17.0394 8.33398 17.4997ZM17.5007 17.4997C17.5007 17.9599 17.1276 18.333 16.6673 18.333C16.2071 18.333 15.834 17.9599 15.834 17.4997C15.834 17.0394 16.2071 16.6663 16.6673 16.6663C17.1276 16.6663 17.5007 17.0394 17.5007 17.4997Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+              <defs>
+              <clipPath id="clip0_238_9554">
+              <rect width="20" height="20" fill="white"/>
+              </clipPath>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .dcp_collection scroll-carousal{
+        /* margin-inline-end: - max(var(--container-gutter), 50% - var(--container-max-width) / 2); */
+  }
+       .dpc_container{
+     display:grid;
+         gap:42px;
+       }
+      .dpc_collection-toolbar{
+        box-shadow:none;
+      }
+        .dpc_collection-toolbar  button{
+         padding:11px 20px;
+         border:.5px solid;
+         font-size:9px;
+        min-width: max-content;
+       }
+     .dpc_collection_wrapper{
+     color:#757575;
+     }
+       .dpc_collection_wrapper .title{
+     font-size:20px;
+       }
+       .dpc_collection{
+         display: grid;
+    gap: 24px;
+    margin-block: 28px;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(70%, 280px);
+       }
+     .dpc_iwt > scroll-carousal{
+       display: grid;
+       gap:20px;
+       grid-auto-flow: column;
+       grid-auto-columns: min(100% ,358px);
+     }
+     .dpc_iwt_item{
+       display:grid;
+       grid-template-columns: 160px auto;
+       border-radius: 8px;
+       background: #F2F2F2;
+     }
+     .dpc_iwt_item > .v-stack{
+       padding:10px;
+     }
+   .cart_item{
+     width:60px;
+     height:80px;
+     background:white;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   }
+     .cart_item,.cart_icon{
+       position:relative;
+     }
+
+    .dpc_cart .progress-bar:before {
+       background: #CA232D;
+   }
+     .cart_badges{
+       position:absolute;
+       width: 14px;
+       height: 14px;
+       background: gray;
+       font-size: 10px;
+       border-radius: 50%;
+       color: white;
+     }
+  .cart_item .cart_badges{
+      top: -2px;
+     left: -3px;
+   }
+   .cart_items_wrapper{
+     padding-top:4px;
+     padding-bottom:7px;
+     padding-inline-start: var(--distance-to-bleed);
+     padding-inline-end: var(--distance-to-bleed);
+     background: #F9F7F2;
+     box-shadow: -1px 1px 12.4px 6px rgba(0, 0, 0, 0.10);
+   }
+    .cart_icon > .cart_badges  {
+     top: -12px;
+     right: -9px;
+    background: black;
+      color:white;
+   }
+</style>
+{% schema %}
+{
+  "name": "Discount page collection",
+  "settings": [
+      {
+      "type": "checkbox",
+      "id": "separate_section_with_border",
+      "label": "t:global.section.separate_section_with_border",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label":"Choose collection"
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_upper_vertical_spacing",
+      "label": "Remove upper verticle spacing",
+      "default": false
+    },
+      {
+      "type": "checkbox",
+      "id": "remove_lower_vertical_spacing",
+      "label": "Remove lower verticle spacing",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

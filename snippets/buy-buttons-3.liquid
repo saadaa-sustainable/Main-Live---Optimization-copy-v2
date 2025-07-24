@@ -1,0 +1,278 @@
+{%- comment -%}
+  ----------------------------------------------------------------------------------------------------------------------
+  BUY BUTTONS
+  ----------------------------------------------------------------------------------------------------------------------
+
+  This component is used to show the buy buttons
+
+  ********************************************
+  Supported variables
+  ********************************************
+
+  * product: the product from which to show the buttons (if empty, a placeholder is displayed)
+  * show_payment_button: if we show or not the dynamic checkout button
+  * show_gift_card_recipient: for gift card products, an optional message/email to be sent to the recipient
+  * atc_button_background: the background of the ATC button
+  * atc_button_text_color: the color of the ATC button
+  * payment_button_background: the background of the dynamic payment button
+  * payment_button_background: the color of the dynamic payment button
+  * form_id: if specified, define the form ID linked to this input
+{%- endcomment -%}
+<style>
+    .buy-buttons{
+    /* position: relative; */
+    }
+    .size_popup_button{
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      z-index: 3;
+      background: transparent;
+      position: absolute;
+    }
+  .notify___me{
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+  }
+    .add_to_cart{
+      position: relative;
+    }
+</style>
+{%- if product != blank -%}
+  {%- assign variant_picker_block = section.blocks | where: 'type', 'variant_picker' | first -%}
+
+  {%- form 'product', product, is: 'product-form', id: form_id, class: 'product_page_form' -%}
+    <input
+      type="hidden"
+      {% if variant_picker_block != blank %}
+        disabled
+      {% endif %}
+      name="id"
+      value="{{ product.selected_or_first_available_variant.id }}"
+    >
+
+    {% liquid
+      assign button_disabled = false
+      if product.selected_variant.available == false
+        assign button_disabled = true
+        assign button_content = 'product.general.sold_out_button' | t
+
+      else
+        if product.template_suffix contains 'pre-order'
+          assign button_content = 'product.general.pre_order_button' | t
+        else
+          assign button_content = 'product.general.add_to_cart_button' | t
+        endif
+      endif
+    %}
+
+    <div class="v-stack gap-4">
+      {%- if product.gift_card? and show_gift_card_recipient -%}
+        <gift-card-recipient class="gift-card-recipient v-stack gap-3">
+          {%- assign checkbox_label = 'gift_card.recipient.checkbox' | t -%}
+          {%- render 'checkbox', label: checkbox_label, name: 'properties[__shopify_send_gift_card_to_recipient]' -%}
+
+          <div class="gift-card-recipient__fields js:hidden">
+            <div class="fieldset">
+              {%- liquid
+                assign recipient_email_label = 'gift_card.recipient.email_label' | t
+                render 'input', type: 'email', label: recipient_email_label, name: 'properties[Recipient email]', value: form.email, required: true
+
+                assign recipient_name_label = 'gift_card.recipient.name_label' | t
+                render 'input', label: recipient_name_label, name: 'properties[Recipient name]', value: form.name
+
+                assign message_label = 'gift_card.recipient.message_label' | t
+                render 'input', label: message_label, name: 'properties[Recipient message]', value: form.message, multiline: 3, maxlength: 200, show_max_characters_count: true
+              -%}
+            </div>
+          </div>
+        </gift-card-recipient>
+      {%- endif -%}
+
+      <buy-buttons
+        class="buy-buttons floating {{ class }} {% if show_payment_button %}buy-buttons--has-dynamic{% endif %}"
+        template="{{ product.template_suffix | escape }}"
+        form="{{ form_id }}"
+      >
+
+<style>
+  /* hide by default */
+  .buy-buttons.floating {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  /* once .visible is added, show it */
+  .buy-buttons.floating.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const banner = document.querySelector('#color-variant');
+    const floatingBtn = document.querySelector('.buy-buttons.floating');
+    if (!banner || !floatingBtn) return;
+
+    // precalculate the point at which the banner ends
+    const bannerBottomPos = banner.offsetTop + banner.offsetHeight;
+
+    function onScroll() {
+      // window.pageYOffset is how far you've scrolled
+      if (window.pageYOffset >= bannerBottomPos) {
+        floatingBtn.classList.add('visible');
+      } else {
+        floatingBtn.classList.remove('visible');
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // run on load in case you start below the banner
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        {%- if show_payment_button and atc_button_background == blank and atc_button_text_color == blank -%}
+          {%- assign atc_button_style = 'outline' -%}
+        {%- else -%}
+          {%- assign atc_button_style = 'solid' -%}
+        {%- endif -%}
+        {% if request.page_type == 'product' and product.has_only_default_variant == false %}
+         {% unless product.template_suffix contains 'pre-order' %}
+          <a href="#navigate" class="size_popup_button"></a>
+            <div class="select_size">
+              {%- render 'button',
+                content: 'SELECT A SIZE',
+                type: 'text',
+                disabled: disabled,
+                style: atc_button_style,
+                background: atc_button_background,
+                text_color: atc_button_text_color,
+                stretch: true
+              -%}
+            </div>
+    {% endunless %}
+        {% endif %}
+        <div class="add_to_cart {% if product.has_only_default_variant == false %} {% unless product.template_suffix contains 'pre-order' %} hidden {% endunless %}{% endif %}">
+          <div class="notify___me popup_click " data-service="service_31"></div>
+            
+          
+    {%- render 'button',
+              content: button_content,
+              type: 'submit',
+              disabled: button_disabled,
+              style: atc_button_style,
+              background: atc_button_background,
+              text_color: atc_button_text_color,
+              stretch: true
+            -%}
+
+       {%- comment -%}
+          {% if product.template_suffix contains 'pre-order' %}
+            
+            
+              {% render 'countdown-timer-product-block',content: button_content,
+              type: 'submit',
+              disabled: button_disabled,
+              style: atc_button_style,
+              background: atc_button_background,
+              text_color: atc_button_text_color,
+              stretch: true %}
+
+           
+          {% else %}
+            {%- render 'button',
+              content: button_content,
+              type: 'submit',
+              disabled: button_disabled,
+              style: atc_button_style,
+              background: atc_button_background,
+              text_color: atc_button_text_color,
+              stretch: true
+            -%}
+          {% endif %}
+               {%- endcomment -%}
+           
+        </div>
+<div class="h-stack justify-center gap-1.5" style="margin-top:10px;">
+            <svg
+              stroke="rgb(34, 197, 160)"
+              fill="rgb(34, 197, 160)"
+              stroke-width="0"
+              viewBox="0 0 16 16"
+              role="presentation"
+              height="20px"
+              width="20px"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
+            </svg>
+            <span style="font-size:13px;position: relative;top: 1px;">7-Day Money Back Guarantee</span>
+          </div>
+
+
+
+
+
+
+        
+
+        
+        {%- if show_payment_button -%}
+          {{- form | payment_button -}}
+
+          <style>
+            #shopify-section-{{ section.id }} .shopify-payment-button {
+              {%- if payment_button_background != blank and payment_button_background != 'rgba(0,0,0,0)' -%}
+                --button-background: {{ payment_button_background.rgb }};
+              {%- endif -%}
+
+              {%- if payment_button_text_color != blank and payment_button_text_color != 'rgba(0,0,0,0)' -%}
+                --button-text-color: {{ payment_button_text_color.rgb }};
+              {%- endif -%}
+
+              {%- unless product.selected_or_first_available_variant.available -%}
+                display: none;
+              {%- endunless -%}
+            }
+          </style>
+        {%- endif -%}
+
+      </buy-buttons>   
+      
+    </div>   
+  {%- endform -%}
+
+
+
+
+  
+{%- else -%}
+  <!--
+    <buy-buttons class="buy-buttons" template="{{ product.template_suffix | escape }}" form="{{ form_id }}">
+      {%- assign button_content = 'product.general.add_to_cart_button' | t -%}
+      {%- render 'button', content: button_content, type: 'submit', background: variant_picker_block.settings.atc_button_background, text_color: variant_picker.settings.atc_button_text_color, stretch: true -%}
+    </buy-buttons>
+  -->
+{%- endif -%}

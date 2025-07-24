@@ -1,0 +1,57 @@
+
+<div class="section-spacing view_similar {% if section.settings.separate_section_with_border %}bordered-section{% endif %}">
+  <div class="container">
+    {%- assign wrapper_carousel_id = 'featured-collections-carousel-' | append: section.id -%}
+
+    <div class="section-stack">
+      <featured-collections-carousel id="{{ wrapper_carousel_id }}" class="featured-collections-carousel">
+        <div
+          class="featured-collections-carousel__item {% if forloop.first %}is-selected{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <product-list class="floating-controls-container floating-controls-container--inside floating-controls-container--on-hover">
+            <scroll-carousel
+              id="{{ product_carousel_id }}"
+              group-cells
+              allow-drag
+              class="product-list  {% if section.settings.hide_product_information %}product-list--compact{% endif %} product-list--carousel scroll-area bleed md:unbleed"
+            >
+              {%- for product in collection.products -%}
+                {%- render 'product-card', product: product -%}
+              {%- endfor -%}
+            </scroll-carousel>
+
+            <button
+              is="carousel-prev-button"
+              type="button"
+              class="prev-next-button prev-next-button--prev circle-button hover:animate-icon-inline"
+              aria-controls="{{ product_carousel_id }}"
+              disabled
+            >
+              <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+              {%- render 'icon' with 'arrow-left', direction_aware: true -%}
+            </button>
+
+            <button
+              is="carousel-next-button"
+              type="button"
+              class="prev-next-button prev-next-button--next circle-button hover:animate-icon-inline"
+              aria-controls="{{ product_carousel_id }}"
+            >
+              <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+              {%- render 'icon' with 'arrow-right', direction_aware: true -%}
+            </button>
+          </product-list>
+
+          {%- if block.settings.link_text != blank -%}
+            {%- assign button_link = block.settings.link_url | default: block.settings.collection.url | default: '#' -%}
+
+            <div class="justify-self-center">
+              {%- render 'button', href: button_link, content: block.settings.link_text -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </featured-collections-carousel>
+    </div>
+  </div>
+</div>
