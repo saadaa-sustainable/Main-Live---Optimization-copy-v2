@@ -201,18 +201,28 @@
                             </div>
                           </div>
                         {%- else -%}
-                          <div class="collection__main">
+                           <div class="collection__main">
                             {%- render 'active-facets', results: search -%}
-
-                            <product-list id="product-list-{{ section.id }}" class="product-list">
+                          {% comment %}Hide products start {% endcomment %}
+                             <product-list id="product-list-{{ section.id }}" class="product-list">
                               {%- for product in product_results -%}
-                                {%- render 'product-card',
-                                  product: product,
-                                  stacked: true,
-                                  reveal: settings.stagger_products_apparition
-                                -%}
+                                {%- comment %}
+                                  Check if the product is part of the collection to be excluded.
+                                  The 'where' filter creates an array of collections that match the ID.
+                                  If the size of that array is 0, the product is NOT in that collection.
+                                {%- endcomment %}
+                                {%- assign collection_to_exclude = product.collections | where: "id", 462621278454 -%}
+                            
+                                {%- if collection_to_exclude.size == 0 -%}
+                                  {%- render 'product-card',
+                                    product: product,
+                                    stacked: true,
+                                    reveal: settings.stagger_products_apparition
+                                  -%}
+                                {%- endif -%}
                               {%- endfor -%}
                             </product-list>
+                         {% comment %}Hide products end {% endcomment %}
 
                             {%- render 'pagination', paginate: paginate, facet: true -%}
                           </div>

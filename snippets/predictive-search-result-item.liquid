@@ -15,16 +15,33 @@
 {%- endcomment -%}
 {%- case type -%}
   {%- when 'product' -%}
+   {% comment %}Hide products {% endcomment %}
     <div class="md-max:hidden">
       {% if pre_p_url contains product.handle %}
         {% continue %}
       {% endif %}
-      {%- render 'product-card', product: product, show_quick_buy: false -%}
+    
+      {%- comment %} Check if the product belongs to the collection to be excluded {%- endcomment %}
+      {%- assign collection_to_exclude = product.collections | where: "id", 462621278454 -%}
+    
+      {%- if collection_to_exclude.size == 0 -%}
+        {%- render 'product-card', product: product, show_quick_buy: false -%}
+      {%- endif -%}
     </div>
-
+   
     <div class="md:hidden">
-      {%- render 'product-card-horizontal', product: product, show_quick_buy: false -%}
+      {%- if pre_p_url contains product.handle -%}
+        {%- continue -%}
+      {%- endif -%}
+    
+      {%- comment %} Check if the product belongs to the collection to be excluded {%- endcomment %}
+      {%- assign collection_to_exclude = product.collections | where: "id", 462621278454 -%}
+      
+      {%- if collection_to_exclude.size == 0 -%}
+        {%- render 'product-card-horizontal', product: product, show_quick_buy: false -%}
+      {%- endif -%}
     </div>
+{% comment %}Hide products {% endcomment %}
 
   {%- when 'query' -%}
     <div>

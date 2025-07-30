@@ -1,3 +1,14 @@
+{% # Kwikpass changes - [Starts] %}
+<style>
+.item--box.kpbtnbox {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-decoration: none;
+    position: relative;
+}
+</style>
+{% # Kwikpass changes - [Ends] %}
 <!-- FIXED BOTTOM MOBILE NAV -->
 <div class="fixed_nav fixed_nav_mobile hidden-tablet-and-up">
   <div class="row-nav">
@@ -9,29 +20,30 @@
             src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_6.svg?v=1751279889" 
             data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_6.svg?v=1751279889" 
             data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_6.svg?v=1751279889" 
-            alt="Home">
+            alt="Home-button">
           <span class="icon_name"> Home </span>
         </a>
       </div>
     </div>
     <!-- Menu (MODIFIED: triggers sidebar menu) -->
-    <div class="fixed-nav-item">
-      <div class="item--box mobile-custom-account-icon">
-        <a 
-          class="fixed_nav--link"
-          href="javascript:void(0);"
-          data-nav="menu"
-          id="mobile-bottom-menu-trigger"
-        >
-          <img 
-            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
-            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
-            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
-            alt="Menu">
-          <span class="icon_name"> Menu </span>
-        </a>
-      </div>
-    </div>
+  <div class="fixed-nav-item">
+  <div class="item--box mobile-custom-account-icon">
+    <button
+      class="fixed_nav--link"
+      type="button"
+      data-nav="menu"
+      id="mobile-bottom-menu-trigger"
+      aria-label="Open menu"
+    >
+      <img 
+        src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+        data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+        data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+        alt="Menu-button">
+      <span class="icon_name"> Menu </span>
+    </button>
+  </div>
+</div>
     <!-- Gullak -->
     <div class="fixed-nav-item">
       <div class="item--box mobile-custom-account-icon">
@@ -40,7 +52,7 @@
             src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
             data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
             data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
-            alt="Gullak">
+            alt="Gullak-button">
           <span class="icon_name"> Gullak </span>
         </a>
       </div>
@@ -53,25 +65,24 @@
             src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275312.svg?v=1751544289" 
             data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275312.svg?v=1751544289" 
             data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275312.svg?v=1751544289" 
-            alt="Community">
+            alt="Community-button">
           <span class="icon_name"> Returns </span>
         </a>
       </div>
     </div>
     <!-- Account -->
     <div class="fixed-nav-item">
-      <div class="item--box">
-        <a class="fixed_nav--link"
-           href="javascript:void(0);"
+      <div class="item--box kpbtnbox">
+        <button class="fixed_nav--link"
            id="kp-bottom-account"
            data-nav="account">
           <img 
             src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_12.svg?v=1751280854" 
             data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_12.svg?v=1751280854" 
             data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_12.svg?v=1751280854" 
-            alt="Account">
+            alt="Account-button">
           <span class="icon_name" id="kp-bottom-account-text">Log in</span>
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -99,11 +110,12 @@
   flex-wrap: wrap;
   justify-content: space-evenly;
   align-items: center;
+  gap:5%;
 }
-.fixed-nav-item {
+/* .fixed-nav-item {
   flex: 0 0 16.666667%;
   max-width: 16.666667%;
-}
+} */
 .item--box {
   position: relative;
 }

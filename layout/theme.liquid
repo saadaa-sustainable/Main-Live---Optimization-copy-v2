@@ -215,16 +215,8 @@
         })(window, document, "clarity", "script", "aan7ebjsbh");
     </script>
 
-    <!-- Global site tag (gtag.js) - Google Ads:AW-464888547 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-464888547"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-      gtag('config', 'AW-464888547', {'send_page_view': false,'allow_enhanced_conversions': true});
-      
-    </script>   
+   
+  
   </head>
 
   {% liquid
@@ -293,7 +285,8 @@
         <script src="https://www.fittora.app/widget-personaliser/widget.js" async defer></script>
       </div>
     {% endif %}
-    
+    <script src="https://www.fittora.app/event-tracker/tracker.js" async defer></script>
+
     <main id="main" class="anchor">
       {{ content_for_layout }}
     </main>
@@ -424,18 +417,7 @@
         };
       </script>
     {% endif %}
-    <!--
-      <script>
-        if (!window.hasSentPageView) {
-        window.hasSentPageView = true;
-        gtag('event', 'page_view', {'send_to': 'AW-464888547',
-                                    'ecomm_prodid':window.google_tag_params.ecomm_prodid,
-                                    'ecomm_pagetype': window.google_tag_params.ecomm_pagetype,
-                                    'ecomm_totalvalue':window.google_tag_params.ecomm_totalvalue
-                                   });
-        }
-      </script>
-    -->
+  
 
     <script>
                     const newLi = document.createElement('li');

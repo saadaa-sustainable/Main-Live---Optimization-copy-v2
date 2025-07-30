@@ -30,7 +30,12 @@
 
   {% assign special_collections = "AIRY-LINEN SHORTS,MEN AIRY-LINEN SHORT KURTAS,AIRY LINEN PANTS,THE FORMAL PANTS" | split: "," %}
   {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant" | split: "," %}
-  {% assign special_collections2 = "Women Straight Fit Formal Pant" | split: "," %}
+ 
+  {% comment %}
+      {% assign special_collections2 = "Women Straight Fit Formal Pant" | split: "," %}
+  {% endcomment %}
+  
+
 
   {% if special_collections contains selected_collection.title %}
     <span>
@@ -55,11 +60,19 @@
     {% endfor %}
   {% endif %}
 
-  {%- unless selected_collection.title == "Women Straight Fit Formal Pant" -%}
+ {% comment %}
+ {%- unless selected_collection.title == "Women Straight Fit Formal Pant" -%}
+  {% endcomment %}
+  
+ 
     <span>
       <a href="{{ selected_collection.url }}">{{ selected_collection.title | capitalize }}</a>
     </span>
+
+  {% comment %}
   {%- endunless -%}
+ {% endcomment %}
+  
 </div>
 
 

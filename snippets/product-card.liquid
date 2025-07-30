@@ -57,6 +57,11 @@
     data-collection="EVERYDAY COTTON PANTS"
   {% endif %}
 >
+    <button
+      class="PWC_card_product_wishlist pwc_card-product-wishlist-button"
+      data-product-id="{{ product.handle }}"
+    ><div class="wishlist-icon-svg"></div>
+  </button>
 {%- assign total_inventory = 0 -%}
 {%- for variant in product.variants -%}
   {%- assign total_inventory = total_inventory | plus: variant.inventory_quantity -%}

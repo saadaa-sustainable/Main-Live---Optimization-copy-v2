@@ -210,8 +210,7 @@ function coc_showCancelModal(order_id) {
                 ${settings.custom_reason ? custom_reason : '' }
             </div>
             <div class="coc-modal-action">
-                <button class="button coc-btn-cancel" onclick="coc_hideCancelModal()">${settings.cancel}</button>
-                <button class="button " onclick="coc_handleCancelOrder(this,${order_id})">${settings.confirm}</button>
+                <button class="button " onclick="coc_handleCancelOrder(this,${order_id})">${settings.cancel}</button>
             </div>
         </div>
     `;
@@ -378,45 +377,46 @@ document.addEventListener("DOMContentLoaded",function(){
         });
     }
 
-cancel_btns.forEach(function (btn) {
-    btn.addEventListener("click", function (e) {
-        e.stopPropagation();
-        if (this.disabled) return;
-        if (!this.classList.contains("coc-cancel-active")) return;
+// cancel_btns.forEach(function (btn) {
+//     btn.addEventListener("click", function (e) {
+//         e.stopPropagation();
+//         return;
+//         if (this.disabled) return;
+//         if (!this.classList.contains("coc-cancel-active")) return;
+        
+//         const order_id = this.getAttribute("data-order-id");
+//         const order = coc.orders[order_id];
 
-        const order_id = this.getAttribute("data-order-id");
-        const order = coc.orders[order_id];
-
-        if (order.fulfillment !== 'unfulfilled') {
-            const message = coc.settings?.fulfilled_error || 
-                "This order has already been shipped and can no longer be canceled. However, you may choose to refuse the delivery when it arrives at your doorstep.";
+//         if (order.fulfillment !== 'unfulfilled') {
+//             const message = coc.settings?.fulfilled_error || 
+//                 "This order has already been shipped and can no longer be canceled. However, you may choose to refuse the delivery when it arrives at your doorstep.";
         
-            const modal = document.createElement('div');
-            modal.setAttribute('id', 'coc-cancel-modal');
-            modal.classList.add('coc-modal-outer');
+//             const modal = document.createElement('div');
+//             modal.setAttribute('id', 'coc-cancel-modal');
+//             modal.classList.add('coc-modal-outer');
         
-            modal.innerHTML = `
-                <div class="coc-modal">
-                    <div class="coc-modal-header">
-                        <h3 class="coc-modal-header-title">Order cannot be cancelled!</h3>
-                        <button class="coc-close coc-btn-cancel" onclick="coc_hideCancelModal()">
-                            <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
-                                <path d="M13.97 15.03a.75.75 0 1 0 1.06-1.06l-3.97-3.97 3.97-3.97a.75.75 0 0 0-1.06-1.06l-3.97 3.97-3.97-3.97a.75.75 0 0 0-1.06 1.06l3.97 3.97-3.97 3.97a.75.75 0 1 0 1.06 1.06l3.97-3.97 3.97 3.97Z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="coc-modal-body">
-                        <p class="coc-error coc-err-show">${message}</p>
-                    </div>
-                </div>
-            `;
+//             modal.innerHTML = `
+//                 <div class="coc-modal">
+//                     <div class="coc-modal-header">
+//                         <h3 class="coc-modal-header-title">Order cannot be cancelled!</h3>
+//                         <button class="coc-close coc-btn-cancel" onclick="coc_hideCancelModal()">
+//                             <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+//                                 <path d="M13.97 15.03a.75.75 0 1 0 1.06-1.06l-3.97-3.97 3.97-3.97a.75.75 0 0 0-1.06-1.06l-3.97 3.97-3.97-3.97a.75.75 0 0 0-1.06 1.06l3.97 3.97-3.97 3.97a.75.75 0 1 0 1.06 1.06l3.97-3.97 3.97 3.97Z"></path>
+//                             </svg>
+//                         </button>
+//                     </div>
+//                     <div class="coc-modal-body">
+//                         <p class="coc-error coc-err-show">${message}</p>
+//                     </div>
+//                 </div>
+//             `;
         
-            document.body.insertBefore(modal, document.body.firstChild);
-            return;
-        }
-        coc_showCancelModal(order_id);
-    });
-}); 
+//             document.body.insertBefore(modal, document.body.firstChild);
+//             return;
+//         }
+//         coc_showCancelModal(order_id);
+//     });
+// }); 
     
     reorder_btns.forEach(function(btn){
         btn.addEventListener("click",function(e){

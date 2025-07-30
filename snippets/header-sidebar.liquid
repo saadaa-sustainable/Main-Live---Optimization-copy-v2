@@ -66,6 +66,7 @@ function addNoUnderlineToShadowButton() {
       #kp-account, #kp-account span {
         text-decoration: none !important;
         box-shadow: none !important;
+        cursor: pointer;
       }
     `;
     shadowRoot.appendChild(style);
@@ -101,10 +102,10 @@ window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
             alt="Saadaa logo"
             class="cp-logo"
             style="height: 21px; width: 114px; margin-right: 35px;">
-          <a class="text-with-icon kwik-pass-login button sidebarLoginBtn" id="kp-account" href="javascript:void(0);" style="margin-right: 17px;border: 1px solid black;padding: 4px 18px;color: white;background-color: black;border-radius: 17px;align-items: center;display: flex;gap: 5px;">
+          <button class="text-with-icon kwik-pass-login button sidebarLoginBtn" id="kp-account" style="margin-right: 17px;border: 1px solid black;padding: 4px 18px;color: white;background-color: black;border-radius: 17px;align-items: center;display: flex;gap: 5px;">
             {%- render 'icon' with 'account', width: 20 -%}
             <span id="kwik-pass-text" style="font-size: 14px;" >Log in</span>
-          </a>
+          </button>
           <button
             type="button"
             is="dialog-close-button"
@@ -205,7 +206,7 @@ window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
     justify-content: flex-start;
   }
   .header-sidebar__linklist > li:not(:last-child) { border-bottom: 1px solid #f3f3f3; }
-  .header-sidebar__linklist .nav-badge-new { margin-left: 8px; }
+  .header-sidebar__linklist .home-nav-badge-new { margin-right: 10px; }
   .header-sidebar__section-spacer { height: 12px; background: transparent; }
   .header-sidebar__quick-info {
     font-size: 12px; color: #333; text-align: center; margin: 24px 0 8px 0; letter-spacing: 0.2px;
@@ -218,7 +219,7 @@ window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
   .sidebar-accordion-list { background: #fff; padding: 0; margin: 0; border-bottom: 1px solid #f3f3f3; }
   .sidebar-accordion-list li { border-bottom: 1px solid #f3f3f3; }
   .sidebar-accordion-list a {
-    display: flex; align-items: center; padding: 3px 34px;; font-size: 0.9rem;
+    display: flex; align-items: center; padding: 3px 34px;; font-size: 0.84rem;
     background: none; border: none; width: 100%; text-align: left; cursor: pointer;
     font-weight: 400; letter-spacing: 0.2px; color: #111;
   }
@@ -226,9 +227,9 @@ window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
     width: 32px;
     margin-right: 12px;
 }
-  .nav-badge-new {
+  .home-nav-badge-new {
     background: green; padding: .2px 3px 0px 3px; border-radius: 2px;
-    color: white; letter-spacing: .3px; font-size: 9px; margin-left: 8px;
+    color: white; letter-spacing: .3px; font-size: 9px; margin-right: 10px;
   }
   summary::-webkit-details-marker {display: none;}
   .saadaa-accordion-section {
@@ -345,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
-                  <li><a href="/collections/airy-linen-flared-dress"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_7.webp?v=1753246195" class="menu-img" alt="">Airy Linen Flared Dress</a></li>
+                  <!-- <li><a href="/collections/airy-linen-flared-dress"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_7.webp?v=1753246195" class="menu-img" alt="">Airy Linen Flared Dress<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li> -->
                   <li><a href="/collections/short-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6309ae0851cc4c5f6751bf7b0933229f60eed077.webp?v=1752565415" class="menu-img" alt="">Airy - Linen Short Kurta</a></li>
                   <li><a href="/collections/airy-linen-long-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2a3f853d163b6760b2f92a575e155f654091e45d.webp?v=1752565415" class="menu-img" alt="">Airy - Linen Long Kurta</a></li>
                   <li><a href="/collections/airy-linen-shirts"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/11bab64671ebc246fa1d1fa6e9667c9ad27a954b.webp?v=1752565416" class="menu-img" alt="">Airy-Linen Shirts</a></li>
@@ -364,7 +365,8 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
-                  <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants</a></li>
+                  <li><a href="/collections/straight-fit-formal-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_10.webp?v=1753441076" class="menu-img" alt="">Straight Fit Formal Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+                  <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/4-way-stretchable-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_2.webp?v=1753165204" class="menu-img" alt="">4-Way Stretchable Pants</a></li>
                   <li><a href="/collections/cotton-trousers"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/SDCPRT.webp?v=1753165204" class="menu-img" alt="">Everyday Cotton Pants</a></li>
                   <li><a href="/collections/viscose-palazzo-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/3_2.webp?v=1753165204" class="menu-img" alt="">Viscose Palazzo Pants</a></li>
@@ -382,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
-                   <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants</a></li>
+                   <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/airy-linen-wide-leg-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5_2.png?v=1753271491" class="menu-img" alt="">Airy Linen Wide Leg Pants</a></li>
                   <li><a href="/collections/short-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6309ae0851cc4c5f6751bf7b0933229f60eed077.webp?v=1752565415" class="menu-img" alt="">Airy-Linen Short Kurtas</a></li>
                   <li><a href="/collections/airy-linen-long-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2a3f853d163b6760b2f92a575e155f654091e45d.webp?v=1752565415" class="menu-img" alt="">Airy Linen Long Kurtas</a></li>
@@ -411,13 +413,13 @@ document.addEventListener('DOMContentLoaded', function () {
             <li>
               <a href="/collections/men-100-linen-full-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5.webp?v=1753246195" class="menu-img" alt="">
-                100% Linen Full Sleeve Shirt
+                100% Linen Full Sleeve Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
               </a>
             </li>
             <li>
               <a href="/collections/men-100-linen-half-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_4.webp?v=1753246195" class="menu-img" alt="">
-                100% Linen Half Sleeve Shirt
+                100% Linen Half Sleeve Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
               </a>
             </li>
             <li>
@@ -454,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
          <div class="saadaa-accordion-section">
-           <a href="/collections/goodbye-edition"><button class="saadaa-accordion-title">THE GOODBYE EDITION <span class="nav-badge-new">NEW</span></button></a>
+           <a href="/collections/goodbye-edition"><button class="saadaa-accordion-title">THE GOODBYE EDITION <span class="home-nav-badge-new">NEW</span></button></a>
           
         </div>
 
@@ -465,6 +467,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         <div class="saadaa-accordion-section">
           <a href="/apps/return_prime"><button class="saadaa-accordion-title">RETURN & EXCHANGE</button></a>
+          
+        </div>
+
+        <div class="saadaa-accordion-section">
+          <a href="/pages/work-with-us"><button class="saadaa-accordion-title">CAREER</button></a>
           
         </div>
 
@@ -497,7 +504,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <div class="saadaa-accordion-content">
             <a href="/pages/b2b-bulk-enquiries-form">For B2b/ Bulk Enquiries</a><br>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScoYIX8AzUL-C7cA219JJURZij7pQJ5RJZvaEYGRp9e9pgdww/viewform">Partner as Supplier</a><br>
-            <a href="/pages/work-with-us">Work with us</a><br>
+            <!-- <a href="/pages/work-with-us">Work with us</a><br> -->
             <a href="/pages/uniform">The Collective Thread</a>
           </div>
         </div>
