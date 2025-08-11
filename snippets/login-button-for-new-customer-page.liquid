@@ -1,0 +1,302 @@
+{% comment %} 
+<!-- Offer Code Box with Account/Login Button -->
+<style>
+.offer-section-bg {
+  background: #e7e1ce;
+  padding: 38px 18px 24px 18px;
+  margin: 36px auto;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+  font-family: 'Georgia', serif;
+}
+.offer-section-bg .offer-title {
+  font-size: 1.7rem;
+  color: #191611;
+  font-weight: 400;
+  margin-bottom: 16px;
+  text-align:left;
+}
+.offer-section-bg .offer-code-row {
+  display: flex;
+justify-content: center;
+}
+
+.offer-section-bg .account-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e1e1e;
+  color: #fff;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+      padding: 12px 83px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.19s;
+  border-left: 1px solid #e2dbcb;
+}
+.offer-section-bg .account-login-btn:hover {
+  background: #292929;
+}
+.offer-section-bg .offer-note {
+    font-size: 0.9rem;
+    color: #d92020;
+    margin-top: 29px;
+    text-align: left;
+    font-weight: bold;
+}
+@media (max-width: 500px) {
+  .offer-section-bg {
+    max-width: 100%;
+    padding: 20px 4vw 18px 4vw;
+  }
+  .offer-section-bg .offer-title {
+    font-size: 1.5rem;
+  }
+  .offer-section-bg .offer-code-row {
+    flex-direction: column;
+    box-shadow: 0 0 0 2px #e2dbcb;
+  }
+  .offer-section-bg .account-login-btn {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #e2dbcb;
+    margin-top: -1px;
+    padding: 12px 0;
+    border-radius: 0px;
+  }
+}
+
+
+@media(min-width:780px){
+.offer-section-bg .offer-title {
+    text-align: center;
+}
+
+.offer-section-bg .offer-note {
+text-align: center;
+}
+
+}
+</style>
+
+<div class="offer-section-bg">
+  <div class="offer-title">
+    Visible to you only – As you have came through an ad.
+  </div>
+  <div class="offer-code-row">
+    <button class="account-login-btn" id="accountLoginBtn">
+      <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_12.svg?v=1751280854" style="width:21px;height:21px;margin-right:7px;" alt="account">
+      <span id="accountLoginBtnText">Log in</span>
+    </button>
+  </div>
+  <div class="offer-note">
+    YOU CAN USE THIS CODE TO CLAIM 45% OFF + 5% EXTRA VIA UPI ON YOUR ORDER <br>
+    #HASSLE_FREE
+  </div>
+</div>
+
+<script>
+// Logic to update offer-section login button (reusing sidebar logic pattern)
+function updateOfferLoginBtn() {
+  var btn = document.getElementById('accountLoginBtn');
+  var txt = document.getElementById('accountLoginBtnText');
+  var userToken = localStorage.getItem('KWIKSESSIONTOKEN');
+
+  if (btn && txt) {
+    if (userToken) {
+      // Logged in state
+      txt.textContent = (typeof window.themeStrings !== "undefined" && window.themeStrings.account_label) ? window.themeStrings.account_label : "Account";
+      btn.classList.remove('offer-login');
+      btn.classList.add('offer-account');
+      btn.onclick = function(e) {
+        e.preventDefault();
+        window.location.href = '/account';
+        return false;
+      };
+    } else {
+      // Logged out state
+      txt.textContent = "Log in";
+      btn.classList.remove('offer-account');
+      btn.classList.add('offer-login');
+      btn.onclick = function(e) {
+        e.preventDefault();
+        if (typeof kpHandleLogin === "function") {
+          kpHandleLogin('/account');
+        } else if (typeof handleShopifyLogin === "function") {
+          handleShopifyLogin(e, "/account");
+        } else {
+          window.location.href = '/account/login';
+        }
+        return false;
+      };
+    }
+  }
+}
+
+// Listen for global login event (for Kwikpass etc)
+window.addEventListener('user-loggedin', function(event) {
+  updateOfferLoginBtn();
+});
+
+// On page load
+document.addEventListener('DOMContentLoaded', function () {
+  updateOfferLoginBtn();
+});
+
+// (Optional: Remove underline for offer-section login button, for consistent style)
+function addNoUnderlineToOfferBtn() {
+  var btn = document.getElementById('accountLoginBtn');
+  if (!btn) return;
+  // Only add style if not present
+  if (!document.getElementById('no-underline-offer-style')) {
+    var style = document.createElement('style');
+    style.id = 'no-underline-offer-style';
+    style.textContent = `
+      #accountLoginBtn, #accountLoginBtn span {
+        text-decoration: none !important;
+        box-shadow: none !important;
+        cursor: pointer;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+document.addEventListener('DOMContentLoaded', addNoUnderlineToOfferBtn);
+window.addEventListener('user-loggedin', addNoUnderlineToOfferBtn);
+</script> {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script
+  async
+  src="https://cdn.nector.io/nector-static/no-cache/reward-widget/mainloader.min.js"
+  data-op="reward"
+  data-api_key="0a68586cc2c48e09b7dd8ecb287ef08349fcd518e165a14d8bfa27aee7e9aec0"
+  data-customer_id="{{customer.id}}"
+  data-platform="shopify"
+></script>
+
+<script>
+let counter = 0;
+let interval_id = setInterval(() => {
+if (counter >= 400) {
+clearInterval(interval_id);
+interval_id = null;
+return;
+}
+
+counter++;
+
+const target_element_id = 'nector-reward-page-container';
+const target_element = document.getElementById(target_element_id);
+let shadow_root = target_element.shadowRoot;
+if (!shadow_root) {
+return;
+}
+
+const styles = `
+#nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content > div > span.nector-title.nector-banner-title{
+display: none !important;
+}
+#nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content > div > span.nector-subtitle.nector-banner-description{
+display: none !important;
+}
+.nector-banner-content{
+    left: unset !important;
+    right: 0 !important;
+    justify-content: flex-end  !important;
+    margin-right: 150px  !important;
+    margin-top: 20px  !important;
+}
+@media only screen and (max-width: 600px) {
+.nector-banner-content{
+  right : unset !important;
+  }
+  #nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content{
+height : 150% !important;
+}
+}
+#nector-render-root > div.nector-reward-page-parent-container > div > div.nector-banner > div.nector-banner-content > div > div > div{
+background-color: transparent !important;
+border: 1px solid #fff !important;
+font-size: 16px  !important;
+}
+
+.nector-banner-overlay{
+background: none  !important;
+}
+
+
+   .nector-rewards-explainer {
+    display: none;
+}
+
+.nector-banner-image {
+  
+    display: none;
+}
+
+
+.nector-banner {
+    display: none;
+}
+
+.nector-rewards-waystoredeem {
+    display: none;
+}
+
+.nector-faq {
+    display: none;
+}
+
+.nector-rewards-section {
+    padding: 16px 30px;
+}
+
+.nector-rewards-waystoearn {
+    background-color: #faf8f6;
+}
+
+.nector-rewards-referral {
+
+    background-color: #faf8f6;
+
+}
+
+.nector-powered-by-text {
+    color: #000 !important;
+    font-size: 12px !important;
+    display: none;
+}
+
+`;
+
+const style_element = document.createElement('style');
+style_element.appendChild(document.createTextNode(styles.trim()));
+shadow_root.appendChild(style_element);
+
+clearInterval(interval_id);
+interval_id = null;
+}, 200);
+</script>
+
+
+
+

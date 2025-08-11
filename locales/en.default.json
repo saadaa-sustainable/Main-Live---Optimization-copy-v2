@@ -93,7 +93,7 @@
     "general": {
       "description": "Description",
       "view_details": "View details",
-      "add_to_cart_button": "ADD TO CART",
+      "add_to_cart_button": "ADD TO BAG",
       "pre_order_button": "PRE-ORDER",
       "sold_out_button": "NOTIFY ME",
       "unavailable_button": "Unavailable",

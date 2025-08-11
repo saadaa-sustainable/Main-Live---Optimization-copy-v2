@@ -1,0 +1,480 @@
+{% schema %}
+  {
+    "name": "Franchise Onboarding Form",
+    "class": "section-franchise",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "separate_section_with_border",
+        "label": "Separate section with border",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_upper_vertical_spacing",
+        "label": "Remove upper vertical spacing",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_lower_vertical_spacing",
+        "label": "Remove lower vertical spacing",
+        "default": false
+      }
+    ],
+    "presets": [
+      {"name":"Franchise Onboarding"}
+    ]
+  }
+{% endschema %}
+
+<style>
+.gap-10 { gap: 1.5rem; }
+.text-center { text-align: left; }
+.fr-onboarding input,
+.fr-onboarding select,
+.fr-onboarding textarea {
+  border-bottom: .5px solid #333;
+  outline: none;
+  height:24px;
+  font-size:12px;
+  font-weight:300;
+  background: white;
+}
+.fr-onboarding .fr-container .h6 { color:#8D8D8D; font-weight:300; }
+.fr-onboarding .fr-container .h2 { font-weight:500; }
+.fr-onboarding label { font-size:11px; color: black; }
+.fr-onboarding .fr-container { background: white; padding: 31px 22px; }
+.section-franchise { position: relative; z-index: 2; margin-top: -32px; }
+.fr-onboarding .button {
+  margin-top:20px; margin-inline:24px; font-size:15px; font-weight:500;
+}
+.city_phone {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:start;
+}
+.section-heading {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 14px;
+  color: #3b3b3b;
+}
+.radio-group { display: flex; gap: 14px; font-size: 11px; align-items: center; }
+.radio-group label { margin-right: 12px; font-size: 11px; color: #333; font-weight: 400; }
+textarea {
+  resize: vertical; min-height: 34px; font-size:11px; font-weight:300;
+  border: 0.5px solid #333; border-radius: 4px; margin-top: 4px;
+}
+@media (min-width: 768px) {
+  .fr-onboarding .fr-container { padding: 38px 34px; }
+  .fr-onboarding input, .fr-onboarding select, .fr-onboarding textarea { font-size: 15px; height: 32px; }
+  .fr-onboarding label { font-size: 13px; }
+  .fr-onboarding .fr-container .h2 { font-size: 2rem; }
+  .fr-onboarding .fr-container .h6 { font-size: 1.2rem; }
+  .section-heading { font-size: 19px; }
+  .radio-group, .radio-group label { font-size: 15px; }
+  textarea { font-size: 15px; }
+  .button { font-size: 18px; }
+}
+#fr-message {
+  display: none;
+  margin: 12px 0 0 0;
+  padding: 10px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+#fr-message.success {
+  background: #e6ffed;
+  color: #155724;
+  border: 1px solid #a6e7c3;
+}
+#fr-message.error {
+  background: #fff0f0;
+  color: #c80f2e;
+  border: 1px solid #f7cac9;
+}
+#fr-message.submitting {
+  background: #f3f8ff;
+  color: #1863b8;
+  border: 1px solid #b4d8ff;
+}
+</style>
+
+<div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %}">
+  <div class="container container--xs fr-onboarding">
+    <div class="fr-container v-stack gap-10">
+      <div class="text-center v-stack gap-2">
+        <p class="h2">Franchise Onboarding</p>
+        <p class="h6">Tell us more about your interest in a Saadaa Franchise</p>
+      </div>
+      <form class="v-stack gap-5" id="fr_myForm" autocomplete="off">
+        <!-- SECTION 1: Basic Details -->
+        <div class="section-heading">Basic Details</div>
+        <div class="v-stack">
+          <label for="fr_name">Full Name <span style="color:red">*</span></label>
+          <input type="text" id="fr_name" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="city_phone gap-4">
+          <div class="v-stack">
+            <label for="fr_email">Email Address <span style="color:red">*</span></label>
+            <input type="email" id="fr_email" required />
+            <small style="color:red;font-size:10px"></small>
+          </div>
+          <div class="v-stack">
+            <label for="fr_mobile">Mobile Number <span style="color:red">*</span></label>
+            <div class="h-stack gap-1">
+                <span class="" style="font-size:11px;">+91</span>
+                <input type="tel" id="fr_mobile" required maxlength="10" />
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+        </div>
+        <div class="v-stack">
+          <label for="fr_alt_phone">Alternate Phone (optional)</label>
+          <div class="h-stack gap-1">
+                <span class="" style="font-size:11px;">+91</span>
+                <input type="tel" id="fr_alt_phone" maxlength="10" />
+          </div>
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="v-stack">
+          <label for="fr_address">Residential Address <span style="color:red">*</span></label>
+          <input type="text" id="fr_address" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="city_phone gap-4">
+          <div class="v-stack">
+            <label for="fr_city_state">City & State <span style="color:red">*</span></label>
+            <input type="text" id="fr_city_state" required />
+            <small style="color:red;font-size:10px"></small>
+          </div>
+          <div class="v-stack">
+            <label for="fr_city_interest">City of Interest <span style="color:red">*</span></label>
+            <select id="fr_city_interest" required>
+              <option value="">Select City</option>
+              <option>New Delhi</option>
+              <option>Mumbai</option>
+              <option>Kolkata</option>
+              <option>Chennai</option>
+              <option>Bengaluru</option>
+              <option>Hyderabad</option>
+              <option>Bhopal</option>
+              <option>Jaipur</option>
+              <option>Lucknow</option>
+              <option>Chandigarh</option>
+              <option>Patna</option>
+              <option>Ranchi</option>
+              <option>Guwahati</option>
+              <option>Dehradun</option>
+              <option>Panaji</option>
+              <option>Shimla</option>
+              <option>Agartala</option>
+              <option>Imphal</option>
+              <option>Aizawl</option>
+              <option>Kohima</option>
+              <option>Shillong</option>
+              <option>Gangtok</option>
+              <option>Itanagar</option>
+              <option>Puducherry</option>
+            </select>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+        </div>
+        <div class="v-stack">
+          <label for="fr_store_location">Exact Proposed Store Location / Area <span style="color:red">*</span></label>
+          <input type="text" id="fr_store_location" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="v-stack">
+          <label>Is the property owned or leased? <span style="color:red">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="fr_property" value="Owned" required /> Owned</label>
+            <label><input type="radio" name="fr_property" value="Leased" /> Leased</label>
+            <label><input type="radio" name="fr_property" value="Yet to Finalize" /> Yet to Finalize</label>
+          </div>
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="city_phone gap-4">
+          <div class="v-stack">
+            <label for="fr_carpet_area">Carpet Area in sq. ft. <span style="color:red">*</span></label>
+            <input type="number" id="fr_carpet_area" required min="100" />
+            <small style="color:red;font-size:10px"></small>
+          </div>
+          <div class="v-stack">
+            <label for="fr_frontage">Frontage (in feet/metres) <span style="color:red">*</span></label>
+            <input type="text" id="fr_frontage" required />
+            <small style="color:red;font-size:10px"></small>
+          </div>
+        </div>
+        <div class="city_phone gap-4">
+          <div class="v-stack">
+            <label for="fr_floor">Floor <span style="color:red">*</span></label>
+            <select id="fr_floor" required>
+              <option value="">Select Floor</option>
+              <option>Ground</option>
+              <option>Upper Floor</option>
+              <option>Basement</option>
+            </select>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+          <div class="v-stack">
+            <label>Is it on a high street? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="fr_high_street" value="Yes" required /> Yes</label>
+              <label><input type="radio" name="fr_high_street" value="No" /> No</label>
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+        </div>
+        <!-- SECTION 2: Applicant Background -->
+        <div class="section-heading">Applicant Background</div>
+        <div class="v-stack">
+          <label for="fr_profession">Current business or profession <span style="color:red">*</span></label>
+          <input type="text" id="fr_profession" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="city_phone gap-4">
+          <div class="v-stack">
+            <label>Have you operated a retail store before? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="fr_retail_exp" value="Yes" required /> Yes</label>
+              <label><input type="radio" name="fr_retail_exp" value="No" /> No</label>
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+          <div class="v-stack">
+            <label>Do you own any other franchise stores? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="fr_other_franchise" value="Yes" required /> Yes</label>
+              <label><input type="radio" name="fr_other_franchise" value="No" /> No</label>
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+        </div>
+        <div class="v-stack">
+          <label for="fr_franchise_brands">If yes, which brands?</label>
+          <input type="text" id="fr_franchise_brands" />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="v-stack">
+          <label for="fr_reason">Why do you want to open a Saadaa store? <span style="color:red">*</span></label>
+          <textarea id="fr_reason" required maxlength="350" style="height:48px;"></textarea>
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="city_phone gap-4">
+          <div class="v-stack">
+            <label>Are you open to following our brand guidelines for interiors and aesthetics? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="fr_guidelines" value="Yes" required /> Yes</label>
+              <label><input type="radio" name="fr_guidelines" value="No" /> No</label>
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+          <div class="v-stack">
+            <label>Can you invest ₹10–₹12 Lakhs for store setup? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="fr_investment" value="Yes" required /> Yes</label>
+              <label><input type="radio" name="fr_investment" value="No" /> No</label>
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+        </div>
+        <div class="v-stack">
+          <label for="fr_timeline">Expected launch timeline <span style="color:red">*</span></label>
+          <select id="fr_timeline" required>
+            <option value="">Select Timeline</option>
+            <option>Within 3 months</option>
+            <option>3–6 months</option>
+            <option>6+ months</option>
+          </select>
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- SECTION 3: Operational Support -->
+        <div class="section-heading">Operational Support</div>
+        <div class="v-stack">
+          <label for="fr_management">Will you manage the store personally or hire staff? <span style="color:red">*</span></label>
+          <select id="fr_management" required>
+            <option value="">Select</option>
+            <option>Personally</option>
+            <option>Hire staff</option>
+          </select>
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <div class="city_phone gap-4">
+          <div class="v-stack">
+            <label>Do you already have retail staff? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="fr_existing_staff" value="Yes" required /> Yes</label>
+              <label><input type="radio" name="fr_existing_staff" value="No" /> No</label>
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+          <div class="v-stack">
+            <label>Are you open to using Saadaa’s POS and training processes? <span style="color:red">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="fr_pos_training" value="Yes" required /> Yes</label>
+              <label><input type="radio" name="fr_pos_training" value="No" /> No</label>
+            </div>
+            <small style="color:red;font-size:10px"></small>
+          </div>
+        </div>
+        <div class="v-stack">
+          <label>Do you require assistance in interior design execution? <span style="color:red">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="fr_interior_help" value="Yes" required /> Yes</label>
+            <label><input type="radio" name="fr_interior_help" value="No" /> No</label>
+            <label><input type="radio" name="fr_interior_help" value="Maybe" /> Maybe</label>
+          </div>
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <button class="button" id="fr_submit">Submit Application</button>
+        <div id="fr-message"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// Restrict only 10 digit numbers for phone fields
+document.getElementById('fr_mobile').addEventListener('input', function(e) {
+  this.value = this.value.replace(/\D/g, '').slice(0,10);
+});
+document.getElementById('fr_alt_phone').addEventListener('input', function(e) {
+  this.value = this.value.replace(/\D/g, '').slice(0,10);
+});
+
+function isValidPhoneNumber(info){
+  const regex = /^\d{10}$/;
+  return regex.test(info) && info[0] !== '0';
+}
+
+function navigateToElement(element) {
+  element.innerHTML = 'Please enter a correct value!';
+}
+function formValidation(element, type) {
+  if(type === 'radio') {
+    const checked = document.querySelector(`input[name="${element}"]:checked`);
+    if(checked) {
+      return checked.value;
+    } else {
+      const radioGroup = document.querySelector(`input[name="${element}"]`).parentElement.parentElement.nextElementSibling;
+      navigateToElement(radioGroup);
+      return null;
+    }
+  } else if(type === 'select') {
+    if(document.getElementById(element).value.trim()) {
+      return document.getElementById(element).value.trim();
+    } else {
+      navigateToElement(document.getElementById(element).nextElementSibling);
+      return null;
+    }
+  } else if(type === 'textarea') {
+    if(document.getElementById(element).value.trim()) {
+      return document.getElementById(element).value.trim();
+    } else {
+      navigateToElement(document.getElementById(element).nextElementSibling);
+      return null;
+    }
+  } else {
+    const el = document.getElementById(element);
+    if(element === "fr_mobile" || element === "fr_alt_phone"){
+      if(el.value.trim() && isValidPhoneNumber(el.value.trim())){
+        return el.value.trim();
+      } else if(el.value.trim() === "" && element === "fr_alt_phone"){
+        return "";
+      } else {
+        navigateToElement(el.nextElementSibling);
+        return null;
+      }
+    } else if(el.value.trim()){
+      return el.value.trim();
+    } else {
+      navigateToElement(el.nextElementSibling);
+      return null;
+    }
+  }
+}
+
+document.getElementById("fr_myForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  // Clear errors
+  document.getElementById('fr_myForm').querySelectorAll('small').forEach(e=>e.innerHTML="");
+
+  const messageDiv = document.getElementById("fr-message");
+  messageDiv.textContent = "Submitting...";
+  messageDiv.className = "submitting";
+  messageDiv.style.display = "block";
+
+  const btn = document.getElementById("fr_submit");
+  btn.disabled = true;
+
+  const formData = {
+    fullName: formValidation("fr_name"),
+    email: formValidation("fr_email"),
+    mobile: formValidation("fr_mobile"),
+    altPhone: formValidation("fr_alt_phone"),
+    address: formValidation("fr_address"),
+    cityState: formValidation("fr_city_state"),
+    cityInterest: formValidation("fr_city_interest","select"),
+    storeLocation: formValidation("fr_store_location"),
+    propertyType: formValidation("fr_property","radio"),
+    carpetArea: formValidation("fr_carpet_area"),
+    frontage: formValidation("fr_frontage"),
+    floor: formValidation("fr_floor","select"),
+    highStreet: formValidation("fr_high_street","radio"),
+    profession: formValidation("fr_profession"),
+    retailExp: formValidation("fr_retail_exp","radio"),
+    otherFranchise: formValidation("fr_other_franchise","radio"),
+    franchiseBrands: formValidation("fr_franchise_brands"),
+    reason: formValidation("fr_reason","textarea"),
+    guidelines: formValidation("fr_guidelines","radio"),
+    canInvest: formValidation("fr_investment","radio"),
+    launchTimeline: formValidation("fr_timeline","select"),
+    management: formValidation("fr_management","select"),
+    existingStaff: formValidation("fr_existing_staff","radio"),
+    posTraining: formValidation("fr_pos_training","radio"),
+    interiorHelp: formValidation("fr_interior_help","radio")
+  };
+  const allHaveValues = Object.entries(formData).every(([k,v])=>{
+    if(['altPhone','franchiseBrands'].includes(k)) return true;
+    return v !== null && v !== undefined && v !== "";
+  });
+  if(!allHaveValues){
+    btn.disabled = false;
+    messageDiv.style.display = "none";
+    return;
+  }
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzIDfuOvQq99pSm9h000DByDp_2WeTkdpFo86D8CYyPb54BImuOwiRGYyW3-3cWLdI7LA/exec";
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(formData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then(() => {
+    messageDiv.textContent = "Application submitted successfully!";
+    messageDiv.className = "success";
+    messageDiv.style.display = "block";
+    document.getElementById("fr_myForm").reset();
+    btn.disabled = false;
+    setTimeout(() => {
+      messageDiv.textContent = "";
+      messageDiv.style.display = "none";
+    }, 2000);
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+    messageDiv.textContent = "An error occurred while submitting the form.";
+    messageDiv.className = "error";
+    messageDiv.style.display = "block";
+    btn.disabled = false;
+  });
+});
+</script>

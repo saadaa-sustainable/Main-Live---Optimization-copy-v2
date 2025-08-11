@@ -7,6 +7,35 @@
     text-decoration: none;
     position: relative;
 }
+
+
+/* Gullak Highlight Animation: bounce + glow + bold text */
+.gullak-animate img {
+  animation: gullak-bounce-glow 1.6s infinite;
+  filter: drop-shadow(0 0 10px #ffbe3b) drop-shadow(0 0 22px #ffec99);
+}
+
+@keyframes gullak-bounce-glow {
+  0%   { transform: scale(1) translateY(0);}
+  10%  { transform: scale(1.18) translateY(-6px);}
+  18%  { transform: scale(1.13) translateY(-12px);}
+  28%  { transform: scale(1.24) translateY(-7px);}
+  38%  { transform: scale(1.10) translateY(-2px);}
+  48%  { transform: scale(1.18) translateY(-4px);}
+  58%  { transform: scale(1) translateY(0);}
+  100% { transform: scale(1) translateY(0);}
+}
+
+/* Gullak text bold, bigger, and glowing */
+.gullak-animate .icon_name {
+  font-weight: bold;
+  font-size: 13px;
+  color: #000 !important;
+  text-shadow: 0 0 5px #ffec99, 0 0 18px #ffbe3b;
+  letter-spacing: 0.2px;
+}
+
+
 </style>
 {% # Kwikpass changes - [Ends] %}
 <!-- FIXED BOTTOM MOBILE NAV -->
@@ -46,17 +75,18 @@
 </div>
     <!-- Gullak -->
     <div class="fixed-nav-item">
-      <div class="item--box mobile-custom-account-icon">
-        <a class="fixed_nav--link" href="/#show-nector-rewards" data-nav="gullak">
-          <img 
-            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
-            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
-            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
-            alt="Gullak-button">
-          <span class="icon_name"> Gullak </span>
-        </a>
-      </div>
-    </div>
+  <div class="item--box mobile-custom-account-icon gullak-animate">
+    <a class="fixed_nav--link" href="/#show-nector-rewards" data-nav="gullak">
+      <img 
+        src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+        data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+        data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+        alt="Gullak-button">
+      <span class="icon_name" style="font-weight: 400;"> Gullak </span>
+    </a>
+  </div>
+</div>
+
     <!-- Community -->
     <div class="fixed-nav-item">
       <div class="item--box mobile-custom-account-icon">

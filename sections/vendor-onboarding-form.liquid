@@ -1,0 +1,363 @@
+{% schema %}
+  {
+    "name": "Vendor Onboarding Form",
+    "class": "section-vendor",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "separate_section_with_border",
+        "label": "Separate section with border",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_upper_vertical_spacing",
+        "label": "Remove upper vertical spacing",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_lower_vertical_spacing",
+        "label": "Remove lower vertical spacing",
+        "default": false
+      }
+    ],
+    "presets": [
+      {"name":"Vendor Onboarding"}
+    ]
+  }
+{% endschema %}
+
+<style>
+/* Reuse your earlier style for consistency */
+.vendor-onboarding input,
+.vendor-onboarding select,
+.vendor-onboarding textarea {
+  border-bottom: .5px solid #333;
+  outline: none;
+  height:24px;
+  font-size:12px;
+  font-weight:300;
+  background: white;
+}
+.vendor-onboarding .vendor-container .h6 {
+  color:#8D8D8D;
+  font-weight:300;
+}
+.vendor-onboarding .vendor-container .h2 {
+  font-weight:500;
+}
+.vendor-onboarding label {
+  font-size:11px;
+  color: black;
+}
+.vendor-onboarding .vendor-container {
+  background: white;
+  padding: 31px 22px;
+}
+.section-vendor {
+  position: relative;
+  z-index: 2;
+  margin-top: -32px;
+}
+.vendor-onboarding .button {
+  margin-top:20px;
+  margin-inline:24px;
+  font-size:15px;
+  font-weight:500;
+}
+.gap-10 { gap: 1.5rem; }
+.v-stack { display: flex; flex-direction: column; }
+.gap-2 { gap: .5rem; }
+.gap-4 { gap: 1rem; }
+.section-heading {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 14px;
+  color: #3b3b3b;
+}
+.helper {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 4px;
+  margin-top: 1px;
+}
+input[type="file"] {
+  border-bottom: none;
+  padding: 7px 0;
+}
+@media (min-width: 768px) {
+  .vendor-onboarding .vendor-container { padding: 38px 34px; }
+  .vendor-onboarding input,
+  .vendor-onboarding select,
+  .vendor-onboarding textarea {
+    font-size: 15px;
+    height: 32px;
+  }
+  .vendor-onboarding label { font-size: 13px; }
+  .vendor-onboarding .vendor-container .h2 { font-size: 2rem; }
+  .vendor-onboarding .vendor-container .h6 { font-size: 1.2rem; }
+  .section-heading { font-size: 19px; }
+}
+.text-center { text-align: left; }
+.row-flex {
+  display: flex;
+  gap: 1rem;           /* spacing between fields */
+  margin-bottom: 1.2rem;
+}
+.row-flex > .v-stack {
+  flex: 1 1 0;         /* make all children equal width */
+  min-width: 0;        /* fix for overflow */
+}
+.vendor-onboarding input::placeholder {
+  font-size: 11px;      /* or whatever size you want */
+  color: #aaa;          /* optional: lighter color */
+}
+#vendor-message {
+  display: none;
+  margin: 12px 0 0 0;
+  padding: 10px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+#vendor-message.success {
+  background: #e6ffed;
+  color: #155724;
+  border: 1px solid #a6e7c3;
+}
+#vendor-message.error {
+  background: #fff0f0;
+  color: #c80f2e;
+  border: 1px solid #f7cac9;
+}
+#vendor-message.submitting {
+  background: #f3f8ff;
+  color: #1863b8;
+  border: 1px solid #b4d8ff;
+}
+</style>
+
+<div class="{% unless section.settings.remove_upper_vertical_spacing %}upper-section-spacing{% endunless %} {% unless section.settings.remove_lower_vertical_spacing %}lower-section-spacing{% endunless %}">
+  <div class="container container--xs vendor-onboarding">
+    <div class="vendor-container v-stack gap-10">
+      <div class="text-center v-stack gap-2">
+        <p class="h2">Vendor Onboarding</p>
+        <p class="h6">Please provide your business details</p>
+      </div>
+      <form class="v-stack gap-5" id="vendor_myForm" autocomplete="off">
+        <!-- BUSINESS NAME -->
+        <div class="v-stack">
+          <label for="vendor_business_name">BUSINESS NAME <span style="color:red">*</span></label>
+          <span class="helper">Please enter your firm/company/business name</span>
+          <input type="text" id="vendor_business_name" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- BUSINESS ADDRESS -->
+        <div class="v-stack">
+          <label for="vendor_business_address">BUSINESS ADDRESS <span style="color:red">*</span></label>
+          <span class="helper">Please enter your firm/company/business address in block letters</span>
+          <input type="text" id="vendor_business_address" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- Description of services/products -->
+        <div class="v-stack">
+          <label for="vendor_services">Description of services / products offered by your firm <span style="color:red">*</span></label>
+          <span class="helper">Please enter your firm/company/business website (if any)</span>
+          <input type="text" id="vendor_services"  />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- GST NO. -->
+        <div class="row-flex">
+        <div class="v-stack">
+          <label for="vendor_gst">GST NO. <span style="color:red">*</span></label>
+          {% comment %} <span class="helper">Input 15 digit gst number only</span> {% endcomment %}
+          <input type="text" id="vendor_gst" maxlength="15" inputmode="numeric" pattern="[0-9]*" placeholder="Input 15 digit gst" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- CITY -->
+        <div class="v-stack">
+          <label for="vendor_city">CITY <span style="color:red">*</span></label>
+          <input type="text" id="vendor_city" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- STATE -->
+        <div class="v-stack">
+          <label for="vendor_state">STATE <span style="color:red">*</span></label>
+          <input type="text" id="vendor_state" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        </div>
+        <!-- NAME OF CONTACT PERSON -->
+        <div class="v-stack">
+          <label for="vendor_contact_person">NAME OF CONTACT PERSON <span style="color:red">*</span></label>
+          <input type="text" id="vendor_contact_person" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- CONTACT NUMBER -->
+        <div class="row-flex">
+        <div class="v-stack">
+          <label for="vendor_contact_number">CONTACT NUMBER <span style="color:red">*</span></label>
+          {% comment %} <span class="helper">Input 10 digit mobile number only</span> {% endcomment %}
+          <input type="tel" id="vendor_contact_number" maxlength="10" placeholder="Input 10 digit mobile no" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <!-- EMAIL ADDRESS (IF ANY) -->
+        <div class="v-stack">
+          <label for="vendor_email">EMAIL ADDRESS <span style="color:red">*</span> </label>
+          {% comment %} <span class="helper">Please enter your email address</span> {% endcomment %}
+          <input type="email" id="vendor_email" placeholder="Please enter your email address" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        </div>
+        <!-- BUSINESS TYPE (dropdown) -->
+        <div class="v-stack">
+          <label for="vendor_business_type">BUSINESS TYPE <span style="color:red">*</span></label>
+          <span class="helper">Please select the type of work that your firm/company/business deals in</span>
+          <select id="vendor_business_type" required>
+            <option value="">Choose</option>
+            <option>Garment Manufacturer ( FOB / FABRICATION )</option>
+            <option>MATERIAL SUPPLIER ( Trims, Fabric etc related to garments )</option>
+            <option>Job work - Fabric processing</option>
+            <option>Business services</option>
+            <option>Marketing services</option>
+            <option>IT / SAAS</option>
+            <option>EPC - contractor ( construction & PMC )</option>
+            <option>Others - Mention details in remarks</option>
+          </select>
+          <small style="color:red;font-size:10px"></small>
+        </div>
+        <button class="button" id="vendor_submit">Submit Application</button>
+        <div id="vendor-message"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function isValidGstNumber(info){
+  const regex = /^\d{15}$/;
+  return regex.test(info);
+}
+function isValidPhoneNumber(info){
+  const regex = /^\d{10}$/;
+  return regex.test(info) && info[0] !== '0';
+}
+function showErrorBelowInput(input) {
+  let el = input.nextElementSibling;
+  while (el && el.tagName !== 'SMALL') {
+    el = el.nextElementSibling;
+  }
+  if (el) {
+    el.innerHTML = 'Please enter a correct value!';
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    input.focus();
+  }
+}
+document.getElementById('vendor_gst').addEventListener('input', function(e) {
+  this.value = this.value.replace(/\D/g, '').slice(0,15);
+});
+document.getElementById('vendor_contact_number').addEventListener('input', function(e) {
+  this.value = this.value.replace(/\D/g, '').slice(0,10);
+});
+function formValidation(element, type) {
+  const el = document.getElementById(element);
+  if (type === 'select') {
+    if (el.value.trim()) {
+      return el.value.trim();
+    } else {
+      showErrorBelowInput(el);
+      return null;
+    }
+  } else if (type === 'file') {
+    return el.files && el.files.length > 0 ? el.files[0].name : "";
+  } else {
+    if (element.includes("contact_number")) {
+      if (el.value.trim() && isValidPhoneNumber(el.value.trim())) {
+        return el.value.trim();
+      } else {
+        showErrorBelowInput(el);
+        return null;
+      }
+    } else if (element === "vendor_gst") {
+      if (el.value.trim() && isValidGstNumber(el.value.trim())) {
+        return el.value.trim();
+      } else {
+        showErrorBelowInput(el);
+        return null;
+      }
+    } else if (el.value.trim()) {
+      return el.value.trim();
+    } else if (el.hasAttribute('required')) {
+      showErrorBelowInput(el);
+      return null;
+    } else {
+      return "";
+    }
+  }
+}
+
+document.getElementById("vendor_myForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const messageDiv = document.getElementById("vendor-message");
+  messageDiv.textContent = "Submitting...";
+  messageDiv.className = "submitting";
+  messageDiv.style.display = "block";
+
+  const btn = document.getElementById("vendor_submit");
+  btn.disabled = true;
+
+  document.getElementById('vendor_myForm').querySelectorAll('small').forEach(e=>e.innerHTML="");
+
+  const formData = {
+    businessName: formValidation("vendor_business_name"),
+    businessAddress: formValidation("vendor_business_address"),
+    services: formValidation("vendor_services"),
+    gst: formValidation("vendor_gst"),
+    city: formValidation("vendor_city"),
+    state: formValidation("vendor_state"),
+    contactPerson: formValidation("vendor_contact_person"),
+    contactNumber: formValidation("vendor_contact_number"),
+    email: formValidation("vendor_email"),
+    businessType: formValidation("vendor_business_type","select")
+  };
+  const allHaveValues = Object.entries(formData).every(([k,v])=>{
+    if(['email','website'].includes(k)) return true;
+    return v !== null && v !== undefined && v !== "";
+  });
+  if(!allHaveValues){
+    btn.disabled = false;
+    messageDiv.style.display = "none";
+    return;
+  }
+  const scriptURL = "https://script.google.com/macros/s/AKfycbyqvT2ohd16PBJnEy20lWJPSvIqIWUSBRWgnFPMQYLgI_7lGpw06bADmlUUOtLYzEUBkw/exec";
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(formData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then(() => {
+    messageDiv.textContent = "Application submitted successfully!";
+    messageDiv.className = "success";
+    messageDiv.style.display = "block";
+    document.getElementById("vendor_myForm").reset();
+    btn.disabled = false;
+    setTimeout(() => {
+      messageDiv.textContent = "";
+      messageDiv.style.display = "none";
+    }, 2000);
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+    messageDiv.textContent = "An error occurred while submitting the form.";
+    messageDiv.className = "error";
+    messageDiv.style.display = "block";
+    btn.disabled = false;
+  });
+});
+</script>

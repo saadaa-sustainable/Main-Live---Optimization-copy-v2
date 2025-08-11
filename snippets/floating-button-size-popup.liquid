@@ -339,7 +339,7 @@ background-color: #fff !important;
 <!-- Sticky Bar -->
 <div id="sticky-cart-bar">
   <div class="scb-wrap">
-    <button class="scb-main-btn">SELECT A SIZE</button>
+    <button class="scb-main-btn">ADD TO BAG</button>
   </div>
 
   
@@ -513,7 +513,7 @@ document.addEventListener("DOMContentLoaded", function () {
         mainBtn.textContent = 'NOTIFY ME';
         mainBtn.classList.remove('ready');
       } else {
-        mainBtn.textContent = 'ADD TO CART';
+        mainBtn.textContent = 'ADD TO BAG';
         mainBtn.classList.add('ready');
       }
     });
@@ -564,10 +564,10 @@ mainBtn.addEventListener('click', function(e) {
     modalBackdrop.style.display   = 'none';
     document.body.style.overflowY = '';
     if (!selectedVariantId) {
-      mainBtn.textContent = "SELECT A SIZE";
+      mainBtn.textContent = "ADD TO BAG";
       mainBtn.classList.remove("ready");
     } else if (!selectedIsOOS) {
-      mainBtn.textContent = "ADD TO CART";
+      mainBtn.textContent = "ADD TO BAG";
       mainBtn.classList.add("ready");
     } else {
       mainBtn.textContent = "NOTIFY ME";
@@ -634,10 +634,10 @@ mainBtn.addEventListener('click', function(e) {
 
     // Reset sticky cart button state if no variant is selected
     if (!selectedVariantId) {
-      mainBtn.textContent = "SELECT A SIZE";
+      mainBtn.textContent = "ADD TO BAG";
       mainBtn.classList.remove("ready");
     } else if (!selectedIsOOS) {
-      mainBtn.textContent = "ADD TO CART";
+      mainBtn.textContent = "ADD TO BAG";
       mainBtn.classList.add("ready");
     } else {
       mainBtn.textContent = "NOTIFY ME";
@@ -664,7 +664,7 @@ mainBtn.addEventListener('click', function(e) {
       selectedIsOOS = btn && btn.classList.contains('out-of-stock');
       // Update sticky bar button text
       if (!selectedIsOOS) {
-        mainBtn.textContent = "ADD TO CART";
+        mainBtn.textContent = "ADD TO BAG";
         mainBtn.classList.add("ready");
       } else {
         mainBtn.textContent = "NOTIFY ME";

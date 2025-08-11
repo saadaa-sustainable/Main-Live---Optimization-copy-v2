@@ -1,7 +1,7 @@
 {%- assign collection_title = collection.title | strip | downcase -%}
 
 {%- assign show_custom_filter_tab = false -%}
-{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus size edition" -%}
+{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus size edition" or collection_title == "co-ords" or collection_title == "bundles" -%}
   {%- assign show_custom_filter_tab = true -%}
 {%- endif -%}
 
@@ -13,6 +13,16 @@
 {%- assign show_color_filter_tab = false -%}
 {%- if collection_title == "shop by color" -%}
   {%- assign show_color_filter_tab = true -%}
+{%- endif -%}
+
+{%- assign show_tops_bottoms_roundels = false -%}
+{%- if collection_title == "co-ords" or collection_title == "bundles" -%}
+  {%- assign show_tops_bottoms_roundels = true -%}
+{%- endif -%}
+
+{%- assign show_bundles_coords_roundels = false -%}
+{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" -%}
+  {%- assign show_bundles_coords_roundels = true -%}
 {%- endif -%}
 
 {%- if show_custom_filter_tab or show_fabric_filter_tab or show_color_filter_tab -%}
@@ -61,10 +71,12 @@
       min-width: 132px;
       max-width: 134px;
     }
+
     .c_nav_filter .category-list.more-than-4 .category-item {
       min-width: 67px;
       max-width: 90px;
     }
+   
     .c_nav_filter .category-image-wrapper {
       position: relative;
       display: inline-block;
@@ -166,18 +178,32 @@
 
     @media(max-width:728px){
       .c_nav_filter .category-list.few-items {
-  justify-content: center;
-  flex-wrap: nowrap;
-  overflow-x: visible;
-}
-.c_nav_filter .category-list.few-items .category-item {
-  min-width: unset;
-  max-width: unset;
-  flex: 1 1 0;
-}
-
+        justify-content: center;
+        flex-wrap: nowrap;
+        overflow-x: hidden;
+      }
+      .c_nav_filter .category-list.few-items .category-item {
+        min-width: unset;
+        max-width: unset;
+        flex: 1 1 0;
+      }
     }
   </style>
+
+{% comment %}
+  this is for the visible count for carousel work if less than 4 dont have carousel if more than 4 has carosuel
+{% endcomment %}
+
+{%- if collection_title == "co-ords" -%}
+  {%- assign visible_count = visible_count | plus: 5 -%}
+{%- endif -%}
+{%- if collection_title == "bundles" -%}
+  {%- assign visible_count = visible_count | plus: 6 -%}
+{%- endif -%}
+
+
+
+
 
   <form
     is="facets-form"
@@ -208,6 +234,30 @@
       {%- for filter in results.filters -%}
         {% if filter.label == 'Category' %}
           <div class="category-list{% if visible_count > 4 %} more-than-4{% else %} few-items{% endif %}">
+            
+            {%- if show_tops_bottoms_roundels -%}
+              <!-- EXISTING: Show "Shop all Tops" and "Shop all Bottoms" roundels for Bundles/Co-Ords -->
+              <label class="category-item" style="cursor:pointer;" onclick="window.location.href='https://saadaa.in/collections/shop-all-tops-1'">
+                <span class="category-image-wrapper">
+                  <img class="category-image" src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_110_15eeb79b-b85c-4354-b29f-87f8ed2c1b67.webp?v=1751625658" alt="Shop all Tops">
+                  <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="category-label">Tops</span>
+              </label>
+              <label class="category-item" style="cursor:pointer;" onclick="window.location.href='https://saadaa.in/collections/shop-all-bottoms'">
+                <span class="category-image-wrapper">
+                  <img class="category-image" src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_23_d6610d4b-6ea0-40f6-b590-a2bcf0a4a0fe.webp?v=1751623815" alt="Shop all Bottoms">
+                  <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="category-label">Bottoms</span>
+              </label>
+              
+            {%- endif -%}
+
             {% assign option_index = 0 %}
             {% for filter_value in filter.values %}
               {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
@@ -224,7 +274,7 @@
               {%- assign matching_product = blank -%}
               {%- assign image_url = blank -%}
 
-              {%- comment -%} Manual image assignment for exceptions {%- endcomment -%}
+{%- comment -%} Manual image assignment for exceptions {%- endcomment -%}
               {%- case value_label -%}
                 {%- when "Long Kurta" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_25_1b1ab4c5-6588-4c80-b38c-39eeded9d665.webp?v=1751625658" -%}
@@ -255,7 +305,18 @@
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_22_23aab954-c9a5-4201-a6c9-0c70eb45507d.webp?v=1751623815" -%}
                 {%- when "Straight Fit Formal Pants" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_47.webp?v=1753441557" -%}
-                
+                {%- when "cotton pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_60.webp?v=1754457992" -%}
+                {%- when "long kurta" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_59.webp?v=1754457992" -%}
+                {%- when "short kurta" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_63.webp?v=1754464526" -%}
+                {%- when "Co-Ords" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_62.webp?v=1754459811" -%}
+                {%- when "Mix Match" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_61.webp?v=1754459599" -%}
+                {%- when "Bundles" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_60.webp?v=1754457992" -%}
                 
                 
                 {% comment %}
@@ -276,7 +337,9 @@
                 {%- when "Viscose top" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Viscose_Pleated_Top_Roundles.webp?v=1752045064" -%}
                 {%- when "Wide leg pant" -%}
-                  
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Wide_leg_Pant_Roundles.webp?v=1752045064" -%}
+               {%- when "Airy Linen Shirts" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_52.webp?v=1753947779" -%}
                 
                 {% comment %}
 
@@ -285,7 +348,7 @@
                 {% endcomment %}
                 
                 
-                {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Wide_leg_Pant_Roundles.webp?v=1752045064" -%}
+  
                  {%- when "Airy Linen Shirt" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_26_226a94ee-90e5-4b27-921a-66a5b085338c.webp?v=1751625789" -%}
                  {%- when "Airy Linen Wide Leg Pant" -%}
@@ -296,7 +359,9 @@
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_109_159f241a-e43a-4c6f-8afe-cf1b71c704c2.webp?v=1751625658" -%}
                 {%- when "Airy Linen Flared Dress" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_34.webp?v=1752822898" -%}
-                
+
+
+                  
                 {%- else -%}
                   {%- for p in collections.all.products -%}
                     {% if p.metafields.custom.category_filter_name == value_label and p.metafields.custom.category_filter_image != blank %}
@@ -307,6 +372,8 @@
                   {%- endfor -%}
               {%- endcase -%}
 
+
+              
               <label class="category-item">
                 <input
                   type="radio"
@@ -325,11 +392,66 @@
               </label>
               {% assign option_index = option_index | plus: 1 %}
             {% endfor %}
+          {%- if collection_title == "co-ords" -%}
+
+
+
+
+    <!-- ADD THIS INSIDE THE CATEGORY-LIST: Bundles roundel for co-ords page -->
+    <label class="category-item" style="cursor:pointer;" onclick="window.location.href='/collections/bundles'">
+      <span class="category-image-wrapper">
+        <img class="category-image" src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_60.webp?v=1754457992" alt="Bundles">
+        <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </span>
+      <span class="category-label">Bundles</span>
+    </label>
+  {%- endif -%}
+
+  {%- if collection_title == "bundles" -%}
+    <!-- ADD THIS INSIDE THE CATEGORY-LIST: Co-Ords roundel for bundles page -->
+    <label class="category-item" style="cursor:pointer;" onclick="window.location.href='/collections/co-ords'">
+      <span class="category-image-wrapper">
+        <img class="category-image" src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_62.webp?v=1754459811" alt="Co-Ords">
+        <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </span>
+      <span class="category-label">Co-Ords</span>
+    </label>
+  {%- endif -%}
+
+  {%- if show_bundles_coords_roundels -%}
+    <!-- Bundles and Co-Ords roundels for Shop all Tops/Bottoms collections -->
+    <label class="category-item" style="cursor:pointer;" onclick="window.location.href='/collections/bundles'">
+      <span class="category-image-wrapper">
+        <img class="category-image" src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_60.webp?v=1754457992" alt="Bundles">
+        <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </span>
+      <span class="category-label">Bundles</span>
+    </label>
+    <label class="category-item" style="cursor:pointer;" onclick="window.location.href='/collections/co-ords'">
+      <span class="category-image-wrapper">
+        <img class="category-image" src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_62.webp?v=1754459811" alt="Co-Ords">
+        <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </span>
+      <span class="category-label">Co-Ords</span>
+    </label>
+  {%- endif -%}
+
+
+
           </div>
         {% endif %}
       {%- endfor -%}
     {% endif %}
 
+    {%- comment -%} FABRIC FILTER TAB {%- endcomment -%}
     {% if show_fabric_filter_tab %}
       {%- for filter in results.filters -%}
         {% if filter.label == 'Fabric' %}
@@ -339,32 +461,26 @@
               {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
                 {% continue %}
               {% endif %}
-
               {%- assign value_id = 'fabric-nav-filter-' | append: option_index -%}
               {%- assign value_label = filter_value.label -%}
-
               {%- assign image_url = blank -%}
-
-
-
-            {%- case value_label -%}
+              {%- case value_label -%}
                 {%- when "100% Cotton" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_4.webp?v=1751875923" -%}
                 {%- when "Airy Linen" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_1.webp?v=1751875854" -%}
                 {%- when "Tencel Spandex" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame.webp?v=1751875854" -%}
-               {%- when "Viscose" -%}
+                {%- when "Viscose" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_2.webp?v=1751875854" -%}
                 {%- else -%}
-              {%- for p in collections.all.products -%}
-                {% if p.metafields.custom.fabric_filter_name == value_label and p.metafields.custom.fabric_filter_image != blank %}
-                  {% assign image_url = p.metafields.custom.fabric_filter_image | img_url: '200x200' %}
-                  {% break %}
-                {% endif %}
-              {%- endfor -%}
+                  {%- for p in collections.all.products -%}
+                    {% if p.metafields.custom.fabric_filter_name == value_label and p.metafields.custom.fabric_filter_image != blank %}
+                      {% assign image_url = p.metafields.custom.fabric_filter_image | img_url: '200x200' %}
+                      {% break %}
+                    {% endif %}
+                  {%- endfor -%}
               {%- endcase -%}
-
               <label class="category-item">
                 <input
                   type="radio"
@@ -388,155 +504,64 @@
       {%- endfor -%}
     {% endif %}
 
-
-
-{% comment %}
-
-FOR SHOP BY COLOR FILTER
-                      
-{% endcomment %}
-
-
-
-{% if show_color_filter_tab %}
-  {%- for filter in results.filters -%}
-    {% if filter.label == 'Color' %}
-      <div class="category-list{% if filter.values.size > 4 %} more-than-4{% else %} few-items{% endif %}">
-        {% assign option_index = 0 %}
-        {% for filter_value in filter.values %}
-          {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
-            {% continue %}
-          {% endif %}
-
-          {%- assign value_id = 'color-nav-filter-' | append: option_index -%}
-          {%- assign value_label = filter_value.label -%}
-
-          {%- assign image_url = blank -%}
-          {%- for p in collections.all.products -%}
-            {% if p.metafields.custom.color_filter_name == value_label and p.metafields.custom.color_image != blank %}
-              {% assign image_url = p.metafields.custom.color_image | img_url: '200x200' %}
-              {% break %}
-            {% endif %}
-          {%- endfor -%}
-
-          <label class="category-item">
-            <input
-              type="radio"
-              id="{{ value_id }}"
-              name="{{ filter_value.param_name }}"
-              value="{{ filter_value.value }}"
-              {% if filter_value.active %}checked{% endif %}
-            />
-            <span class="category-image-wrapper">
-              <img class="category-image" src="{{ image_url | default: 'https://dummyimage.com/80x80/cccccc/fff&text=+' }}" alt="{{ value_label }}">
-              <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            </span>
-            <span class="category-label">{{ value_label }}</span>
-          </label>
-          {% assign option_index = option_index | plus: 1 %}
-        {% endfor %}
-      </div>
+    {%- comment -%} COLOR FILTER TAB {%- endcomment -%}
+    {% if show_color_filter_tab %}
+      {%- for filter in results.filters -%}
+        {% if filter.label == 'Color' %}
+          <div class="category-list{% if filter.values.size > 4 %} more-than-4{% else %} few-items{% endif %}">
+            {% assign option_index = 0 %}
+            {% for filter_value in filter.values %}
+              {% if filter_value.count == 0 and filter_value.active == false and section.settings.show_empty_filter_values == false %}
+                {% continue %}
+              {% endif %}
+              {%- assign value_id = 'color-nav-filter-' | append: option_index -%}
+              {%- assign value_label = filter_value.label -%}
+              {%- assign image_url = blank -%}
+              {%- for p in collections.all.products -%}
+                {% if p.metafields.custom.color_filter_name == value_label and p.metafields.custom.color_image != blank %}
+                  {% assign image_url = p.metafields.custom.color_image | img_url: '200x200' %}
+                  {% break %}
+                {% endif %}
+              {%- endfor -%}
+              <label class="category-item">
+                <input
+                  type="radio"
+                  id="{{ value_id }}"
+                  name="{{ filter_value.param_name }}"
+                  value="{{ filter_value.value }}"
+                  {% if filter_value.active %}checked{% endif %}
+                />
+                <span class="category-image-wrapper">
+                  <img class="category-image" src="{{ image_url | default: 'https://dummyimage.com/80x80/cccccc/fff&text=+' }}" alt="{{ value_label }}">
+                  <svg class="category-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="category-label">{{ value_label }}</span>
+              </label>
+              {% assign option_index = option_index | plus: 1 %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {%- endfor -%}
     {% endif %}
-  {%- endfor -%}
-{% endif %}
-
-
-
-
-
-
-                      
     </div>
   </form>
 
   <script>
-    function handlePrestigeFilterAjax(form) {
-      let checkedIndex = 0;
-      let filterScrollLeft = 0;
-      const filterList = document.querySelector('.category-list');
-      if (filterList) {
-        filterScrollLeft = filterList.scrollLeft;
-        const radios = filterList.querySelectorAll('input[type="radio"]');
-        radios.forEach((r, i) => { if (r.checked) checkedIndex = i; });
-      }
-
-      const url = new URL(window.location.href);
-      const formData = new FormData(form);
-      url.search = new URLSearchParams(formData).toString();
-      const sectionId = form.getAttribute('section-id');
-      if (!sectionId) return;
-
-      const currentScroll = window.scrollY;
-
-      fetch(`${url.pathname}?section_id=${sectionId}&${url.search}`)
-        .then(res => res.text())
-        .then(html => {
-          const tempDom = document.createElement('div');
-          tempDom.innerHTML = html;
-
-          const newForm = tempDom.querySelector('form.facets');
-          if (newForm) {
-            form.replaceWith(newForm);
-            rebindFacetsAjax();
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.innerWidth <= 640) {
+        var filterList = document.querySelector('.category-list');
+        if (filterList) {
+          var checkedRadio = filterList.querySelector('input[type="radio"]:checked');
+          if (checkedRadio && checkedRadio.parentElement) {
+            var tab = checkedRadio.parentElement;
+            var left = tab.offsetLeft - (filterList.offsetWidth / 2) + (tab.offsetWidth / 2);
+            filterList.scrollTo({ left: left, behavior: "auto" });
           }
-
-          const oldGrid = document.querySelector('.collection__products');
-          const newGrid = tempDom.querySelector('.collection__products');
-          if (oldGrid && newGrid) oldGrid.replaceWith(newGrid);
-
-          setTimeout(function() {
-            var af = document.querySelector('.active-facets');
-            if(af){
-              var foc = af.querySelector(':focus');
-              if(foc) foc.blur();
-            }
-            window.scrollTo({ top: currentScroll, behavior: 'auto' });
-
-            const newFilterList = document.querySelector('.category-list');
-            if (newFilterList) {
-              const radios = newFilterList.querySelectorAll('input[type="radio"]');
-              if (radios && radios.length > checkedIndex) {
-                const checkedRadio = radios[checkedIndex];
-                if (checkedRadio && checkedRadio.parentElement) {
-                  const tab = checkedRadio.parentElement;
-                  const left = tab.offsetLeft - (newFilterList.offsetWidth / 2) + (tab.offsetWidth / 2);
-                  newFilterList.scrollTo({ left: left, behavior: "auto" });
-                } else {
-                  newFilterList.scrollLeft = filterScrollLeft;
-                }
-              } else {
-                newFilterList.scrollLeft = filterScrollLeft;
-              }
-            }
-          }, 20);
-
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        });
-    }
-
-
-
-{%- comment -%}  if a person redirect with a selected filter link the view of the selected link displays in mobile {%- endcomment -%}
-
-  document.addEventListener("DOMContentLoaded", function() {
-    // Only run on small screens (mobile), adjust as needed
-    if (window.innerWidth <= 640) {
-      var filterList = document.querySelector('.category-list');
-      if (filterList) {
-        var checkedRadio = filterList.querySelector('input[type="radio"]:checked');
-        if (checkedRadio && checkedRadio.parentElement) {
-          var tab = checkedRadio.parentElement;
-          // Calculate scroll so that selected tab is roughly centered
-          var left = tab.offsetLeft - (filterList.offsetWidth / 2) + (tab.offsetWidth / 2);
-          filterList.scrollTo({ left: left, behavior: "auto" });
         }
       }
-    }
-  });
-
-
+    });
   </script>
   <style>
     .active-facets{
@@ -550,7 +575,10 @@ FOR SHOP BY COLOR FILTER
     }
   </style>
 {%- else -%}
-  {%- comment -%} DEFAULT FILTER BAR (your original default facets) {%- endcomment -%}
+
+  {%- assign color_label_list = 'general.label.color' | t | replace: ', ', ',' | downcase | split: ',' -%}
+  {%- capture id_prefix -%}facets-{{ context }}{%- endcapture -%}
+
   <style>
     .c_nav_filter {
       margin: 2rem 0rem;
@@ -632,9 +660,6 @@ FOR SHOP BY COLOR FILTER
       -webkit-overflow-scrolling: touch;
     }
   </style>
-  {%- assign color_label_list = 'general.label.color' | t | replace: ', ', ',' | downcase | split: ',' -%}
-  {%- capture id_prefix -%}facets-{{ context }}{%- endcapture -%}
-
   <form
     is="facets-form"
     {% if update_on_change %}

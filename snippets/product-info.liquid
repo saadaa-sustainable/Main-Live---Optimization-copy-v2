@@ -29,7 +29,7 @@
   </span>
 
   {% assign special_collections = "AIRY-LINEN SHORTS,MEN AIRY-LINEN SHORT KURTAS,AIRY LINEN PANTS,THE FORMAL PANTS" | split: "," %}
-  {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant" | split: "," %}
+  {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant,Women Plus Size Airy-Linen Shirt" | split: "," %}
  
   {% comment %}
       {% assign special_collections2 = "Women Straight Fit Formal Pant" | split: "," %}
@@ -406,7 +406,7 @@
                   </div>
                 {%- endif -%}
 
-                <div class="variant-picker__option-values h-stack gap-2.5 wrap">
+                <div class="variant-picker__option-values h-stack gap-2.5 wrap {% if product.template_suffix == 'flybundles' %}mobile-carousel{% endif %}">
                   {%- liquid
                       for product_variation in block.settings.products
                         assign value = product_variation.metafields[metafield_namespace][metafield_key].value
@@ -923,5 +923,36 @@
  #compare-at-price{
    color:#7C7C7C;
  }
+
+
+ 
+
+/* this is to make the bundles swatches carousle instead of stack  */
+
+
+
+
+  @media screen and (max-width: 749px) {
+  /* turn the swatch‐list into a horizontal scroller */
+  .mobile-carousel {
+    display: flex !important;           /* one row */
+    flex-wrap: nowrap !important;       /* no wrapping to new lines */
+    overflow-x: auto;                   /* horizontal scroll */
+    -webkit-overflow-scrolling: touch;  /* smooth on iOS */
+    scroll-snap-type: x mandatory;      /* snap points */
+    gap: 11px !important;               /* override the original gap if needed */
+  }
+
+  /* each swatch becomes a snap point */
+  .mobile-carousel > * {
+    flex: 0 0 auto;           /* don’t shrink or grow */
+    scroll-snap-align: start; /* snap to its leading edge */     /* spacing between slides */
+  }
+
+  /* optional: hide the scrollbar in WebKit browsers */
+  .mobile-carousel::-webkit-scrollbar {
+    display: none;
+  }
+}
    
 </style>
