@@ -238,8 +238,34 @@
   <body class="{{ features_class }}">
 
 
+<!-- Floating WhatsApp Icon Start -->
+<a href="https://wa.me/919251998279?text=Hi%20!" class="floating-whatsapp">
+  <img 
+    src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/56x56_1.png?v=1755694867" 
+    alt="WhatsApp Icon"
+    width="56"
+    height="56"
+  >
+</a>
 
+<style>
+.floating-whatsapp {
+  position: fixed;
+  bottom: 115px;  /* adjust spacing from bottom */
+  right: 20px;   /* adjust spacing from right */
+  z-index: 700; /* keep it above all elements */
+  display: block;
+}
 
+.floating-whatsapp img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  
+}
+</style>
+
+<!-- Floating WhatsApp Icon End -->
 
 {%- unless template.name == 'index' -%}
   <!-- Preloader Start -->
@@ -327,7 +353,7 @@
       {%- sections 'overlay-group' -%}
     {%- endif -%}
 
-    {% if template == 'index' or template contains 'page' and page.handle == 'men-showcase' %}
+    {% if template == 'index' %}
       <div class="fittora-personaliser-container">
         <div
           id="fittora-personaliser-root"

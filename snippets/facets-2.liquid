@@ -1,7 +1,7 @@
 {%- assign collection_title = collection.title | strip | downcase -%}
 
 {%- assign show_custom_filter_tab = false -%}
-{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus size edition" or collection_title == "co-ords" or collection_title == "bundles" -%}
+{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus edition" or collection_title == "co-ords" or collection_title == "bundles" -%}
   {%- assign show_custom_filter_tab = true -%}
 {%- endif -%}
 
@@ -68,9 +68,9 @@
       scroll-snap-align: start;
     }
     .c_nav_filter .category-list.few-items .category-item {
-      min-width: 132px;
-      max-width: 134px;
-    }
+    min-width: 106px;
+    max-width: 106px;
+}
 
     .c_nav_filter .category-list.more-than-4 .category-item {
       min-width: 67px;
@@ -317,6 +317,11 @@
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_61.webp?v=1754459599" -%}
                 {%- when "Bundles" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_60.webp?v=1754457992" -%}
+
+
+
+                  {%- when "Couples" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/IMG-20250814-WA0010.webp?v=1755203863" -%}
                 
                 
                 {% comment %}
@@ -340,6 +345,7 @@
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Wide_leg_Pant_Roundles.webp?v=1752045064" -%}
                {%- when "Airy Linen Shirts" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_52.webp?v=1753947779" -%}
+                
                 
                 {% comment %}
 

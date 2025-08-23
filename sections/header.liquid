@@ -473,14 +473,14 @@ DYNAMIC ANNOUNCEMENT BAR CODE
           {%- render block -%}
         {%- endif -%}
       {%- endfor -%}
-      <a href="#rp-customer-widget-home" class="header_whatsapp" aria-label="header_whatsapp_button">
+      {% comment %} <a href="#rp-customer-widget-home" class="header_whatsapp" aria-label="header_whatsapp_button">
         {%- render 'icon' with 'whatsapp' -%}
         <style>
           .header_whatsapp {
             margin-right: 0;
           }
         </style>
-      </a>
+      </a> {% endcomment %}
       <script>
         document.querySelector('.header_whatsapp').addEventListener('click', initializeRichpanelLiveChat);
         function initializeRichpanelLiveChat(e) {

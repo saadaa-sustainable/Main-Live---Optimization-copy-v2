@@ -1,17 +1,17 @@
 <style>
   @media (max-width: 768px) {
     /* ---------- STICKY CART BAR ---------- */
-#sticky-cart-bar {
-  position: fixed;
-  bottom: 62px; /* Height of .fixed_nav, update if your nav is taller/shorter */
-        left: 0;
-        width: 100vw;
-        background: #fff;
-        z-index: 1111;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.10);
-        display: none;
-        transition: transform 0.3s;
-        padding: 11px;
+    #sticky-cart-bar {
+      position: fixed;
+      bottom: 0; /* Height of .fixed_nav, update if your nav is taller/shorter */
+      left: 0;
+      width: 100vw;
+      background: #fff;
+      z-index: 1111;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.10);
+      display: none;
+      transition: transform 0.3s;
+      padding: 11px;
     }
     #sticky-cart-bar .scb-wrap {
       display: flex;
@@ -19,7 +19,7 @@
     }
     #sticky-cart-bar .scb-main-btn {
       flex: 1;
-      margin: 0 16px;             /* inset from edges */
+      margin: 0 16px;
       padding: 16px 0;
       border: none;
       font-size: 15px;
@@ -28,9 +28,14 @@
       text-align: center;
       background: #111;
       color: #fff;
-      border-radius: 45px;        /* pill shape */
+      border-radius: 45px;
       letter-spacing: 1px;
       transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      white-space: nowrap;
     }
     #sticky-cart-bar .scb-main-btn:active {
       transform: scale(0.97);
@@ -41,43 +46,28 @@
     }
 
     /* ---------- BACKDROP ---------- */
-#modal-backdrop {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  /* Don’t cover the bottom 56px (your sticky bar height) */
-  bottom: 56px;
-  background: rgba(0, 0, 0, 0.5);
-  /* sit below the sticky bar (z-1111) but below the overlay (z-1200) */
-  z-index: 1100;
-}
-#modal-backdrop {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  /* Don’t cover the bottom 56px (your sticky bar height) */
-  bottom: 56px;
-  background: rgba(0, 0, 0, 0.5);
-  /* sit below the sticky bar (z-1111) but below the overlay (z-1200) */
-  z-index: 1100;
-}
-
+    #modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 56px; /* don’t cover sticky bar */
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1100;
+    }
 
     /* ---------- SIZE OVERLAY ---------- */
-  #size-overlay {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: #fff;
-        z-index: 1200;
-        display: none;
-        padding: 10px 16px 0px 16px;
-        animation: fadeInUp 0.2s;
+    #size-overlay {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      z-index: 1200;
+      display: none;
+      padding: 10px 16px 0px 16px;
+      animation: fadeInUp 0.2s;
     }
 
     @keyframes fadeInUp {
@@ -91,70 +81,68 @@
       margin-bottom: 10px;
       color: #222;
     }
-     #size-overlay .overlay-close {
-        position: absolute;
-        right: 18px;
-        top: 1px;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        color: #000;
-        cursor: pointer;
+    #size-overlay .overlay-close {
+      position: absolute;
+      right: 18px;
+      top: 1px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #000;
+      cursor: pointer;
     }
-}
-  .variant-container {
-  padding-top: 10px;
-  padding-bottom: 25px;
-  display: flex;
-  flex-wrap: wrap;     /* allow wrapping to new lines */
-  gap: 11px;
-  margin-top: 10px;
-  /* overflow-x: auto; */ /* REMOVE this */
-  /* -webkit-overflow-scrolling: touch; */ /* REMOVE this */
-  justify-content: flex-start; /* optional: align items to left */
-}
+  }
 
-    /* .variant-container::-webkit-scrollbar {
-      display: none;
-    } */
-    .variant-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      min-height: 44px;
-    }
-    .variant-btn {
-        width: 2.6rem;
-        height: 2.6rem;
-        font-size: 14px;
-       
-        border-radius: 50%;
-        border: 1px solid #000;
-        background-color: #fff;
-        color: #000;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s, border-color 0.3s;
-        padding: 0;
-    }
-    .variant-btn:hover {
-      border-color: #000;
-    }
-    .variant-btn.selected {
-      background-color: #fff8a5;
-      color: #000;
-      border-color: #000;
-    }
-    .variant-btn.out-of-stock {
-      color: #000;
-      border-color: #000;
-      cursor: not-allowed;
-      position: relative;
-    }
-    .variant-btn.out-of-stock::before {
+  .variant-container {
+    padding-top: 10px;
+    padding-bottom: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 10px;
+    justify-content: flex-start;
+  }
+  .variant-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-height: 44px;
+  }
+  .variant-btn {
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 14px;
+    border-radius: 50%;
+    border: 1px solid #000;
+    background-color: #fff;
+    color: #000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, border-color 0.3s;
+    padding: 0;
+  }
+  .variant-btn:hover { border-color: #000; }
+  .variant-btn.selected {
+    background-color: #fff8a5;
+    color: #000;
+    border-color: #000;
+  }
+
+  /* Out of stock = fully unclickable */
+  .variant-btn.out-of-stock,
+  .variant-btn[disabled] {
+    color: #000;
+    border-color: #000;
+    cursor: not-allowed;
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .variant-btn.out-of-stock::before,
+  .variant-btn[disabled]::before {
     content: "";
     position: absolute;
     top: -1%;
@@ -164,23 +152,22 @@
     background: #000;
     transform: rotate(51deg) translateX(50%);
     pointer-events: none;
-}
-    .stock-message {
-      position: absolute;
-      top: 80%;
-      width: 100%;
-      font-size: 8px;
-      margin-top: 0;
-      font-weight: bold;
-      text-align: center;
-      line-height: 1.2;
-      display: none;
-    }
-    .few-left { color: orange; }
-    .only-left { color: red; }
-    .variant-btn.selected ~ .stock-message {
-      display: block;
-    }
+  }
+
+  .stock-message {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    font-size: 8px;
+    margin-top: 0;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+    display: none;
+  }
+  .few-left { color: orange; }
+  .only-left { color: red; }
+  .variant-btn.selected ~ .stock-message { display: block; }
 
   @media (min-width: 769px) {
     #sticky-cart-bar,
@@ -190,159 +177,107 @@
     }
   }
 
-
-
-
-  /* italic instruction, centered */
-#size-overlay .overlay-instruction {
-  margin: 0;
-  font-size: 0.9rem;
-  font-style: italic;
-  color: #000;
-  text-align: left;
-
-  /* the new divider */
-  padding-bottom: 8px;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 16px;
-}
-
-/* flex container for “SIZE:” + link */
-#size-overlay .overlay-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-/* “SIZE:” text styling */
-#size-overlay .overlay-header .overlay-title {
-  font-size: 13px;
-  color: #222;
-  text-transform: uppercase;
-}
-
-/* “VIEW SIZE CHART” link styling */
-#size-overlay .overlay-header .view-size-chart {
+  /* Overlay instruction + header */
+  #size-overlay .overlay-instruction {
+    margin: 0;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #000;
+    text-align: left;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 16px;
+  }
+  #size-overlay .overlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  #size-overlay .overlay-header .overlay-title {
+    font-size: 13px;
+    color: #222;
+    text-transform: uppercase;
+  }
+  #size-overlay .overlay-header .view-size-chart {
     font-size: 0.8rem;
     color: #000;
     text-decoration: underline;
-}
-
-
- .btn.ks-chart-modal-button, span.ks-chart-modal-link {
-  margin-bottom: 0px;
-}
-
-  .btn.ks-chart-modal-button {
-background-color: #fff !important;
- border: none; 
-}
-
-  ._ks_text {
-    text-transform: capitalize;
-    font-size: 13px;
-
   }
 
+  .btn.ks-chart-modal-button, span.ks-chart-modal-link { margin-bottom: 0px; }
+  .btn.ks-chart-modal-button { background-color: #fff !important; border: none; }
+  ._ks_text { text-transform: capitalize; font-size: 13px; }
+  .ks-chart-modal-button>span.with-icon .kiwi-svg,
+  .ks-chart-modal-link.with-icon .kiwi-svg { width: 16px !important; height: 20px !important; }
+  .btn.ks-chart-modal-button span.with-icon, span.ks-chart-modal-link.with-icon { padding-left: 20px !important; }
 
+  /* ----- Guarantee section ----- */
+  .guarantee-hstack { display: flex; align-items: center; justify-content: center; }
+  .guarantee-gap { gap: 0.375rem; }
+  .guarantee-tooltip { position: relative; display: inline-block; cursor: pointer; }
+  .guarantee-tooltip .guarantee-tooltip-text {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: -376%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 234px;
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.4;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 1000;
+  }
+  .guarantee-tooltip .guarantee-tooltip-text::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 74%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+  .guarantee-tooltip .guarantee-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 74%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: #fff;
+  }
+  .guarantee-tooltip.guarantee-active .guarantee-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
 
-  .ks-chart-modal-button>span.with-icon .kiwi-svg, .ks-chart-modal-link.with-icon .kiwi-svg {
-    width: 16px !important;
-    height: 20px !important;
-}
-
-  .btn.ks-chart-modal-button span.with-icon, span.ks-chart-modal-link.with-icon {
-    padding-left: 20px !important;
-}
-
-
-
-/* ----- Guarantee section - unique classes ----- */
-.guarantee-hstack {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.guarantee-gap {
-  gap: 0.375rem;
-}
-.guarantee-tooltip {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-.guarantee-tooltip .guarantee-tooltip-text {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: -376%;
-  transform: translateX(-50%);
-  background: #fff;
-  color: #000;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 8px 12px;
-  border-radius: 6px;
-  width: 234px;
-  text-align: center;
-  font-size: 11px;
-  line-height: 1.4;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
-  z-index: 1000;
-}
-.guarantee-tooltip .guarantee-tooltip-text::before {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 74%;
-  transform: translateX(-50%);
-  border: 8px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.1);
-}
-.guarantee-tooltip .guarantee-tooltip-text::after {
-  content: "";
-  position: absolute;
-  top: calc(100% - 1px);
-  left: 74%;
-  transform: translateX(-50%);
-  border: 7px solid transparent;
-  border-top-color: #fff;
-}
-.guarantee-tooltip.guarantee-active .guarantee-tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
-
-
-
-
-.overlay_wrapper.notify-me {
-  z-index: 1300 !important; /* Overlays the size selection */
-  position: fixed !important;
-  left: 0; right: 0; top: 0; bottom: 0;
-  display: none;
-  background: rgba(0,0,0,0.18); /* optional: dim background */
-}
-
- @media (max-width: 768px) {
-  #sticky-combo-grid { display: block !important; }
-}
-@media (min-width: 769px) {
-  #sticky-combo-grid { display: none !important; }
-}
-
-
+  /* Bag icon alignment */
+  #sticky-cart-bar .bag-icon svg { vertical-align: middle; }
 </style>
-{% unless product.title contains 'combo' or product.title contains 'Combo' or product.title contains 'Tote' or product.template_suffix contains 'flybundles' %}
+
+{% unless product.title contains 'combo' or product.title contains 'Combo' or product.title contains 'Tote' or product.template_suffix contains 'flybundles' or product.template_suffix contains 'color-size-combo' %}
 <!-- Sticky Bar -->
 <div id="sticky-cart-bar">
   <div class="scb-wrap">
-    <button class="scb-main-btn">ADD TO BAG</button>
+    <button class="scb-main-btn">
+      <span class="bag-icon" style="display:inline-block;vertical-align:middle;margin-right:8px;">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"
+             style="position:relative;bottom:3px;">
+          <path d="M4.75 8.25A.75.75 0 0 0 4 9L3 19.125c0 1.418 1.207 2.625 2.625 2.625h12.75c1.418 0 2.625-1.149 2.625-2.566L20 9a.75.75 0 0 0-.75-.75H4.75Zm2.75 0v-1.5a4.5 4.5 0 0 1 4.5-4.5v0a4.5 4.5 0 0 1 4.5 4.5v1.5" />
+        </svg>
+      </span>
+      ADD TO BAG
+    </button>
   </div>
-
-  
 
   <div class="guarantee-hstack guarantee-gap" style="margin-top:10px;">
     <svg stroke="rgb(34, 197, 160)" fill="rgb(34, 197, 160)" stroke-width="0"
@@ -357,7 +292,6 @@ background-color: #fff !important;
     <span style="font-size:13px;position: relative;top: 1px;">
       7-Day Money Back Guarantee
     </span>
-
     <div class="guarantee-tooltip">
       <img
         src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_2.svg?v=1747286143"
@@ -369,9 +303,7 @@ background-color: #fff !important;
       </div>
     </div>
   </div>
-
 </div>
-
 
 <!-- Backdrop for Overlay -->
 <div id="modal-backdrop"></div>
@@ -380,12 +312,10 @@ background-color: #fff !important;
 <div id="size-overlay">
   <button class="overlay-close" aria-label="Close">&times;</button>
 
-  <!-- instruction line -->
   <p class="overlay-instruction">
     Please select a size to add product to bag
   </p>
 
-  <!-- size label + “view chart” link -->
   <div class="overlay-header">
     <span class="overlay-title">SIZE:</span>
     <div id="KiwiSizingChart" data-display-mode="2"></div>
@@ -394,15 +324,16 @@ background-color: #fff !important;
   <div class="variant-container">
     {% for variant in product.variants %}
       <div class="variant-wrapper">
-      <button 
-  type="button"
-  class="variant-btn{% if variant.inventory_quantity == 0 %} out-of-stock{% endif %}"
-  data-value="{{ variant.option1 }}"
-  data-variant-id="{{ variant.id }}" 
-  data-quantity="{{ variant.inventory_quantity }}"
->
-  {{ variant.option1 }}
-</button>
+        <button
+          type="button"
+          class="variant-btn{% if variant.inventory_quantity == 0 %} out-of-stock{% endif %}"
+          {% if variant.inventory_quantity == 0 %}disabled aria-disabled="true"{% endif %}
+          data-value="{{ variant.option1 }}"
+          data-variant-id="{{ variant.id }}"
+          data-quantity="{{ variant.inventory_quantity }}"
+        >
+          {{ variant.option1 }}
+        </button>
 
         <p class="stock-message">
           {% if variant.inventory_quantity > 5 and variant.inventory_quantity <= 8 %}
@@ -414,49 +345,30 @@ background-color: #fff !important;
       </div>
     {% endfor %}
   </div>
-
- {% comment %}
-    <!-- Bundle grid for the sticky CTA overlay -->
-<div id="sticky-combo-grid">
-  {% render 'combo-bundle-code' %}
 </div>
-
- {% endcomment %}
-
-
- 
-</div>
-
-<!-- HIDDEN BUTTON TO TRIGGER NOTIFY ME -->
-<button type="button" style="display:none;" id="notifyMeTrigger" class="popup_click" data-service="service_31"></button>
-<!-- NOTIFY ME OVERLAY -->
-<div class="overlay_wrapper notify-me" data-service="service_31" style="display:none;">
-  <div class="close_overlay"></div>
-  <div class="overlay_content">
-    {%- render 'icon' with 'close' -%}
-    <div class="overlay_content_text">
-      {% render 'notify-me' %}
-    </div>
-  </div>
-</div>
-
 {% endunless %}
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const productForm    = document.querySelector('form[action^="/cart/add"]');
+  const productForm   = document.querySelector('form[action^="/cart/add"]');
   if (!productForm) return;
 
-  const variantInput   = productForm.querySelector('[name="id"]');
-  const mainBtn        = document.querySelector('#sticky-cart-bar .scb-main-btn');
-  const stickyBar      = document.getElementById('sticky-cart-bar');
-  const sizeOverlay    = document.getElementById('size-overlay');
-  const modalBackdrop  = document.getElementById('modal-backdrop');
-  const closeOverlayBtn= sizeOverlay.querySelector('.overlay-close');
-  const notifyMeTrigger = document.getElementById('notifyMeTrigger');
+  const variantInput    = productForm.querySelector('[name="id"]');
+  const mainBtn         = document.querySelector('#sticky-cart-bar .scb-main-btn');
+  const stickyBar       = document.getElementById('sticky-cart-bar');
+  const sizeOverlay     = document.getElementById('size-overlay');
+  const modalBackdrop   = document.getElementById('modal-backdrop');
+  const closeOverlayBtn = sizeOverlay.querySelector('.overlay-close');
 
+  // Helper: Add-to-bag HTML with icon
+  function getAddToBagHTML() {
+    return '<span class="bag-icon" style="display:inline-block;vertical-align:middle;margin-right:8px;"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="position:relative;bottom:3px;"><path d="M4.75 8.25A.75.75 0 0 0 4 9L3 19.125c0 1.418 1.207 2.625 2.625 2.625h12.75c1.418 0 2.625-1.149 2.625-2.566L20 9a.75.75 0 0 0-.75-.75H4.75Zm2.75 0v-1.5a4.5 4.5 0 0 1 4.5-4.5v0a4.5 4.5 0 0 1 4.5 4.5v1.5" /></svg></span>ADD TO BAG';
+  }
+  if (mainBtn) mainBtn.innerHTML = getAddToBagHTML();
+
+  // Sticky bar visibility based on scroll past the main size/action row
   let threshold = 0;
-  const buyButtons = document.querySelector('.size_chart_container');
+  const buyButtons = document.querySelector('.action-row');
   if (buyButtons) {
     const rect = buyButtons.getBoundingClientRect();
     threshold = rect.top + window.scrollY + rect.height;
@@ -472,109 +384,63 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener('resize', handleStickyBarVisibility);
   handleStickyBarVisibility();
 
-
-
-//   function handleStickyBarVisibility() {
-//   if (window.innerWidth > 768) {
-//     stickyBar.style.display = 'none'; // Hide on desktop
-//     return;
-//   }
-//   stickyBar.style.display = 'block'; // Always show on mobile
-// }
-// window.addEventListener('scroll', handleStickyBarVisibility);
-// window.addEventListener('resize', handleStickyBarVisibility);
-// handleStickyBarVisibility();
-
-
-
-  
-
   let selectedVariantId = null;
-  let selectedIsOOS     = false;
-  let reopenSizeOverlayAfterNotify = false; // Track if we need to reopen size overlay after notify-me
 
-  // --- Variant Selection ---
-  document.querySelectorAll('.variant-btn').forEach(button => {
+  // === Variant Selection (STICKY OVERLAY ONLY) ===
+  // IMPORTANT: scope to #size-overlay so we don't attach handlers to main buttons.
+  const overlayVariantButtons = sizeOverlay.querySelectorAll('.variant-btn');
+  overlayVariantButtons.forEach(button => {
     button.addEventListener('click', function() {
-      const isOut = this.classList.contains('out-of-stock');
-      selectedIsOOS = isOut;
-      document.querySelectorAll('.variant-btn').forEach(btn => btn.classList.remove('selected'));
+      if (this.classList.contains('out-of-stock') || this.disabled) return;
+
+      // Clear selection only inside the overlay
+      sizeOverlay.querySelectorAll('.variant-btn').forEach(btn => btn.classList.remove('selected'));
       this.classList.add('selected');
 
       selectedVariantId = this.getAttribute('data-variant-id');
-      if (variantInput) {
+
+      // Sync to main form (this triggers main UI to update via its own 'change' listener)
+      if (variantInput && variantInput.value !== selectedVariantId) {
         variantInput.value = selectedVariantId;
-        // Update event for Gokwik and other listeners
         variantInput.dispatchEvent(new Event('change', { bubbles: true }));
       }
 
-      // Update sticky bar state
-      if (isOut) {
-        mainBtn.textContent = 'NOTIFY ME';
-        mainBtn.classList.remove('ready');
-      } else {
-        mainBtn.textContent = 'ADD TO BAG';
-        mainBtn.classList.add('ready');
-      }
+      mainBtn.innerHTML = getAddToBagHTML();
+      mainBtn.classList.add('ready');
     });
   });
 
-  // --- Main Sticky Button Click ---
+  // === Sticky Button Click ===
+  if (mainBtn) {
+    mainBtn.addEventListener('click', function(e) {
+      e.preventDefault();
 
-mainBtn.addEventListener('click', function(e) {
-  e.preventDefault();
+      // No size selected → open overlay
+      if (!selectedVariantId) {
+        sizeOverlay.style.display = 'block';
+        modalBackdrop.style.display = 'block';
+        document.body.style.overflowY = 'hidden';
+        return;
+      }
 
-  // If no size selected, open size overlay
-  if (!selectedVariantId) {
-    sizeOverlay.style.display = 'block';
-    modalBackdrop.style.display = 'block';
-    document.body.style.overflowY = 'hidden';
-    return;
+      // Ensure main form has the same variant and submit
+      if (variantInput && variantInput.value !== selectedVariantId) {
+        variantInput.value = selectedVariantId;
+        variantInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      productForm.requestSubmit();
+      closeOverlay();
+    });
   }
 
-  // NOTIFY ME path
-  if (mainBtn.textContent === 'NOTIFY ME' && selectedIsOOS) {
-    reopenSizeOverlayAfterNotify = sizeOverlay.style.display === 'block';
-
-    let notifyInput = document.getElementById('variant_id');
-    if (notifyInput) notifyInput.value = selectedVariantId;
-
-    if (notifyMeTrigger) notifyMeTrigger.click();
-    return;
-  }
-
-  // ADD TO CART path
-  if (mainBtn.classList.contains('ready') && !selectedIsOOS) {
-    if (variantInput && variantInput.value !== selectedVariantId) {
-      variantInput.value = selectedVariantId;
-      variantInput.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-    productForm.requestSubmit();
-    closeOverlay();
-    return;
-  }
-});
-
-
-
-
-  // --- Overlay Controls ---
+  // === Overlay Controls ===
   function closeOverlay() {
-    sizeOverlay.style.display     = 'none';
-    modalBackdrop.style.display   = 'none';
+    sizeOverlay.style.display = 'none';
+    modalBackdrop.style.display = 'none';
     document.body.style.overflowY = '';
-    if (!selectedVariantId) {
-      mainBtn.textContent = "ADD TO BAG";
-      mainBtn.classList.remove("ready");
-    } else if (!selectedIsOOS) {
-      mainBtn.textContent = "ADD TO BAG";
-      mainBtn.classList.add("ready");
-    } else {
-      mainBtn.textContent = "NOTIFY ME";
-      mainBtn.classList.remove("ready");
-    }
+    mainBtn.innerHTML = getAddToBagHTML();
+    if (selectedVariantId) mainBtn.classList.add('ready'); else mainBtn.classList.remove('ready');
   }
-
   closeOverlayBtn.addEventListener('click', closeOverlay);
   document.addEventListener('mousedown', function(event) {
     if (
@@ -586,96 +452,44 @@ mainBtn.addEventListener('click', function(e) {
     }
   });
 
-  // --- Guarantee Tooltip (unchanged) ---
+  // === Guarantee Tooltip ===
   const tooltips = document.querySelectorAll('.guarantee-tooltip');
   tooltips.forEach(tt => {
     tt.addEventListener('click', e => {
       e.stopPropagation();
-      tooltips.forEach(other => {
-        if (other !== tt) other.classList.remove('guarantee-active');
-      });
+      tooltips.forEach(other => { if (other !== tt) other.classList.remove('guarantee-active'); });
       tt.classList.toggle('guarantee-active');
     });
   });
-  document.addEventListener('click', () => {
-    tooltips.forEach(tt => tt.classList.remove('guarantee-active'));
-  });
+  document.addEventListener('click', () => { tooltips.forEach(tt => tt.classList.remove('guarantee-active')); });
 
-  // --- Notify Me Overlay (with re-show of size overlay) ---
-  document.querySelectorAll(".popup_click").forEach((service) =>
-    service.addEventListener("click", function () {
-      let active_service = service.dataset.service;
-      document.querySelectorAll(".overlay_wrapper").forEach((overlay) => {
-        if (overlay.dataset.service == active_service) {
-          overlay.classList.add("popup");
-          overlay.style.display = "block";
-          document.body.style.overflow = "hidden";
-        } else {
-          overlay.classList.remove("popup");
-          overlay.style.display = "none";
-        }
-      });
-    })
-  );
-  function close_overlay() {
-    document.querySelectorAll(".overlay_wrapper").forEach((overlay) => {
-      overlay.classList.remove("popup");
-      overlay.style.display = "none";
-    });
-    document.body.style.overflow = "";
-
-    // If we opened notify-me from size overlay, reopen size overlay now
-    if (reopenSizeOverlayAfterNotify) {
-      sizeOverlay.style.display     = 'block';
-      modalBackdrop.style.display   = 'block';
-      document.body.style.overflowY = 'hidden';
-      reopenSizeOverlayAfterNotify = false;
-    }
-
-    // Reset sticky cart button state if no variant is selected
-    if (!selectedVariantId) {
-      mainBtn.textContent = "ADD TO BAG";
-      mainBtn.classList.remove("ready");
-    } else if (!selectedIsOOS) {
-      mainBtn.textContent = "ADD TO BAG";
-      mainBtn.classList.add("ready");
-    } else {
-      mainBtn.textContent = "NOTIFY ME";
-      mainBtn.classList.remove("ready");
-    }
-  }
-  document.querySelectorAll(".close_overlay").forEach((close_overlay_div) =>
-    close_overlay_div.addEventListener("click", close_overlay)
-  );
-  document.querySelectorAll(".overlay_content .icon-close").forEach((close_overlay_svg) =>
-    close_overlay_svg.addEventListener("click", close_overlay)
-  );
-  document.addEventListener("keydown", function(e){
-    if (e.key === "Escape") close_overlay();
-  });
-
-  // --- Shopify variant selector sync (for GoKwik/Shopify OptionSelectors, if used) ---
-  // If your theme or Gokwik updates variantInput elsewhere, update sticky ATC accordingly
+  // === Sync FROM main selectors → overlay (listen to the shared hidden input) ===
   if (variantInput) {
     variantInput.addEventListener('change', function() {
-      selectedVariantId = variantInput.value;
-      // Find matching variant-btn and update selectedIsOOS
-      let btn = document.querySelector('.variant-btn[data-variant-id="' + selectedVariantId + '"]');
-      selectedIsOOS = btn && btn.classList.contains('out-of-stock');
-      // Update sticky bar button text
-      if (!selectedIsOOS) {
-        mainBtn.textContent = "ADD TO BAG";
-        mainBtn.classList.add("ready");
+      const newId = variantInput.value;
+      selectedVariantId = newId;
+
+      // Update ONLY the overlay selection
+      const overlayBtns = sizeOverlay.querySelectorAll('.variant-btn');
+      overlayBtns.forEach(b => b.classList.remove('selected'));
+
+      const overlayBtn = sizeOverlay.querySelector('.variant-btn[data-variant-id="' + newId + '"]');
+
+      if (overlayBtn && !overlayBtn.disabled && !overlayBtn.classList.contains('out-of-stock')) {
+        overlayBtn.classList.add('selected');
       } else {
-        mainBtn.textContent = "NOTIFY ME";
-        mainBtn.classList.remove("ready");
+        // If current selection isn't available in overlay, mark first available (don't override user's main choice)
+        const firstAvailable = sizeOverlay.querySelector('.variant-btn:not(.out-of-stock):not([disabled])');
+        if (firstAvailable) firstAvailable.classList.add('selected');
       }
+
+      mainBtn.innerHTML = getAddToBagHTML();
+      if (selectedVariantId) mainBtn.classList.add('ready'); else mainBtn.classList.remove('ready');
     });
   }
-
 });
 
-
+// Keep sticky bar above/below bottom nav
 function updateATCBarPosition() {
   var nav = document.querySelector('.fixed_nav');
   var atcBar = document.getElementById('sticky-cart-bar');
@@ -683,122 +497,33 @@ function updateATCBarPosition() {
   var navStyles = window.getComputedStyle(nav);
   var navHeight = nav.offsetHeight;
   var navVisible = navStyles.display !== "none" && !nav.classList.contains('hide-nav');
-
-  // Move ATC above nav if visible, else stick to bottom
-  if (navVisible) {
-    atcBar.style.bottom = navHeight + 'px';
-  } else {
-    atcBar.style.bottom = '0';
-  }
+  atcBar.style.bottom = navVisible ? navHeight + 'px' : '0';
 }
 
-
-
-
-
-
-  function updateSizeOverlayPosition() {
+// Make size overlay sit exactly above the sticky bar
+function updateSizeOverlayPosition() {
   const atcBar = document.getElementById('sticky-cart-bar');
   const sizeOverlay = document.getElementById('size-overlay');
   if (!atcBar || !sizeOverlay) return;
 
-  // Get current sticky bar bottom and height
   const atcBarRect = atcBar.getBoundingClientRect();
   const windowHeight = window.innerHeight;
-
-  // Calculate how far the sticky bar is from the *very* bottom of the viewport
-  // This works whether the sticky bar is at the true bottom or above a nav
   const distanceFromBottom = windowHeight - atcBarRect.top;
 
-  // Make the overlay "sit" exactly above the sticky bar, no gap
   sizeOverlay.style.bottom = distanceFromBottom + 'px';
 }
-
-// Update overlay position whenever bar/nav moves
-document.addEventListener('DOMContentLoaded', updateSizeOverlayPosition);
-window.addEventListener('resize', updateSizeOverlayPosition);
-window.addEventListener('scroll', updateSizeOverlayPosition);
-window.addEventListener('bottomNavVisibilityChanged', updateSizeOverlayPosition);
-const navElem = document.querySelector('.fixed_nav');
-if (navElem) {
-  navElem.addEventListener('transitionend', updateSizeOverlayPosition);
-}
-
 
 document.addEventListener('DOMContentLoaded', updateATCBarPosition);
 window.addEventListener('resize', updateATCBarPosition);
 window.addEventListener('scroll', updateATCBarPosition);
 window.addEventListener('bottomNavVisibilityChanged', updateATCBarPosition);
 
-const nav = document.querySelector('.fixed_nav');
-if (nav) {
-  nav.addEventListener('transitionend', updateATCBarPosition);
+document.addEventListener('DOMContentLoaded', updateSizeOverlayPosition);
+window.addEventListener('resize', updateSizeOverlayPosition);
+window.addEventListener('scroll', updateSizeOverlayPosition);
+window.addEventListener('bottomNavVisibilityChanged', updateSizeOverlayPosition);
+const navElem = document.querySelector('.fixed_nav');
+if (navElem) {
+  navElem.addEventListener('transitionend', () => { updateATCBarPosition(); updateSizeOverlayPosition(); });
 }
-
-
-
-
-// document.addEventListener("DOMContentLoaded", function () {
-//   // Only these linen shirt titles
-//   const linenShirts = [
-//     "Men Black 100% Linen Shirt",
-//     "Men Mango Yellow 100% Linen Shirt",
-//     "Men White 100% Linen Shirt",
-//     "Men Black 100% Linen Half Sleeve Shirt",
-//     "Men Mango Yellow 100% Linen Half Sleeve Shirt",
-//     "Men White 100% Linen Half Sleeve Shirt"
-//   ];
-//   // Get product title
-//   const titleElem = document.querySelector('h1.product-title');
-//   if (titleElem && linenShirts.includes(titleElem.textContent.trim())) {
-//     // Hide XS, 3XL, 4XL buttons in the overlay
-//     document.querySelectorAll('.variant-btn').forEach(btn => {
-//       const val = btn.getAttribute('data-value');
-//       if (["XS", "3XL", "4XL"].includes(val)) {
-//         // Hide the button's parent wrapper
-//         if (btn.parentElement) btn.parentElement.style.display = "none";
-//       }
-//     });
-//   }
-// });
-
-
-
-
-
-
-// document.addEventListener("DOMContentLoaded", function () {
-//   // Only these linen shirt titles
-//   const straightPant = [
-//     "Navy Blue Airy Linen Straight Pant",
-//     "Turquoise Airy Linen Straight Pant",
-//     "Black Airy Linen Straight Pant",
-//     "Rose Taupe Airy Linen Straight Pant"
-//   ];
-//   // Get product title
-//   const titleElem = document.querySelector('h1.product-title');
-//   if (titleElem && straightPant.includes(titleElem.textContent.trim())) {
-//     // Hide XS, 3XL, 4XL buttons in the overlay
-//     document.querySelectorAll('.variant-btn').forEach(btn => {
-//       const val = btn.getAttribute('data-value');
-//       if (["XS", "4XL" , "5XL"].includes(val)) {
-//         // Hide the button's parent wrapper
-//         if (btn.parentElement) btn.parentElement.style.display = "none";
-//       }
-//     });
-//   }
-// });
-
-
-
-
-  
-
-
-
-
-  
-
-  
 </script>
-

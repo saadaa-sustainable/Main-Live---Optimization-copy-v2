@@ -1,3 +1,7 @@
+
+{% unless template.name == 'product' %}
+
+
 {% # Kwikpass changes - [Starts] %}
 <style>
 .item--box.kpbtnbox {
@@ -7,7 +11,6 @@
     text-decoration: none;
     position: relative;
 }
-
 
 /* Gullak Highlight Animation: bounce + glow + bold text */
 .gullak-animate img {
@@ -34,10 +37,9 @@
   text-shadow: 0 0 5px #ffec99, 0 0 18px #ffbe3b;
   letter-spacing: 0.2px;
 }
-
-
 </style>
 {% # Kwikpass changes - [Ends] %}
+
 <!-- FIXED BOTTOM MOBILE NAV -->
 <div class="fixed_nav fixed_nav_mobile hidden-tablet-and-up">
   <div class="row-nav">
@@ -54,38 +56,62 @@
         </a>
       </div>
     </div>
+
     <!-- Menu (MODIFIED: triggers sidebar menu) -->
-  <div class="fixed-nav-item">
-  <div class="item--box mobile-custom-account-icon">
-    <button
-      class="fixed_nav--link"
-      type="button"
-      data-nav="menu"
-      id="mobile-bottom-menu-trigger"
-      aria-label="Open menu"
-    >
-      <img 
-        src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
-        data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
-        data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
-        alt="Menu-button">
-      <span class="icon_name"> Menu </span>
-    </button>
-  </div>
-</div>
-    <!-- Gullak -->
     <div class="fixed-nav-item">
-  <div class="item--box mobile-custom-account-icon gullak-animate">
-    <a class="fixed_nav--link" href="/#show-nector-rewards" data-nav="gullak">
-      <img 
-        src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
-        data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
-        data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
-        alt="Gullak-button">
-      <span class="icon_name" style="font-weight: 400;"> Gullak </span>
+      <div class="item--box mobile-custom-account-icon">
+        <button
+          class="fixed_nav--link"
+          type="button"
+          data-nav="menu"
+          id="mobile-bottom-menu-trigger"
+          aria-label="Open menu"
+        >
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_7.svg?v=1751279889" 
+            alt="Menu-button">
+          <span class="icon_name"> Menu </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Gullak (kept commented) -->
+    {% comment %} 
+    <div class="fixed-nav-item">
+      <div class="item--box mobile-custom-account-icon gullak-animate">
+        <a class="fixed_nav--link" href="/#show-nector-rewards" data-nav="gullak">
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+            data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+            data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_8.svg?v=1751279889" 
+            alt="Gullak-button">
+          <span class="icon_name" style="font-weight: 400;"> Gullak </span>
+        </a>
+      </div>
+    </div> 
+    {% endcomment %}
+
+    <!-- Discount -->
+  <!-- Discount -->
+<div class="fixed-nav-item">
+  <div class="item--box mobile-custom-account-icon">
+    <a class="fixed_nav--link" href="" data-nav="discount" id="bottom-nav-discount">
+      <span class="icon-wrap">
+        <img
+          src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275287.svg?v=1745061328"
+          data-img-gray="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275287.svg?v=1745061328"
+          data-img-black="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275287.svg?v=1751544289"
+          alt="Discount-button">
+        <!-- the red dot -->
+        <span class="badge-dot" id="discount-dot" aria-hidden="true"></span>
+      </span>
+      <span class="icon_name"> Discounts </span>
     </a>
   </div>
 </div>
+
 
     <!-- Community -->
     <div class="fixed-nav-item">
@@ -100,6 +126,7 @@
         </a>
       </div>
     </div>
+
     <!-- Account -->
     <div class="fixed-nav-item">
       <div class="item--box kpbtnbox">
@@ -119,6 +146,54 @@
 </div>
 
 <style>
+
+
+
+/* container purely for positioning the dot relative to the icon */
+.icon-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 0; /* avoid extra space below images */
+}
+
+/* the red dot */
+.badge-dot {
+  position: absolute;
+  top: -3px;          /* nudge above icon */
+  right: -3px;        /* nudge to the right edge */
+  width: 10px;
+  height: 10px;
+  background: #ff3b30;           /* iOS system red */
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 2px #F6F3F1,          /* ring to separate from bg (matches your bar) */
+    0 0 8px rgba(255, 59, 48, .55);
+  animation: badge-bob 0.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* simple up-down motion */
+@keyframes badge-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* optional utility to hide the dot from JS */
+.badge-dot.is-hidden { display: none !important; }
+
+/* slightly smaller on very small screens so it doesn’t overwhelm the icon */
+@media (max-width: 360px) {
+  .badge-dot { width: 10px; height: 10px; top: -2px; right: -2px; }
+}
+
+
+
+
+
+
+
+
+
 .fixed_nav {
   position: fixed;
   bottom: 0;
@@ -142,10 +217,6 @@
   align-items: center;
   gap:5%;
 }
-/* .fixed-nav-item {
-  flex: 0 0 16.666667%;
-  max-width: 16.666667%;
-} */
 .item--box {
   position: relative;
 }
@@ -242,7 +313,7 @@
         }
       });
     }
-    if (!setActive) {
+    if (!setActive && links[0]) {
       links[0].classList.add('active_url');
     }
     updateNavIcons();
@@ -263,7 +334,7 @@
       el.classList.add('kwik-pass-account');
       el.onclick = function(e){
         e.preventDefault();
-        window.location.href = '/account';
+        window.location.href = '/account#wishlist';
         return false;
       };
     }
@@ -279,9 +350,9 @@
       el.onclick = function(e){
         e.preventDefault();
         if (typeof kpHandleLogin === "function") {
-          kpHandleLogin('/account');
+          kpHandleLogin('/account#wishlist');
         } else if (typeof handleShopifyLogin === "function") {
-          handleShopifyLogin(e, "/account");
+          handleShopifyLogin(e, "/account#wishlist");
         } else {
           // fallback to login page
           window.location.href = '/account/login';
@@ -313,67 +384,392 @@
     setupBottomAccountBtn();
   });
 
- // ---------------------------------
-// Prestige Theme Sidebar Menu Trigger
-// ---------------------------------
-document.addEventListener('DOMContentLoaded', function() {
-  var bottomMenuTrigger = document.getElementById('mobile-bottom-menu-trigger');
-  if (bottomMenuTrigger) {
-    bottomMenuTrigger.addEventListener('click', function(e) {
-      // Prevent default action (do NOT navigate)
-      e.preventDefault();
+  // ---------------------------------
+  // Prestige Theme Sidebar Menu Trigger
+  // ---------------------------------
+  document.addEventListener('DOMContentLoaded', function() {
+    var bottomMenuTrigger = document.getElementById('mobile-bottom-menu-trigger');
+    if (bottomMenuTrigger) {
+      bottomMenuTrigger.addEventListener('click', function(e) {
+        // Prevent default action (do NOT navigate)
+        e.preventDefault();
 
-      // Remove 'active_url' class from all links and add to this one
-      document.querySelectorAll('.fixed_nav--link').forEach(l => l.classList.remove('active_url'));
-      this.classList.add('active_url');
-      sessionStorage.setItem('activeNavTab', this.getAttribute('data-nav'));
-      if (typeof updateNavIcons === 'function') updateNavIcons();
+        // Remove 'active_url' class from all links and add to this one
+        document.querySelectorAll('.fixed_nav--link').forEach(l => l.classList.remove('active_url'));
+        this.classList.add('active_url');
+        sessionStorage.setItem('activeNavTab', this.getAttribute('data-nav'));
+        if (typeof updateNavIcons === 'function') updateNavIcons();
 
-      // Use hamburger button by aria-controls selector
-      var sidebarOpener = document.querySelector('button[aria-controls="sidebar-menu"]');
-      if (sidebarOpener) {
-        sidebarOpener.click();
-      }
-    });
-  }
+        // Use hamburger button by aria-controls selector
+        var sidebarOpener = document.querySelector('button[aria-controls="sidebar-menu"]');
+        if (sidebarOpener) {
+          sidebarOpener.click();
+        }
+      });
+    }
 
-  // ---- HIDE/SHOW bottom nav when sidebar menu is open ----
-  // Try multiple selectors to support various themes!
-  var sidebarMenu =
-      document.getElementById('sidebar-menu') ||
-      document.querySelector('.drawer, .mobile-drawer, .Sidebar, .sidebar, .mobile-menu, .menu-drawer');
-  var bottomNav = document.querySelector('.fixed_nav_mobile');
-  if (sidebarMenu && bottomNav) {
-    var observer = new MutationObserver(function() {
-      // Hide if menu is open (supporting multiple open states)
-      var isOpen = sidebarMenu.classList.contains('opened') ||
+    // ---- HIDE/SHOW bottom nav when sidebar menu is open ----
+    // Try multiple selectors to support various themes!
+    var sidebarMenu =
+        document.getElementById('sidebar-menu') ||
+        document.querySelector('.drawer, .mobile-drawer, .Sidebar, .sidebar, .mobile-menu, .menu-drawer');
+    var bottomNav = document.querySelector('.fixed_nav_mobile');
+    if (sidebarMenu && bottomNav) {
+      var observer = new MutationObserver(function() {
+        // Hide if menu is open (supporting multiple open states)
+        var cs = window.getComputedStyle(sidebarMenu);
+        var isOpen = sidebarMenu.classList.contains('opened') ||
+                     sidebarMenu.classList.contains('is-open') ||
+                     sidebarMenu.classList.contains('active') ||
+                     sidebarMenu.getAttribute('aria-hidden') === 'false' ||
+                     (cs.display === 'block' && sidebarMenu.offsetWidth > 0) ||
+                     (cs.transform && cs.transform !== 'none' && cs.transform !== '');
+        if (isOpen) {
+          bottomNav.classList.add('hide');
+        } else {
+          bottomNav.classList.remove('hide');
+        }
+      });
+      observer.observe(sidebarMenu, {
+        attributes: true,
+        attributeFilter: ['class', 'aria-hidden', 'style']
+      });
+      // Also check initial state on page load
+      var cs0 = window.getComputedStyle(sidebarMenu);
+      var isOpen0 = sidebarMenu.classList.contains('opened') ||
                    sidebarMenu.classList.contains('is-open') ||
                    sidebarMenu.classList.contains('active') ||
                    sidebarMenu.getAttribute('aria-hidden') === 'false' ||
-                   (window.getComputedStyle(sidebarMenu).display === 'block' && sidebarMenu.offsetWidth > 0) ||
-                   (window.getComputedStyle(sidebarMenu).transform !== 'none' && window.getComputedStyle(sidebarMenu).transform !== ''); // For slide-in menus
-      if (isOpen) {
+                   (cs0.display === 'block' && sidebarMenu.offsetWidth > 0) ||
+                   (cs0.transform && cs0.transform !== 'none' && cs0.transform !== '');
+      if (isOpen0) {
         bottomNav.classList.add('hide');
-      } else {
-        bottomNav.classList.remove('hide');
       }
-    });
-    observer.observe(sidebarMenu, {
-      attributes: true,
-      attributeFilter: ['class', 'aria-hidden', 'style']
-    });
-    // Also check initial state on page load
-    var isOpen = sidebarMenu.classList.contains('opened') ||
-                 sidebarMenu.classList.contains('is-open') ||
-                 sidebarMenu.classList.contains('active') ||
-                 sidebarMenu.getAttribute('aria-hidden') === 'false' ||
-                 (window.getComputedStyle(sidebarMenu).display === 'block' && sidebarMenu.offsetWidth > 0) ||
-                 (window.getComputedStyle(sidebarMenu).transform !== 'none' && window.getComputedStyle(sidebarMenu).transform !== '');
-    if (isOpen) {
-      bottomNav.classList.add('hide');
     }
-  }
-});
-
+  });
 })();
 </script>
+
+<!-- ===== FULL RESPONSIVE OFFER BAR + OFF-CANVAS SLIDER ===== -->
+<!-- ===== OFFERS OVERLAY / SLIDER (COMPLETE) ===== -->
+
+<style>
+  /* SLIDER & OVERLAY */
+  .offer-slider {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;          /* default desktop/tablet width */
+    max-width: 90%;
+    height: 100%;
+    background: #fff;
+    box-shadow: -4px 0 8px rgba(0,0,0,0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 99999;
+    overflow: visible;
+  }
+  .offer-slider.open { transform: translateX(0); }
+
+  .offer-slider__close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none;
+    font-size: 1.5rem; color: #333;
+    cursor: pointer; line-height: 1;
+    z-index: 100000;
+  }
+
+  .offer-slider__overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 99998;
+  }
+  .offer-slider__overlay.active {
+    opacity: 1; visibility: visible;
+  }
+
+  .offer-slider__content {
+    padding: 0; margin: 0;
+    height: 100%; overflow-y: auto;
+    font-family: sans-serif;
+  }
+
+  /* SLIDER HEADER */
+  .slider-header {
+    display: flex; align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid #c87354;
+    gap: 0.5rem;
+  }
+  .slider-header__icon  { width: 24px; }
+  .slider-header__title { font-size: 1.25rem; font-weight: bold; color: #333; }
+
+  /* OFFER ITEMS (your existing UI) */
+  .offer-item {
+    border: 1px dashed #000;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem;
+  }
+  .offer-item h3 { margin: 0; font-size: 1rem; font-weight: bold; color: #333; }
+  .offer-item p.subtitle {
+    margin: 0.25rem 0 0.75rem;
+    font-size: 0.875rem; color: #7C7C7C; font-style: italic;
+  }
+  .offer-item .offer-code {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 1rem;
+    background: #F5EFE8; /* beige strip behind code+button like screenshot */
+    padding: 12px; border-radius: 4px;
+  }
+  .offer-item .offer-code span {
+    font-weight: bold; font-size: 0.9rem; color: #000;
+  }
+  .offer-item .offer-code button {
+    background: none; border: none; padding: 0; cursor: pointer;
+  }
+  .offer-item .offer-code button img {
+    display: block; height: 32px; width: auto;
+  }
+
+  /* BOTTOM UPI & FOOTER */
+  .slider-upi {
+    background: #EEFFF9; padding: 0.4rem 1rem;
+    text-align: center; font-size: 15px;
+    font-weight: bold; color: #1F1F1F; margin: 1rem;
+    border-radius: 4px;
+  }
+  .slider-footer {
+    margin: 0 1rem 1rem;
+    font-size: 11px; color: #2B2B2B; text-align: center;
+  }
+
+  /* PARTIAL WIDTH on mobile (match screenshot) */
+  @media (max-width: 768px) {
+    .offer-slider {
+      width: 100%;          /* partial drawer */
+      max-width: 100%;
+      right: 0;
+      left: auto;
+    }
+    .offer-item { margin: 1.2rem; }
+    .slider-upi, .slider-footer { margin: 10px 0;}
+    .offer-item h3 { font-size: 13px; }
+    .offer-item p.subtitle { font-size: 12px; }
+    .offer-item .offer-code span { font-size: 13.5px; }
+    .offer-item .offer-code button img { height: 23px; }
+  }
+
+  /* scroll lock helper (added/removed by JS) */
+  body.noscroll {
+    overflow: hidden;       /* android/desktop */
+    position: fixed;        /* iOS fix */
+    width: 100%;
+  }
+
+
+
+
+  .offer-cta{
+  display:block;
+  margin: 14px 16px 18px;
+  padding: 14px 18px;
+  text-align:center;
+  background:#000;
+  color:#fff;
+  font-weight:700;
+  font-size:16px;
+  line-height:1;
+  border-radius:14px;         /* rounded pill look */
+  text-decoration:none;
+  box-shadow: 0 2px 0 rgba(0,0,0,.12);
+}
+.offer-cta:active{ transform: translateY(1px); }
+
+/* mobile tweak to match the tight look in your screenshot */
+@media (max-width:768px){
+  .offer-cta{
+         margin: 14px 12px 22px;
+        padding: 16px 18px;
+        font-size: 15px;
+        border-radius: 16px;
+        position: fixed;
+        width: 92%;
+        bottom: 0;
+    }
+}
+
+</style>
+
+<!-- OFFERS DRAWER -->
+<div id="offersSlider" class="offer-slider" aria-hidden="true">
+  <button class="offer-slider__close" aria-label="Close">×</button>
+  <div class="offer-slider__content" role="dialog" aria-modal="true" aria-labelledby="offersTitle">
+    <!-- SLIDER HEADER -->
+    <div class="slider-header">
+      <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275287.svg?v=1745061328"
+           alt="" class="slider-header__icon"/>
+      <span id="offersTitle" class="slider-header__title">Offers</span>
+    </div>
+
+    <!-- OFFER ITEMS (BUY3 removed) -->
+    {% comment %} <div class="offer-item" data-code="RAHOSAADAA">
+      <h3>FLAT 15% OFF ON YOUR FIRST ORDER</h3>
+      <p class="subtitle">Because simplicity should come easy.</p>
+      <div class="offer-code">
+        <span>Use Code: <strong>RAHOSAADAA</strong></span>
+        <button class="copy-btn" aria-label="Copy RAHOSAADAA">
+          <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Apply_1.png?v=1745061951" alt="Copy code"/>
+        </button>
+      </div>
+    </div> {% endcomment %}
+
+    <div class="offer-item" data-code="BUY2">
+      <h3>BUY 2, GET 15% OFF</h3>
+      <p class="subtitle">Because simplicity should come easy.</p>
+      <div class="offer-code">
+        <span>Use Code: <strong>BUY2</strong></span>
+        <button class="copy-btn" aria-label="Copy BUY2">
+          <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Apply_1.png?v=1745061951" alt="Copy code"/>
+        </button>
+      </div>
+    </div>
+
+    <div class="offer-item" data-code="BUY4">
+      <h3>BUY 4 OR MORE, GET 25% OFF</h3>
+      <p class="subtitle">Because simplicity should come easy.</p>
+      <div class="offer-code">
+        <span>Use Code: <strong>BUY4</strong></span>
+        <button class="copy-btn" aria-label="Copy BUY4">
+          <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Apply_1.png?v=1745061951" alt="Copy code"/>
+        </button>
+      </div>
+    </div>
+
+    <div class="slider-upi">GET 5% EXTRA ON UPI</div>
+    <div class="slider-footer">APPLICABLE SITEWIDE | ALL PRODUCT | ALL COLLECTION</div>
+
+    <a id="offerContinueBtn" class="offer-cta">Continue Shopping</a>
+  </div>
+</div>
+<div id="sliderOverlay" class="offer-slider__overlay"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    // elements
+    var slider   = document.getElementById('offersSlider');
+    var overlay  = document.getElementById('sliderOverlay');
+    var closeBtn = slider.querySelector('.offer-slider__close');
+    var moreBtn  = document.querySelector('.offer-bar__more');
+    var discountBtn = document.getElementById('bottom-nav-discount');
+    var header   = document.querySelector('.header');
+    var annc     = document.querySelector('.announcement-bar');
+    var continueBtn = document.getElementById('offerContinueBtn');
+
+    var pageScrollY = 0;
+
+    function hideHeader(){ if(header) header.style.display='none'; if(annc) annc.style.display='none'; }
+    function showHeader(){ if(header) header.style.display=''; if(annc) annc.style.display=''; }
+
+    function openOffers(){
+      pageScrollY = window.scrollY || window.pageYOffset || 0;
+      document.body.classList.add('noscroll');
+      document.body.style.top = '-' + pageScrollY + 'px';
+      slider.classList.add('open');
+      overlay.classList.add('active');
+      slider.setAttribute('aria-hidden','false');
+      hideHeader();
+    }
+
+    function closeOffers(){
+      slider.classList.remove('open');
+      overlay.classList.remove('active');
+      slider.setAttribute('aria-hidden','true');
+      showHeader();
+      document.body.classList.remove('noscroll');
+      document.body.style.top = '';
+      window.scrollTo(0, pageScrollY); // restore scroll
+    }
+
+    // open triggers
+    if(moreBtn){ moreBtn.addEventListener('click', function(e){ e.preventDefault(); openOffers(); }); }
+    if(discountBtn){ 
+      discountBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        document.querySelectorAll('.fixed_nav--link').forEach(l => l.classList.remove('active_url'));
+        this.classList.add('active_url');
+        sessionStorage.setItem('activeNavTab', this.getAttribute('data-nav'));
+        openOffers();
+      });
+    }
+
+    // close triggers
+    if(closeBtn){ closeBtn.addEventListener('click', closeOffers); }
+    if(overlay){ overlay.addEventListener('click', closeOffers); }
+    if(continueBtn){ continueBtn.addEventListener('click', function(){ closeOffers(); }); }
+
+    // copy-to-clipboard
+    slider.querySelectorAll('.copy-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var code = btn.closest('.offer-item')?.dataset.code;
+        if(!code) return;
+        navigator.clipboard.writeText(code).then(function(){
+          btn.style.opacity='0.6';
+          setTimeout(function(){ btn.style.opacity='1'; },800);
+        });
+      });
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // inside openOffers()
+function openOffers(){
+  pageScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.classList.add('noscroll');
+  document.body.style.top = '-' + pageScrollY + 'px';
+  slider.classList.add('open');
+  overlay.classList.add('active');
+  slider.setAttribute('aria-hidden','false');
+  hideHeader();
+
+  // hide the dot once user has opened Offers
+  document.getElementById('discount-dot')?.classList.add('is-hidden');
+}
+
+// (optional) if you want the dot to reappear when closing (remove this block if not desired)
+function closeOffers(){
+  slider.classList.remove('open');
+  overlay.classList.remove('active');
+  slider.setAttribute('aria-hidden','true');
+  showHeader();
+  document.body.classList.remove('noscroll');
+  document.body.style.top = '';
+  window.scrollTo(0, pageScrollY);
+
+  // show the dot again if you want it persistent
+  // document.getElementById('discount-dot')?.classList.remove('is-hidden');
+}
+
+</script>
+
+
+{% endunless %}

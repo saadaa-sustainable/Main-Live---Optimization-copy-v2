@@ -8489,3 +8489,6 @@ display:none;
 
 
 
+.nector-websdk-widget .nector-rewards-widget-container{
+  z-index:1000 !important;
+}

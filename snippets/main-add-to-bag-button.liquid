@@ -1,0 +1,399 @@
+<style>
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.inline-size-atc .atc-form {
+  flex: 1 1 0%;
+  margin: 0;
+  display: flex;
+}
+.inline-size-atc .scb-main-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.inline-size-atc__row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.action-row {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+}
+.inline-size-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+.inline-size-atc .overlay-title {
+  font-size: 17px;
+  text-transform: uppercase;
+  color: #222;
+  font-weight: 600;
+}
+.inline-size-atc .variant-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.inline-size-atc .variant-wrapper {
+  min-width: 44px;
+  position: relative;
+}
+.inline-size-atc .variant-btn {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 14px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, border-color 0.3s;
+  padding: 0;
+}
+.inline-size-atc .variant-btn.selected {
+  background: #fff8a5;
+  border-color: #000;
+}
+.inline-size-atc .variant-btn.out-of-stock,
+.inline-size-atc .variant-btn[disabled] {
+  color: #000;
+  border-color: #000;
+  cursor: not-allowed;
+  position: relative;
+  opacity: 0.5;
+  pointer-events: none; /* make it truly unclickable */
+}
+.inline-size-atc .variant-btn.out-of-stock::before,
+.inline-size-atc .variant-btn[disabled]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 49%;
+  width: 2px;
+  height: 97%;
+  background: #000;
+  transform: rotate(51deg) translateX(50%);
+  pointer-events: none;
+}
+.inline-size-atc .stock-message {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  font-size: 8px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.2;
+  display: none;
+}
+.inline-size-atc .few-left { color: orange; }
+.inline-size-atc .only-left { color: red; }
+.inline-size-atc .variant-btn.selected ~ .stock-message {
+  display: block;
+}
+.inline-size-atc .scb-main-btn {
+        flex: 1;
+        padding: 16px 0;
+        border: none;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        background: #111;
+        color: #fff;
+        border-radius: 45px;
+        letter-spacing: 1px;
+        transition: background 0.2s, transform 0.1s;
+        display: flex
+;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        white-space: nowrap;
+    }
+}
+.inline-size-atc .wishlist-icon-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid;
+  border-radius: 0;
+}
+.inline-size-atc .bag-icon svg { vertical-align: middle; }
+@media (max-width: 767px) {
+  .inline-size-atc__row { flex-wrap: wrap; gap: 10px; }
+  .inline-size-atc .variant-container { flex-wrap: wrap; }
+}
+
+
+
+  /* ----- Guarantee section ----- */
+  .guarantee-hstack { display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+  .guarantee-gap { gap: 0.375rem; }
+  .guarantee-tooltip { position: relative; display: inline-block; cursor: pointer; }
+  .guarantee-tooltip .guarantee-tooltip-text {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: -376%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 234px;
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.4;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 1000;
+  }
+  .guarantee-tooltip .guarantee-tooltip-text::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 74%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+  .guarantee-tooltip .guarantee-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 74%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: #fff;
+  }
+  .guarantee-tooltip.guarantee-active .guarantee-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+
+</style>
+
+<div class="inline-size-atc atc-main">
+  <div class="inline-size-label-row">
+    <span class="overlay-title">SIZE:</span>
+    <div id="KiwiSizingChart" data-display-mode="2"></div>
+  </div>
+  <div class="inline-size-atc__row">
+    <!-- Size Options (left) -->
+    <div class="variant-container">
+      {% for variant in product.variants %}
+        <div class="variant-wrapper">
+          <button 
+            type="button"
+            class="variant-btn{% if variant.inventory_quantity == 0 %} out-of-stock{% endif %}"
+            {% if variant.inventory_quantity == 0 %}disabled aria-disabled="true"{% endif %}
+            data-value="{{ variant.option1 }}"
+            data-variant-id="{{ variant.id }}" 
+            data-quantity="{{ variant.inventory_quantity }}"
+          >
+            {{ variant.option1 }}
+          </button>
+          <p class="stock-message">
+            {% if variant.inventory_quantity > 5 and variant.inventory_quantity <= 8 %}
+              <span class="few-left">Only Few Left!</span>
+            {% elsif variant.inventory_quantity <= 5 and variant.inventory_quantity > 0 %}
+              <span class="only-left">Only {{ variant.inventory_quantity }} Left!</span>
+            {% endif %}
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- ATC Button (right) -->
+<div class="action-row">
+  <form action="/cart/add" method="post" enctype="multipart/form-data" class="atc-form" style="margin:0;">
+    <input type="hidden" name="id" id="variantId" value="" disabled>
+    <button type="submit" class="scb-main-btn" disabled aria-disabled="true">
+      <span class="bag-icon" style="display:inline-block;vertical-align:middle;margin-right:8px;">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="position:relative;bottom:3px;">
+          <path d="M4.75 8.25A.75.75 0 0 0 4 9L3 19.125c0 1.418 1.207 2.625 2.625 2.625h12.75c1.418 0 2.625-1.149 2.625-2.566L20 9a.75.75 0 0 0-.75-.75H4.75Zm2.75 0v-1.5a4.5 4.5 0 0 1 4.5-4.5v0a4.5 4.5 0 0 1 4.5 4.5v1.5" />
+        </svg>
+      </span>
+      ADD TO BAG
+    </button>
+  </form>
+</div>
+
+
+
+
+
+
+
+  <div class="guarantee-hstack guarantee-gap" style="margin-top:10px;">
+    <svg stroke="rgb(34, 197, 160)" fill="rgb(34, 197, 160)" stroke-width="0"
+         viewBox="0 0 16 16" role="presentation" height="20px" width="20px"
+         xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 
+               0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 
+               0 0 0-1.06 1.06L6.97 11.03a.75.75 
+               0 0 0 1.079-.02l3.992-4.99a.75.75 
+               0 0 0-.01-1.05z"></path>
+    </svg>
+    <span style="font-size:13px;position: relative;top: 1px;">
+      7-Day Money Back Guarantee
+    </span>
+    <div class="guarantee-tooltip">
+      <img
+        src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_2.svg?v=1747286143"
+        alt="info"
+        style="width:13px; height:13px; display:block;"
+      />
+      <div class="guarantee-tooltip-text">
+        Return or exchange within 7 days of delivery. Product must be unused with original packaging intact.
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function initInlineATC(root) {
+    const block = root.querySelector('.atc-main');
+    if (!block || block.dataset.inited === '1') return;
+    block.dataset.inited = '1';
+
+    const form         = block.querySelector('form.atc-form');
+    const variantInput = form && (form.querySelector('#variantId') || form.querySelector('[name="id"]'));
+    const mainBtn      = form && form.querySelector('.scb-main-btn');
+    const sizeError    = block.querySelector('#sizeError');
+    if (!form || !variantInput || !mainBtn) return;
+
+    // START: ensure nothing can add to cart yet
+    variantInput.value = '';
+    variantInput.disabled = true;
+    mainBtn.disabled = true;
+    mainBtn.setAttribute('aria-disabled', 'true');
+    // END
+
+    function showSizeError() {
+      if (!sizeError) return;
+      sizeError.classList.add('show');
+      mainBtn.setAttribute('aria-describedby', 'sizeError');
+    }
+    function hideSizeError() {
+      if (!sizeError) return;
+      sizeError.classList.remove('show');
+      mainBtn.removeAttribute('aria-describedby');
+    }
+    function isSizeChosen() {
+      return !!block.querySelector('.variant-btn.selected');
+    }
+
+    function guard(e) {
+      if (!isSizeChosen()) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        showSizeError();
+        mainBtn.focus();
+        return false;
+      }
+      hideSizeError();
+      return true;
+    }
+    form.addEventListener('submit', guard, true);
+    mainBtn.addEventListener('click', guard, true);
+
+    form.addEventListener('submit', function (e) {
+      if (!isSizeChosen()) return;
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(r => r.json())
+      .then(function () {
+        if (window.GOKWIK?.cart?.open) {
+          window.GOKWIK.cart.open();
+        } else if (window.GK?.cart?.open) {
+          window.GK.cart.open();
+        }
+      })
+      .catch(console.error);
+    });
+
+    block.querySelectorAll('.variant-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        if (this.classList.contains('out-of-stock') || this.disabled) return;
+
+        hideSizeError();
+
+        block.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+
+        const selectedVariantId = this.getAttribute('data-variant-id');
+
+        // enable input + button only after a real choice
+        variantInput.disabled = false;
+        variantInput.value = selectedVariantId;
+        mainBtn.disabled = false;
+        mainBtn.removeAttribute('aria-disabled');
+
+        variantInput.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+
+    variantInput.addEventListener('change', function () {
+      const btn = block.querySelector('.variant-btn[data-variant-id="' + variantInput.value + '"]');
+      block.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
+
+      if (btn && !btn.classList.contains('out-of-stock') && !btn.disabled) {
+        btn.classList.add('selected');
+        mainBtn.disabled = false;
+        mainBtn.removeAttribute('aria-disabled');
+        variantInput.disabled = false;
+      } else {
+        // if invalid/cleared, hard-disable again
+        variantInput.value = '';
+        variantInput.disabled = true;
+        mainBtn.disabled = true;
+        mainBtn.setAttribute('aria-disabled', 'true');
+      }
+      hideSizeError();
+    });
+  }
+
+  function initAll() { initInlineATC(document); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+  document.addEventListener('shopify:section:load', e => initInlineATC(e.target));
+  document.addEventListener('shopify:section:select', e => initInlineATC(e.target));
+})();
+
+</script>

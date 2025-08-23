@@ -19,7 +19,7 @@ function updateHeaderLoginBtn() {
       btn.classList.add('kwik-pass-account');
       btn.onclick = function (e) {
         e.preventDefault();
-        window.location.href = '/account';
+        window.location.href = '/account#wishlist';
         return false;
       };
     } else {
@@ -29,9 +29,9 @@ function updateHeaderLoginBtn() {
       btn.onclick = function (e) {
         e.preventDefault();
         if (typeof kpHandleLogin === "function") {
-          kpHandleLogin('/account');
+          kpHandleLogin('/account#wishlist');
         } else if (typeof handleShopifyLogin === "function") {
-          handleShopifyLogin(e, "/account");
+          handleShopifyLogin(e, "/account#wishlist");
         } else {
           window.location.href = '/account/login';
         }
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <li><a href="/collections/airy-linen-long-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2a3f853d163b6760b2f92a575e155f654091e45d.webp?v=1752565415" class="menu-img" alt="">Airy - Linen Long Kurta</a></li>
                   <li><a href="/collections/airy-linen-shirts"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/11bab64671ebc246fa1d1fa6e9667c9ad27a954b.webp?v=1752565416" class="menu-img" alt="">Airy-Linen Shirts</a></li>
                   <li><a href="/collections/v-neck-sleeveless-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_4.webp?v=1752565417" class="menu-img" alt="">V-Neck Sleeveless Top</a></li>
-                  <li><a href="/collections/everyday-cotton-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_5.webp?v=1752565415" class="menu-img" alt="">Everyday Cotton Top</a></li>
+                  {% comment %} <li><a href="/collections/everyday-cotton-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_5.webp?v=1752565415" class="menu-img" alt="">Everyday Cotton Top</a></li> {% endcomment %}
                   <li><a href="/collections/viscose-pleated-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_6.webp?v=1752565415" class="menu-img" alt="">Viscose Pleated Top</a></li>
                   <li><a href="/collections/shop-all-tops-1"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_7.webp?v=1752565415" class="menu-img" alt="">Shop All Tops</a></li>
                 </ul>
@@ -429,17 +429,17 @@ document.addEventListener('DOMContentLoaded', function () {
               </a>
             </li>
             <li>
-              <a href="/collections/men-airy-linen-short-kurtas" class="header-sidebar__linklist-button" style="margin-left:auto;">
+              <a href="/collections/airy-linen-short-kurtas" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/RK_4565_2.webp?v=1753272743" class="menu-img" alt="">
                 Airy Linen Short Kurta
               </a>
             </li>
-            <li>
+            {% comment %} <li>
               <a href="/collections/formal-shirts" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/RK_4507.webp?v=1753165931" class="menu-img" alt="">
                 The Formal Shirt
               </a>
-            </li>
+            </li> {% endcomment %}
             <li>
               <a href="/collections/men" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/RK_3355_1.png?v=1753271493" class="menu-img" alt="">
@@ -455,8 +455,25 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="header-sidebar__group-list">
 
 
+        <div class="saadaa-accordion-section">
+           <a href="/collections/shop-the-look"><button class="saadaa-accordion-title">BUNDLES<span class="home-nav-badge-new">NEW</span></button></a>
+          
+        </div>
+
+<div class="saadaa-accordion-section">
+          <a href="/collections/plus-edition"><button class="saadaa-accordion-title">PLUS EDITION <span class="home-nav-badge-new">NEW</span></button></a>
+          
+        </div>
+
          <div class="saadaa-accordion-section">
-           <a href="/collections/goodbye-edition"><button class="saadaa-accordion-title">THE GOODBYE EDITION <span class="home-nav-badge-new">NEW</span></button></a>
+           <a href="/collections/goodbye-edition"><button class="saadaa-accordion-title">THE GOODBYE EDITION </button></a>
+          
+        </div>
+
+          
+
+        <div class="saadaa-accordion-section">
+          <a href="/pages/new-customers"><button class="saadaa-accordion-title">NEW CUSTOMERS</button></a>
           
         </div>
 
@@ -464,6 +481,8 @@ document.addEventListener('DOMContentLoaded', function () {
           <a href="/collections/best-sellers-women"><button class="saadaa-accordion-title">BUILD YOUR WARDROBE</button></a>
           
         </div>
+
+        
 
         <div class="saadaa-accordion-section">
           <a href="/apps/return_prime"><button class="saadaa-accordion-title">RETURN & EXCHANGE</button></a>
