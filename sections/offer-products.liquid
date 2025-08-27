@@ -5,52 +5,80 @@
   >
     <div class="op_product_container">
       {%- for product in section.settings.products_list -%}
-        {%- render 'product-card', product: product, reveal: false, hide_product_information: false, stacked: true -%}
+        <div class="op_product_card">
+          {%- render 'product-card', product: product, reveal: false, hide_product_information: false, stacked: true -%}
+          <button class="notify-btn">NOTIFY ME</button>
+        </div>
       {%- endfor -%}
     </div>
   </div>
 </div>
 <style>
-       .op_product_container{
-         display: grid;
+
+
+  #wishlist-icon{
+  display:none;
+}
+.op_product_container{
+  display: grid;
   grid-template-columns: 1fr 1fr;
   row-gap:2.5rem;
-         column-gap:.8rem;
+  column-gap:.8rem;
   align-items: flex-start;
-       }
-       @media screen and (min-width:699px){
-               .op_product_container{
-                 display: grid;
-                 grid-template-columns: 1fr 1fr 1fr;
-                 row-gap:2.5rem;
-                 column-gap:1.2rem;
-                align-items: center;
-       }
-       }
-       @media screen and (min-width:1200px){
-               .op_product_container{
-                 display: grid;
-                 grid-template-columns: 1fr 1fr 1fr;
-                 row-gap:2.5rem;
-                 column-gap:2rem;
-                align-items: center;
-       }        
-       }
-
-
-
-  @media screen and (max-width:644px){
-.product-card__figure .nav-badge-new {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0px;
 }
- }
+@media screen and (min-width:699px){
+  .op_product_container{
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap:2.5rem;
+    column-gap:1.2rem;
+    align-items: center;
+  }
+}
+@media screen and (min-width:1200px){
+  .op_product_container{
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap:2.5rem;
+    column-gap:2rem;
+    align-items: center;
+  }        
+}
+
+.op_product_card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notify-btn {
+    margin-top: 7px;
+    background-color: #23b736;
+    color: #fff;
+    /* border: 1px solid white; */
+    padding: 5px 37px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+}
+
+.notify-btn:hover {
+  background-color: #1ebe5d; /* darker WhatsApp green */
+}
+
+@media screen and (max-width:644px){
+  .product-card__figure .nav-badge-new {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0px;
+  }
+}
 </style>
 {% schema %}
 {
-  "name": "Offer product",
+  "name": "Pre Order Products",
   "settings": [
   {
     "type": "checkbox",

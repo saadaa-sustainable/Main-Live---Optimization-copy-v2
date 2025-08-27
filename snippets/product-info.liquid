@@ -424,33 +424,62 @@
                   </div>
                 {%- endif -%}
 
-                <div class="variant-picker__option-values h-stack gap-2.5 wrap {% if product.template_suffix == 'flybundles' %}mobile-carousel{% endif %}">
-                  {%- liquid
-                      for product_variation in block.settings.products
-                        assign value = product_variation.metafields[metafield_namespace][metafield_key].value
+ <div class="variant-picker__option-values h-stack gap-2.5 wrap {% if product.template_suffix == 'flybundles' %}mobile-carousel{% endif %}">
+  {% for product_variation in block.settings.products %}
+    {% assign value = product_variation.metafields[metafield_namespace][metafield_key].value %}
 
-                        if product_variation == product
-                          assign selected = true
-                        else
-                          assign selected = false
-                        endif
+    {% if product_variation.id == product.id %}
+      {% assign selected = true %}
+    {% else %}
+      {% assign selected = false %}
+    {% endif %}
 
-                        case block.settings.color_selector_type
-                          when 'color'
-                            render 'swatch' with 'color', href: product_variation.url, value: value, selected: selected
+    <div class="swatch-wrapper">
+      {% case block.settings.color_selector_type %}
+        {% when 'color' %}
+          {% render 'swatch' with 'color', href: product_variation.url, value: value, selected: selected %}
+        {% when 'variant' %}
+          {% render 'swatch' with 'media', href: product_variation.url, value: value, media: product_variation.featured_media, selected: selected %}
+        {% when 'block' %}
+          {% render 'swatch' with 'block', href: product_variation.url, value: value, selected: selected %}
+        {% when 'block_swatch' %}
+          {% render 'swatch' with 'block', href: product_variation.url, value: value, selected: selected, show_color: true %}
+      {% endcase %}
 
-                          when 'variant'
-                            render 'swatch' with 'media', href: product_variation.url, value: value, media: product_variation.featured_media, selected: selected
+      {% if product_variation.tags contains 'new_color' %}
+        <span class="swatch-text-new">New</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
 
-                          when 'block'
-                            render 'swatch' with 'block', href: product_variation.url, value: value, selected: selected
+<style>
+/* keep all swatch circles aligned on one row */
+.swatch-wrapper {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    --swatch-label-gap: 4px;
+    --swatch-label-height: 14px;
+    padding-bottom: 8px;
+}
 
-                          when 'block_swatch'
-                            render 'swatch' with 'block', href: product_variation.url, value: value, selected: selected, show_color: true
-                        endcase
-                      endfor
-                    -%}
-                </div>
+/* place the label below the circle without affecting its position */
+.swatch-text-new {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: var(--swatch-label-height);
+    line-height: 21px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #28a745;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+</style>
               </div>
             </div>
           {%- endif -%}

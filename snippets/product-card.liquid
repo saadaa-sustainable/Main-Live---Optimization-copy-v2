@@ -42,6 +42,11 @@
     assign show_secondary_image = show_secondary_image | default: settings.show_secondary_image, allow_false: true
     assign show_swatches = show_swatches | default: true, allow_false: true
   endif
+
+  # Hide rating on Pre Launch collection
+  if collection and collection.title == 'Pre Launch'
+    assign show_rating = false
+  endif
 -%}
 {% liquid
   assign publishDateInSecond = product.published_at | date: '%s' | plus: 7776000
@@ -57,42 +62,46 @@
     data-collection="EVERYDAY COTTON PANTS"
   {% endif %}
 >
-    <button
-      class="PWC_card_product_wishlist pwc_card-product-wishlist-button"
-      data-product-id="{{ product.handle }}"
-    ><div class="wishlist-icon-svg"></div>
-  </button>
-{%- assign total_inventory = 0 -%}
-{%- for variant in product.variants -%}
-  {%- assign total_inventory = total_inventory | plus: variant.inventory_quantity -%}
-{%- endfor -%}
-<a href="{{ product.url }}" class="product-card" data-inventory="{{ total_inventory }}">
+  <button
+    class="PWC_card_product_wishlist pwc_card-product-wishlist-button"
+    data-product-id="{{ product.handle }}"
+  ><div class="wishlist-icon-svg"></div></button>
+
+  {%- assign total_inventory = 0 -%}
+  {%- for variant in product.variants -%}
+    {%- assign total_inventory = total_inventory | plus: variant.inventory_quantity -%}
+  {%- endfor -%}
+
+  {%- comment -%}
+    Wrapper: <div> for Pre Launch (no PDP link), otherwise <a> to PDP
+  {%- endcomment -%}
+  {% if collection and collection.title == "Pre Launch" %}
+    <div class="product-card" data-inventory="{{ total_inventory }}">
+  {% else %}
+    <a href="{{ product.url }}" class="product-card" data-inventory="{{ total_inventory }}">
+  {% endif %}
+
     {%- comment -%}
       --------------------------------------------------------------------------------------------------------------------
       PRODUCT MEDIA
       --------------------------------------------------------------------------------------------------------------------
     {%- endcomment -%}
-
     {%- if product.media.size > 0 -%}
       <div class="product-card__figure">
         {%- if show_badges -%}
           {%- render 'product-badges', product: product, vertical: true -%}
         {%- endif -%}
+
         {% if product.tags contains 'new_launch' %}
-  <span class="nav-badge-new"><span>NEW LAUNCH</span></span>
+          <span class="nav-badge-new"><span>NEW LAUNCH</span></span>
+        {% elsif publishDateInSecond >= dateNow or product.tags contains 'Badges__New' %}
+          <span class="nav-badge-new"><span>NEW</span></span>
+        {% endif %}
 
-    
-{% elsif publishDateInSecond >= dateNow or product.tags contains 'Badges__New' %}
-  <span class="nav-badge-new"><span>NEW</span></span>
-{% endif %}
-{% if product.tags contains 'community_exclusive' %}
-  <span class="nav-badge-new1">COMMUNITY EXCLUSIVE</span>
-{% endif %}
+        {% if product.tags contains 'community_exclusive' %}
+          <span class="nav-badge-new1">COMMUNITY EXCLUSIVE</span>
+        {% endif %}
 
-
-
-
-        
         {% if product.tags contains 'Badges__BEST-SELLER' %}
           <span class="nav-badge-new" style="background:#ffee03; color:black;letter-spacing:-.5px;">
             <span>BEST-SELLER</span>
@@ -101,14 +110,17 @@
 
         <div class="product-card__media" data-instant>
           {%- capture sizes -%}
-          {%- if stacked -%}
-            (max-width: 699px) calc(100vw / {{ section.settings.products_per_row_mobile }}), (max-width: 999px) calc(100vw / {{ 3 | at_most: section.settings.products_per_row_desktop | default: 3 }} - 64px), calc((100vw - 96px) / {{ section.settings.products_per_row_desktop | default: 3 }} - (24px / {{ section.settings.products_per_row_desktop | default: 3 }} * {{ section.settings.products_per_row_desktop | default: 3 | minus: 1 }}))
-          {%- else -%}
-            (max-width: 699px) 74vw, (max-width: 999px) 38vw, calc((100vw - 96px) / {{ section.settings.products_per_row_desktop | default: 3 }} - (24px / {{ section.settings.products_per_row_desktop | default: 3 }} * {{ section.settings.products_per_row_desktop | default: 3 | minus: 1 }}))
-          {%- endif -%}
-        {%- endcapture -%}
+            {%- if stacked -%}
+              (max-width: 699px) calc(100vw / {{ section.settings.products_per_row_mobile }}), (max-width: 999px) calc(100vw / {{ 3 | at_most: section.settings.products_per_row_desktop | default: 3 }} - 64px), calc((100vw - 96px) / {{ section.settings.products_per_row_desktop | default: 3 }} - (24px / {{ section.settings.products_per_row_desktop | default: 3 }} * {{ section.settings.products_per_row_desktop | default: 3 | minus: 1 }}))
+            {%- else -%}
+              (max-width: 699px) 74vw, (max-width: 999px) 38vw, calc((100vw - 96px) / {{ section.settings.products_per_row_desktop | default: 3 }} - (24px / {{ section.settings.products_per_row_desktop | default: 3 }} * {{ section.settings.products_per_row_desktop | default: 3 | minus: 1 }}))
+            {%- endif -%}
+          {%- endcapture -%}
 
-          {%- capture main_image_classes -%}product-card__image product-card__image--primary {% if settings.product_image_aspect_ratio contains 'crop' %}object-cover{% endif %} aspect-{{ settings.product_image_aspect_ratio | split: '_' | first }}{%- endcapture -%}
+          {%- capture main_image_classes -%}
+            product-card__image product-card__image--primary {% if settings.product_image_aspect_ratio contains 'crop' %}object-cover{% endif %} aspect-{{ settings.product_image_aspect_ratio | split: '_' | first }}
+          {%- endcapture -%}
+
           {{-
             product.featured_media
             | image_url: width: 300
@@ -120,9 +132,6 @@
           -}}
 
           {%- if show_secondary_image and product.media.size > 1 -%}
-            <!--
-              {%- assign next_media = product.media[product.featured_media.position] | default: product.media[1] -%}
-            -->
             {%- assign next_media = product.media[2] | default: product.media[2] -%}
             {{-
               next_media
@@ -138,29 +147,25 @@
         </div>
 
         {% if page.handle == 'loyalty-customer' %}
-  {%- if show_quick_buy and product.available -%}
-    {%- if product.variants.size == 1 and product.selling_plan_groups.size == 0 -%}
-      {%- form 'product', product, is: 'product-form' -%}
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-        <button type="submit" class="product-card__quick-add-button">
-          <span class="sr-only">{{ 'product.general.add_to_cart_button' | t }}</span>
-          {%- render 'icon' with 'plus' -%}
-        </button>
-      {%- endform -%}
-    {%- else -%}
-      {%- capture quick_buy_id -%}product-quick-buy-{{ section.id }}-{{ block.id }}-{{ quick_buy_context }}-{{ product.id }}{%- endcapture -%}
-
-      <button type="button" aria-controls="{{ quick_buy_id }}" class="product-card__quick-add-button">
-        <span class="sr-only">{{ 'product.general.choose_options' | t }}</span>
-        {%- render 'icon' with 'plus' -%}
-      </button>
-
-      <quick-buy-modal handle="{{ product.handle }}" class="quick-buy-modal modal" id="{{ quick_buy_id }}">
-      </quick-buy-modal>
-    {%- endif -%}
-  {%- endif -%}
-{% endif %}
-
+          {%- if show_quick_buy and product.available -%}
+            {%- if product.variants.size == 1 and product.selling_plan_groups.size == 0 -%}
+              {%- form 'product', product, is: 'product-form' -%}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="product-card__quick-add-button">
+                  <span class="sr-only">{{ 'product.general.add_to_cart_button' | t }}</span>
+                  {%- render 'icon' with 'plus' -%}
+                </button>
+              {%- endform -%}
+            {%- else -%}
+              {%- capture quick_buy_id -%}product-quick-buy-{{ section.id }}-{{ block.id }}-{{ quick_buy_context }}-{{ product.id }}{%- endcapture -%}
+              <button type="button" aria-controls="{{ quick_buy_id }}" class="product-card__quick-add-button">
+                <span class="sr-only">{{ 'product.general.choose_options' | t }}</span>
+                {%- render 'icon' with 'plus' -%}
+              </button>
+              <quick-buy-modal handle="{{ product.handle }}" class="quick-buy-modal modal" id="{{ quick_buy_id }}"></quick-buy-modal>
+            {%- endif -%}
+          {%- endif -%}
+        {% endif %}
       </div>
     {%- endif -%}
 
@@ -169,10 +174,8 @@
       PRODUCT INFO
       --------------------------------------------------------------------------------------------------------------------
     {%- endcomment -%}
-
     <div class="product-card__info empty:hidden">
       {%- assign text_class = '' -%}
-
       {%- if settings.product_card_text_font == 'heading' -%}
         {%- assign text_class = 'h6' -%}
       {%- endif -%}
@@ -201,6 +204,7 @@
               {%- if show_prices -%}
                 {%- render 'price-list', product: product, context: 'card' -%}
               {%- endif -%}
+
               {%- if show_rating -%}
                 <div class="looxReview smallcaps text-xxs text-subdued">
                   <div
@@ -216,105 +220,80 @@
                 {% endcomment %}
               {%- endif -%}
 
-{%- form 'product', product, is: 'product-form' -%}
-  <!-- Hidden input for the selected variant -->
-  <input
-    type="hidden"
-    name="id"
-    value="{{ product.selected_or_first_available_variant.id }}"
-    id="product-variant-id-{{ product.id }}"
-  >
-  
-  {%- if product.options contains 'Size' or 'Waist Size' -%}
-    <div class="size-container" style="font-size: 12px; letter-spacing: 3px;  display: none;">
-      <div class="size-buttons" data-product-id="{{ product.id }}">
-        {% for variant in product.variants %}
-          {% if variant.available %}
-            <!-- Render only available size buttons -->
-            <button
-              type="button"
-              class="size-btn"
-              data-variant-id="{{ variant.id }}"
-            >
-              {{ variant.option1 }}
-            </button>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-  {%- endif -%}
+              {%- form 'product', product, is: 'product-form' -%}
+                <!-- Hidden input for the selected variant -->
+                <input
+                  type="hidden"
+                  name="id"
+                  value="{{ product.selected_or_first_available_variant.id }}"
+                  id="product-variant-id-{{ product.id }}"
+                >
 
-  <!-- Add to Cart -->
-  <button type="submit" class="button button--primary" style= "display: none;">
-    ADD TO CART
-  </button>
-{%- endform -%}
+                {%- if product.options contains 'Size' or 'Waist Size' -%}
+                  <div class="size-container" style="font-size: 12px; letter-spacing: 3px; display: none;">
+                    <div class="size-buttons" data-product-id="{{ product.id }}">
+                      {% for variant in product.variants %}
+                        {% if variant.available %}
+                          <!-- Render only available size buttons -->
+                          <button
+                            type="button"
+                            class="size-btn"
+                            data-variant-id="{{ variant.id }}"
+                          >
+                            {{ variant.option1 }}
+                          </button>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                {%- endif -%}
 
-<style>
-  .size-btn.active {
-    color: #f1bc2a;
+                <!-- Add to Cart -->
+                <button type="submit" class="button button--primary" style="display: none;">
+                  ADD TO CART
+                </button>
+              {%- endform -%}
 
+              <style>
+                .size-btn.active { color: #f1bc2a; }
+                .button {
+                  letter-spacing: 0rem;
+                  margin-top: 10px;
+                  padding: 6px 11px;
+                  font-size: 13px;
+                }
+              </style>
 
-            .button {
-  letter-spacing: 0rem;
-  margin-top: 10px;
-  padding: 6px 11px;
-  font-size: 13px;
-}
-  }
-</style>
+              <script>
+                // Make sure the DOM is loaded
+                document.addEventListener("DOMContentLoaded", function() {
+                  // Select all size buttons (now only the available ones)
+                  const sizeButtons = document.querySelectorAll('.size-btn');
 
-<script>
-  // Make sure the DOM is loaded
-  document.addEventListener("DOMContentLoaded", function() {
-    // Select all size buttons (now only the available ones)
-    const sizeButtons = document.querySelectorAll('.size-btn');
-    
-    sizeButtons.forEach(function(button) {
-      button.addEventListener('click', function(event) {
-        // Prevent any default action (if it exists)
-        event.preventDefault();
+                  sizeButtons.forEach(function(button) {
+                    button.addEventListener('click', function(event) {
+                      event.preventDefault();
 
-        // Retrieve the variant ID from the data attribute on the clicked button
-        const selectedVariantId = this.getAttribute('data-variant-id');
+                      // Retrieve the variant ID from the data attribute on the clicked button
+                      const selectedVariantId = this.getAttribute('data-variant-id');
 
-        // Get the hidden input element (assumes there is one per form and product)
-        const productId = this.closest('.size-buttons').getAttribute('data-product-id');
-        const hiddenInput = document.getElementById('product-variant-id-' + productId);
+                      // Get the hidden input element (assumes there is one per form and product)
+                      const productId = this.closest('.size-buttons').getAttribute('data-product-id');
+                      const hiddenInput = document.getElementById('product-variant-id-' + productId);
 
-        // Update the hidden input with the selected variant id
-        hiddenInput.value = selectedVariantId;
+                      // Update the hidden input with the selected variant id
+                      hiddenInput.value = selectedVariantId;
 
-        // Update the UI to reflect the selected size by toggling the active class.
-        sizeButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
+                      // Update the UI to reflect the selected size by toggling the active class.
+                      sizeButtons.forEach(btn => btn.classList.remove('active'));
+                      this.classList.add('active');
 
-        // Debug: Log the selected variant id
-        console.log("Selected variant id:", selectedVariantId);
-      });
-    });
-  });
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              
+                      // Debug
+                      console.log("Selected variant id:", selectedVariantId);
+                    });
+                  });
+                });
+              </script>
             </div>
           {%- endif -%}
         </div>
@@ -322,7 +301,6 @@
 
       {%- if show_swatches and settings.product_color_display != 'hide' -%}
         {%- assign color_label_list = 'general.label.color' | t | replace: ', ', ',' | downcase | split: ',' -%}
-
         {%- for color_label in color_label_list -%}
           {%- if product.options_by_name[color_label] != blank -%}
             {%- assign product_option = product.options_by_name[color_label] -%}
@@ -364,5 +342,51 @@
         {%- endfor -%}
       {%- endif -%}
     </div>
-  </a>
+
+    {%- comment -%}  FOR PRE LAUNCH COLLECTION PAGE START {%- endcomment -%}
+    {% if collection and collection.title == "Pre Launch" %}
+      <div class="product-card__notify">
+        <a
+          href="https://wa.me/919251998279?text=Hi,%20I%20would%20like%20to%20sign%20up%20for%20the%20new%20product%20launch%20by%20Saadaa."
+          rel="noopener"
+          class="notify-btn"
+        >
+          NOTIFY ME
+        </a>
+      </div>
+    {% endif %}
+    {%- comment -%}  FOR PRE LAUNCH COLLECTION PAGE END {%- endcomment -%}
+
+  {%- comment -%}
+    Close wrapper: </div> for Pre Launch, otherwise </a>
+  {%- endcomment -%}
+  {% if collection and collection.title == "Pre Launch" %}
+    </div>
+  {% else %}
+    </a>
+  {% endif %}
 </product-card>
+
+<style>
+  .product-card__notify {
+    display: flex;
+    justify-content: center;
+  }
+  .notify-btn {
+    background-color: #23b736; /* WhatsApp green */
+    color: #fff;
+    padding: 5px 37px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+    
+  }
+  .notify-btn:hover { background-color: #1ebe5d; }
+
+   {% if collection and collection.title == "Pre Launch" %}
+    .text-subdued  { display: none; }
+  {% endif %} 
+</style>

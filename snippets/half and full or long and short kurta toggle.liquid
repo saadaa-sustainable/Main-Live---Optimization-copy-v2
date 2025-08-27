@@ -13,6 +13,9 @@
 {% assign is_kurta = false %}
 {% assign is_short_kurta = false %}
 {% assign is_long_kurta = false %}
+{% assign is_pant = false %}
+{% assign is_straight_pant = false %}
+{% assign is_wide_leg_pant = false %}
 
 {% if normalized_title contains '100% linen shirt' %}
   {% assign is_shirt = true %}
@@ -30,6 +33,14 @@
   {% assign is_kurta = true %}
   {% assign is_long_kurta = true %}
 {% endif %}
+{% if normalized_title contains 'straight pant' %}
+  {% assign is_pant = true %}
+  {% assign is_straight_pant = true %}
+{% endif %}
+{% if normalized_title contains 'wide leg pant' or normalized_title contains 'wide-leg pant' %}
+  {% assign is_pant = true %}
+  {% assign is_wide_leg_pant = true %}
+{% endif %}
 
 {%- comment -%}
   Product reference metafields
@@ -38,6 +49,8 @@
 {% assign half_sleeve_product = product.metafields.custom.half_sleeve_toggle_link1.value %}
 {% assign short_kurta_product = product.metafields.custom.short_kurta_toggle_link1.value %}
 {% assign long_kurta_product = product.metafields.custom.long_kurta_toggle_link1.value %}
+{% assign straight_pant_product = product.metafields.custom.straight_pant_toggle_product.value %}
+{% assign wide_leg_pant_product = product.metafields.custom.wide_leg_pant_toggle_product.value %}
 
 {%- comment -%}
   Draft check
@@ -46,21 +59,35 @@
 {% if product.status and product.status == 'draft' %}
   {% assign is_draft = true %}
 {% endif %}
+
 {% assign full_sleeve_is_draft = false %}
 {% if full_sleeve_product and full_sleeve_product.status == 'draft' %}
   {% assign full_sleeve_is_draft = true %}
 {% endif %}
+
 {% assign half_sleeve_is_draft = false %}
 {% if half_sleeve_product and half_sleeve_product.status == 'draft' %}
   {% assign half_sleeve_is_draft = true %}
 {% endif %}
+
 {% assign short_kurta_is_draft = false %}
 {% if short_kurta_product and short_kurta_product.status == 'draft' %}
   {% assign short_kurta_is_draft = true %}
 {% endif %}
+
 {% assign long_kurta_is_draft = false %}
 {% if long_kurta_product and long_kurta_product.status == 'draft' %}
   {% assign long_kurta_is_draft = true %}
+{% endif %}
+
+{% assign straight_pant_is_draft = false %}
+{% if straight_pant_product and straight_pant_product.status == 'draft' %}
+  {% assign straight_pant_is_draft = true %}
+{% endif %}
+
+{% assign wide_leg_pant_is_draft = false %}
+{% if wide_leg_pant_product and wide_leg_pant_product.status == 'draft' %}
+  {% assign wide_leg_pant_is_draft = true %}
 {% endif %}
 
 {%- comment -%}
@@ -68,6 +95,7 @@
 {%- endcomment -%}
 {% assign show_shirt_toggle = false %}
 {% assign show_kurta_toggle = false %}
+{% assign show_pant_toggle = false %}
 
 {% if is_shirt
       and full_sleeve_product and full_sleeve_is_draft == false
@@ -83,7 +111,14 @@
   {% assign show_kurta_toggle = true %}
 {% endif %}
 
-{% if show_shirt_toggle or show_kurta_toggle %}
+{% if is_pant
+      and straight_pant_product and straight_pant_is_draft == false
+      and wide_leg_pant_product and wide_leg_pant_is_draft == false
+      and is_draft == false %}
+  {% assign show_pant_toggle = true %}
+{% endif %}
+
+{% if show_shirt_toggle or show_kurta_toggle or show_pant_toggle %}
 <style>
   .toggle-container {
     display: flex;
@@ -91,7 +126,7 @@
     margin-top: 10px;
   }
   .toggle-btn {
-    padding: 5px 41px;
+    padding: 5px 30px;
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
@@ -105,11 +140,10 @@
     color: white;
     border-color: black;
   }
-@media(min-width:786px){
-.toggle-btn {
-    padding: 3px 52px;
-}
-}
+  @media (min-width: 786px) {
+    .toggle-btn { padding: 3px 40px;
+        font-size: 16px; }
+  }
 </style>
 
 <div>
@@ -121,6 +155,9 @@
     {% elsif show_kurta_toggle %}
       <button type="button" id="btnShortKurta" class="toggle-btn">Short Kurta</button>
       <button type="button" id="btnLongKurta" class="toggle-btn">Long Kurta</button>
+    {% elsif show_pant_toggle %}
+      <button type="button" id="btnStraightPant" class="toggle-btn">Straight Pant</button>
+      <button type="button" id="btnWideLegPant" class="toggle-btn">Wide Leg Pant</button>
     {% endif %}
   </div>
 </div>
@@ -137,24 +174,29 @@
   const halfSleeveLink = "{% endraw %}{% if half_sleeve_product %}{{ half_sleeve_product.url }}{% endif %}{% raw %}";
   const shortKurtaLink = "{% endraw %}{% if short_kurta_product %}{{ short_kurta_product.url }}{% endif %}{% raw %}";
   const longKurtaLink = "{% endraw %}{% if long_kurta_product %}{{ long_kurta_product.url }}{% endif %}{% raw %}";
+  const straightPantLink = "{% endraw %}{% if straight_pant_product %}{{ straight_pant_product.url }}{% endif %}{% raw %}";
+  const wideLegPantLink = "{% endraw %}{% if wide_leg_pant_product %}{{ wide_leg_pant_product.url }}{% endif %}{% raw %}";
 
   function setActiveToggle(type) {
     var btnFull = document.getElementById('btnFullSleeve');
     var btnHalf = document.getElementById('btnHalfSleeve');
     var btnShort = document.getElementById('btnShortKurta');
     var btnLong = document.getElementById('btnLongKurta');
+    var btnStraight = document.getElementById('btnStraightPant');
+    var btnWide = document.getElementById('btnWideLegPant');
+
     if(type === 'full' && btnFull && btnHalf){
-      btnFull.classList.add('active');
-      btnHalf.classList.remove('active');
+      btnFull.classList.add('active'); btnHalf.classList.remove('active');
     } else if(type === 'half' && btnFull && btnHalf){
-      btnHalf.classList.add('active');
-      btnFull.classList.remove('active');
+      btnHalf.classList.add('active'); btnFull.classList.remove('active');
     } else if(type === 'short' && btnShort && btnLong){
-      btnShort.classList.add('active');
-      btnLong.classList.remove('active');
+      btnShort.classList.add('active'); btnLong.classList.remove('active');
     } else if(type === 'long' && btnShort && btnLong){
-      btnLong.classList.add('active');
-      btnShort.classList.remove('active');
+      btnLong.classList.add('active'); btnShort.classList.remove('active');
+    } else if(type === 'straight' && btnStraight && btnWide){
+      btnStraight.classList.add('active'); btnWide.classList.remove('active');
+    } else if(type === 'wide' && btnStraight && btnWide){
+      btnWide.classList.add('active'); btnStraight.classList.remove('active');
     }
   }
 
@@ -167,11 +209,16 @@
       setActiveToggle('short');
     } else if(productTitle.includes('long kurta')) {
       setActiveToggle('long');
+    } else if(productTitle.includes('airy linen straight pant')) {
+      setActiveToggle('straight');
+    } else if(productTitle.includes('airy linen wide leg pant')) {
+      setActiveToggle('wide');
     }
   }
 
   updateToggleBasedOnTitle();
 
+  // Shirt handlers
   if(document.getElementById('btnFullSleeve')) {
     document.getElementById('btnFullSleeve').addEventListener('click', function() {
       if(fullSleeveLink && fullSleeveLink.trim() !== '') {
@@ -192,6 +239,8 @@
       }
     });
   }
+
+  // Kurta handlers
   if(document.getElementById('btnShortKurta')) {
     document.getElementById('btnShortKurta').addEventListener('click', function() {
       if(shortKurtaLink && shortKurtaLink.trim() !== '') {
@@ -209,6 +258,28 @@
           window.location.href = longKurtaLink;
         }
         setActiveToggle('long');
+      }
+    });
+  }
+
+  // Pant handlers
+  if(document.getElementById('btnStraightPant')) {
+    document.getElementById('btnStraightPant').addEventListener('click', function() {
+      if(straightPantLink && straightPantLink.trim() !== '') {
+        if(!productTitle.includes('straight pant')) {
+          window.location.href = straightPantLink;
+        }
+        setActiveToggle('straight');
+      }
+    });
+  }
+  if(document.getElementById('btnWideLegPant')) {
+    document.getElementById('btnWideLegPant').addEventListener('click', function() {
+      if(wideLegPantLink && wideLegPantLink.trim() !== '') {
+        if(!(productTitle.includes('wide leg pant') || productTitle.includes('wide-leg pant'))) {
+          window.location.href = wideLegPantLink;
+        }
+        setActiveToggle('wide');
       }
     });
   }

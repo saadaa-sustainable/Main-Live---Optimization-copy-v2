@@ -1,7 +1,7 @@
 {%- assign collection_title = collection.title | strip | downcase -%}
 
 {%- assign show_custom_filter_tab = false -%}
-{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus edition" or collection_title == "co-ords" or collection_title == "bundles" -%}
+{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus edition" or collection_title == "co-ords" or collection_title == "bundles" or collection_title == "build your wardrobe" -%}
   {%- assign show_custom_filter_tab = true -%}
 {%- endif -%}
 

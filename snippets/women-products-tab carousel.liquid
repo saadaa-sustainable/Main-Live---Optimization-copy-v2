@@ -34,6 +34,81 @@
       color: #000;
     }
 
+    /* ─────────────────────────────────────────────────────
+       UNIQUE RED BADGE DOT for Toggle Menu
+       ───────────────────────────────────────────────────── */
+    .toggle-button.badged { position: relative; }
+    .toggle-badge-dot {
+      position: absolute;
+      top: 5px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      background: #ff3b30;              /* iOS system red */
+      border-radius: 999px;
+      box-shadow:
+        0 0 0 2px #f6f3f1,              /* ring matches default pill bg */
+        0 0 8px rgba(255,59,48,.55);
+      animation: badge-bob 0.5s ease-in-out infinite;
+      transform-origin: center;
+      pointer-events: none;
+    }
+    .toggle-badge-dot.is-hidden { display: none !important; }
+    .toggle-button.badged.active .toggle-badge-dot {
+      box-shadow:
+        0 0 0 2px #ffffff,
+        0 0 8px rgba(255,59,48,.55);
+    }
+
+    @keyframes badge-bob {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    /* ─────────────────────────────────────────────────────
+       PRODUCT CARD BADGES
+       - Red dot (top-right) for static Top/Bottom cards
+       - Green "NEW" pill (top-left) for New/Bestsellers fetched cards
+       ───────────────────────────────────────────────────── */
+    .menu-item.badged { position: relative; }
+
+    /* RED DOT for static cards */
+    .product-badge-dot {
+      position: absolute;
+      top: 5px;
+      right: -2px;               /* same as toggle dot */
+      width: 10px;
+      height: 10px;
+      background: #ff3b30;
+      border-radius: 999px;
+      box-shadow:
+        0 0 0 2px #ffffff,       /* white ring to sit on top of images */
+        0 0 8px rgba(255,59,48,.55);
+      animation: badge-bob 0.5s ease-in-out infinite;
+      transform-origin: center;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* GREEN PILL "NEW" for fetched cards (old style) */
+    .product-badge-pill {
+      display: flex;
+      position: absolute;
+      top: 6px;
+      left: 5px;
+      padding: 2px 6px;
+      background: #008001;   /* green pill per your current design */
+      border-radius: 3px;
+      font-size: 9px;
+      color: #fff;
+      line-height: 1;
+      text-transform: uppercase;
+      transform-origin: center;
+      pointer-events: none;
+      z-index: 2;
+      justify-content: flex-start;
+    }
+
     .menu-items-container {
       display: flex;
       flex-wrap: wrap;
@@ -49,10 +124,12 @@
       flex: 0 0 calc(20% - 20px);
       text-align: center;
       cursor: pointer;
+      background: transparent;
     }
     .menu-item a {
       text-decoration: none;
       color: inherit;
+      display: block;
     }
     .menu-item img {
       width: 100%;
@@ -76,9 +153,6 @@
         height: 300px;
         object-fit: cover;
       }
-      {% comment %} .menu-items-container.topwear .menu-item {
-        flex: 0 0 calc(25% - 20px);
-      } {% endcomment %}
     }
     @media (max-width: 768px) {
       .menu-item {
@@ -137,7 +211,7 @@
         box-shadow:
           0 10px 28px 0 rgba(195,106,78,0.21),
           0 2px 8px rgba(195,106,78,0.13);
-        z-index: 3;
+        z-index: 1;
       }
     }
 
@@ -198,10 +272,22 @@
   <div class="toggle-menu-container">
     <div class="toggle-buttons-wrapper">
       <!-- Category toggles -->
-      <button class="toggle-button active" data-category="bottoms">Bottom Wear</button>
+      <button class="toggle-button active badged" data-category="bottoms">
+        Bottom Wear
+        {% comment %} <span class="toggle-badge-dot" aria-hidden="true"></span> {% endcomment %}
+      </button>
+
       <button class="toggle-button" data-category="bestsellers">Best Sellers</button>
-      <button class="toggle-button" data-category="new">New Arrival</button>
-      <button class="toggle-button" data-category="tops">Top Wear</button>
+
+      <button class="toggle-button badged" data-category="new">
+        New Arrival
+        {% comment %} <span class="toggle-badge-dot" aria-hidden="true"></span> {% endcomment %}
+      </button>
+
+      <button class="toggle-button badged" data-category="tops">
+        Top Wear
+        {% comment %} <span class="toggle-badge-dot" aria-hidden="true"></span> {% endcomment %}
+      </button>
     </div>
     <div id="itemsContainer" class="menu-items-container"></div>
     <div class="view-all-bar">
@@ -221,8 +307,22 @@
     const tagMap = {
       bestsellers: "women_home_toggle_best_sellers",
       new:         "women_home_new_arrival"
-      // “bottoms” + “longKurta” use static HTML below
+      // “bottoms” + “tops” use static HTML below
     };
+
+    // ─────────── BADGE RULES ───────────
+    // Tag-based: add one of these tags on a product to show the NEW badge
+    const BADGE_TAGS = [
+      "women_home_new_badge",
+      "badge-new",
+      "highlight-new"
+    ];
+    // Title-based: for static HTML cards you want to mark
+    const BADGE_TITLES = [
+      "Airy Linen Straight Pants",
+      "Airy-Linen Shirts",
+      "Airy Linen Wide Leg Pants"
+    ];
 
     // ─────────── Hard‐coded HTML for Bottom Wear and Top Wear ───────────
     const bottomsHTML =
@@ -232,15 +332,15 @@
           '<p>Straight Fit Formal Pants</p>' +
         '</a>' +
       '</div>' +
-       '<div class="menu-item">' +
-        '<a href="/products/black-airy-linen-straight-pants">' +
-          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_aa843daa-7a7d-4536-92ea-65b93139b3ed.webp?v=1753437865" alt="ASP" />' +
+      '<div class="menu-item">' +
+        '<a href="/products/ecru-airy-linen-straight-pants">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_6e7a1371-76e6-4b07-bb67-c8b543a35937.webp?v=1756096366" alt="ASP" />' +
           '<p>Airy Linen Straight Pants</p>' +
         '</a>' +
       '</div>' +
       '<div class="menu-item">' +
-        '<a href="/products/maroon-airy-linen-wide-leg-pants">' +
-          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_84486c5e-6c02-4e28-9870-b1a65debd2c3.jpg?v=1745563753" alt="AWP" />' +
+        '<a href="/products/women-coffee-brown-airy-linen-wide-leg-pant">' +
+          '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_9251d01d-9fbe-4474-aac5-bc2a20c847a5.webp?v=1756096682" alt="AWP" />' +
           '<p>Airy Linen Wide Leg Pants</p>' +
         '</a>' +
       '</div>' +
@@ -256,23 +356,20 @@
           '<p>Everyday Cotton Pants</p>' +
         '</a>' +
       '</div>' +
-     
       '<div class="menu-item">' +
         '<a href="/products/english-blue-viscose-palazzo-pant">' +
           '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_091a3f84-383b-4be2-9537-940997cb565b.jpg?v=1744191968" alt="VPP" />' +
           '<p>Viscose Palazzo Pants</p>' +
         '</a>' +
       '</div>' +
-     
       '<div class="menu-item">' +
         '<a href="/products/maroon-wide-leg-pants">' +
           '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Artboard3copy6_4b975e75-38f7-4ad4-8103-f1274fac7a97.png?v=1744191968" alt="WLP" />' +
           '<p>Wide Leg Pants</p>' +
         '</a>' +
-     
       '</div>';
 
-        const topwearHTML =
+    const topwearHTML =
       '<div class="menu-item">' +
         '<a href="/products/yellow-airy-linen-short-kurta">' +
           '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_635b9b22-0d5b-4da8-892e-e29d45c096ec.webp?v=1744193131" ' +
@@ -301,7 +398,6 @@
           '<p>V-Neck Sleeveless Top</p>' +
         '</a>' +
       '</div>' +
-      
       '<div class="menu-item">' +
         '<a href="/products/white-viscose-pleated-top">' +
           '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/3_0b364a38-824e-4456-9cb2-fbf14b7fcd20.webp?v=1744193776" ' +
@@ -310,13 +406,12 @@
         '</a>' +
       '</div>';
 
-
     // ─────────── VIEW ALL link per category ───────────
     const viewAllLinks = {
       bottoms:     "https://saadaa.in/collections/shop-all-bottoms",
       bestsellers: "https://saadaa.in/collections/best-sellers-women",
       new:         "https://saadaa.in/collections/best-sellers-women",
-      tops:   "https://saadaa.in/collections/shop-all-tops-1"
+      tops:        "https://saadaa.in/collections/shop-all-tops-1"
     };
 
     // ─────────── Cache for “bestsellers” + “new” ───────────
@@ -392,6 +487,7 @@
         itemsContainer.classList.remove("topwear");
       }
       itemsContainer.innerHTML = itemsHTML;
+
       // Once images load, add “loaded” class so they fade in
       itemsContainer.querySelectorAll("img").forEach(img => {
         if (img.complete) {
@@ -400,22 +496,73 @@
           img.addEventListener("load", () => img.classList.add("loaded"));
         }
       });
+
+      // Add/refresh product badges after each render
+      addProductBadges();
+      // Move badged cards to the front (works for static sections too)
+      reorderBadgedFirst();
     }
 
-    // ─────────── Build HTML snippet from an array of fetched products ───────────
+    // ─────────── Build HTML snippet from an array of fetched products
+    // Orders: badged first, then others (preserves your earlier #1 sort result order)
     function buildFetchedHTML(products) {
-      return products.map(prod => {
+      const withBadge = [];
+      const withoutBadge = [];
+
+      products.forEach(prod => {
+        const tags = prod.tags || [];
+        const hasNewBadge = tags.some(t => BADGE_TAGS.includes(t));
         const imgUrl = prod.images.edges[0]?.node.url || "";
         const altTxt = prod.images.edges[0]?.node.altText || prod.title;
-        return `
-          <div class="menu-item">
+
+        const html = `
+          <div class="menu-item${hasNewBadge ? ' badged' : ''}" data-title="${prod.title.replace(/"/g, '&quot;')}">
             <a href="/products/${prod.handle}">
               <img src="${imgUrl}" alt="${altTxt}" loading="lazy" />
               <p>${prod.title}</p>
             </a>
+            ${hasNewBadge ? '<span class="product-badge-pill" aria-hidden="true">NEW</span>' : ''}
           </div>
         `;
-      }).join("");
+
+        (hasNewBadge ? withBadge : withoutBadge).push(html);
+      });
+
+      return withBadge.concat(withoutBadge).join("");
+    }
+
+    // ─────────── Add badges to static cards by title; fetched items already handled ───────────
+    function addProductBadges() {
+      document.querySelectorAll('#itemsContainer .menu-item').forEach(card => {
+        const hasBadge = !!card.querySelector('.product-badge-dot, .product-badge-pill');
+        const title = (card.querySelector('p')?.textContent || '').trim();
+
+        // For static blocks (Bottoms/Tops), badge by title if listed:
+        if (!hasBadge && BADGE_TITLES.includes(title)) {
+          card.classList.add('badged');
+          const dot = document.createElement('span');
+          dot.className = 'product-badge-dot'; // red bouncing dot
+          dot.setAttribute('aria-hidden', 'true');
+          card.appendChild(dot);
+        }
+
+        // If neither tag nor title requires a badge and none exists, keep clean:
+        if (!hasBadge && !BADGE_TITLES.includes(title)) {
+          card.classList.remove('badged');
+          card.querySelector('.product-badge-dot, .product-badge-pill')?.remove();
+        }
+      });
+    }
+
+    // ─────────── Reorder DOM so badged cards appear first (works for static + fetched) ───────────
+    function reorderBadgedFirst() {
+      const container = itemsContainer;
+      const cards = Array.from(container.children);
+      const badged = cards.filter(c => c.querySelector('.product-badge-dot, .product-badge-pill'));
+      const normal = cards.filter(c => !c.querySelector('.product-badge-dot, .product-badge-pill'));
+
+      container.innerHTML = '';
+      badged.concat(normal).forEach(el => container.appendChild(el));
     }
 
     // ─────────── Handle toggle‐button clicks ───────────
@@ -433,7 +580,7 @@
         const key = btn.getAttribute("data-category");
         viewAllLinkElm.href = viewAllLinks[key]; // update “VIEW ALL”
 
-        // 3) If “bottoms” or “longKurta,” just show static HTML
+        // 3) If “bottoms” or “tops,” just show static HTML
         if (key === "bottoms") {
           renderProducts(bottomsHTML, key);
           return;
@@ -452,7 +599,7 @@
             await prefetchCategory(key);
           }
 
-          // Grab cached, then sort #1‐tagged to front
+          // Keep your #1-tag sort
           const products = cache[key].slice(); // copy array
           if (key === "bestsellers") {
             products.sort((a, b) => {
@@ -473,7 +620,7 @@
             });
           }
 
-          // Build HTML from sorted array and render
+          // Build HTML (badged first), then render
           const fetchedHTML = buildFetchedHTML(products);
           renderProducts(fetchedHTML, key);
         }
