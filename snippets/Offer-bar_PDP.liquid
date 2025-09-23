@@ -1,0 +1,421 @@
+<!-- ===== FULL RESPONSIVE OFFER BAR + OFF-CANVAS SLIDER ===== -->
+<style>
+  /* OFFER BAR */
+  .offer-bar-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    background: #fff;
+    box-sizing: border-box;
+  }
+  .offer-bar__promo {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+  }
+  .offer-bar__icon  { width: 20px; }
+  .offer-bar__buy   { font-weight: bold; }
+  .offer-bar__text  { color: #333; }
+  .offer-bar__price { font-weight: bold; color: #2a7d2a; }
+.offer-bar__save {
+    justify-self: start;
+    border: 1px solid #009947;
+    border-radius: 7px;
+    padding: 1px 1rem 1.4px;
+    color: #009947;
+    background: #EEFFF9;
+    font-size: 10.5px;
+    margin-left: 23px;
+}
+
+  /* MORE OFFERS BUTTON */
+  .offer-bar__more {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* SLIDER & OVERLAY */
+  .offer-slider {
+    position: fixed; top: 0; right: 0;
+    width: 400px; max-width: 90%; height: 100%;
+    background: #fff;
+    
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 99999;
+    overflow: visible;
+  }
+  .offer-slider.open { transform: translateX(0); }
+  .offer-slider__close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none;
+    font-size: 1.5rem; color: #333;
+    cursor: pointer; line-height: 1;
+    z-index: 100000;
+  }
+  .offer-slider__overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 99998;
+  }
+  .offer-slider__overlay.active {
+    opacity: 1; visibility: visible;
+  }
+  .offer-slider__content {
+    padding: 0; margin: 0;
+    height: 100%; overflow-y: auto;
+    font-family: sans-serif;
+  }
+
+  /* SLIDER HEADER */
+  .slider-header {
+    display: flex; align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid #c87354;
+    gap: 0.5rem;
+  }
+  .slider-header__icon  { width: 24px; }
+  .slider-header__title { font-size: 1.25rem; font-weight: bold; color: #333; }
+
+  /* OFFER ITEMS */
+  .offer-item {
+    border: 1px dashed #000;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem;
+  }
+  .offer-item h3 { margin: 0; font-size: 1rem; font-weight: bold; color: #333; }
+  .offer-item p.subtitle {
+    margin: 0.25rem 0 0.75rem;
+    font-size: 0.875rem; color: #7C7C7C; font-style: italic;
+  }
+  .offer-item .offer-code {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 1rem;
+    background: #F5EFE8;
+    padding: 12px; border-radius: 4px;
+  }
+  .offer-item .offer-code span {
+    font-weight: bold; font-size: 0.9rem; color: #000;
+  }
+  .offer-item .offer-code button {
+    background: none; border: none; padding: 0; cursor: pointer;
+  }
+  .offer-item .offer-code button img {
+    display: block; height: 32px; width: auto;
+  }
+
+  /* BOTTOM UPI & FOOTER */
+  .slider-upi {
+    background: #EEFFF9; padding: 0.4rem 1rem;
+    text-align: center; font-size: 15px;
+    font-weight: bold; color: #1F1F1F; margin: 1rem;
+    border-radius: 4px;
+  }
+  .slider-footer {
+    margin: 0 1rem 5rem;
+    font-size: 11px; color: #2B2B2B; text-align: center;
+  }
+
+  /* OFFER CTA BUTTON */
+  .offer-cta {
+    display:block;
+    margin: 14px 16px 18px;
+    padding: 14px 18px;
+    text-align:center;
+    background:#000;
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    line-height:1;
+    border-radius:14px;
+    text-decoration:none;
+    box-shadow: 0 2px 0 rgba(0,0,0,.12);
+  }
+  .offer-cta:active{ transform: translateY(1px); }
+
+  @media (max-width: 768px) {
+    .offer-slider { width: 100%; max-width: 100%; }
+    .offer-item { margin: 1.2rem; }
+    .slider-upi, .slider-footer { margin: 10px 0; }
+    .offer-item h3 { font-size: 13px; }
+    .offer-item p.subtitle { font-size: 12px; }
+    .offer-item .offer-code span { font-size: 13.5px; }
+    .offer-item .offer-code button img { height: 23px; }
+    .offer-cta {
+      margin: 14px 12px 22px;
+      padding: 16px 18px;
+      font-size: 15px;
+      border-radius: 16px;
+      position: fixed;
+      width: 92%;
+      bottom: 0;
+    }
+  }
+
+
+  
+.slider-note {
+  margin: 0 1rem 1.2rem;
+  font-size: 12px;
+  color: #d32f2f;
+  font-weight: 600;
+  text-align: center;
+  display: none; /* hidden by default */
+}
+
+.slider-footer {
+  cursor: pointer; /* makes whole footer clickable */
+}
+
+.slider-footer .star {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-left: 3px;
+  font-size: 16px;
+}
+
+</style>
+
+<!-- OFFER BAR -->
+<div class="offer-bar-container" data-unit-price="{{ product.price | divided_by: 100.0 }}">
+  <div class="offer-bar__promo">
+    <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275287_2.svg?v=1745257719"
+         alt="" class="offer-bar__icon"/>
+    <span class="offer-bar__buy" style="
+    font-size: 15px;
+">BUY 2</span>
+    <span class="offer-bar__text">at just</span>
+    <span class="offer-bar__price">—</span>
+  </div>
+
+  <button class="offer-bar__more" aria-label="More offers">
+    <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/more-offers.svg?v=1755771217"
+         alt="% More offers" loading="lazy"/>
+  </button>
+
+  <div class="offer-bar__save">You save —</div>
+</div>
+
+<!-- OFF-CANVAS SLIDER -->
+<div id="offersSlider" class="offer-slider">
+  <button class="offer-slider__close" aria-label="Close">×</button>
+  <div class="offer-slider__content">
+    <!-- SLIDER HEADER -->
+    <div class="slider-header">
+      <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275287.svg?v=1745061328"
+           alt="" class="slider-header__icon"/>
+      <span class="slider-header__title">Offers</span>
+    </div>
+
+    <!-- OFFERS -->
+    <div class="offer-item" data-code="BUY2">
+      <h3>BUY ANY 2 PRODUCTS & GET FLAT 15% OFF</h3>
+      <p class="subtitle">Because simplicity should come easy.</p>
+      <div class="offer-code">
+        <span>Use Code: <strong>BUY2</strong></span>
+        <button class="copy-btn" aria-label="Copy BUY2">
+          <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Apply_1.png?v=1745061951" alt="Copy code"/>
+        </button>
+      </div>
+    </div>
+    <div class="offer-item" data-code="BUY4">
+      <h3>BUY ANY 4 OR MORE PRODUCTS & GET FLAT 25% OFF</h3>
+      <p class="subtitle">Because simplicity should come easy.</p>
+      <div class="offer-code">
+        <span>Use Code: <strong>BUY4</strong></span>
+        <button class="copy-btn" aria-label="Copy BUY4">
+          <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Apply_1.png?v=1745061951" alt="Copy code"/>
+        </button>
+      </div>
+    </div>
+
+    <div class="slider-upi">GET 5% EXTRA ON UPI</div>
+<div class="slider-footer toggle-note" id="footerToggle">
+  APPLICABLE SITEWIDE | ALL PRODUCT | ALL COLLECTION
+  <span class="star">*</span>
+</div>
+
+<div class="slider-note" id="offerNote">
+  Note :- Not Applicable on goodbye edition & pre-launch products
+</div>
+
+
+    <!-- CTA -->
+    <a id="offerContinueBtn" class="offer-cta">Continue Shopping</a>
+  </div>
+</div>
+<div id="sliderOverlay" class="offer-slider__overlay"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  // ----- Helpers: price reading + formatting -----
+  const bar = document.querySelector('.offer-bar-container');
+  if (!bar) return;
+
+  function getUnitPrice() {
+    // Try Liquid-provided data first
+    let p = parseFloat(bar.dataset.unitPrice);
+    if (p && !isNaN(p) && p > 0) return p;
+
+    // Fallback to DOM
+    const selectors = [
+      '[itemprop="price"]',
+      '[data-product-price]',
+      'sale-price',
+      '.price__regular .price-item--regular',
+      '.product__price',
+      '.product-price',
+      '.price'
+    ];
+    for (const sel of selectors) {
+      const el = document.querySelector(sel);
+      if (!el) continue;
+      const raw = el.getAttribute('content') || el.textContent || '';
+      const num = parseFloat(raw.replace(/[^\d.]/g, ''));
+      if (num && !isNaN(num)) return num;
+    }
+    return 0;
+  }
+
+  const buyEl   = bar.querySelector('.offer-bar__buy');
+  const priceEl = bar.querySelector('.offer-bar__price');
+  const saveEl  = bar.querySelector('.offer-bar__save');
+
+  let qtyInput  = document.querySelector('input[name="quantity"]');
+  let unitPrice = getUnitPrice();
+  let lastQty   = null;
+
+  function currentQty(){
+    const v = parseInt(qtyInput && qtyInput.value, 10);
+    const q = isNaN(v) ? 1 : v;
+    return q < 2 ? 2 : q; // logic starts at 2+
+  }
+  function discountPct(qty){
+    if (qty === 2) return 0.15;
+    if (qty === 3) return 0.20;
+    return 0.25; // 4+
+  }
+  function inr(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  function updateOffer(){
+    unitPrice = getUnitPrice();
+    const qty = currentQty();
+    const pct = discountPct(qty);
+    const unit = unitPrice * (1 - pct);
+    const saved = unitPrice * qty * pct;
+
+    if (!unitPrice || isNaN(unitPrice) || unitPrice <= 0) return;
+
+    buyEl.textContent   = 'BUY ' + qty;
+    priceEl.textContent = inr(unit) + ' each';
+    saveEl.textContent  = 'You save ' + inr(saved);
+
+    lastQty = qty;
+  }
+
+  // Initial render
+  updateOffer();
+
+  // Quantity listeners
+  if (qtyInput) {
+    qtyInput.addEventListener('input', updateOffer);
+    qtyInput.addEventListener('change', updateOffer);
+    // Safety net for +/- buttons
+    setInterval(function(){
+      const q = currentQty();
+      if (q !== lastQty) updateOffer();
+    }, 250);
+  }
+
+  // Watch price node for variant changes
+  const priceNode =
+    document.querySelector('[itemprop="price"]') ||
+    document.querySelector('sale-price') ||
+    document.querySelector('.product__price, .product-price, .price');
+
+  if (priceNode && 'MutationObserver' in window) {
+    const mo = new MutationObserver(updateOffer);
+    mo.observe(priceNode, { subtree: true, characterData: true, childList: true, attributes: true });
+  }
+
+  // ----- Slider toggles -----
+  const moreBtn  = document.querySelector('.offer-bar__more');
+  const slider   = document.getElementById('offersSlider');
+  const overlay  = document.getElementById('sliderOverlay');
+  const closeBtn = document.querySelector('.offer-slider__close');
+  const header   = document.querySelector('.header');
+  const annc     = document.querySelector('.announcement-bar');
+  const continueBtn = document.getElementById('offerContinueBtn');
+
+  function hideHeader(){ if(header) header.style.display='none'; if(annc) annc.style.display='none'; }
+  function showHeader(){ if(header) header.style.display='';   if(annc) annc.style.display=''; }
+
+  function openOffers(){
+    slider.classList.add('open');
+    overlay.classList.add('active');
+    hideHeader();
+  }
+  function closeOffers(){
+    slider.classList.remove('open');
+    overlay.classList.remove('active');
+    showHeader();
+  }
+
+  if (moreBtn)  moreBtn.addEventListener('click', openOffers);
+  if (closeBtn) closeBtn.addEventListener('click', closeOffers);
+  if (overlay)  overlay.addEventListener('click', closeOffers);
+
+  // Close on ESC
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeOffers();
+  });
+
+  // Copy-to-clipboard
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const code = btn.closest('.offer-item')?.dataset.code;
+      if (!code) return;
+      navigator.clipboard.writeText(code).then(function(){
+        btn.style.opacity='0.6';
+        setTimeout(function(){ btn.style.opacity='1'; }, 800);
+      });
+    });
+  });
+
+  // Continue Shopping -> close overlay (keeps navigation)
+  if (continueBtn) {
+    continueBtn.addEventListener('click', function(){
+      // If you want to stop navigation and only close:
+      // e.preventDefault();
+      closeOffers();
+    });
+  }
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function(){
+  var footerToggle = document.getElementById('footerToggle');
+  var note = document.getElementById('offerNote');
+
+  if(footerToggle && note){
+    footerToggle.addEventListener('click', function(){
+      if(note.style.display === 'block'){
+        note.style.display = 'none';
+      } else {
+        note.style.display = 'block';
+      }
+    });
+  }
+});
+
+</script>

@@ -41,13 +41,10 @@ DYNAMIC ANNOUNCEMENT BAR (rotating + fade, Liquid-safe)
   {% elsif page %}{% assign current_handle = page.handle %}
   {% endif %}
 
-  <span id="announcement-text" class="fade">
-  {% if current_handle contains 'men' or current_handle contains 'kurta-1' or current_handle contains 'formal-shirt' or current_handle contains 'kurta-2' or current_handle contains 'kurtas-1' %}
-    NEW LAUNCH 100% LINEN SHIRT FOR MEN - <a href="/products/white-100-linen-half-sleeve-shirt-men" class="custom-bar-link">SHOP NOW</a>
-  {% else %}
-    YOUR FAVORITES, NOW IN NEW COLORS - <a href="/collections/new-launch" class="custom-bar-link">SHOP NOW</a>
-  {% endif %}
-  </span>
+<span id="announcement-text" class="fade">
+  MEET YOUR NEW WARDROBE ESSENTIALS - 
+  <a href="/collections/pre-launch" class="custom-bar-link">SHOP NOW</a>
+</span>
 </div>
 
 <script>
@@ -56,13 +53,15 @@ DYNAMIC ANNOUNCEMENT BAR (rotating + fade, Liquid-safe)
   if (!el) return;
 
   var messages = [
+
+    'MEET YOUR NEW WARDROBE ESSENTIALS - <a href="/collections/pre-launch" class="custom-bar-link">SHOP NOW</a>',
     {% if current_handle contains 'men' or current_handle contains 'kurta-1' or current_handle contains 'formal-shirt' or current_handle contains 'kurta-2' or current_handle contains 'kurtas-1' %}
-      'NEW LAUNCH 100% LINEN SHIRT FOR MEN - <a href="/products/white-100-linen-half-sleeve-shirt-men" class="custom-bar-link">SHOP NOW</a>',
+      'NEW COLOR LAUNCH OLIVE GREEN COTTON PANT FOR MEN - <a href="/products/white-100-linen-half-sleeve-shirt-men" class="custom-bar-link">SHOP NOW</a>',
     {% else %}
-      'YOUR FAVORITES, NOW IN NEW COLORS - <a href="/collections/new-launch" class="custom-bar-link">SHOP NOW</a>',
+      'YOUR FAVORITES, NOW IN NEW COLORS - <a href="/collections/new-color-launch" class="custom-bar-link">SHOP NOW</a>',
     {% endif %}
     'Free Delivery with Free Returns & Free Exchanges',
-    'Loved by 5,00,000+ Women ❤️',
+    'Loved by 6,00,000+ Customers ❤️',
     '100% Refund if you don&#39;t ❤️ it'
   ];
 

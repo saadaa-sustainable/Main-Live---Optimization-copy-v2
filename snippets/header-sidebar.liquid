@@ -384,6 +384,12 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
+                    <li>
+              <a href="/collections/airy-linen-flared-dress"">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_13_e079b39b-363d-4582-8449-94e42ebd7e56.webp?v=1756378093" class="menu-img" alt="">
+                Airy Linen Flared Dress<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+              </a>
+            </li>
                    <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/airy-linen-wide-leg-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5_2.png?v=1753271491" class="menu-img" alt="">Airy Linen Wide Leg Pants</a></li>
                   <li><a href="/collections/short-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6309ae0851cc4c5f6751bf7b0933229f60eed077.webp?v=1752565415" class="menu-img" alt="">Airy-Linen Short Kurtas</a></li>
@@ -393,6 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </ul>
               </details>
             </li>
+          
             <li>
               <a href="/collections/all-whites" class="header-sidebar__linklist-button" style="padding: 0px 16px;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/download.webp?v=1752564952" class="menu-img" alt="">
@@ -410,6 +417,12 @@ document.addEventListener('DOMContentLoaded', function () {
         </button>
         <div class="saadaa-accordion-content">
           <ul class="header-sidebar__linklist unstyled-list" role="list">
+            {% comment %} <li>
+              <a href="/collections/men-cotton-pant" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_12_d76e65a2-1a5e-48cb-a523-1b450e5b4e28.webp?v=1756377574" class="menu-img" alt="">
+                Men Cotton Pant<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+              </a>
+            </li> {% endcomment %}
             <li>
               <a href="/collections/men-100-linen-full-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5.webp?v=1753246195" class="menu-img" alt="">
@@ -521,17 +534,19 @@ document.addEventListener('DOMContentLoaded', function () {
 ">
           <button class="saadaa-accordion-title">COLLABORATE WITH US <span class="icon"></span></button>
           <div class="saadaa-accordion-content">
+             <a href="/pages/franchise-onboarding">Saadaa Franchise</a><br>
             <a href="/pages/b2b-bulk-enquiries-form">For B2b/ Bulk Enquiries</a><br>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScoYIX8AzUL-C7cA219JJURZij7pQJ5RJZvaEYGRp9e9pgdww/viewform">Partner as Supplier</a><br>
+            <a href="/pages/vendor-onboarding">Partner as Supplier</a><br>
             <!-- <a href="/pages/work-with-us">Work with us</a><br> -->
+            <a href="/pages/creators">Saadaa Kalakaar</a><br>
             <a href="/pages/uniform">The Collective Thread</a>
           </div>
         </div>
 
-        <!-- <div class="saadaa-accordion-section">
+        {% comment %} <!-- <div class="saadaa-accordion-section">
           <a href="/apps/return_prime"><button class="saadaa-accordion-title">PARTNER AS SUPPLIER</button></a>
           
-        </div> -->
+        </div> --> {% endcomment %}
 
         <div class="saadaa-accordion-section">
           <a href="/pages/community"><button class="saadaa-accordion-title">SAADAA COMMUNITY</button></a>
@@ -575,8 +590,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
      <!-- INFO LINE -->
 <div class="saadaa-sticky-bottom">
-  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Frame_5.webp?v=1752565302" alt="info" style="width:100%;display:block;margin:0 auto;">
+  <div class="trust-badge trust-badge--stack" role="complementary" aria-label="Loved by six lakh customers">
+    <div class="trust-badge__stars" aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="star"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.4L12 16.9 6 19.9l1.5-6.4-5-4.4 6.6-.6L12 2.5z"/></svg>
+      <svg viewBox="0 0 24 24" class="star"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.4L12 16.9 6 19.9l1.5-6.4-5-4.4 6.6-.6L12 2.5z"/></svg>
+      <svg viewBox="0 0 24 24" class="star"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.4L12 16.9 6 19.9l1.5-6.4-5-4.4 6.6-.6L12 2.5z"/></svg>
+      <svg viewBox="0 0 24 24" class="star"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.4L12 16.9 6 19.9l1.5-6.4-5-4.4 6.6-.6L12 2.5z"/></svg>
+      <svg viewBox="0 0 24 24" class="star"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.4L12 16.9 6 19.9l1.5-6.4-5-4.4 6.6-.6L12 2.5z"/></svg>
+    </div>
+    <span class="trust-badge__text">Loved by 6,00,000+ customers </span>
+  </div>
 </div>
+
+
+
   </div>
 </header-sidebar>
 
@@ -595,5 +622,92 @@ document.addEventListener('DOMContentLoaded', function () {
   padding-top: 0px;
   box-shadow: 0 -2px 8px 0 rgba(0,0,0,0.04);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* stack remains centered */
+.trust-badge--stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  background: #faf8f6;     /* optional */
+  border-top: 1px solid #f0e7d9;
+}
+
+/* stars row */
+.trust-badge__stars {
+  display: flex !important;        /* ensure visible */
+  gap: 6px;
+  margin-bottom: 13px;
+}
+
+/* pop-in animation per star */
+.trust-badge__stars .star {
+  width: 18px;
+  height: 18px;
+  fill: #F5B400;
+  transform-origin: 50% 50%;
+  opacity: 0;
+  transform: scale(0.2);
+  animation: starPop 420ms cubic-bezier(.22,.72,.28,1.18) forwards;
+  will-change: transform, opacity;
+}
+
+/* staggered delays for each star */
+.trust-badge__stars .star:nth-child(1) { animation-delay: 0ms; }
+.trust-badge__stars .star:nth-child(2) { animation-delay: 120ms; }
+.trust-badge__stars .star:nth-child(3) { animation-delay: 240ms; }
+.trust-badge__stars .star:nth-child(4) { animation-delay: 360ms; }
+.trust-badge__stars .star:nth-child(5) { animation-delay: 480ms; }
+
+@keyframes starPop {
+  0%   { opacity: 0; transform: scale(0.2); }
+  60%  { opacity: 1; transform: scale(1.22); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* text: unchanged, no animation */
+.trust-badge__text {
+  font-weight: 800;
+  color: #000;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 360px) {
+  .trust-badge__text { font-size: 14px; }
+  .trust-badge__stars .star { width: 16px; height: 16px; }
+}
+
+/* Accessibility: respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .trust-badge__stars .star { animation: none; opacity: 1; transform: none; }
+}
+
+
+
 
 </style>

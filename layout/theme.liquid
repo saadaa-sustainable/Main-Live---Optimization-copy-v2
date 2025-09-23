@@ -7,7 +7,7 @@
 >
   <head>
 
- <!-- Start of Async Affiniv Code -->
+ {% comment %} <!-- Start of Async Affiniv Code -->
  <script type="text/javascript">
  (function (w, d, s, o, f, js, fjs) {
      w[o] = w[o] || function () { 
@@ -24,7 +24,7 @@
      companyId: '5997284636811215795'
  });
  </script>
- <!-- End of Async Affiniv Code -->
+ <!-- End of Async Affiniv Code --> {% endcomment %}
 
 {% render 'link-preview-cards' %}
     <!-- Preconnect critical domains -->
@@ -197,7 +197,7 @@
       <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
     {%- endif -%}
 
-    <script async src="{{ 'es-module-shims.min.js' | asset_url }}" defer></script>
+    <script async src="{{ 'es-module-shims.min.js' | asset_url }}" ></script>
 
 
     {{ content_for_header }}
@@ -267,7 +267,7 @@
 
 <!-- Floating WhatsApp Icon End -->
 
-{%- unless template.name == 'index' -%}
+{% comment %} {%- unless template.name == 'index' -%}
   <!-- Preloader Start -->
   <style>
     #preloader {
@@ -306,7 +306,7 @@
     });
   </script>
   <!-- Preloader End -->
-{%- endunless -%}
+{%- endunless -%} {% endcomment %}
 
 
 
@@ -364,10 +364,24 @@
           data-bg="{{ block.settings.background }}"
           style="display: block !important;"
         ></div>
-        <script src="https://www.fittora.app/widget-personaliser/widget.js" async defer></script>
+        <script src="https://www.fittora.app/widget-personaliser/widget.js" defer></script>
       </div>
     {% endif %}
-    <script src="https://www.fittora.app/event-tracker/tracker.js" async defer></script>
+    {% if template == 'collection' %}
+      <div class="fittora-personaliser-container" style="min-height: 110px; display: none;">
+        <div
+          id="fittora-personaliser-root"
+          data-storedomain="{{ shop.permanent_domain }}"
+          data-theme="{{ section.settings.theme }}"
+          data-variant="{{ section.settings.variant }}"
+          data-cta-label="{{ section.settings.cta_label }}"
+          data-bg="{{ block.settings.background }}"
+          style="display: block !important;"
+        ></div>
+        <script src="https://www.fittora.app/widget-personaliser/widget.js"  defer></script>
+      </div>
+    {% endif %}
+    <script src="https://www.fittora.app/event-tracker/tracker.js"  defer></script>
 
     <main id="main" class="anchor">
       {{ content_for_layout }}
@@ -557,4 +571,7 @@
     <!-- end order-cancel code -->
 
   </body>
+
+
+  <script async src="https://app.kiwisizing.com/web/js/dist/kiwiSizing/plugin/SizingPlugin.prod.js?v=323"></script>
 </html>

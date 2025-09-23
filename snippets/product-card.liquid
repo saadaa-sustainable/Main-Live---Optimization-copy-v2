@@ -44,15 +44,15 @@
   endif
 
   # Hide rating on Pre Launch collection
-  if collection and collection.title == 'Pre Launch'
-    assign show_rating = false
-  endif
+ 
 -%}
 {% liquid
   assign publishDateInSecond = product.published_at | date: '%s' | plus: 7776000
   assign dateNow = 'now' | date: '%s' | times: 1
 %}
-
+ {% comment %} if collection and collection.title == 'Pre Launch'
+      assign show_rating = false
+        endif %} {% endcomment %}
 <product-card
   {% if reveal %}
     reveal-on-scroll="true"
@@ -75,11 +75,21 @@
   {%- comment -%}
     Wrapper: <div> for Pre Launch (no PDP link), otherwise <a> to PDP
   {%- endcomment -%}
-  {% if collection and collection.title == "Pre Launch" %}
-    <div class="product-card" data-inventory="{{ total_inventory }}">
-  {% else %}
-    <a href="{{ product.url }}" class="product-card" data-inventory="{{ total_inventory }}">
-  {% endif %}
+{% if collection and collection.title == "Pre Launch" %}
+  <div
+    class="product-card"
+    data-inventory="{{ total_inventory }}"
+    data-pinned="{% if product.tags contains 'on_top_of_collection' %}true{% else %}false{% endif %}"
+  >
+{% else %}
+  <a
+    href="{{ product.url }}"
+    class="product-card"
+    data-inventory="{{ total_inventory }}"
+    data-pinned="{% if product.tags contains 'on_top_of_collection' %}true{% else %}false{% endif %}"
+  >
+{% endif %}
+
 
     {%- comment -%}
       --------------------------------------------------------------------------------------------------------------------
@@ -344,7 +354,7 @@
     </div>
 
     {%- comment -%}  FOR PRE LAUNCH COLLECTION PAGE START {%- endcomment -%}
-    {% if collection and collection.title == "Pre Launch" %}
+    {% comment %} {% if collection and collection.title == "Pre Launch" %}
       <div class="product-card__notify">
         <a
           href="https://wa.me/919251998279?text=Hi,%20I%20would%20like%20to%20sign%20up%20for%20the%20new%20product%20launch%20by%20Saadaa."
@@ -354,20 +364,20 @@
           NOTIFY ME
         </a>
       </div>
-    {% endif %}
+    {% endif %} {% endcomment %}
     {%- comment -%}  FOR PRE LAUNCH COLLECTION PAGE END {%- endcomment -%}
 
   {%- comment -%}
     Close wrapper: </div> for Pre Launch, otherwise </a>
   {%- endcomment -%}
-  {% if collection and collection.title == "Pre Launch" %}
+  {% comment %} {% if collection and collection.title == "Pre Launch" %}
     </div>
-  {% else %}
+  {% else %} {% endcomment %}
     </a>
-  {% endif %}
+  {% comment %} {% endif %} {% endcomment %}
 </product-card>
 
-<style>
+{% comment %} <style>
   .product-card__notify {
     display: flex;
     justify-content: center;
@@ -382,11 +392,11 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: fit-content;
-    
+    margin-top: 10px;
   }
   .notify-btn:hover { background-color: #1ebe5d; }
 
    {% if collection and collection.title == "Pre Launch" %}
     .text-subdued  { display: none; }
   {% endif %} 
-</style>
+</style> {% endcomment %}

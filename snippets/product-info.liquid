@@ -18,6 +18,26 @@
   be only used on the product page for the main product
 {%- endcomment -%}
 
+
+
+
+
+<style>
+  /* Hide by default (desktop/tablet) */
+  #breadcrumbs { display: block !important; }
+
+  /* Show on mobile only */
+  @media (max-width: 767px) {
+    #breadcrumbs { display: none !important; }
+  }
+</style>
+
+
+
+
+
+
+
 {%- capture product_form_id -%}product-form-{{ product.id }}-{{ section.id }}{%- endcapture -%}
 
 <safe-sticky class="product-info {% if center_basic_info %}product-info--center{% endif %}">
@@ -29,7 +49,7 @@
   </span>
 
   {% assign special_collections = "AIRY-LINEN SHORTS,MEN AIRY-LINEN SHORT KURTAS,AIRY LINEN PANTS,THE FORMAL PANTS,EVERYDAY COTTON TOP,THE FORMAL SHIRTS" | split: "," %}
-  {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant,Women Plus Size Airy-Linen Shirt" | split: "," %}
+  {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant,Women Plus Size Airy-Linen Shirt,Women Plus Size Airy Linen Short Kurta" | split: "," %}
  
   {% comment %}
       {% assign special_collections2 = "Women Straight Fit Formal Pant" | split: "," %}
@@ -48,11 +68,11 @@
     </span>
   {% elsif special_collections1 contains selected_collection.title %}
     <span>
-      <a href="/collections/women-plus-size">Women Plus Size</a> /
+      <a href="/collections/women-plus-size">Plus Edition</a> /
     </span>
   {% else %}
     {% for collection in product.collections %}
-      {% if collection.title contains 'Shop All' %}
+      {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" %}
         <span>
           <a href="{{ collection.url }}">{{ collection.title }}</a> /
         </span>
@@ -74,6 +94,7 @@
  {% endcomment %}
   
 </div>
+
 
 
     {%- liquid
@@ -216,6 +237,89 @@
   
               </div>
           <div style="margin-top: 3px;">Inclusive of all taxes</div>
+
+          
+
+{% if template.suffix == 'color-size-combo' %}
+<!-- ===== Save ₹___ instantly — single-line badge (dynamic) ===== -->
+<style>
+  .save-line-badge{
+    display:inline-block;
+    color:#209020;                 /* green text, no background */
+    font-size:14px;
+    font-weight:800;
+    line-height:2;
+    white-space:nowrap;
+    margin:0;
+    
+  }
+</style>
+
+{%- assign v = product.selected_or_first_available_variant -%}
+<span
+  id="saveLineBadge-{{ product.id }}"
+  class="save-line-badge"
+  data-price-cents="{{ v.price }}"
+  data-compare-cents="{{ v.compare_at_price | default: 0 }}"
+  hidden>
+  Save ₹0 instantly
+</span>
+
+<script>
+(() => {
+  const el = document.getElementById('saveLineBadge-{{ product.id }}');
+  if (!el) return;
+
+  const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+
+  function render(priceCents, compareCents){
+    const p = Number(priceCents)   || 0;
+    const c = Number(compareCents) || 0;
+    const diff = c - p; // cents/paise
+
+    if (diff > 50) { // show only if ~₹1+
+      const rupees = Math.round(diff / 100);
+      el.textContent = `Save ₹${inr.format(rupees)} instantly`;
+      el.hidden = false;
+    } else {
+      el.hidden = true;
+    }
+    el.dataset.priceCents   = p;
+    el.dataset.compareCents = c;
+  }
+
+  // Initial render from Liquid-provided data attributes
+  render(el.dataset.priceCents, el.dataset.compareCents);
+
+  // Helper to update from a Shopify variant object (amounts are in cents)
+  function updateFromVariant(variant){
+    if (!variant) return;
+    render(variant.price, variant.compare_at_price);
+  }
+
+  // Theme events (Dawn/OS 2.0 and many others)
+  document.addEventListener('variant:change', e => updateFromVariant(e.detail && e.detail.variant));
+  document.addEventListener('product:variant-change', e => updateFromVariant(e.detail && e.detail.variant));
+
+  // Fallback: observe the variant select and use product JSON
+  const variantSelect = document.querySelector('form[action*="/cart/add"] [name="id"]');
+  const jsonEl = document.querySelector('script[id^="ProductJson-"]') || document.getElementById('ProductJson-Manual');
+  let productJson = null;
+  if (jsonEl && jsonEl.textContent) { try { productJson = JSON.parse(jsonEl.textContent); } catch(e){} }
+
+  if (variantSelect && productJson && Array.isArray(productJson.variants)) {
+    variantSelect.addEventListener('change', () => {
+      const id = String(variantSelect.value);
+      const v  = productJson.variants.find(x => String(x.id) === id);
+      if (v) updateFromVariant(v);
+    });
+  }
+})();
+</script>
+<!-- ===== / Save ₹___ instantly — single-line badge ===== -->
+{% endif %}
+
+
               {% comment %} {%- render 'price-list', product: product, variant: product.selected_or_first_available_variant, context: 'product', form_id: product_form_id -%} {% endcomment %}
             </div>
           </div>
@@ -300,7 +404,181 @@
 
 
 
+{% comment %} DILEVERY / DISPATCH / ORDER BY START {% endcomment %}
 
+
+
+<!-- Order Timeline (scoped) -->
+<div class="ot" aria-label="Order status timeline">
+  <div class="ot-card">
+    <div class="ot-tl">
+      <!-- Step 1 -->
+      <div class="ot-step" aria-current="step">
+        <div class="ot-icon">
+          <!-- Cart -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="9" cy="20" r="1"></circle>
+            <circle cx="17" cy="20" r="1"></circle>
+            <path d="M3 3h2l2.4 10.4A2 2 0 0 0 9.36 15H18a2 2 0 0 0 2-1.6L22 7H6"></path>
+          </svg>
+        </div>
+        <div class="ot-date" id="orderBy">—</div>
+        <div class="ot-label">Order Placed</div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="ot-step">
+        <div class="ot-icon">
+          <!-- Truck -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 7h11v8H3z"></path>
+            <path d="M14 10h4l3 3v2h-7"></path>
+            <circle cx="7" cy="18" r="2"></circle>
+            <circle cx="17" cy="18" r="2"></circle>
+          </svg>
+        </div>
+        <div class="ot-date" id="dispatchBy">—</div>
+        <div class="ot-label">Order Shipped</div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="ot-step">
+        <div class="ot-icon">
+          <!-- Box -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 7l9-4 9 4-9 4-9-4z"></path>
+            <path d="M3 7v10l9 4 9-4V7"></path>
+            <path d="M12 11v10"></path>
+          </svg>
+        </div>
+        <div class="ot-date" id="deliveryBy">—</div>
+        <div class="ot-label">Estimated Delivery</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ===== Order Timeline – SCOPED (won't affect the page) ===== */
+  .ot { --ot-card:#f6f7f8; --ot-text:#0f172a; --ot-muted:#6b7280; --ot-muted2:#9ca3af; --ot-dot:#0a0a0a; --ot-line:#e5e7eb; }
+.ot-card {
+    background: var(--ot-card);
+    border-radius: 16px;
+    padding: 16px 1px 16px;
+}
+  .ot-tl{
+    position:relative;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:28px;
+    padding:8px 8px 0;
+  }
+
+  /* light connector line behind icons (centered on icon circle) */
+  .ot-tl::before{
+    content:"";
+    position:absolute;
+    left:64px; right:64px;
+    top:30px;            /* aligns with icon center (44px tall) */
+    height:2px;
+    background:var(--ot-line);
+    z-index:0;
+  }
+
+  .ot-step{
+    flex:1 1 0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    min-width:0;
+  }
+
+  .ot-icon{
+    display:grid; place-items:center;
+    width:44px; height:44px; border-radius:999px;
+    background:var(--ot-dot);
+    position:relative; z-index:1; /* above the line */
+  }
+  .ot-icon svg{ width:22px; height:22px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+.ot-date {
+    margin-top: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--ot-text);
+    white-space: nowrap;
+}
+  .ot-label{
+    margin-top:1px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ot-muted);
+  }
+  .ot-note{
+    margin-top:12px;
+    font-size:12px;
+    color:var(--ot-muted2);
+    text-align:center;
+  }
+
+  @media (max-width:640px){
+    .ot-tl{ gap:16px; }
+    .ot-tl::before {
+        left: 54px;
+        right: 54px;
+        top: 27px;
+    }
+    .ot-icon{ width:40px; height:40px; }
+    .ot-date{ font-size:11px; }
+    .ot-label{ font-size:10px; }
+  }
+</style>
+
+<script>
+  // ===== Timeline dates (scoped to these IDs) =====
+  (function(){
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const el = id => document.getElementById(id);
+
+    function ordinal(n){
+      const j=n%10, k=n%100;
+      if (k>=11 && k<=13) return n+"th";
+      if (j===1) return n+"st";
+      if (j===2) return n+"nd";
+      if (j===3) return n+"rd";
+      return n+"th";
+    }
+    function addDays(d, days){ const x=new Date(d); x.setDate(x.getDate()+days); return x; }
+    function fmt(d){ return `${months[d.getMonth()]} ${ordinal(d.getDate())}`; }
+    function range(a,b){
+      const sameMonth = a.getMonth()===b.getMonth() && a.getFullYear()===b.getFullYear();
+      return sameMonth
+        ? `${months[a.getMonth()]} ${ordinal(a.getDate())}\u2013${ordinal(b.getDate())}`
+        : `${fmt(a)}\u2009–\u2009${fmt(b)}`;
+    }
+
+    function update(){
+      const now = new Date();
+      // Logic: Order today; Shipped today–tomorrow; Delivery +2–+5
+      el('orderBy').textContent    = `${months[now.getMonth()]} ${ordinal(now.getDate())}`;
+      el('dispatchBy').textContent = range(addDays(now, 0), addDays(now, 1));
+      el('deliveryBy').textContent = range(addDays(now, 2), addDays(now, 5));
+
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'local time';
+      const tzNode = el('tzNote'); if (tzNode) tzNode.textContent = `Times shown in ${tz}.`;
+    }
+
+    update();
+    setInterval(update, 15*60*1000);
+  })();
+</script>
+
+
+
+{% comment %} DILEVERY / DISPATCH / ORDER BY END {% endcomment %}
 
 
 

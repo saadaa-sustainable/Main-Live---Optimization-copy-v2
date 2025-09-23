@@ -573,26 +573,27 @@
 
 
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   const productList = document.querySelector('.product-list');
   if (!productList) return;
 
-  // Find all direct children (wrappers)
   const items = Array.from(productList.children);
 
-  // For each wrapper, find the product card and get its data-inventory
   items.sort((a, b) => {
-    const cardA = a.querySelector('.product-card[data-inventory]');
-    const cardB = b.querySelector('.product-card[data-inventory]');
-    const invA = cardA ? parseInt(cardA.getAttribute('data-inventory'), 10) || 0 : 0;
-    const invB = cardB ? parseInt(cardB.getAttribute('data-inventory'), 10) || 0 : 0;
-    return invB - invA;
+    const ca = a.querySelector('.product-card');
+    const cb = b.querySelector('.product-card');
+
+    const pinnedA = ca && (ca.getAttribute('data-pinned') === 'true' || ca.getAttribute('data-pinned') === '1') ? 1 : 0;
+    const pinnedB = cb && (cb.getAttribute('data-pinned') === 'true' || cb.getAttribute('data-pinned') === '1') ? 1 : 0;
+
+    const invA = ca ? parseInt(ca.getAttribute('data-inventory') || '0', 10) : 0;
+    const invB = cb ? parseInt(cb.getAttribute('data-inventory') || '0', 10) : 0;
+
+    return (pinnedB - pinnedA) || (invB - invA);
   });
 
-  // Remove all children and re-append in the new order
-  items.forEach(item => productList.appendChild(item));
+  items.forEach(el => productList.appendChild(el));
 });
 </script>
 

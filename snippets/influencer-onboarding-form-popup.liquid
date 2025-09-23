@@ -1,0 +1,482 @@
+<!-- Influencer Onboarding (plain HTML/CSS/JS; no Shopify section schema) -->
+<style>
+  /* === Influencer form styles (scoped/unique) === */
+  .influencer-onboarding input,
+  .influencer-onboarding select,
+  .influencer-onboarding textarea {
+    border-bottom: .5px solid #333;
+    outline: none;
+    height: 24px;
+    font-size: 12px;
+    background: white;
+    
+  }
+
+
+  .influencer-onboarding .influencer-container .h2 {
+    font-weight: 500;
+  }
+
+  .influencer-onboarding label {
+    font-size: 11px;
+    color: black;
+    margin-bottom: 3px;
+  }
+
+  .influencer-onboarding .influencer-container {
+    background: white;
+    padding: 9px 22px;
+  }
+
+  .influencer-onboarding .button {
+    margin-top: 20px;
+    margin-inline: 24px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .inf-gap-10 {
+    gap: 1.5rem;
+  }
+
+  .inf-vstack {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 10px;
+    gap: 3px;
+  }
+
+  .inf-gap-2 {
+    gap: .5rem;
+  }
+
+  .inf-gap-4 {
+    gap: 1rem;
+  }
+
+  .inf-section-heading {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    margin-top: 14px;
+    color: #3b3b3b;
+  }
+
+  .inf-helper {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 4px;
+    margin-top: 1px;
+  }
+
+  @media (min-width: 768px) {
+    .influencer-onboarding .influencer-container {
+      padding: 38px 34px;
+    }
+
+    .influencer-onboarding input,
+    .influencer-onboarding select,
+    .influencer-onboarding textarea {
+      font-size: 15px;
+      height: 32px;
+    }
+
+    .influencer-onboarding label {
+      font-size: 13px;
+    }
+
+    .influencer-onboarding .influencer-container .h2 {
+      font-size: 2rem;
+    }
+
+    .influencer-onboarding .influencer-container .h6 {
+      font-size: 1.2rem;
+    }
+
+    .inf-section-heading {
+      font-size: 19px;
+    }
+  }
+
+  .inf-text-left {
+    text-align: left;
+  }
+
+  .inf-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .inf-row>.inf-vstack {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .influencer-onboarding input::placeholder {
+    font-size: 11px;
+    color: #aaa;
+  }
+
+  /* messages */
+  #inf-message {
+    display: none;
+    margin: 12px 0 0 0;
+    padding: 10px 8px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  #inf-message.success {
+    background: #e6ffed;
+    color: #155724;
+    border: 1px solid #a6e7c3;
+  }
+
+  #inf-message.error {
+    background: #fff0f0;
+    color: #c80f2e;
+    border: 1px solid #f7cac9;
+  }
+
+  #inf-message.submitting {
+    background: #f3f8ff;
+    color: #1863b8;
+    border: 1px solid #b4d8ff;
+  }
+
+  /* radio tidy */
+  .inf-radio-group {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  .inf-radio {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+</style>
+
+<div class="influencer-onboarding">
+  <div class="influencer-container inf-vstack inf-gap-10">
+    <div class="inf-text-left inf-vstack inf-gap-2">
+      <p class="h2">Influencer Onboarding</p>
+      <p class="h6">Tell us about you and your content</p>
+    </div>
+
+    <form class="inf-vstack inf-gap-5" id="inf_myForm" autocomplete="off">
+      <!-- EMAIL -->
+      <div class="inf-vstack">
+        <label for="inf_email">Email <span style="color:red">*</span></label>
+        <input type="email" id="inf_email" placeholder="name@example.com" required />
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <!-- NAME -->
+      <div class="inf-vstack">
+        <label for="inf_name">Name <span style="color:red">*</span></label>
+        <input type="text" id="inf_name" placeholder="Your full name" required />
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <!-- INSTAGRAM USERNAME -->
+      <div class="inf-vstack">
+        <label for="inf_instagram">Instagram User Name <span style="color:red">*</span></label>
+        <input type="text" id="inf_instagram" placeholder="@yourhandle" required />
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <!-- GENDER -->
+      <div class="inf-vstack">
+        <label>Gender <span style="color:red">*</span></label>
+        <div class="inf-radio-group" role="radiogroup" aria-labelledby="inf_gender">
+          <label class="inf-radio"><input type="radio" name="inf_gender" value="Male" required /> Male</label>
+          <label class="inf-radio"><input type="radio" name="inf_gender" value="Female" /> Female</label>
+          <label class="inf-radio"><input type="radio" name="inf_gender" value="Other" /> Other</label>
+        </div>
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <!-- CONTACT NUMBER -->
+      <div class="inf-vstack">
+        <label for="inf_contact">Contact Number <span style="color:red">*</span></label>
+        <input type="tel" id="inf_contact" maxlength="10" placeholder="10-digit mobile number" required />
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <!-- CONTENT TYPE -->
+      <div class="inf-vstack">
+        <label for="inf_content_type">Content Type <span style="color:red">*</span></label>
+        <select id="inf_content_type" required>
+          <option value="">Choose</option>
+          <option>Fashion Styling</option>
+          <option>Home Decor</option>
+          <option>DIY</option>
+          <option>Other</option>
+        </select>
+        <small style="color:red;font-size:10px"></small>
+      </div>
+      <div class="inf-vstack" id="inf_content_other_wrap" style="display:none;">
+        <label for="inf_content_other">If "Other", please specify</label>
+        <input type="text" id="inf_content_other" placeholder="Describe your content niche" />
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <!-- ADDRESS + PIN -->
+      <div class="inf-vstack">
+        <label for="inf_address">House Address and PIN Code <span style="color:red">*</span></label>
+        <span class="inf-helper">Please fill this detail so that we could deliver the product</span>
+        <textarea id="inf_address" rows="3" placeholder="House/Flat, Street, Area, City, State" required></textarea>
+        <small style="color:red;font-size:10px"></small>
+      </div>
+      <div class="inf-row">
+        <div class="inf-vstack">
+          <label for="inf_pincode">PIN Code <span style="color:red">*</span></label>
+          <input type="text" id="inf_pincode" maxlength="6" placeholder="6-digit PIN" required />
+          <small style="color:red;font-size:10px"></small>
+        </div>
+      </div>
+
+      <!-- TOP 3 REELS LINKS -->
+      <div class="inf-vstack">
+        <label>Top 3 performing Reels Link <span style="color:red">*</span></label>
+        <div class="inf-row">
+          <div class="inf-vstack"><input type="url" id="inf_reel_1" placeholder="https://www.instagram.com/reel/..."
+              required /><small style="color:red;font-size:10px"></small></div>
+          <div class="inf-vstack"><input type="url" id="inf_reel_2" placeholder="https://www.instagram.com/reel/..."
+              required /><small style="color:red;font-size:10px"></small></div>
+          <div class="inf-vstack"><input type="url" id="inf_reel_3" placeholder="https://www.instagram.com/reel/..."
+              required /><small style="color:red;font-size:10px"></small></div>
+        </div>
+      </div>
+
+      <!-- BRAND ALIGNMENT + SUGGESTIONS -->
+      <div class="inf-vstack">
+        <label for="inf_alignment">How does your content correlate with our brand values? Send us 3 video reel
+          suggestions for the same <span style="color:red">*</span></label>
+        <textarea id="inf_alignment" rows="5" placeholder="Briefly describe the alignment and list 3 reel ideas"
+          required></textarea>
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <!-- FOLLOWERS COUNT -->
+      <div class="inf-vstack">
+        <label>Followers count <span style="color:red">*</span></label>
+        <div class="inf-radio-group">
+          <label class="inf-radio"><input type="radio" name="inf_followers" value="Below 2k" required /> Below
+            2k</label>
+          <label class="inf-radio"><input type="radio" name="inf_followers" value="2k-10k" style="margin: 0px;"/> 2k-10k</label>
+          <label class="inf-radio"><input type="radio" name="inf_followers" value="10k-50k" style="margin: 0px;"/> 10k-50k</label>
+          <label class="inf-radio"><input type="radio" name="inf_followers" value="50k-100k"style="margin: 0px;" /> 50k-100k</label>
+          <label class="inf-radio"><input type="radio" name="inf_followers" value="100k-500k" style="margin: 0px;"/> 100k-500k</label>
+          <label class="inf-radio"><input type="radio" name="inf_followers" value="Above 500k" style="margin: 0px;"/> Above 500k</label>
+        </div>
+        <small style="color:red;font-size:10px"></small>
+      </div>
+
+      <button type="submit" class="button" id="inf_submit">Submit Application</button>
+      <div id="inf-message"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  /* ========= Helpers & validation ========= */
+  const INF = {
+    email: document.getElementById('inf_email'),
+    name: document.getElementById('inf_name'),
+    ig: document.getElementById('inf_instagram'),
+    contact: document.getElementById('inf_contact'),
+    contentType: document.getElementById('inf_content_type'),
+    contentOtherWrap: document.getElementById('inf_content_other_wrap'),
+    contentOther: document.getElementById('inf_content_other'),
+    address: document.getElementById('inf_address'),
+    pincode: document.getElementById('inf_pincode'),
+    reel1: document.getElementById('inf_reel_1'),
+    reel2: document.getElementById('inf_reel_2'),
+    reel3: document.getElementById('inf_reel_3'),
+    alignment: document.getElementById('inf_alignment'),
+    form: document.getElementById('inf_myForm'),
+    submit: document.getElementById('inf_submit'),
+    message: document.getElementById('inf-message')
+  };
+
+  function infShowErrorBelowInput(input, msg = 'Please enter a correct value!') {
+    // find the nearest <small> sibling and write into it
+    let el = input.nextElementSibling;
+    while (el && el.tagName !== 'SMALL') el = el.nextElementSibling;
+    if (el) {
+      el.innerHTML = msg;
+      input.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+      input.focus();
+    }
+  }
+
+  function isValidPhone(info) {
+    return /^\d{10}$/.test(info) && info[0] !== '0';
+  }
+
+  function isValidPin(info) {
+    return /^\d{6}$/.test(info);
+  }
+
+  function isValidURL(s) {
+    try {
+      new URL(s);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  INF.contact.addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '').slice(0, 10);
+  });
+  INF.pincode.addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '').slice(0, 6);
+  });
+
+  INF.contentType.addEventListener('change', function () {
+    const isOther = this.value === 'Other';
+    INF.contentOtherWrap.style.display = isOther ? 'block' : 'none';
+    if (!isOther) {
+      INF.contentOther.value = '';
+    }
+  });
+
+  /* ========= Generic field validator ========= */
+function fieldValue(idOrEl, type) {
+    const el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+    if (!el && type !== 'radioRequired') return null;
+
+    if (type === 'radioRequired') {
+      const name = idOrEl; // here 'idOrEl' is the radio group name string
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      if (checked) return checked.value;
+
+      // write error into the group's <small>
+      const container = document.querySelector(`input[name="${name}"]`)?.closest('.inf-vstack');
+      const small = container ? container.querySelector('small') : null;
+      if (small) small.innerHTML = 'Please select an option';
+      return null;
+    }
+
+    if (type === 'select') {
+      if (el.value.trim()) return el.value.trim();
+      infShowErrorBelowInput(el);
+      return null;
+    }
+
+    if (type === 'email') {
+      if (el.value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim())) return el.value.trim();
+      infShowErrorBelowInput(el);
+      return null;
+    }
+
+    if (type === 'phone') {
+      if (el.value.trim() && isValidPhone(el.value.trim())) return el.value.trim();
+      infShowErrorBelowInput(el, 'Enter a valid 10-digit mobile number');
+      return null;
+    }
+
+    if (type === 'pincode') {
+      if (el.value.trim() && isValidPin(el.value.trim())) return el.value.trim();
+      infShowErrorBelowInput(el, 'Enter a valid 6-digit PIN');
+      return null;
+    }
+
+    if (type === 'url') {
+      if (el.value.trim() && isValidURL(el.value.trim())) return el.value.trim();
+      infShowErrorBelowInput(el, 'Enter a valid URL (include https://)');
+      return null;
+    }
+
+    // default text/textarea
+    if (el.value.trim()) return el.value.trim();
+    if (el.hasAttribute('required')) {
+      infShowErrorBelowInput(el);
+      return null;
+    }
+    return "";
+  }
+
+
+  /* ========= Submit handler ========= */
+  INF.form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    INF.message.textContent = "Submitting...";
+    INF.message.className = "submitting";
+    INF.message.style.display = "block";
+    INF.submit.disabled = true;
+
+    // clear inline errors
+    INF.form.querySelectorAll('small').forEach(s => s.innerHTML = "");
+
+    const data = {
+      email: fieldValue(INF.email, 'email'),
+      name: fieldValue(INF.name),
+      instagram: fieldValue(INF.ig),
+      gender: fieldValue('inf_gender', 'radioRequired'),
+      contactNumber: fieldValue(INF.contact, 'phone'),
+      contentType: fieldValue(INF.contentType, 'select'),
+      contentTypeOther: (INF.contentType.value === 'Other') ? fieldValue(INF.contentOther) : "",
+      address: fieldValue(INF.address),
+      pincode: fieldValue(INF.pincode, 'pincode'),
+      topReel1: fieldValue(INF.reel1, 'url'),
+      topReel2: fieldValue(INF.reel2, 'url'),
+      topReel3: fieldValue(INF.reel3, 'url'),
+      brandAlignmentAndIdeas: fieldValue(INF.alignment),
+      followersCount: fieldValue('inf_followers', 'radioRequired')
+    };
+
+    const allGood = Object.entries(data).every(([k, v]) => {
+      if (k === 'contentTypeOther' && INF.contentType.value !== 'Other') return true;
+      return v !== null && v !== undefined && v !== "";
+    });
+
+    if (!allGood) {
+      INF.message.style.display = "none";
+      INF.submit.disabled = false;
+      return;
+    }
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx8shvkl2xjUhvztPXmcloHYC30b4EjUdHFHEFxZ-Svtm-3H_E7uiWn1fsukWVceXV7XA/exec"; // <- put your Google Apps Script Web App URL here
+
+    fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(() => {
+        INF.message.textContent = "Application submitted successfully!";
+        INF.message.className = "success";
+        INF.message.style.display = "block";
+        INF.form.reset();
+        INF.submit.disabled = false;
+        INF.contentOtherWrap.style.display = 'none';
+        setTimeout(() => {
+          INF.message.textContent = "";
+          INF.message.style.display = "none";
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        INF.message.textContent = "An error occurred while submitting the form.";
+        INF.message.className = "error";
+        INF.message.style.display = "block";
+        INF.submit.disabled = false;
+      });
+  });
+</script>

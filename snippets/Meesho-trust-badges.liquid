@@ -1,3 +1,26 @@
+{% comment %} {% comment %}
+Hide Meesho-style Return Policy Section for:
+- Airy Linen Flared Dress
+- Men … Cotton Pant (any variation)
+- Straight fit formal pant(s)
+{% endcomment %}
+{% assign t = product.title | downcase %}
+{% assign hide_policy = false %}
+{% if t contains 'airy linen flared dress' %}
+  {% assign hide_policy = true %}
+{% elsif t contains 'men' and t contains 'cotton pant' %}
+  {% assign hide_policy = true %}
+{% elsif t contains 'straight fit formal pant' %}
+  {% assign hide_policy = true %}
+{% endif %}
+
+{% unless hide_policy %} {% endcomment %}
+
+
+
+
+
+
 <!-- Meesho-style Return Policy Section -->
 <div class="meesho-return-policy-wrap">
   <div class="policy-row">
@@ -586,3 +609,7 @@
     });
   });
 </script>
+
+
+
+{% comment %} {% endunless %} {% endcomment %}

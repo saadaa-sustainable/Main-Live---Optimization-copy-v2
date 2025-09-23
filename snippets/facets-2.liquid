@@ -1,7 +1,25 @@
 {%- assign collection_title = collection.title | strip | downcase -%}
 
 {%- assign show_custom_filter_tab = false -%}
-{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" or collection_title == "shop all - men" or collection_title == "best sellers - women" or collection_title == "airy-linen" or collection_title == "the goodbye edition" or collection_title == "plus edition" or collection_title == "co-ords" or collection_title == "bundles" or collection_title == "build your wardrobe" -%}
+{%- if collection_title == "women shop all tops"
+   or collection_title == "women shop all bottoms"
+   or collection_title == "men shop all" 
+   or collection_title == "women best sellers" 
+   or collection_title == "women airy linen" 
+   or collection_title == "the goodbye edition" 
+   or collection_title == "women plus edition" 
+   or collection_title == "co-ords" 
+   or collection_title == "bundles" 
+   or collection_title == "build your wardrobe" 
+   or collection_title == "women shop all"
+   or collection_title == "men shop all tops"
+   or collection_title == "men shop all bottoms"
+   or collection_title == "men airy linen"
+   
+   
+   
+   
+   -%}
   {%- assign show_custom_filter_tab = true -%}
 {%- endif -%}
 
@@ -21,7 +39,7 @@
 {%- endif -%}
 
 {%- assign show_bundles_coords_roundels = false -%}
-{%- if collection_title == "shop all tops" or collection_title == "shop all bottoms" -%}
+{%- if collection_title == "women shop all tops" or collection_title == "women shop all bottoms" -%}
   {%- assign show_bundles_coords_roundels = true -%}
 {%- endif -%}
 
@@ -305,7 +323,7 @@
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_22_23aab954-c9a5-4201-a6c9-0c70eb45507d.webp?v=1751623815" -%}
                 {%- when "Straight Fit Formal Pants" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_47.webp?v=1753441557" -%}
-                {%- when "cotton pant" -%}
+                {%- when "women cotton pant" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_60.webp?v=1754457992" -%}
                 {%- when "long kurta" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_59.webp?v=1754457992" -%}
@@ -322,8 +340,17 @@
 
                   {%- when "Couples" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/IMG-20250814-WA0010.webp?v=1755203863" -%}
+                {%- when "flared dress" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_79_11ba9eaf-e4d8-413e-8afd-36469573d8b2.webp?v=1756359045" -%}
                 
-                
+                  {%- when "Men Cotton Pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_87_57e1a6bf-6ae8-4a56-8cbc-f6cec1892fe9.webp?v=1756384467" -%}
+
+                  {%- when "men cotton pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_89.webp?v=1756385854" -%}
+
+                  {%- when "straight pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_149.png?v=1756454522" -%}
                 {% comment %}
 
                    PLUS SIZE PAGE START
@@ -345,6 +372,8 @@
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Women_Pluz_Size_Wide_leg_Pant_Roundles.webp?v=1752045064" -%}
                {%- when "Airy Linen Shirts" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_52.webp?v=1753947779" -%}
+               {%- when "Short kurta" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_94.webp?v=1756987673" -%}
                 
                 
                 {% comment %}
@@ -589,6 +618,14 @@
     .c_nav_filter {
       margin: 2rem 0rem;
     }
+
+{% if collection and collection.title == "Pre Launch" %}
+    .c_nav_filter {
+      margin: 1rem 0rem;
+    }
+
+  {%endif %}
+
     .c_nav_filter .checkbox-control label {
       border: 1px solid;
       padding: 5px 10px;

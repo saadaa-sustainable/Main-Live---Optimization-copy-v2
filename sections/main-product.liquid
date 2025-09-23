@@ -9,43 +9,55 @@
 
 
 {% for collection in product.collections %}
- {% if collection.title contains 'AIRY-LINEN SHORT KURTAS' 
- or collection.title contains 'AIRY LINEN LONG KURTAS' 
- or collection.title contains 'AIRY - LINEN SHIRTS'
- or collection.title contains 'EVERYDAY COTTON TOP'
- or collection.title contains '4-WAY STRETCHABLE PANTS'
- or collection.title contains 'EVERYDAY COTTON PANTS'
- or collection.title contains 'THE FORMAL PANTS'
- or collection.title contains 'PALAZZO PANTS'
- or collection.title contains 'AIRY-LINEN SHORTS'
- or collection.title contains 'TOTE BAGS'
- or collection.title contains 'V-NECK SLEEVELESS TOP'
- or collection.title contains 'WIDE LEG PANTS'
- or collection.title contains 'AIRY LINEN PANTS'
- or collection.title contains 'VISCOSE PLEATED TOP'
- or collection.title contains 'THE FORMAL SHIRTS'
- or collection.title contains 'AIRY-LINEN LONG KURTAS VWO'
- or collection.title contains '100% Cotton - Everyday Pants'
- or collection.title contains 'Viscose Palazzo Pants'   
- or collection.title contains 'EVERYDAY COTTON PANT'
- or collection.title contains 'Airy Linen Wide Leg Pant'
- or collection.title contains 'MEN AIRY-LINEN SHORT KURTAS'
- or collection.title contains 'Men 100% Linen Full Sleeve Shirt'
- or collection.title contains 'Men 100% Linen Half Sleeve Shirt'
- or collection.title contains 'Airy Linen Straight Pant' 
- or collection.title contains 'Airy Linen Flared Dress'
- or collection.title contains 'Women Straight Fit Formal Pant'
- or collection.title contains 'Co-ords'
- or collection.title contains 'bundles'
- or collection.title contains 'Men Cotton Pant'
+ {% if collection.title contains 'Women Airy Linen Short Kurtas' 
+or collection.title contains 'Women Airy Linen Long Kurtas' 
+or collection.title contains 'Women Airy Linen Shirts'
+or collection.title contains 'Women Everyday Cotton Top'
+or collection.title contains 'Women 4-Way Scretchable Pants'
+or collection.title contains 'Women Everyday Cotton Pants'
+or collection.title contains 'Women Formal Pants'
+or collection.title contains 'Women Airy Linen Shorts'
+or collection.title contains 'Women V-Neck Sleeveless Tops'
+or collection.title contains 'Women Wide Leg Pants'
+or collection.title contains 'Women Airy Linen Pants'
+or collection.title contains 'Women Viscose Pleated Tops'
+or collection.title contains 'Women Airy Linen Straight Pants'
+or collection.title contains 'Women Viscose Palazzo Pants'   
+or collection.title contains 'Women Airy Linen Wide Leg Pants'
+or collection.title contains 'Women Airy Linen Flared Dress'
+or collection.title contains 'Women Straight Fit Formal Pants'
 
- or collection.title contains 'Women Plus Size Cotton Pant'
- or collection.title contains 'Women Plus Size Wide Leg Pant'
- or collection.title contains 'Women Plus Size Formal Pant'
- or collection.title contains 'Women Plus Size Sleeveless Top'
- or collection.title contains 'Women Plus Size Pleated Top'
- or collection.title contains 'Women Plus Size Viscose Palazzo Pant'
- or collection.title contains 'Women Plus Size Airy-Linen Shirt'
+
+
+or collection.title contains 'Men Formal Shirts'
+or collection.title contains 'Men Airy Linen Short Kurtas'
+or collection.title contains 'MEN AIRY-LINEN SHORT KURTAS'
+or collection.title contains 'Men Airy Linen Long Kurtas'
+or collection.title contains 'Men 100% Linen Full Sleeve Shirts'
+or collection.title contains 'Men 100% Linen Half Sleeve Shirts'
+or collection.title contains 'Men Cotton Pants'
+
+
+ 
+
+or collection.title contains 'TOTE BAGS'
+or collection.title contains 'AIRY-LINEN LONG KURTAS VWO'
+or collection.title contains 'Co-ords'
+or collection.title contains 'bundles'
+or collection.title contains 'Build Your Own Bundle'
+or collection.title contains 'PALAZZO PANTS'
+
+
+
+
+or collection.title contains 'Women Plus Size Cotton Pant'
+or collection.title contains 'Women Plus Size Wide Leg Pant'
+or collection.title contains 'Women Plus Size Formal Pant'
+or collection.title contains 'Women Plus Size Sleeveless Top'
+or collection.title contains 'Women Plus Size Pleated Top'
+or collection.title contains 'Women Plus Size Viscose Palazzo Pant'
+or collection.title contains 'Women Plus Size Airy-Linen Shirt'
+or collection.title contains 'Women Plus Size Airy Linen Short Kurta'
  
     
  %}
@@ -53,6 +65,86 @@
     {% break %}
   {% endif %}
 {% endfor %}
+
+
+<div class="product_belongs_collection" id="breadcrumbs1">
+  <span>
+    <a href="/">Home</a>
+    /
+  </span>
+
+  {% assign special_collections = "AIRY-LINEN SHORTS,MEN AIRY-LINEN SHORT KURTAS,AIRY LINEN PANTS,THE FORMAL PANTS,EVERYDAY COTTON TOP,THE FORMAL SHIRTS" | split: "," %}
+  {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant,Women Plus Size Airy-Linen Shirt,Women Plus Size Airy Linen Short Kurta" | split: "," %}
+ 
+  {% comment %}
+      {% assign special_collections2 = "Women Straight Fit Formal Pant" | split: "," %}
+  {% endcomment %}
+  
+
+
+  {% if special_collections contains selected_collection.title %}
+    <span>
+      <a href="/collections/goodbye-edition">Goodbye Edition</a> /
+    </span>
+  {% elsif special_collections2 contains selected_collection.title %}
+    <span>
+      <a href="/pages/exclusive-community-launch-straight-fit-formal-pant">Community Exclusive Launch</a>
+      
+    </span>
+  {% elsif special_collections1 contains selected_collection.title %}
+    <span>
+      <a href="/collections/women-plus-size">Plus Edition</a> /
+    </span>
+  {% else %}
+    {% for collection in product.collections %}
+      {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" %}
+        <span>
+          <a href="{{ collection.url }}">{{ collection.title }}</a> /
+        </span>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+ {% comment %}
+ {%- unless selected_collection.title == "Women Straight Fit Formal Pant" -%}
+  {% endcomment %}
+  
+ 
+    <span>
+      <a href="{{ selected_collection.url }}">{{ selected_collection.title | capitalize }}</a>
+    </span>
+
+  {% comment %}
+  {%- endunless -%}
+ {% endcomment %}
+  
+</div>
+
+
+
+<style>
+  /* Hide by default (desktop/tablet) */
+  #breadcrumbs1 { display: none !important; }
+
+  /* Show on mobile only */
+  @media (max-width: 767px) {
+    #breadcrumbs1 { display: block !important; }
+  }
+
+
+
+
+
+
+  #breadcrumbs1 {
+   
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+</style>
+
+
 
 
 
@@ -184,7 +276,7 @@
                 {% for image in product.images %}
                   {% if image != blank %}
                     <div class="product_image">
-                      {% render 'image', class: '', mobileSrc: image, desktopSrc: image, loading: 'eager' %}
+                      {% render 'image', class: '', mobileSrc: image, desktopSrc: image, loading: 'lazy' %}
                     </div>
                   {% endif %}
                 {% endfor %}

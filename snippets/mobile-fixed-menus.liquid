@@ -37,6 +37,30 @@
   text-shadow: 0 0 5px #ffec99, 0 0 18px #ffbe3b;
   letter-spacing: 0.2px;
 }
+
+
+.slider-note {
+  margin: 0 1rem 1.2rem;
+  font-size: 12px;
+  color: #d32f2f;
+  font-weight: 600;
+  text-align: center;
+  display: none; /* hidden by default */
+}
+
+.slider-footer {
+  cursor: pointer; /* makes whole footer clickable */
+}
+
+.slider-footer .star {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-left: 3px;
+  font-size: 16px;
+}
+
+
+
 </style>
 {% # Kwikpass changes - [Ends] %}
 
@@ -650,7 +674,15 @@
     </div>
 
     <div class="slider-upi">GET 5% EXTRA ON UPI</div>
-    <div class="slider-footer">APPLICABLE SITEWIDE | ALL PRODUCT | ALL COLLECTION</div>
+<div class="slider-footer toggle-note" id="footerToggle">
+  APPLICABLE SITEWIDE | ALL PRODUCT | ALL COLLECTION
+  <span class="star">*</span>
+</div>
+
+<div class="slider-note" id="offerNote">
+  Note :- Not Applicable on goodbye edition & pre-launch products
+</div>
+
 
     <a id="offerContinueBtn" class="offer-cta">Continue Shopping</a>
   </div>
@@ -768,6 +800,25 @@ function closeOffers(){
   // show the dot again if you want it persistent
   // document.getElementById('discount-dot')?.classList.remove('is-hidden');
 }
+
+
+
+document.addEventListener('DOMContentLoaded', function(){
+  var footerToggle = document.getElementById('footerToggle');
+  var note = document.getElementById('offerNote');
+
+  if(footerToggle && note){
+    footerToggle.addEventListener('click', function(){
+      if(note.style.display === 'block'){
+        note.style.display = 'none';
+      } else {
+        note.style.display = 'block';
+      }
+    });
+  }
+});
+
+
 
 </script>
 
