@@ -258,8 +258,8 @@
 }
 
 .floating-whatsapp img {
-  width: 50px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   
 }
@@ -367,7 +367,7 @@
         <script src="https://www.fittora.app/widget-personaliser/widget.js" defer></script>
       </div>
     {% endif %}
-    {% if template == 'collection' %}
+    {% comment %} {% if template == 'collection' %}
       <div class="fittora-personaliser-container" style="min-height: 110px; display: none;">
         <div
           id="fittora-personaliser-root"
@@ -380,7 +380,7 @@
         ></div>
         <script src="https://www.fittora.app/widget-personaliser/widget.js"  defer></script>
       </div>
-    {% endif %}
+    {% endif %} {% endcomment %}
     <script src="https://www.fittora.app/event-tracker/tracker.js"  defer></script>
 
     <main id="main" class="anchor">

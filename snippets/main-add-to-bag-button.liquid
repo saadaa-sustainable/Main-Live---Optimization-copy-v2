@@ -405,6 +405,73 @@
 
 
 
+{%- comment -%} ===== Dynamic size label rules =====
+Bottomwear (any gender)  -> Waist Size
+Women topwear            -> Bust Size
+Men topwear              -> Chest Size
+Fallback                 -> Size
+{%- endcomment -%}
+{%- assign haystack = '' -%}
+{%- assign haystack = haystack
+  | append: product.type | append: ','
+  | append: product.title | append: ','
+  | append: product.vendor | append: ','
+  | append: product.handle | append: ','
+  | append: product.tags | join: ',' 
+  | downcase -%}
+
+{%- assign is_bottom = false -%}
+{%- assign bottoms = 'bottomwear|bottom wear|trouser|trousers|pant|pants|jean|jeans|jogger|joggers|chino|chinos|legging|leggings|palazzo|skirt|culotte|cargo pant|cargo pants|track pant|track pants|shorts|bermuda|capri' | split: '|' -%}
+{%- for kw in bottoms -%}
+  {%- if haystack contains kw -%}
+    {%- assign is_bottom = true -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+
+{%- assign is_top = false -%}
+{%- if haystack contains 'topwear'
+   or haystack contains 'top wear'
+   or haystack contains 'shirt'
+   or haystack contains 't-shirt'
+   or haystack contains 'tshirt'
+   or haystack contains 'tee'
+   or haystack contains 'kurta'
+   or haystack contains 'blouse'
+   or haystack contains 'sweatshirt'
+   or haystack contains 'hoodie'
+   or haystack contains 'jacket'
+   or haystack contains 'top'
+   or haystack contains 'dress'
+-%}{%- assign is_top = true -%}{%- endif -%}
+
+{%- assign is_women = false -%}
+{%- if haystack contains 'women'
+   or haystack contains "women's"
+   or haystack contains 'womens'
+   or haystack contains 'ladies'
+   or haystack contains 'female'
+   or haystack contains 'girl'
+-%}{%- assign is_women = true -%}{%- endif -%}
+
+{%- assign is_men = false -%}
+{%- if haystack contains 'men '
+   or haystack contains "men's"
+   or haystack contains 'mens'
+   or haystack contains 'gents'
+   or haystack contains 'male'
+   or haystack contains 'boy'
+-%}{%- assign is_men = true -%}{%- endif -%}
+
+{%- assign size_label = 'Size' -%}
+{%- if is_bottom -%}
+  {%- assign size_label = 'Waist Size' -%}
+{%- elsif is_top and is_women -%}
+  {%- assign size_label = 'Bust Size' -%}
+{%- elsif is_top and is_men -%}
+  {%- assign size_label = 'Chest Size' -%}
+{%- endif -%}
 
 
 
@@ -445,8 +512,7 @@
 }
 
 .inline-size-atc .overlay-title {
-  font-size: 17px;
-  text-transform: uppercase;
+  font-size: 14px;
   color: #222;
   font-weight: 600;
 }
@@ -847,7 +913,7 @@ body.modal-open { overflow: hidden; }
 
 <div class="inline-size-atc atc-main" data-cache-key="{{ product.handle | default: request.path | escape }}">
   <div class="inline-size-label-row">
-    <span class="overlay-title">Size:</span>
+    <span class="overlay-title">{{ size_label }}:</span>
 
     <button type="button" class="ks-open-btn" data-ks-context="main">
       <svg class="ks-pen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002"><path d="M509.502 104.908L407.097 2.502c-3.337-3.337-8.73-3.337-12.067 0L2.502 395.03c-3.337 3.337-3.337 8.73 0 12.067l102.405 102.405c1.596 1.604 3.772 2.5 6.033 2.5s4.43-.896 6.033-2.5L509.5 116.975c1.604-1.596 2.5-3.772 2.5-6.033s-.894-4.43-2.498-6.034zM110.94 491.402l-90.338-90.338 380.46-380.46L491.4 110.94 110.94 491.4zm298.7-414.605c-14.115 0-25.6 11.486-25.6 25.6s11.486 25.6 25.6 25.6 25.6-11.486 25.6-25.6-11.486-25.6-25.6-25.6zm0 34.135c-4.7 0-8.534-3.832-8.534-8.534s3.823-8.534 8.534-8.534 8.534 3.832 8.534 8.534-3.823 8.534-8.534 8.534z"></path></svg>
