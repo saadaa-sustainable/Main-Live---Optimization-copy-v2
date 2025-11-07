@@ -7,7 +7,7 @@
    or collection_title == "women best sellers" 
    or collection_title == "women airy linen" 
    or collection_title == "the goodbye edition" 
-   or collection_title == "women plus edition" 
+   or collection_title == "plus edition" 
    or collection_title == "co-ords" 
    or collection_title == "bundles" 
    or collection_title == "build your wardrobe" 
@@ -15,6 +15,10 @@
    or collection_title == "men shop all tops"
    or collection_title == "men shop all bottoms"
    or collection_title == "men airy linen"
+   or collection_title == "pure linen"
+   or collection_title == "new launch"
+   or collection_title == "men pure linen"
+   or collection_title == "women pure linen"
    
    
    
@@ -92,7 +96,7 @@
 
     .c_nav_filter .category-list.more-than-4 .category-item {
       min-width: 67px;
-      max-width: 90px;
+      max-width: 81px;
     }
    
     .c_nav_filter .category-image-wrapper {
@@ -119,7 +123,7 @@
     }
     .c_nav_filter .category-label {
       margin-top: 0.5rem;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       color: #444;
       transition: color 0.2s;
       white-space: normal;
@@ -171,7 +175,7 @@
         display: block;
       }
       .c_nav_filter .category-label {
-        font-size: 0.55rem;
+        font-size: 0.6rem;
         min-height: 2.1em;
         line-height: 15px;
       }
@@ -338,7 +342,7 @@
 
 
 
-                  {%- when "Couples" -%}
+                  {%- when "Twinning" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/IMG-20250814-WA0010.webp?v=1755203863" -%}
                 {%- when "flared dress" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_79_11ba9eaf-e4d8-413e-8afd-36469573d8b2.webp?v=1756359045" -%}
@@ -351,6 +355,44 @@
 
                   {%- when "straight pant" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_149.png?v=1756454522" -%}
+
+                  {%- when "Men Linen Half Sleeve" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-01T203007.485.webp?v=1759330831" -%}
+
+                  {%- when "Men Linen Full Sleeve" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-01T203006.904.webp?v=1759330831" -%}
+
+                  
+                  {%- when "Cotton Camisole Top" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-01T203118.023.webp?v=1759330888" -%}
+
+                  {%- when "Women Notch Collar Shirt" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-01T203008.586.webp?v=1759330830" -%}
+
+                  {%- when "Women Linen Shirts" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-01T203008.080.webp?v=1759330831" -%}
+
+                  {%- when "Cotton Straight Pant" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-13T171319.591.webp?v=1760355821" -%}
+
+                  {%- when "Split Neck Short Kurta" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-13T171321.693.webp?v=1760355821" -%}
+
+                  {%- when "Mid Thigh Kurta" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-13T171320.423.webp?v=1760355821" -%}
+
+                  
+
+
+
+
+
+
+
+
+
+
+
                 {% comment %}
 
                    PLUS SIZE PAGE START
@@ -374,7 +416,10 @@
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_52.webp?v=1753947779" -%}
                {%- when "Short kurta" -%}
                   {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_94.webp?v=1756987673" -%}
-                
+                   {%- when "Straight fit formal pants" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-27T171606.862.webp?v=1761565631" -%}
+                {%- when "Men formal shirts" -%}
+                  {%- assign image_url = "https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-28T171854.320.webp?v=1761652146" -%}
                 
                 {% comment %}
 
@@ -663,7 +708,7 @@
     .facets-scroll-wrapper {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
     .facets-scroll-inner {
       display: flex;

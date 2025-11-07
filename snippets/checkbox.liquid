@@ -33,7 +33,7 @@ Supported variables
   {% if checked %}checked{% endif %}
 {%- endcapture -%}
 
-<div class="checkbox-control" {{ block.shopify_attributes }}   {% if label == "Cotton Pants" %}data-collection="EVERYDAY COTTON PANTS" {% endif %}
+<div class="checkbox-control" {{ block.shopify_attributes }}   {% if label == "Cotton Pants" %}data-collection="Women Everyday Cotton Pants" {% endif %}
 >
   {%- if switch -%}
     <input id="{{ id | escape }}" class="switch" type="{{ type | default: 'checkbox' }}" role="switch" name="{{ name }}" {{ optional_attributes }}>

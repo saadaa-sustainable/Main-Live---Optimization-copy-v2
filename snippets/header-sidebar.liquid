@@ -212,14 +212,14 @@ window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
     font-size: 12px; color: #333; text-align: center; margin: 24px 0 8px 0; letter-spacing: 0.2px;
   }
   .sidebar-accordion-item summary {
-    cursor: pointer; padding: 2px 16px; padding-right: 20px; font-weight: 500; border-bottom: 1px solid #f3f3f3;
+    cursor: pointer; padding: 2px 3px; padding-right: 20px; font-weight: 500; border-bottom: 1px solid #f3f3f3;
     list-style: none; display: flex; align-items: center;
   }
   .sidebar-accordion-item[open] > summary { background: #f5f5f5; }
   .sidebar-accordion-list { background: #fff; padding: 0; margin: 0; border-bottom: 1px solid #f3f3f3; }
   .sidebar-accordion-list li { border-bottom: 1px solid #f3f3f3; }
   .sidebar-accordion-list a {
-    display: flex; align-items: center; padding: 3px 34px;; font-size: 0.84rem;
+    display: flex; align-items: center; padding: 3px 21px; font-size: 0.84rem;
     background: none; border: none; width: 100%; text-align: left; cursor: pointer;
     font-weight: 400; letter-spacing: 0.2px; color: #111;
   }
@@ -346,9 +346,13 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
-                  <!-- <li><a href="/collections/airy-linen-flared-dress"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_7.webp?v=1753246195" class="menu-img" alt="">Airy Linen Flared Dress<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li> -->
-                  <li><a href="/collections/short-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6309ae0851cc4c5f6751bf7b0933229f60eed077.webp?v=1752565415" class="menu-img" alt="">Airy - Linen Short Kurta</a></li>
-                  <li><a href="/collections/airy-linen-long-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2a3f853d163b6760b2f92a575e155f654091e45d.webp?v=1752565415" class="menu-img" alt="">Airy - Linen Long Kurta</a></li>
+                   <li><a href="/collections/women-airy-linen-split-neck-short-kurta"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3_-2_b4cd46fb-4c11-4e2a-9c8d-fb0d3bca4268.png?v=1760348751" class="menu-img" alt="">Airy-Linen Split Neck Short Kurta<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+                   <li><a href="/collections/women-airy-linen-mid-thigh-length-kurta"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3_-1.png?v=1760348751" class="menu-img" alt="">Airy-Linen Mid Thigh length Kurta<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+                  <li><a href="/collections/women-100-linen-shirts"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_19.webp?v=1759348453" class="menu-img" alt="">Pure Linen Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+                  <li><a href="/collections/women-100-notch-collar-shirts"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_18.webp?v=1759348452" class="menu-img" alt="">Pure Linen Notch Collar Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+                  <li><a href="/collections/women-cotton-camisole-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_20.webp?v=1759348452" class="menu-img" alt="">Cotton Camisole Top<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+                  <li><a href="/collections/short-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/6309ae0851cc4c5f6751bf7b0933229f60eed077.webp?v=1752565415" class="menu-img" alt="">Airy-Linen Short Kurta</a></li>
+                  <li><a href="/collections/airy-linen-long-kurtas"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2a3f853d163b6760b2f92a575e155f654091e45d.webp?v=1752565415" class="menu-img" alt="">Airy-Linen Long Kurta</a></li>
                   <li><a href="/collections/airy-linen-shirts"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/11bab64671ebc246fa1d1fa6e9667c9ad27a954b.webp?v=1752565416" class="menu-img" alt="">Airy-Linen Shirts</a></li>
                   <li><a href="/collections/v-neck-sleeveless-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_4.webp?v=1752565417" class="menu-img" alt="">V-Neck Sleeveless Top</a></li>
                   {% comment %} <li><a href="/collections/everyday-cotton-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/image_5.webp?v=1752565415" class="menu-img" alt="">Everyday Cotton Top</a></li> {% endcomment %}
@@ -365,9 +369,10 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
+                  <li><a href="/collections/women-straight-fit-cotton-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3_bcda2abc-4cdc-4aeb-90c0-e0d31175117e.png?v=1760348751" class="menu-img" alt="">Everyday Cotton Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/straight-fit-formal-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_10.webp?v=1753441076" class="menu-img" alt="">Straight Fit Formal Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
-                  <li><a href="/collections/4-way-stretchable-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_2.webp?v=1753165204" class="menu-img" alt="">4-Way Stretchable Pants</a></li>
+                  {% comment %} <li><a href="/collections/4-way-stretchable-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_2.webp?v=1753165204" class="menu-img" alt="">4-Way Stretchable Pants</a></li> {% endcomment %}
                   <li><a href="/collections/cotton-trousers"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/SDCPRT.webp?v=1753165204" class="menu-img" alt="">Everyday Cotton Pants</a></li>
                   <li><a href="/collections/viscose-palazzo-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/3_2.webp?v=1753165204" class="menu-img" alt="">Viscose Palazzo Pants</a></li>
                   <li><a href="/collections/wide-leg-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/3_4.webp?v=1753165204" class="menu-img" alt="">Wide Leg Pants</a></li>
@@ -401,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </li>
           
             <li>
-              <a href="/collections/all-whites" class="header-sidebar__linklist-button" style="padding: 0px 16px;">
+              <a href="/collections/all-whites" class="header-sidebar__linklist-button" style="padding: 0px 3px;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/download.webp?v=1752564952" class="menu-img" alt="">
                 All Whites
               </a>
@@ -424,15 +429,15 @@ document.addEventListener('DOMContentLoaded', function () {
               </a>
             </li>
             <li>
-              <a href="/collections/men-100-linen-full-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
-                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_5.webp?v=1753246195" class="menu-img" alt="">
-                100% Linen Full Sleeve Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+              <a href="/collections/men-linen-full-sleeve-shirts" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_21.webp?v=1759348452" class="menu-img" alt="">
+                Pure Linen Full Sleeve Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
               </a>
             </li>
             <li>
-              <a href="/collections/men-100-linen-half-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
-                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_4.webp?v=1753246195" class="menu-img" alt="">
-                100% Linen Half Sleeve Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+              <a href="/collections/men-linen-short-sleeve-shirts" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_22.webp?v=1759348452" class="menu-img" alt="">
+                Pure Linen Short Sleeve Shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
               </a>
             </li>
             <li>
@@ -467,28 +472,37 @@ document.addEventListener('DOMContentLoaded', function () {
       <!-- SECONDARY LINKS - Accordions -->
       <div class="header-sidebar__group-list">
 
+          <div class="saadaa-accordion-section">
+           <a href="/pages/buy-3-get-1"><button class="saadaa-accordion-title">BUY 3 GET 1<span class="home-nav-badge-new" style="background-color:#ffee03; color:#000;">ENDING SOON</span></button></a>
+          
+        </div>
+
+        <div class="saadaa-accordion-section">
+           <a href="/collections/pure-linen"><button class="saadaa-accordion-title">PURE LINEN<span class="home-nav-badge-new">NEW</span></button></a>
+          
+        </div>
+
 
         <div class="saadaa-accordion-section">
            <a href="/collections/shop-the-look"><button class="saadaa-accordion-title">BUNDLES<span class="home-nav-badge-new">NEW</span></button></a>
           
-        </div>
+        </div> 
 
-<div class="saadaa-accordion-section">
-          <a href="/collections/plus-edition"><button class="saadaa-accordion-title">PLUS EDITION <span class="home-nav-badge-new">NEW</span></button></a>
+ <div class="saadaa-accordion-section">
+          <a href="/collections/plus-edition"><button class="saadaa-accordion-title">PLUS EDITION</button></a>
           
-        </div>
-
-         <div class="saadaa-accordion-section">
+        </div> 
+         {% comment %} <div class="saadaa-accordion-section">
            <a href="/collections/goodbye-edition"><button class="saadaa-accordion-title">THE GOODBYE EDITION </button></a>
           
-        </div>
+        </div> {% endcomment %}
 
           
-
+{% comment %} 
         <div class="saadaa-accordion-section">
           <a href="/pages/new-customers"><button class="saadaa-accordion-title">NEW CUSTOMERS</button></a>
           
-        </div>
+        </div> {% endcomment %}
 
         <div class="saadaa-accordion-section">
           <a href="/collections/best-sellers-women"><button class="saadaa-accordion-title">BUILD YOUR WARDROBE</button></a>

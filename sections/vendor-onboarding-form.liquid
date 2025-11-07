@@ -171,7 +171,7 @@ input[type="file"] {
         <div class="v-stack">
           <label for="vendor_gst">GST NO. <span style="color:red">*</span></label>
           {% comment %} <span class="helper">Input 15 digit gst number only</span> {% endcomment %}
-          <input type="text" id="vendor_gst" maxlength="15" inputmode="numeric" pattern="[0-9]*" placeholder="Input 15 digit gst" required />
+          <input type="text" id="vendor_gst" maxlength="15" inputmode="text" pattern="[A-Za-z0-9]*" placeholder="Enter 15-character GSTIN" required />
           <small style="color:red;font-size:10px"></small>
         </div>
         <!-- CITY -->
@@ -235,9 +235,11 @@ input[type="file"] {
 
 <script>
 function isValidGstNumber(info){
-  const regex = /^\d{15}$/;
+  // Accept exactly 15 alphanumeric characters (case-insensitive)
+  const regex = /^[0-9A-Z]{15}$/i;
   return regex.test(info);
 }
+
 function isValidPhoneNumber(info){
   const regex = /^\d{10}$/;
   return regex.test(info) && info[0] !== '0';
@@ -254,8 +256,9 @@ function showErrorBelowInput(input) {
   }
 }
 document.getElementById('vendor_gst').addEventListener('input', function(e) {
-  this.value = this.value.replace(/\D/g, '').slice(0,15);
+  this.value = this.value.replace(/[^0-9a-z]/gi, '').toUpperCase().slice(0,15);
 });
+
 document.getElementById('vendor_contact_number').addEventListener('input', function(e) {
   this.value = this.value.replace(/\D/g, '').slice(0,10);
 });

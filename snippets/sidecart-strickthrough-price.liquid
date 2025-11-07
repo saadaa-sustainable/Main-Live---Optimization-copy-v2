@@ -1,0 +1,474 @@
+<script>
+  {% comment %} console.log('----------------------DEV----------------------') {% endcomment %}
+  
+  // Discounted product data array
+  const discountedProductData = [
+      {
+          category: 'Women', name: 'Airy Linen Flared Dress', originalPrice: '3,599', discountedPrice: 1799, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'AIRY LINEN PANT', originalPrice: '2,399', discountedPrice: 1199, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'AIRY-LINEN SHIRT', originalPrice: '2,399', discountedPrice: 1199, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'Airy Linen Straight Pants', originalPrice: '2,399', discountedPrice: 1199, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'AIRY LINEN WIDE LEG PANT', originalPrice: '1,998', discountedPrice: 999, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'COTTON PANT', originalPrice: '1,599', discountedPrice: 799, discount: '50%'
+      },
+      {% comment %} {
+          category: 'Women', name: 'COTTON TOP', originalPrice: '1,999', discountedPrice: 999, discount: '50%'
+      }, {% endcomment %}
+      {
+          category: 'Women', name: 'AIRY LINEN LONG KURTA', originalPrice: '1,999', discountedPrice: 999, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'AIRY LINEN PANT', originalPrice: '1,699', discountedPrice: 899, discount: '53%'
+      },
+      {
+          category: 'Shorts', name: 'AIRY-LINEN SHORTS', originalPrice: '1,399', discountedPrice: 499, discount: '65%'
+      },
+      {
+          category: 'Women', name: 'AIRY LINEN SHORT KURTA', originalPrice: '1,599', discountedPrice: 799, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'SAADAA MENS SHORT KURTA', originalPrice: 999, discountedPrice: 999, discount: '100%'
+      },
+      {
+          category: 'Women', name: 'PALAZZO', originalPrice: '1,599', discountedPrice: 799, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'VISCOSE PLEATED TOP', originalPrice: '2,599', discountedPrice: 1299, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'V-Neck Sleeveless Top', originalPrice: '1,599', discountedPrice: 799, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'FORMAL PANT', originalPrice: '1,999', discountedPrice: 1499, discount: '25%'
+      }, 
+      {
+          category: 'Women', name: 'STRAIGHT FIT FORMAL PANTS', originalPrice: '2,999', discountedPrice: 1599, discount: '53%'
+      },
+ 
+      {
+          category: 'Women', name: '4-WAY STRETCHABLE PANT', originalPrice: '2,999', discountedPrice: 1499, discount: '50%'
+      },
+      {
+          category: 'The', name: 'TOTE BAG', originalPrice: 999, discountedPrice: 499, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'VISCOSE PALAZZO', originalPrice: '1,599', discountedPrice: 799, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'WIDE LEG PANTS', originalPrice: '3,999', discountedPrice: 1999, discount: '50%'
+      },
+      {
+          category: 'Men', name: 'COTTON PANT', originalPrice: '1,798', discountedPrice: 899, discount: '50%'
+      },
+     {
+          category: 'Men', name: 'AIRY LINEN LONG KURTA', originalPrice: '2,599', discountedPrice: 1299, discount: '50%'
+      }, 
+      {
+          category: 'Men', name: 'AIRY LINEN SHORT KURTA', originalPrice: '1,999', discountedPrice: 999, discount: '50%'
+      },
+      {
+          category: 'Men', name: 'Linen Half Sleeve Shirt', originalPrice: '4,399', discountedPrice: 2199, discount: '50%'
+      },
+      {
+          category: 'Men', name: '100% LINEN SHIRT', originalPrice: '4,999', discountedPrice: 2499, discount: '50%'
+      },
+       {
+          category: 'Men', name: 'FORMAL SHIRT', originalPrice: '2,798', discountedPrice: 1399, discount: '50%'
+      },
+      {
+          category: 'Men', name: 'PURE LINEN FULL SLEEVE', originalPrice: '4,998', discountedPrice: 2499, discount: '50%'
+      },
+       {
+          category: 'Men', name: 'PURE LINEN SHORT SLEEVE', originalPrice: '4,398', discountedPrice: 2199, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'PURE LINEN SHIRT', originalPrice: '4,998', discountedPrice: 2499, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'PURE LINEN NOTCH COLLAR SHIRT', originalPrice: '4,398', discountedPrice: 2199, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'COTTON REGULAR PANT', originalPrice: '1,599', discountedPrice: 799, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'COTTON STRAIGHT PANT', originalPrice: '1,598', discountedPrice: 799, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'AIRY LINEN MID THIGH LENGTH KURTA', originalPrice: '1,998', discountedPrice: 999, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'SPLIT NECK SHORT KURTA', originalPrice: '1,398', discountedPrice: 699, discount: '50%'
+      },
+      {
+          category: 'Women', name: 'COTTON CAMISOLE TOP', originalPrice: '998', discountedPrice: 499, discount: '50%'
+      }
+  ];
+
+  // Function for highlighted console logs
+  const highlightLog = (message) => {
+    console.log(`%c${message}`, 'background: yellow; color: black; font-weight: bold; padding: 2px 5px;');
+  };
+
+  // Custom waitUntil function (as it's not standard)
+  function waitUntil(condition, timeout = 30000) {
+    return new Promise((resolve, reject) => {
+      const startTime = Date.now();
+      function check() {
+        const result = condition();
+        if (result) {
+          highlightLog('Condition met in waitUntil');
+          resolve(result);
+        } else if (Date.now() - startTime > timeout) {
+          highlightLog('Timeout reached in waitUntil');
+          reject(new Error('Timeout'));
+        } else {
+          setTimeout(check, 100);
+        }
+      }
+      check();
+    });
+  }
+
+  // Placeholder for checkIfCategoryAndColorExist (implement based on your logic)
+  function checkIfCategoryAndColorExist(productName) {
+    highlightLog(`Checking category and color for: ${productName}`);
+    return false; // Placeholder - return true if exists
+  }
+
+  // Placeholder for sdConfig.css (define your CSS styles here)
+  const sdConfig = {
+    css: `
+      .item-price > span:first-of-type { text-wrap-mode: nowrap; }
+      .sd38_discountedPrice { /* Your styles */ }
+      .sd38_mrp { color: #999;margin-left: 5px;color: #7c7c7c; font-family: var(--heading-font-family); font-size: 12px; font-style: normal; font-weight: 400; line-height: normal; margin-left: 4px; }
+      .item.upsell .sd38_originalPrice > span { text-decoration: line-through; }
+      .item.upsell .sd38_originalPrice, .card-right-container .price .sd38_originalPrice { text-decoration: none;margin-left: 0px; }
+      .sd38_originalPrice { color: #999; text-decoration: line-through; margin-left: 5px;color: #7c7c7c; font-family: var(--heading-font-family); font-size: 12px; font-style: normal; font-weight: 400; line-height: normal; text-decoration-line: line-through; }
+      .sd38_priceWrapper { font-size: 0.8em; color: red; }
+      .sd38_discountPercentage { color: #fff; padding: 2px 4px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='15' viewBox='0 0 80 15' fill='none'><path d='M0 0H80L75.1515 15H0V0Z' fill='url(%23paint0_linear_85_2)'/><defs><linearGradient id='paint0_linear_85_2' x1='0' y1='7.5' x2='80' y2='7.5' gradientUnits='userSpaceOnUse'><stop stop-color='%23FFFCDD'/><stop offset='1' stop-color='%23FFF146'/></linearGradient></defs></svg>"); background-size: cover; display: inline-flex ; align-items: center; justify-content: center; width: 80px; height: 15px; color: #000; font-family: var(--heading-font-family); font-size: 10px; font-style: normal; font-weight: 700; line-height: normal; text-transform: uppercase; }
+      .sd38_upsell-priceWrapper { text-decoration: line-through; }
+
+
+
+      /* ——— FREE badge: orange → yellow gradient + subtle glow + shine sweep ——— */
+.sd38_discountPercentage.sd38_free{
+  position: relative;
+  overflow: hidden;
+  width: 92px;               /* a bit wider */
+  height: 20px;              /* a bit taller */
+  border-radius: 4px;
+  font-size: 11px;           /* slightly larger text */
+  font-weight: 800;
+  letter-spacing: .3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #2b1a00;
+  text-transform: uppercase;
+
+  /* orange→yellow gradient base with a hint of white at the left */
+  background-image: linear-gradient(
+    90deg,
+    #fff7db 0%,
+    #ffd34f 30%,
+    #ffb93e 60%,
+    #ffc94d 80%,
+    #fff06a 100%
+  );
+
+  box-shadow:
+    0 2px 6px rgba(0,0,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.6);
+  animation: sd38_freePulse 2.6s ease-in-out infinite;
+}
+
+/* glossy sweep */
+.sd38_discountPercentage.sd38_free::after{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  transform: skewX(-20deg);
+  background: linear-gradient(
+    100deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.85) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  animation: sd38_freeShine 1.8s linear infinite;
+}
+
+/* Pulse (very subtle) */
+@keyframes sd38_freePulse{
+  0%,100% { box-shadow: 0 2px 6px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.6); }
+  50%     { box-shadow: 0 3px 12px rgba(255,170,0,.35), inset 0 1px 0 rgba(255,255,255,.7); }
+}
+
+/* Shine sweep across the badge */
+@keyframes sd38_freeShine{
+  0%   { left: -120%; }
+  60%  { left: 120%; }
+  100% { left: 120%; }
+}
+
+
+
+    `
+  };
+
+  // helpers
+  const parseRupees = (v) => Number(String(v).replace(/[₹,\s]/g,'').trim() || '0');
+
+  // Main logic
+  const bodyElem = document.body;
+
+  waitUntil(() => bodyElem.querySelector('shadow-dom-container') && bodyElem.querySelector('shadow-dom-container').shadowRoot, 30000).then((shadowRoot) => {
+    highlightLog('Shadow root accessed');
+
+    // Cart observer
+    const observer = new MutationObserver(() => {
+      highlightLog('Mutation detected in cart');
+      const itemListWrapper = shadowRoot.querySelector('.top-section .item-list-wrapper');
+      if (!itemListWrapper) return;
+
+      const items = itemListWrapper.querySelectorAll('.item');
+      if (items.length > 0) {
+        for (const item of items) {
+          const productTitleElem = item.querySelector('.product-main-content .sidecart-product-title');
+          const productName = productTitleElem && productTitleElem.textContent.trim();
+          const words = productName ? productName.split(' ') : [];
+          const firstWord = words[0] || '';
+
+          const itemPrice = item.querySelector('.item-price');
+          if (itemPrice) {
+            const priceEle = itemPrice.querySelector(':scope > span');
+            if (priceEle) {
+              const price = parseInt(priceEle.textContent.replace('₹', '').trim(), 10);
+
+              discountedProductData.forEach((data) => {
+                const ifCategoryMatch = firstWord.toLowerCase() === data.category.toLowerCase();
+                const ifProductNameMatch = productName && productName.toLowerCase().includes(data.name.toLowerCase());
+
+                if ((ifCategoryMatch || data.category === 'Shorts') && ifProductNameMatch) {
+                  // ---- CHANGE: if item is ₹0, show FREE instead of % OFF ----
+                  if (!checkIfCategoryAndColorExist(productName) && !itemPrice.querySelector('.sd38_priceWrapper')) {
+                    if (price === 0) {
+                      highlightLog(`Marking as FREE: ${productName}`);
+                      const mrpNum = parseRupees(data.originalPrice);
+                      item.classList.add('sd38_discountedPrice');
+                      // show MRP (from dataset) and FREE badge
+                      priceEle.insertAdjacentHTML('beforeend', `<span class="sd38_mrp"> MRP</span><span class="sd38_originalPrice"> ₹${mrpNum}</span>`);
+                      priceEle.insertAdjacentHTML('afterend',`<div class="sd38_priceWrapper"><span class="sd38_discountPercentage sd38_free" aria-label="Free item">FREE</span></div>`);
+
+                    } else {
+                      const discountPercentage = parseInt(data.discount, 10);
+                      const originalPrice = price / (1 - discountPercentage / 100);
+                      highlightLog(`Adding discount for: ${productName}`);
+                      item.classList.add('sd38_discountedPrice');
+                      priceEle.insertAdjacentHTML('beforeend', `<span class="sd38_mrp"> MRP</span><span class="sd38_originalPrice"> ₹${Math.round(originalPrice)}</span>`);
+                      priceEle.insertAdjacentHTML('afterend', `<div class="sd38_priceWrapper"><span class="sd38_discountPercentage">${data.discount} OFF</span></div>`);
+                    }
+                  }
+                }
+              });
+            }
+          }
+        }
+      }
+    });
+
+    observer.observe(shadowRoot, { childList: true, subtree: true });
+    highlightLog('Cart observer set up');
+
+    // Upsell observer (unchanged)
+    const observer1 = new MutationObserver((mutations) => {
+      highlightLog('Mutation detected in upsell');
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const upsellContainer = shadowRoot.querySelector('.upSell-container .scroll-container');
+            if (upsellContainer) {
+              const upsellCards = upsellContainer.querySelectorAll('.card');
+              if (upsellCards.length > 0) {
+                for (const upsellCard of upsellCards) {
+                  const priceEle = upsellCard.querySelector('.price');
+                  if (priceEle) {
+                    const productNameElem = upsellCard.querySelector('.product-name');
+                    if (!productNameElem) return;
+                    const productName = productNameElem.textContent.trim();
+                    const words = productName.split(' ');
+                    const firstWord = words[0];
+
+                    discountedProductData.forEach((item) => {
+                      const ifCategoryMatch = firstWord.toLowerCase() === item.category.toLowerCase();
+                      const ifProductNameMatch = productName.toLowerCase().includes(item.name.toLowerCase());
+                      const priceSpan = priceEle.querySelector('span');
+                      if (!priceSpan) return;
+                      const price = parseInt(priceSpan.textContent.replace('₹', '').trim(), 10);
+
+                      if ((ifCategoryMatch || item.category === 'Shorts') && ifProductNameMatch && price === item.discountedPrice) {
+                        if (!checkIfCategoryAndColorExist(productName) && !priceEle.querySelector('.sd38_originalPrice')) {
+                          highlightLog(`Adding upsell discount for: ${productName}`);
+                          upsellCard.classList.add('sd38_discountedPrice');
+                          priceSpan.insertAdjacentHTML('beforebegin', `<div class="sd38_originalPrice">MRP <strike class="sd38_upsell-priceWrapper">₹${item.originalPrice}</strike></div>`);
+                        }
+                      }
+                    });
+                  }
+                }
+              }
+            }
+          }
+        });
+      });
+    });
+
+    observer1.observe(shadowRoot, { childList: true, subtree: true });
+    highlightLog('Upsell observer set up');
+
+    // Variant list observer (unchanged)
+    const observer2 = new MutationObserver((mutations) => {
+      highlightLog('Mutation detected in variant list');
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const topCloseButton = shadowRoot.querySelector('.top-close-button');
+            if (topCloseButton) {
+              const variantListPriceElems = topCloseButton.querySelectorAll('.sheet-wrapper .content .final-price');
+              variantListPriceElems.forEach((variantListPriceElem) => {
+                const searchSuggestionItem = variantListPriceElem.closest('.item.upsell');
+                const productNameElem = searchSuggestionItem.querySelector('.sidecart-product-title');
+                const productName = productNameElem ? productNameElem.textContent.trim() : '';
+
+                const words = productName.split(' ');
+                const firstWord = words[0] || '';
+
+                discountedProductData.forEach((item) => {
+                  const ifCategoryMatch = firstWord.toLowerCase() === item.category.toLowerCase();
+                  const ifProductNameMatch = productName.toLowerCase().includes(item.name.toLowerCase());
+                  if ((ifCategoryMatch || (item.category === 'Shorts')) && ifProductNameMatch && !checkIfCategoryAndColorExist(productName)) {
+                    searchSuggestionItem.classList.add('sd38_discountedPrice');
+                    const salePrice = Number(variantListPriceElem.textContent.replace(/[₹,\s]/g, '').trim());
+                    if (salePrice < Number(String(item.originalPrice).replace(/[₹,\s]/g, '')) && !searchSuggestionItem.querySelector('.sd38_originalPrice')) {
+                      highlightLog(`Adding variant discount for: ${productName}`);
+                      variantListPriceElem.insertAdjacentHTML('beforebegin', `<div class="sd38_originalPrice">MRP <span>₹${item.originalPrice}</span></div>`);
+                    }
+                  }
+                });
+              });
+            }
+          }
+        });
+      });
+    });
+
+    observer2.observe(shadowRoot, { childList: true, subtree: true });
+    highlightLog('Variant list observer set up');
+
+    // Inject styles if not present
+    if (!shadowRoot.querySelector('#sd38_styles')) {
+      const style = document.createElement('style');
+      style.id = 'sd38_styles';
+      style.textContent = sdConfig.css;
+      shadowRoot.appendChild(style);
+      highlightLog('Injected custom styles into shadow root');
+    }
+  }).catch((error) => {
+    highlightLog(`Error in waitUntil: ${error.message}`);
+  });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  {% comment %} /* New code below currently make the "Apply Promo at Checkout!! " unclickable  */ {% endcomment %}
+
+ <script>
+(function () {
+  // wait for GoKwik's shadow root
+  const waitUntil = (cond, t=30000)=>new Promise((res,rej)=>{
+    const start=Date.now();
+    (function tick(){ const v=cond(); v?res(v):Date.now()-start>t?rej():setTimeout(tick,100); })();
+  });
+
+  // find the specific "Apply Promo at Checkout!!" block
+  function findApplyPromo(shadowRoot) {
+    // restrict to exact structure you showed
+    const nodes = shadowRoot.querySelectorAll('.order-note.svelte-1a1nfg5 > p.svelte-1a1nfg5');
+    for (const p of nodes) {
+      if ((p.textContent || '').trim() === 'Apply Promo at Checkout!!') {
+        return p.parentElement; // the clickable wrapper (div.order-note)
+      }
+    }
+    return null;
+  }
+
+  function makeOnlyThisUnclickable(shadowRoot) {
+    const el = findApplyPromo(shadowRoot);
+    if (!el || el.dataset.sdUnclickable === '1') return;
+
+    // mark + visuals
+    el.dataset.sdUnclickable = '1';
+    el.setAttribute('aria-disabled', 'true');
+    el.setAttribute('tabindex', '-1');
+    el.style.cursor = 'default';
+
+    // no CSS blanket — only this element
+    el.style.pointerEvents = 'auto'; // keep pointer events on for the blocker below
+
+    // capture & block interactions ONLY when the event path includes this element
+    const blocker = (e) => {
+      const path = e.composedPath ? e.composedPath() : (e.path || []);
+      if (path.includes(el)) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+        return false;
+      }
+    };
+    // attach once on the shadow root in capture phase
+    shadowRoot.addEventListener('click', blocker, true);
+    shadowRoot.addEventListener('mousedown', blocker, true);
+    shadowRoot.addEventListener('mouseup', blocker, true);
+    shadowRoot.addEventListener('touchstart', blocker, true);
+    shadowRoot.addEventListener('touchend', blocker, true);
+    shadowRoot.addEventListener('keydown', blocker, true);
+    shadowRoot.addEventListener('keyup', blocker, true);
+  }
+
+  waitUntil(()=>document.querySelector('shadow-dom-container')?.shadowRoot)
+    .then((shadowRoot) => {
+      // run now
+      makeOnlyThisUnclickable(shadowRoot);
+      // and re-run if GoKwik re-renders the drawer
+      new MutationObserver(()=>makeOnlyThisUnclickable(shadowRoot))
+        .observe(shadowRoot, { childList: true, subtree: true });
+    })
+    .catch(()=>{ /* silently ignore if drawer never appears */ });
+})();
+</script> 
+
+
+
+ {% comment %} /* New code below currently make the "Apply Promo at Checkout!! " unclickable  */ {% endcomment %}

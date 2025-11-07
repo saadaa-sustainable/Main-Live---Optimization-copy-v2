@@ -26,9 +26,13 @@ or collection.title contains 'Women Viscose Palazzo Pants'
 or collection.title contains 'Women Airy Linen Wide Leg Pants'
 or collection.title contains 'Women Airy Linen Flared Dress'
 or collection.title contains 'Women Straight Fit Formal Pants'
-or collection.title contains 'Women 100% Linen Notch Collar Shirts'
-or collection.title contains 'Women 100% Linen Shirts'
+or collection.title contains 'Women Pure Linen Notch Collar Shirts'
+or collection.title contains 'Women Pure Linen Shirts'
 or collection.title contains 'Women Cotton Camisole Top'
+or collection.title contains 'Women Airy Linen Mid Thigh Length Kurta'
+or collection.title contains 'Women Airy Linen Split Neck Short Kurta'
+or collection.title contains 'Women Cotton Straight Pants'
+or collection.title contains 'Women Cotton Regular Pants'
 
 
 or collection.title contains 'Men Formal Shirts'
@@ -38,7 +42,8 @@ or collection.title contains 'Men Airy Linen Long Kurtas'
 or collection.title contains 'Men 100% Linen Full Sleeve Shirts'
 or collection.title contains 'Men 100% Linen Half Sleeve Shirts'
 or collection.title contains 'Men Cotton Pants'
-
+or collection.title contains 'Men Pure Linen Short Sleeve Shirts'
+or collection.title contains 'Men Pure Linen Full Sleeve Shirts'
 
  
 
@@ -62,6 +67,8 @@ or collection.title contains 'Women Plus Size Pleated Top'
 or collection.title contains 'Women Plus Size Viscose Palazzo Pant'
 or collection.title contains 'Women Plus Size Airy-Linen Shirt'
 or collection.title contains 'Women Plus Size Airy Linen Short Kurta'
+or collection.title contains 'Women Plus Size Straight Fit Formal Pants'
+or collection.title contains 'Men Plus Size Formal Shirts'
  
     
  %}
@@ -72,80 +79,82 @@ or collection.title contains 'Women Plus Size Airy Linen Short Kurta'
 
 
 <div class="product_belongs_collection" id="breadcrumbs1">
-  <span>
-    <a href="/">Home</a>
-    /
-  </span>
+  <span><a href="/">Home</a> /</span>
 
-  {% assign special_collections = "AIRY-LINEN SHORTS,MEN AIRY-LINEN SHORT KURTAS,AIRY LINEN PANTS,THE FORMAL PANTS,EVERYDAY COTTON TOP,THE FORMAL SHIRTS" | split: "," %}
-  {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant,Women Plus Size Airy-Linen Shirt,Women Plus Size Airy Linen Short Kurta" | split: "," %}
- 
-  {% comment %}
-      {% assign special_collections2 = "Women Straight Fit Formal Pant" | split: "," %}
-  {% endcomment %}
-  
+  {%- comment -%} Normalize current title {%- endcomment -%}
+  {% assign selected_title = selected_collection.title | strip | downcase %}
 
+  {%- comment -%} Define lists (may be multiline) {%- endcomment -%}
+  {% assign special_collections = "MEN AIRY-LINEN SHORT KURTAS deprecated,Men Formal Shirts,Women Airy Linen Shorts,Women Everyday Cotton Top,Women Formal Pants,Women 4-way scretchable pants" | downcase | split: "," %}
+  {% assign special_collections1 = "
+    Women Plus Size Wide Leg Pant,
+    Women Plus Size Viscose Palazzo Pant,
+    Women Plus Size Sleeveless Top,
+    Women Plus Size Pleated Top,
+    Women Plus Size Formal Pant,
+    Women Plus Size Cotton Pant,
+    Women Plus Size Airy-Linen Shirt,
+    Women Plus Size Airy Linen Short Kurta,
+    Women Plus Size Straight Fit Formal Pants,
+    Men Plus Size Formal Shirts
+  " | downcase | split: "," %}
 
-  {% if special_collections contains selected_collection.title %}
-    <span>
-      <a href="/collections/goodbye-edition">Goodbye Edition</a> /
-    </span>
-  {% elsif special_collections2 contains selected_collection.title %}
-    <span>
-      <a href="/pages/exclusive-community-launch-straight-fit-formal-pant">Community Exclusive Launch</a>
-      
-    </span>
-  {% elsif special_collections1 contains selected_collection.title %}
-    <span>
-      <a href="/collections/women-plus-size">Plus Edition</a> /
-    </span>
+  {%- comment -%}
+    If you need this list, uncomment and it will work the same way:
+    {% assign special_collections2 = "Women Straight Fit Formal Pant" | downcase | split: "," %}
+  {%- endcomment -%}
+
+  {%- comment -%} Compute membership flags using trimmed equality {%- endcomment -%}
+  {% assign is_goodbye = false %}
+  {% for raw in special_collections %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}{% assign is_goodbye = true %}{% break %}{% endif %}
+  {% endfor %}
+
+  {% assign is_plus = false %}
+  {% for raw in special_collections1 %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}{% assign is_plus = true %}{% break %}{% endif %}
+  {% endfor %}
+
+  {%- comment -%}
+  {% assign is_special2 = false %}
+  {% for raw in special_collections2 %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}{% assign is_special2 = true %}{% break %}{% endif %}
+  {% endfor %}
+  {%- endcomment -%}
+
+  {% if is_goodbye %}
+    <span><a href="/collections/goodbye-edition">Goodbye Edition</a> /</span>
+
+  {%- comment -%}
+  {% elsif is_special2 %}
+    <span><a href="/pages/exclusive-community-launch-straight-fit-formal-pant">Community Exclusive Launch</a> /</span>
+  {% endcomment -%}
+
+  {% elsif is_plus %}
+    <span><a href="/collections/plus-edition">Plus Edition</a> /</span>
   {% else %}
     {% for collection in product.collections %}
       {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" %}
-        <span>
-          <a href="{{ collection.url }}">{{ collection.title }}</a> /
-        </span>
+        <span><a href="{{ collection.url }}">{{ collection.title }}</a> /</span>
       {% endif %}
     {% endfor %}
   {% endif %}
 
- {% comment %}
- {%- unless selected_collection.title == "Women Straight Fit Formal Pant" -%}
-  {% endcomment %}
-  
- 
-    <span>
-      <a href="{{ selected_collection.url }}">{{ selected_collection.title | capitalize }}</a>
-    </span>
-
-  {% comment %}
-  {%- endunless -%}
- {% endcomment %}
-  
+  <span><a href="{{ selected_collection.url }}">{{ selected_collection.title | capitalize }}</a></span>
 </div>
 
-
-
 <style>
-  /* Hide by default (desktop/tablet) */
+  /* Mobile-only breadcrumbs */
   #breadcrumbs1 { display: none !important; }
-
-  /* Show on mobile only */
   @media (max-width: 767px) {
-    #breadcrumbs1 { display: block !important; }
+    #breadcrumbs1 {
+      display: block !important;
+      margin: 10px 0 10px 10px;
+    }
   }
-
-
-
-
-
-
-  #breadcrumbs1 {
-   
-    margin-bottom: 10px;
-    margin-left: 10px;
-    margin-top: 10px;
-}
 </style>
 
 
@@ -279,8 +288,54 @@ or collection.title contains 'Women Plus Size Airy Linen Short Kurta'
               <ul class="slider-container">
                 {% for image in product.images %}
                   {% if image != blank %}
-                    <div class="product_image">
-                      {% render 'image', class: '', mobileSrc: image, desktopSrc: image, loading: 'lazy' %}
+                    <div class="product_image {% if forloop.index == 3 %}pro-img-w-specs{% endif %}">
+                      {% if forloop.index == 3 %}
+                        <div class="specs_in_img">
+                          <div class="product_specification_detail" >
+                              <div class="ps_box">
+                                <span class="ps_key">
+                                  {{ product.metafields.custom.product_specification.value.ps_key_1.value }}
+                                </span>
+                                <span class="ps_value">
+                                  {{ product.metafields.custom.product_specification.value.ps_value_1.value }}
+                                </span>
+                              </div>
+                              <div class="ps_box">
+                                <span class="ps_key">
+                                  {{ product.metafields.custom.product_specification.value.ps_key_2.value }}
+                                </span>
+                                <span class="ps_value">
+                                  {{ product.metafields.custom.product_specification.value.ps_value_2.value }}
+                                </span>
+                              </div>
+                              <div class="ps_box">
+                                <span class="ps_key">
+                                  {{ product.metafields.custom.product_specification.value.ps_key_3.value }}
+                                </span>
+                                <span class="ps_value">
+                                  {{ product.metafields.custom.product_specification.value.ps_value_3.value }}
+                                </span>
+                              </div>
+                              <div class="ps_box">
+                                <span class="ps_key">
+                                  {{ product.metafields.custom.product_specification.value.ps_key_4.value }}
+                                </span>
+                                <span class="ps_value">
+                                  {{ product.metafields.custom.product_specification.value.ps_value_4.value }}
+                                </span>
+                              </div>
+                              <div class="ps_box">
+                                <span class="ps_key">
+                                  {{ product.metafields.custom.product_specification.value.ps_key_5.value }}
+                                </span>
+                                <span class="ps_value">
+                                  {{ product.metafields.custom.product_specification.value.ps_value_5.value }}
+                                </span>
+                              </div>
+                            </div>
+                        </div>
+                      {% endif %}
+                      {% render 'image-pdp-mob', class: '', mobileSrc: image, desktopSrc: image, loading: 'lazy' %}
                     </div>
                   {% endif %}
                 {% endfor %}

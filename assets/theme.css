@@ -6490,7 +6490,7 @@ tfoot td {
     [data-block-type="sku"],
     [data-block-type="price"]
   ) {
-  --product-info-gap: 0.5rem;
+  --product-info-gap: 0rem;
 }
 
 .product-info__block-group:has(
@@ -7413,9 +7413,9 @@ tfoot td {
   color: rgb(var(--text-color));
 }
 
-.text-on-sale {
+/* .text-on-sale {
   color: rgb(var(--on-sale-text));
-}
+} */
 
 .text-stroke {
   -webkit-text-stroke: 1px currentColor;
@@ -8478,7 +8478,7 @@ ul {
 
 
 
-/* data-collection="EVERYDAY COTTON PANTS"{
+/* data-collection="Women Everyday Cotton Pants"{
 display:none;
 } */
 
@@ -8491,4 +8491,33 @@ display:none;
 
 .nector-websdk-widget .nector-rewards-widget-container{
   z-index:1000 !important;
+}
+
+/* Product Cards Price css */
+
+.product-card__info .product-prices .selling-price {
+    font-size: var(--text-h5);
+    line-height: 1.7;
+}
+.product-card__info .product-prices .compare-at-price-wrap, .product-card__info .product-prices .compare-at-price-wrap .compare-at-price {
+    font-size: var(--text-h5);
+    line-height: 1.7;
+    /* color: #777; */
+}
+.product-card__info .product-prices sale-price {
+    font-size: var(--text-h5);
+    line-height: 1.7;
+}
+.product-card__info .product-prices compare-at-price {
+   font-size: var(--text-h5);
+    line-height: 1.7;
+    /* color: #777; */
+}
+.product-card__info .product-prices compare-at-price .c-price {
+   text-decoration:line-through;
+   color:red;
+}
+
+.btn.ks-chart-modal-button {
+    border: none !important;
 }

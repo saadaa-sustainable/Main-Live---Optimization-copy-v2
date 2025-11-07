@@ -12,8 +12,6 @@ Select collection (keep your existing list; used only as a fallback)
 
 
 
-
-
 {% for collection in product.collections %}
  {% if collection.title contains 'Women Airy Linen Short Kurtas' 
 or collection.title contains 'Women Airy Linen Long Kurtas' 
@@ -32,9 +30,13 @@ or collection.title contains 'Women Viscose Palazzo Pants'
 or collection.title contains 'Women Airy Linen Wide Leg Pants'
 or collection.title contains 'Women Airy Linen Flared Dress'
 or collection.title contains 'Women Straight Fit Formal Pants'
-or collection.title contains 'Women 100% Linen Notch Collar Shirts'
-or collection.title contains 'Women 100% Linen Shirts'
+or collection.title contains 'Women Pure Linen Notch Collar Shirts'
+or collection.title contains 'Women Pure Linen Shirts'
 or collection.title contains 'Women Cotton Camisole Top'
+or collection.title contains 'Women Airy Linen Mid Thigh Length Kurta'
+or collection.title contains 'Women Airy Linen Split Neck Short Kurta'
+or collection.title contains 'Women Cotton Straight Pants'
+or collection.title contains 'Women Cotton Regular Pants'
 
 
 
@@ -45,6 +47,8 @@ or collection.title contains 'Men Airy Linen Long Kurtas'
 or collection.title contains 'Men 100% Linen Full Sleeve Shirts'
 or collection.title contains 'Men 100% Linen Half Sleeve Shirts'
 or collection.title contains 'Men Cotton Pants'
+or collection.title contains 'Men Pure Linen Short Sleeve Shirts'
+or collection.title contains 'Men Pure Linen Full Sleeve Shirts'
 
 
  
@@ -69,22 +73,16 @@ or collection.title contains 'Women Plus Size Pleated Top'
 or collection.title contains 'Women Plus Size Viscose Palazzo Pant'
 or collection.title contains 'Women Plus Size Airy-Linen Shirt'
 or collection.title contains 'Women Plus Size Airy Linen Short Kurta'
- 
+or collection.title contains 'Women Plus Size Straight Fit Formal Pants'
+or collection.title contains 'Men Plus Size Formal Shirts'
+
+
     
  %}
     {% assign selected_collection = collection %}
     {% break %}
   {% endif %}
 {% endfor %}
-
-
-
-
-
-
-
-
-
 
 {%- comment -%}
 Decide the FAQ source:

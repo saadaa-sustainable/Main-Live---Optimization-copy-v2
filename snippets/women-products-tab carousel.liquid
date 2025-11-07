@@ -266,6 +266,24 @@
         border: 1.5px solid #c36a4e;
       }
     }
+
+
+
+    /* ---- Offer note under VIEW ALL ---- */
+.view-all-offer-note {
+    margin-top: 34px;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 14px 10px;
+}
+
+.view-all-offer-note strong {
+  color : White;
+}
+
   </style>
 </head>
 <body>
@@ -290,12 +308,16 @@
       </button>
     </div>
     <div id="itemsContainer" class="menu-items-container"></div>
-    <div class="view-all-bar">
-      <a id="viewAllLink" class="toggle-button"
-         href="https://saadaa.in/collections/shop-bottoms">
-        VIEW ALL ➝
-      </a>
-    </div>
+   <div class="view-all-bar">
+  <a id="viewAllLink" class="toggle-button"
+     href="https://saadaa.in/collections/shop-bottoms">
+    VIEW ALL ➝
+  </a>
+  {% comment %} <div class="view-all-offer-note">
+  <strong>BUY 3 GET 1 FREE</strong> – Automatically applied at checkout
+</div> {% endcomment %}
+</div>
+
   </div>
 
   <script>
@@ -320,13 +342,26 @@
     // Title-based: for static HTML cards you want to mark
     const BADGE_TITLES = [
       "Airy Linen Straight Pants",
-      "Airy-Linen Shirts",
-      "Straight Fit Formal Pants",
-      "Airy Linen Wide Leg Pants"
+      "Women Pure Linen Shirt",
+      "Women Pure Linen Notch Collar Shirt",
+      "Women Cotton Camisole Top",
+      "Cotton Straight Pants",
+      "Airy-Linen Split Neck Kurtas",
+      "Airy-Linen Mid Length Kurtas",
+      "Pure Linen Shirt",
+      "Pure Linen Notch Collar Shirt",
+      "Cotton Camisole Top"
+
     ];
 
     // ─────────── Hard‐coded HTML for Bottom Wear and Top Wear ───────────
     const bottomsHTML =
+     '<div class="menu-item">' +
+        '<a href="/products/women-beige-straight-fit-cotton-pant">' +
+          '<img src="https://saadaa.in/cdn/shop/files/1_45906f39-0ba0-4653-9809-1a3b2ac5b3c3.webp?v=1759750482&width=1000" alt="SSP" />' +
+          '<p>Cotton Straight Pants</p>' +
+        '</a>' +
+      '</div>' +
       '<div class="menu-item">' +
         '<a href="/products/white-straight-fit-formal-pants">' +
           '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/SDSSPWH_1_8a23a213-e9ff-4ca5-a052-8208ccb3ea30.webp?v=1753438133" alt="SSP" />' +
@@ -371,6 +406,41 @@
       '</div>';
 
     const topwearHTML =
+     '<div class="menu-item">' +
+        '<a href="/products/women-ecru-airy-linen-split-neck-short-kurta">' +
+          '<img src="https://saadaa.in/cdn/shop/files/1.1_cff2edb8-22bf-4963-9872-23c274a80683.webp?v=1759576951&width=1000" ' +
+               'alt="Airy-Linen Short Kurtas" />' +
+          '<p>Airy-Linen Split Neck Kurtas</p>' +
+        '</a>' +
+      '</div>' +
+     '<div class="menu-item">' +
+        '<a href="/products/women-yellow-airy-linen-mid-thigh-length-kurta-copy">' +
+          '<img src="https://saadaa.in/cdn/shop/files/6_07223ef7-3a03-412f-9c04-da8ab8082e53.webp?v=1759745934&width=1000" ' +
+               'alt="Airy-Linen Short Kurtas" />' +
+          '<p>Airy-Linen Mid Length Kurtas</p>' +
+        '</a>' +
+      '</div>' +
+    '<div class="menu-item">' +
+        '<a href="/products/women-light-pink-100-linen-shirt">' +
+          '<img src="https://saadaa.in/cdn/shop/files/1.2_8914c6a2-6587-4f5f-b70d-c9295ae9f659.webp?v=1759310018&width=1000" ' +
+               'alt="Airy-Linen Short Kurtas" />' +
+          '<p>Pure Linen Shirt</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
+        '<a href="/products/women-taupe-100-linen-notch-collar-shirt">' +
+          '<img src="https://saadaa.in/cdn/shop/files/1.1_a8dbbbf1-9d3e-4e30-b32b-847ca587ee6e.webp?v=1759310253&width=1000" ' +
+               'alt="Airy-Linen Short Kurtas" />' +
+          '<p>Pure Linen Notch Collar Shirt</p>' +
+        '</a>' +
+      '</div>' +
+       '<div class="menu-item">' +
+        '<a href="/products/women-white-cotton-camisole-top">' +
+          '<img src="https://saadaa.in/cdn/shop/files/1.1_48f27e5f-9102-4cfc-802d-260bd456a5d2.webp?v=1759308490&width=1000" ' +
+               'alt="Airy-Linen Short Kurtas" />' +
+          '<p>Cotton Camisole Top</p>' +
+        '</a>' +
+      '</div>' +
       '<div class="menu-item">' +
         '<a href="/products/yellow-airy-linen-short-kurta">' +
           '<img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_635b9b22-0d5b-4da8-892e-e29d45c096ec.webp?v=1744193131" ' +

@@ -61,7 +61,7 @@
                   {%- if block.settings.image -%}
                     {%- capture sizes_attribute -%}(max-width: 699px) 100vw, {{ 100.0 | divided_by: 12.0 | times: block.settings.column_count | round }}vw{%- endcapture -%}
                     {% comment %} {{- block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: 'lazy', sizes: sizes_attribute, widths: '200,300,400,500,600,800,1000,1200,1400,1600', class: '' -}} {% endcomment %}
-                     {% render 'image', class: '', mobileSrc: block.settings.image, desktopSrc: block.settings.image , loading:"lazy" %}
+                     {% render 'image', class: '', mobileSrc: block.settings.image, desktopSrc: block.settings.image , loading:"eager" %}
                   {%- else -%}
                     {%- capture collection_image -%}collection-{% cycle '1', '2', '3', '4' %}{%- endcapture -%}
                     {{- collection_image | placeholder_svg_tag: 'placeholder placeholder--invert ' -}}

@@ -1,4 +1,4 @@
-{%- comment -%}
+{% comment %} {%- comment -%}
 ----------------------------------------------------------------------------------------------------------------------
 PRODUCT PRICE
 ----------------------------------------------------------------------------------------------------------------------
@@ -179,4 +179,500 @@ Supported variables
       </unit-price>
     {%- endif -%}
   {%- endunless -%}
+</price-list> {% endcomment %}
+
+
+
+
+
+
+
+
+{% comment %} NEW CODE Optiphoenix START {% endcomment %}
+
+
+
+
+
+
+
+
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+PRODUCT PRICE
+----------------------------------------------------------------------------------------------------------------------
+
+Render a list of price for a product, variant or line item.
+
+********************************************
+Supported variables
+********************************************
+
+* product: if provided, the prices are rendered for the whole product
+* variant: if provided, then only the price from this variant is rendered
+* line_item: if provided, then the price from this line item are rendered (used on cart or order)
+* hide_unit_price: if set to true unit prices are hidden (mostly useful for size constrained elements)
+* context: can be "product", "line_item" or "card". This controls how the prices are displayed (using the correct sizes)
+* form_id: if specified, the prices are updated dynamically based on the form update
+{%- endcomment -%}
+
+ {% comment %} {%- liquid
+  case context
+    when 'card' or 'line_item'
+      assign base_text_class = ''
+
+      if settings.product_card_text_font == 'heading'
+        assign base_text_class = 'h5 '
+      endif
+
+      assign regular_price_classes = base_text_class | append: 'text-subdued'
+      assign on_sale_price_classes = base_text_class | append: 'text-on-sale'
+      assign compare_at_price_classes = base_text_class | append: 'text-subdued line-through'
+      assign unit_price_classes = base_text_class | append: 'text-subdued'
+
+    when 'product'
+      assign regular_price_classes = base_text_class | append: 'h4 text-subdued'
+      assign on_sale_price_classes = base_text_class | append: 'h4 text-on-sale'
+      assign compare_at_price_classes = base_text_class | append: 'h5 text-subdued line-through'
+      assign unit_price_classes = base_text_class | append: 'h6 text-subdued'
+  endcase
+-%}
+
+<price-list {% if form_id %}role="region" aria-live="polite"{% endif %} class="price-list {% if context == 'product' %}price-list--product{% endif %}">
+  {%- if variant != blank -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    VARIANT CASE (used on product page, quick view...)
+    Always show compare-at; use real compare_at_price if valid, else fake as price × 2
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+    {%- assign base_price_num = variant.price -%}
+    {%- if variant.compare_at_price and variant.compare_at_price > base_price_num -%}
+      {%- assign compare_to_show_num = variant.compare_at_price -%}
+    {%- else -%}
+      {%- assign compare_to_show_num = base_price_num | times: 2 -%}
+    {%- endif -%}
+
+    <sale-price {% if form_id %}form="{{ form_id }}"{% endif %} class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+      <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+      {{ base_price_num | money_without_trailing_zeros }}
+    </sale-price>
+
+    <compare-at-price {% if form_id %}form="{{ form_id }}"{% endif %} class="{{ compare_at_price_classes }}">
+      <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+      {{ compare_to_show_num | money_without_trailing_zeros }}
+    </compare-at-price>
+
+  {%- elsif line_item != blank -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    LINE ITEM CASE (used on cart, order page...)
+    (Keeps real pricing: shows compare only if discounted)
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+    <sale-price class="{% if line_item.original_price > line_item.final_price %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+      <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+      {{- line_item.final_price | money_without_trailing_zeros -}}
+    </sale-price>
+
+    {%- if line_item.original_price > line_item.final_price -%}
+      <compare-at-price class="{{ compare_at_price_classes }}">
+        <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+        {{- line_item.original_price | money_without_trailing_zeros -}}
+      </compare-at-price>
+    {%- endif -%}
+
+  {%- elsif product != blank -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    PRODUCT CASE (used on card, incl. predictive search)
+    Always show compare-at; use real compare_at_price if valid, else fake as price × 2
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+    {%- liquid
+      # Keep your existing variant picking strategy
+      if product.price_varies and settings.product_price_strategy != 'from_price'
+        assign variant = product.variants | sort: 'price' | last | default: product.selected_or_first_available_variant
+      else
+        assign variant = product.variants | sort: 'price' | first | default: product.selected_or_first_available_variant
+      endif
+
+      assign base_price_num = variant.price
+      if variant.compare_at_price and variant.compare_at_price > base_price_num
+        assign compare_to_show_num = variant.compare_at_price
+      else
+        assign compare_to_show_num = base_price_num | times: 2
+      endif
+
+      assign variant_price = base_price_num | money_without_trailing_zeros
+      assign variant_compare_at_price = compare_to_show_num | money_without_trailing_zeros
+    -%}
+
+    {%- if product.price_varies -%}
+      {%- if settings.product_price_strategy == 'from_price' -%}
+        <sale-price class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+          <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+          {{- 'product.price.from_price_html' | t: price_min: variant_price -}}
+        </sale-price>
+      {%- else -%}
+        <sale-price class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+          <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+          {{- variant_price -}}
+        </sale-price>
+      {%- endif -%}
+    {%- else -%}
+      <sale-price class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+        <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+        {{- variant_price -}}
+      </sale-price>
+    {%- endif -%}
+
+    <compare-at-price class="{{ compare_at_price_classes }}">
+      <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+      {{- variant_compare_at_price -}}
+    </compare-at-price>
+
+  {%- else -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    PLACEHOLDER CASE (used on featured product section for instance)
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+    <sale-price class="{{ regular_price_classes }}">
+      <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+      {{- 4999 | money -}}
+    </sale-price>
+  {%- endif -%}
+
+  {%- unless hide_unit_price -%}
+    {%- assign unit_price_item = variant | default: line_item | default: product.selected_or_first_available_variant -%}
+
+    {%- if unit_price_item.unit_price or form_id != blank -%}
+      <unit-price {% if form_id %}form="{{ form_id }}"{% endif %} {% unless unit_price_item.unit_price %}hidden{% endunless %} class="{{ unit_price_classes }}">
+        {%- assign unit_price_measurement = unit_price_item.unit_price_measurement -%}
+
+        {%- if unit_price_measurement.reference_value != 1 -%}
+          {%- assign reference_value = unit_price_measurement.reference_value -%}
+        {%- endif -%}
+
+        ({{ unit_price_item.unit_price | money }}/{{ reference_value }}{{ unit_price_measurement.reference_unit }})
+      </unit-price>
+    {%- endif -%}
+  {%- endunless -%}
+</price-list>  {% endcomment %}
+
+
+
+
+
+
+
+
+{% comment %} NEW CODE Optiphoenix END {% endcomment %}
+
+
+
+
+
+
+
+
+
+{% comment %} NEW CODE FOR PRE LAUNCH AFTERWARDS UNCOMMENT THE ABOVE CODE START
+
+
+----------------------------------------------------------------------------------------------------------------------
+PRODUCT PRICE
+----------------------------------------------------------------------------------------------------------------------
+
+Render a list of price for a product, variant or line item.
+
+********************************************
+Supported variables
+********************************************
+
+* product: if provided, the prices are rendered for the whole product
+* variant: if provided, then only the price from this variant is rendered
+* line_item: if provided, then the price from this line item are rendered (used on cart or order)
+* hide_unit_price: if set to true unit prices are hidden (mostly useful for size constrained elements)
+* context: can be "product", "line_item" or "card". This controls how the prices are displayed (using the correct sizes)
+* form_id: if specified, the prices are updated dynamically based on the form update
+{%- endcomment -%}
+
+{%- liquid
+  case context
+    when 'card' or 'line_item'
+      assign base_text_class = ''
+
+      if settings.product_card_text_font == 'heading'
+        assign base_text_class = 'h5 '
+      endif
+
+      assign regular_price_classes     = base_text_class | append: 'text-subdued'
+      assign on_sale_price_classes     = base_text_class | append: 'text-on-sale'
+      assign compare_at_price_classes  = base_text_class | append: 'text-subdued line-through'
+      assign unit_price_classes        = base_text_class | append: 'text-subdued'
+
+    when 'product'
+      assign base_text_class = ''
+      assign regular_price_classes     = base_text_class | append: 'h4 text-subdued'
+      assign on_sale_price_classes     = base_text_class | append: 'h4 text-on-sale'
+      assign compare_at_price_classes  = base_text_class | append: 'h5 text-subdued line-through'
+      assign unit_price_classes        = base_text_class | append: 'h6 text-subdued'
+  endcase
+-%}
+
+{%- comment -%}
+  ===== Tag-based price overrides (DISPLAY ONLY) =====
+  These only change the numeric values used below; the markup/UI remains exactly the same.
+{%- endcomment -%}
+{% comment %} {%- liquid
+  assign has_SMLFS = false
+  assign has_SDLNS = false
+  assign has_SDLS  = false
+  assign has_SMLSS = false
+
+ if product
+    if product.tags contains 'SMLFS'
+      assign has_SMLFS = true
+    elsif product.tags contains 'SDLNS'
+      assign has_SDLNS = true
+    elsif product.tags contains 'SDLS'
+      assign has_SDLS = true
+    elsif product.tags contains 'SMLSS'
+      assign has_SMLSS = true
+    endif
+  elsif line_item and line_item.product
+    if line_item.product.tags contains 'SDSLP'
+      assign has_SMLFS = true
+    elsif line_item.product.tags contains 'SDLNS'
+      assign has_SDLNS = true
+    elsif line_item.product.tags contains 'SDLS'
+      assign has_SDLS = true
+    elsif line_item.product.tags contains 'SMLSS'
+      assign has_SMLSS = true
+    endif
+  endif 
+
+  assign override_active = false
+  if has_SMLFS
+    assign override_active        = true
+    assign override_price_cents   = 199900
+    assign override_compare_cents = 249900
+  elsif has_SDLNS
+    assign override_active        = true
+    assign override_price_cents   = 169900
+    assign override_compare_cents = 219900
+  elsif has_SDLS
+    assign override_active        = true
+    assign override_price_cents   = 199900
+    assign override_compare_cents = 249900
+  elsif has_SMLSS
+    assign override_active        = true
+    assign override_price_cents   = 169900
+    assign override_compare_cents = 219900
+  endif
+-%} {% endcomment %}
+
+
+{%- liquid
+  assign has_SMLFS = false
+ assign has_SMFS = false
+
+
+ if product
+    if product.tags contains 'SMFLK'
+      assign has_SMFLK = true
+
+      elsif product.tags contains 'SDFS'
+      assign has_SMFS = true
+
+    endif
+  elsif line_item and line_item.product
+    if line_item.product.tags contains 'SMFLK'
+      assign has_SMFLK = true
+
+       elsif line_item.product.tags contains 'SDFS'
+      assign has_SMFS = true
+
+ 
+    endif
+  endif 
+
+  assign override_active = false
+  if has_SMFLK
+    assign override_active        = true
+    assign override_price_cents   = 99900
+    assign override_compare_cents = 129900
+
+      elsif has_SMFS
+    assign override_active        = true
+    assign override_price_cents   = 99900
+    assign override_compare_cents = 149900
+
+  endif
+-%}
+
+
+
+
+
+
+
+
+<price-list {% if form_id %}role="region" aria-live="polite"{% endif %} class="price-list {% if context == 'product' %}price-list--product{% endif %}">
+  {%- if variant != blank -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    VARIANT CASE (PDP / quick view)
+    RULE: Always show compare-at; use real compare_at_price if valid, else fake as price × 2.
+    We feed effective numbers (override if active) — UI is identical.
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+
+    {%- assign raw_price_num   = variant.price -%}
+    {%- assign raw_compare_num = variant.compare_at_price -%}
+
+    {%- if override_active -%}
+      {%- assign base_price_num = override_price_cents -%}
+      {%- if override_compare_cents and override_compare_cents > override_price_cents -%}
+        {%- assign compare_to_show_num = override_compare_cents -%}
+      {%- else -%}
+        {%- assign compare_to_show_num = override_price_cents | times: 2 -%}
+      {%- endif -%}
+    {%- else -%}
+      {%- assign base_price_num = raw_price_num -%}
+      {%- if raw_compare_num and raw_compare_num > raw_price_num -%}
+        {%- assign compare_to_show_num = raw_compare_num -%}
+      {%- else -%}
+        {%- assign compare_to_show_num = raw_price_num | times: 2 -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    <sale-price {% if form_id %}form="{{ form_id }}"{% endif %} class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+      <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+      {{ base_price_num | money_without_trailing_zeros }}
+    </sale-price>
+
+    <compare-at-price {% if form_id %}form="{{ form_id }}"{% endif %} class="{{ compare_at_price_classes }}">
+      <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+      {{ compare_to_show_num | money_without_trailing_zeros }}
+    </compare-at-price>
+
+  {%- elsif line_item != blank -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    LINE ITEM CASE (cart / order)
+    Keep real totals; no display overrides here. Show compare only if discounted.
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+
+    <sale-price class="{% if line_item.original_price > line_item.final_price %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+      <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+      {{- line_item.final_price | money_without_trailing_zeros -}}
+    </sale-price>
+
+    {%- if line_item.original_price > line_item.final_price -%}
+      <compare-at-price class="{{ compare_at_price_classes }}">
+        <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+        {{- line_item.original_price | money_without_trailing_zeros -}}
+      </compare-at-price>
+    {%- endif -%}
+
+  {%- elsif product != blank -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    PRODUCT CASE (collection cards, predictive search)
+    RULE: Always show compare-at; real compare_at if valid, else fake ×2.
+    We feed effective numbers (override if active) — UI is identical.
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+    {%- liquid
+      if product.price_varies and settings.product_price_strategy != 'from_price'
+        assign card_variant = product.variants | sort: 'price' | last | default: product.selected_or_first_available_variant
+      else
+        assign card_variant = product.variants | sort: 'price' | first | default: product.selected_or_first_available_variant
+      endif
+
+      assign raw_price_num   = card_variant.price
+      assign raw_compare_num = card_variant.compare_at_price
+
+      if override_active
+        assign base_price_num = override_price_cents
+        if override_compare_cents and override_compare_cents > override_price_cents
+          assign compare_to_show_num = override_compare_cents
+        else
+          assign compare_to_show_num = override_price_cents | times: 2
+        endif
+      else
+        assign base_price_num = raw_price_num
+        if raw_compare_num and raw_compare_num > raw_price_num
+          assign compare_to_show_num = raw_compare_num
+        else
+          assign compare_to_show_num = raw_price_num | times: 2
+        endif
+      endif
+
+      assign variant_price            = base_price_num | money_without_trailing_zeros
+      assign variant_compare_at_price = compare_to_show_num | money_without_trailing_zeros
+    -%}
+
+    {%- if product.price_varies -%}
+      {%- if settings.product_price_strategy == 'from_price' -%}
+        <sale-price class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+          <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+          {{- 'product.price.from_price_html' | t: price_min: variant_price -}}
+        </sale-price>
+      {%- else -%}
+        <sale-price class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+          <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+          {{- variant_price -}}
+        </sale-price>
+      {%- endif -%}
+    {%- else -%}
+      <sale-price class="{% if compare_to_show_num > base_price_num %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+        <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+        {{- variant_price -}}
+      </sale-price>
+    {%- endif -%}
+
+    <compare-at-price class="{{ compare_at_price_classes }}">
+      <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+      {{- variant_compare_at_price -}}
+    </compare-at-price>
+
+  {%- else -%}
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------------
+    PLACEHOLDER CASE
+    --------------------------------------------------------------------------------------------------------------------
+    {%- endcomment -%}
+    <sale-price class="{{ regular_price_classes }}">
+      <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+      {{- 4999 | money -}}
+    </sale-price>
+  {%- endif -%}
+
+  {%- unless hide_unit_price -%}
+    {%- assign unit_price_item = variant | default: line_item | default: product.selected_or_first_available_variant -%}
+    {%- if unit_price_item.unit_price or form_id != blank -%}
+      <unit-price {% if form_id %}form="{{ form_id }}"{% endif %} {% unless unit_price_item.unit_price %}hidden{% endunless %} class="{{ unit_price_classes }}">
+        {%- assign unit_price_measurement = unit_price_item.unit_price_measurement -%}
+        {%- if unit_price_measurement.reference_value != 1 -%}
+          {%- assign reference_value = unit_price_measurement.reference_value -%}
+        {%- endif -%}
+        ({{ unit_price_item.unit_price | money }}/{{ reference_value }}{{ unit_price_measurement.reference_unit }})
+      </unit-price>
+    {%- endif -%}
+  {%- endunless -%}
 </price-list>
+
+
+<style>
+
+  .line-through{
+  color:red;
+}
+</style>
+
+{% comment %} NEW CODE FOR PRE LAUNCH AFTERWARDS UNCOMMENT THE ABOVE CODE END {% endcomment %}

@@ -1,32 +1,67 @@
 
 {% for collection in product.collections %}
- {% if collection.title contains 'AIRY-LINEN SHORT KURTAS' 
- or collection.title contains 'AIRY LINEN LONG KURTAS' 
- or collection.title contains 'AIRY - LINEN SHIRTS'
- or collection.title contains 'EVERYDAY COTTON TOP'
- or collection.title contains '4-WAY STRETCHABLE PANTS'
- or collection.title contains 'EVERYDAY COTTON PANTS'
- or collection.title contains 'THE FORMAL PANTS'
- or collection.title contains 'PALAZZO PANTS'
- or collection.title contains 'AIRY-LINEN SHORTS'
- or collection.title contains 'TOTE BAGS'
- or collection.title contains 'V-NECK SLEEVELESS TOP'
- or collection.title contains 'WIDE LEG PANTS'
- or collection.title contains 'AIRY LINEN PANTS'
- or collection.title contains 'VISCOSE PLEATED TOP'
- or collection.title contains 'THE FORMAL SHIRTS'
- or collection.title contains 'AIRY-LINEN LONG KURTAS VWO'
- or collection.title contains '100% Cotton - Everyday Pants'
- or collection.title contains 'Viscose Palazzo Pants'   
- or collection.title contains 'EVERYDAY COTTON PANT'
-    or collection.title contains 'Airy Linen Wide Leg Pant'
-    or collection.title contains 'MEN AIRY-LINEN SHORT KURTAS'
-    or collection.title contains 'Men 100% Linen Full Sleeve Shirt'
+ {% if collection.title contains 'Women Airy Linen Short Kurtas' 
+or collection.title contains 'Women Airy Linen Long Kurtas' 
+or collection.title contains 'Women Airy Linen Shirts'
+or collection.title contains 'Women Everyday Cotton Top'
+or collection.title contains 'Women 4-Way Scretchable Pants'
+or collection.title contains 'Women Everyday Cotton Pants'
+or collection.title contains 'Women Formal Pants'
+or collection.title contains 'Women Airy Linen Shorts'
+or collection.title contains 'Women V-Neck Sleeveless Tops'
+or collection.title contains 'Women Wide Leg Pants'
+or collection.title contains 'Women Airy Linen Pants'
+or collection.title contains 'Women Viscose Pleated Tops'
+or collection.title contains 'Women Airy Linen Straight Pants'
+or collection.title contains 'Women Viscose Palazzo Pants'   
+or collection.title contains 'Women Airy Linen Wide Leg Pants'
+or collection.title contains 'Women Airy Linen Flared Dress'
+or collection.title contains 'Women Straight Fit Formal Pants'
+or collection.title contains 'Women 100% Linen Notch Collar Shirts'
+or collection.title contains 'Women 100% Linen Shirts'
+or collection.title contains 'Women Cotton Camisole Top'
+
+
+or collection.title contains 'Men Formal Shirts'
+or collection.title contains 'Men Airy Linen Short Kurtas'
+or collection.title contains 'MEN AIRY-LINEN SHORT KURTAS'
+or collection.title contains 'Men Airy Linen Long Kurtas'
+or collection.title contains 'Men 100% Linen Full Sleeve Shirts'
+or collection.title contains 'Men 100% Linen Half Sleeve Shirts'
+or collection.title contains 'Men Cotton Pants'
+or collection.title contains 'Men Linen Short Sleeve Shirts'
+or collection.title contains 'Men Linen Full Sleeve Shirts'
+
+ 
+
+or collection.title contains 'TOTE BAGS'
+or collection.title contains 'AIRY-LINEN LONG KURTAS VWO'
+or collection.title contains 'Co-ords'
+or collection.title contains 'bundles'
+or collection.title contains 'Build Your Own Bundle'
+or collection.title contains 'PALAZZO PANTS'
+or collection.title contains 'Airy Linen Wide Leg Pant'
+or collection.title contains 'V-Neck Sleeveless Top'
+
+
+
+
+or collection.title contains 'Women Plus Size Cotton Pant'
+or collection.title contains 'Women Plus Size Wide Leg Pant'
+or collection.title contains 'Women Plus Size Formal Pant'
+or collection.title contains 'Women Plus Size Sleeveless Top'
+or collection.title contains 'Women Plus Size Pleated Top'
+or collection.title contains 'Women Plus Size Viscose Palazzo Pant'
+or collection.title contains 'Women Plus Size Airy-Linen Shirt'
+or collection.title contains 'Women Plus Size Airy Linen Short Kurta'
+ 
+    
  %}
     {% assign selected_collection = collection %}
     {% break %}
   {% endif %}
 {% endfor %}
+
 
 
 

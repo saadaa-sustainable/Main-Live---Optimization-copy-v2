@@ -1,4 +1,4 @@
-{% comment %} {% comment %}
+{% comment %} {% comment %} {% comment %}
 Hide Meesho-style Return Policy Section for:
 - Airy Linen Flared Dress
 - Men … Cotton Pant (any variation)
@@ -29,7 +29,7 @@ Hide Meesho-style Return Policy Section for:
         <!-- Replace with your Return icon URL -->
         <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275318.svg?v=1755523652" alt="Free Return 11111">
       </span>
-      <span class="policy-label return">Free Returns</span>
+      <span class="policy-label return">Free Exchanges</span>
     </button>
     <div class="policy-divider"></div>
     <button class="policy-btn cash-btn openReturnModalBtn" data-modal="#deliveryModal">
@@ -95,7 +95,13 @@ Hide Meesho-style Return Policy Section for:
              alt="Refund artwork"
              style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
       </div>
+
+      <!-- NOTE: full-width message above the button -->
+{% comment %} <p class="modal-note">Exchange only on festive orders</p> {% endcomment %}
+
     </div>
+
+    
     <button class="modal-continue">Continue Shopping</button>
   </div>
 </div>
@@ -213,12 +219,695 @@ Hide Meesho-style Return Policy Section for:
              alt="Refund artwork"
              style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
       </div>
+      {% comment %} <p class="modal-note">
+        Gullak coin doesn't combine with Buy2 & Buy4
+        Guaranteed silver coin with gullak coin purchases
+      </p> {% endcomment %}
     </div>
     <button class="modal-continue">Continue Shopping</button>
   </div>
 </div>
 
 <style>
+
+/* Full-width note above the CTA in Return modal only */
+.modal-note{
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  background: #fff8d8;
+  border: 1px dashed #f1c40f;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  text-align: center;
+}
+
+.modal-note{
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  background: #fff8d8;
+  border: 1px dashed #f1c40f;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  text-align: center;
+}
+
+
+
+
+
+
+@media (min-width: 900px) {
+  .meesho-return-policy-wrap,
+  #returnModal {
+    display: none !important;
+  }
+}
+/* (keep your existing CSS exactly as-is) */
+
+/* --- Progressive step fill + icon tint + card glow --- */
+
+/* default (inactive) */
+.modal-step .step-dot,
+.modal-step .step-line { background: #DADADA; }
+.modal-step { transition: background 240ms ease, box-shadow 240ms ease; }
+.modal-step .step-title,
+.modal-step .step-desc { transition: color 240ms ease; }
+.modal-step .policy-icon img,
+.modal-step > img { filter: grayscale(1) brightness(.9); transition: filter 240ms ease; }
+
+.modal-step.is-active .step-title { color: #000; }
+.modal-step.is-active .step-desc  { color: #3d6057; }
+.modal-step.is-active .policy-icon img,
+.modal-step.is-active > img { filter: grayscale(0) brightness(1); }
+
+/* dot/line “fill” */
+.modal-step .step-dot {
+  position: relative;
+  width: 12px; height: 12px; border-radius: 50%;
+}
+.modal-step .step-dot::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(17,119,90,0.35);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0ms 0ms;
+}
+
+/* line starts collapsed; grows when .is-filled-line is added */
+.modal-step .step-line { width: 2px; height: 0; }
+.modal-step.is-filled-line .step-line {
+  height: 67px;
+  background: #11775a;
+  transition: height 600ms cubic-bezier(.4,0,.2,1);
+}
+
+/* last line stays 0 (your markup already uses .last) */
+.modal-step .step-line.last { height: 0 !important; }
+
+/* dot fill when .is-filled-dot is added */
+.modal-step.is-filled-dot .step-dot {
+  background: #11775a;
+  transition: background 260ms ease-out;
+}
+
+/* subtle pulse when dot completes */
+.modal-step.is-pulse .step-dot::after {
+  opacity: 1;
+  animation: pulseRing .8s ease-out forwards;
+}
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(17,119,90,0.35); }
+  100% { box-shadow: 0 0 0 12px rgba(17,119,90,0); }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .modal-step, .modal-step * { transition: none !important; animation: none !important; }
+  .modal-step.is-filled-line .step-line { height: 65px; }
+}
+
+/* Coupons */
+.coupon-code { color: #FF0000; font-weight: 600; }
+.copy-code { cursor: pointer; }
+
+/* Layout */
+.meesho-return-policy-wrap {
+  max-width: 430px;
+  margin: 12px auto;
+}
+.policy-row {
+  position: relative;
+  display: flex;
+  background: #F6F3F1;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* ===== RUNNING CONIC-GRADIENT BORDER (UPDATED) ===== */
+
+/* Enable smooth animation of a custom CSS variable */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.policy-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 8px;
+
+  /* Border thickness */
+  padding: 1px;
+
+  /* Animated ring */
+  background:
+    conic-gradient(
+      from var(--angle),
+      #d53e33 0deg 90deg,
+      #fbb300 90deg 180deg,
+      #377af5 180deg 270deg,
+      #399953 270deg 360deg
+    );
+
+  /* Punch out the inner box so only border shows */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  pointer-events: none;
+
+  /* Rotate the gradient smoothly */
+  animation: ring-spin 6s linear infinite;
+}
+
+/* Rotation keyframes */
+@keyframes ring-spin {
+  to { --angle: 360deg; }
+}
+
+/* Ensure inner content sits above the border pseudo */
+.policy-row > * { position: relative; z-index: 3; }
+
+.policy-btn {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: none;
+  padding: 7px 8px;
+  cursor: pointer;
+  display: grid;
+  flex-direction: row;
+  align-items: center;
+  gap: 0px;
+  transition: background .2s;
+  justify-content: center;
+}
+.policy-btn:active { background: #fee590; }
+.policy-divider {
+  width: 0.2px;
+  background: #a2aaaa;
+  margin: 14px 0;
+  height: 29px;
+}
+.policy-icon { margin-bottom: 4px; display: flex; align-items: center; justify-content: center; }
+.policy-icon img { width: 100%; height: 26px; object-fit: contain; display: block; }
+.policy-label { font-weight: 600; font-size: 8.5px; line-height: 13px; text-align: center; }
+.return { color: #000; }
+.cash  { color: #000; }
+/* Fixed typo: was #000#000 */
+.price { color: #000; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  left: 0; top: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100%;
+  background: rgba(0,0,0,.38);
+  z-index: 12000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.modal-box {
+  width: 100vw;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 2px 24px rgba(0,0,0,.10);
+  padding: 28px 20px 20px;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.6,-0.01,0,1.01);
+  margin-bottom: 0;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.modal-title { font-weight: 600; font-size: 0.9rem; }
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: #aaa;
+  cursor: pointer;
+  font-weight: 700;
+}
+.modal-body { margin-bottom: 30px; }
+.modal-step { display: flex; align-items: flex-start; }
+.modal-step:last-child { margin-bottom: 0; }
+.step-icon-wrap { display: flex; flex-direction: column; align-items: center; margin-right: 13px; }
+.step-dot { width: 12px; height: 12px; border-radius: 50%; background: #11775a; }
+.step-line { width: 2px; height: 65px; background: #11775a; }
+.step-line.last { height: 0; background: transparent; }
+.step-title {
+  position: relative;
+  font-weight: 600;
+  font-size: 0.81rem;
+  bottom: 6px;
+  text-align: left;
+  padding-right: 25px;
+}
+.step-desc { font-size: 13px; color: #757575; margin-top: 2px; text-align: left; }
+.modal-continue {
+  width: 100%;
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 7px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(240, 62, 108, 0.05);
+  transition: background .2s;
+}
+.modal-continue:active { background: #000; }
+
+/* pop the active step title a bit */
+.modal-step .step-title {
+  transform: translateY(0) scale(1);
+  transform-origin: left center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+/* when a step is active, give the title a quick pop */
+.modal-step.is-active .step-title {
+  animation: stepTitlePop 360ms cubic-bezier(.2,.9,.25,1) both;
+}
+/* keyframes for the pop */
+@keyframes stepTitlePop {
+  0%   { transform: translateY(0)    scale(1);    }
+  50%  { transform: translateY(-2px) scale(1.06); }
+  100% { transform: translateY(-1px) scale(1.03); }
+}
+/* reduced motion: keep subtle and instant */
+@media (prefers-reduced-motion: reduce) {
+  .modal-step .step-title { transition: none !important; animation: none !important; }
+  .modal-step.is-active .step-title { transform: translateY(-1px) scale(1.02); }
+  /* also stop the border rotation for motion-sensitive users */
+  .policy-row::before { animation: none !important; }
+}
+</style>
+
+<script>
+  // small helper to wait
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+  async function playSteps(modalEl) {
+    const steps = [...modalEl.querySelectorAll('.modal-step')];
+    if (!steps.length) return;
+
+    // reset classes
+    steps.forEach(s => s.classList.remove('is-active','is-filled-dot','is-filled-line','is-pulse'));
+
+    // timings (tweak to match your video feel)
+    const dotFill   = 260;   // dot color fill
+    const pulseLag  = 80;    // after dot fill, start pulse
+    const lineGrow  = 600;   // vertical line grow
+    const between   = 120;   // small pause between phases
+
+    // step 1
+    steps[0].classList.add('is-active','is-filled-dot');
+    await wait(dotFill + pulseLag);
+    steps[0].classList.add('is-pulse');            // pulse
+    await wait(300);                                // let pulse play a bit
+
+    // line 1 -> step 2
+    if (steps[1]) {
+      steps[0].classList.add('is-filled-line');    // grow to next step
+      await wait(lineGrow + between);
+      steps[1].classList.add('is-active','is-filled-dot');
+      await wait(dotFill + pulseLag);
+      steps[1].classList.add('is-pulse');
+      await wait(300);
+    }
+
+    // line 2 -> step 3
+    if (steps[2]) {
+      steps[1].classList.add('is-filled-line');
+      await wait(lineGrow + between);
+      steps[2].classList.add('is-active','is-filled-dot');
+      await wait(dotFill + pulseLag);
+      steps[2].classList.add('is-pulse');
+      // no next line; done
+    }
+  }
+
+  // Open a specific modal
+  function openModal(modalEl) {
+    modalEl.style.opacity = '1';
+    modalEl.style.pointerEvents = 'auto';
+    document.body.style.overflow = 'hidden';
+
+    const box = modalEl.querySelector('.modal-box');
+    void box.offsetWidth;
+    box.style.transform = 'translateY(0)';
+
+    // kick the step animation (don’t block UI)
+    playSteps(modalEl);
+  }
+
+  // Close a specific modal
+  function closeModal(modalEl) {
+    const box = modalEl.querySelector('.modal-box');
+    box.style.transform = 'translateY(100%)';
+
+    // reset steps so next open replays cleanly
+    modalEl.querySelectorAll('.modal-step').forEach(s => {
+      s.classList.remove('is-active','is-filled-dot','is-filled-line','is-pulse');
+    });
+
+    setTimeout(function () {
+      modalEl.style.opacity = '0';
+      modalEl.style.pointerEvents = 'none';
+      document.body.style.overflow = '';
+    }, 320);
+  }
+
+  // Wire all open buttons to their target modals
+  document.querySelectorAll('.openReturnModalBtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const targetSel = btn.getAttribute('data-modal');
+      const target = targetSel ? document.querySelector(targetSel) : null;
+      if (target) openModal(target);
+    });
+  });
+
+  // For each modal: close on X, on Continue, and on backdrop click
+  document.querySelectorAll('.modal-overlay').forEach(function(modalEl){
+    const closeBtn = modalEl.querySelector('.modal-close');
+    const continueBtn = modalEl.querySelector('.modal-continue');
+
+    if (closeBtn) closeBtn.addEventListener('click', function(){ closeModal(modalEl); });
+    if (continueBtn) continueBtn.addEventListener('click', function(){ closeModal(modalEl); });
+
+    modalEl.addEventListener('click', function(e){
+      if (e.target === modalEl) closeModal(modalEl);
+    });
+  });
+
+  // ESC closes whichever modal is open
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay').forEach(function(modalEl){
+        if (getComputedStyle(modalEl).pointerEvents === 'auto') closeModal(modalEl);
+      });
+    }
+  });
+
+  // Generic copy for any .copy-code (kept from your code)
+  document.querySelectorAll('.copy-code').forEach(function(el){
+    el.addEventListener('click', function(){
+      var code = el.getAttribute('data-code') || el.textContent.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(function(){
+          var prev = el.textContent;
+          el.textContent = 'Copied!';
+          setTimeout(function(){ el.textContent = code; }, 1200);
+        }).catch(function(){ /* noop */ });
+      }
+    });
+  });
+</script>
+
+
+
+{% comment %} {% endunless %} {% endcomment %} {% endcomment %}
+
+{% comment %} NEW CODE INCLUDING BUY 3 GET 1 FREE {% endcomment %}
+
+{% comment %} {% comment %}
+Hide Meesho-style Return Policy Section for:
+- Airy Linen Flared Dress
+- Men … Cotton Pant (any variation)
+- Straight fit formal pant(s)
+{% endcomment %}
+{% assign t = product.title | downcase %}
+{% assign hide_policy = false %}
+{% if t contains 'airy linen flared dress' %}
+  {% assign hide_policy = true %}
+{% elsif t contains 'men' and t contains 'cotton pant' %}
+  {% assign hide_policy = true %}
+{% elsif t contains 'straight fit formal pant' %}
+  {% assign hide_policy = true %}
+{% endif %}
+
+{% unless hide_policy %} {% endcomment %}
+
+
+
+
+
+
+<!-- Meesho-style Return Policy Section -->
+<div class="meesho-return-policy-wrap">
+  <div class="policy-row">
+    <button class="policy-btn return-btn openReturnModalBtn" data-modal="#returnModal">
+      <span class="policy-icon return">
+        <!-- Replace with your Return icon URL -->
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275318.svg?v=1755523652" alt="Free Return 11111">
+      </span>
+      <span class="policy-label return">Free Exchanges</span>
+    </button>
+    <div class="policy-divider"></div>
+    <button class="policy-btn cash-btn openReturnModalBtn" data-modal="#deliveryModal">
+      <span class="policy-icon cash">
+        <!-- Replace with your Delivery icon URL -->
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275316_537ff266-fcc2-4c45-b6f0-70aa537922ad.svg?v=1755523651" alt="Free Delivery 11211">
+      </span>
+      <span class="policy-label cash">Free Delivery</span>
+    </button>
+    <div class="policy-divider"></div>
+    <button class="policy-btn price-btn openReturnModalBtn" data-modal="#priceModal">
+      <span class="policy-icon price">
+        <!-- Replace with your Best Price icon URL -->
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_1171275317_6065a953-d6e9-42ce-a15c-ea9066b83d90.svg?v=1755523652" alt="Best Price 11313131">
+      </span>
+      <span class="policy-label price">Best Price</span>
+    </button>
+  </div>
+</div>
+
+<!-- Overlay Modal 1: Return -->
+<div id="returnModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">7 DAYS EASY RETURNS & EXCHANGE</span>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <!-- Timeline -->
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+        </div>
+        <div>
+          <div class="step-title">Request free 7-day doorstep returns & exchange at no extra cost.</div>
+        </div>
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_6.png?v=1755496755"
+             alt="Free returns artwork"
+             style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+        </div>
+        <div>
+          <div class="step-title">Pickup will be arranged within 72 hours.</div>
+        </div>
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_8.png?v=1755496755"
+             alt="Pickup artwork"
+             style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line last"></div>
+        </div>
+        <div>
+          <div class="step-title">Hassle-free refunds are processed and credited quickly.</div>
+        </div>
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_10.png?v=1755496755"
+             alt="Refund artwork"
+             style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+
+      <!-- NOTE: full-width message above the button -->
+{% comment %} <p class="modal-note">Exchange only on festive orders</p> {% endcomment %}
+
+    </div>
+
+    
+    <button class="modal-continue">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- Overlay Modal 2: Delivery (replicated content) -->
+<div id="deliveryModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">FREE DELIVERY</span>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <!-- Timeline (same as above) -->
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+        </div>
+        <div>
+          <div class="step-title">Free delivery on all orders.</div>
+        </div>
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_6.png?v=1755496755"
+             alt="Free returns artwork"
+             style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+        </div>
+        <div>
+          <div class="step-title">Dispatch within 72 hours.</div>
+        </div>
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_8.png?v=1755496755"
+             alt="Pickup artwork"
+             style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line last"></div>
+        </div>
+        <div>
+          <div class="step-title">Delivery in 2–6 days depending on location.</div>
+        </div>
+        <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_10.png?v=1755496755"
+             alt="Refund artwork"
+             style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+    </div>
+    <button class="modal-continue">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- Overlay Modal 3: Price (updated content) -->
+<div id="priceModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">BEST PRICE</span>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- 1: B3G1 Offer -->
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+        </div>
+        <div>
+          <div class="step-title">Buy 3 Get 1 Free</div>
+          <div class="step-desc">
+            Automatically applied at checkout sitewide
+          </div>
+        </div>
+        <img 
+          src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_6.png?v=1755496755"
+          alt="B3G1 offer artwork"
+          style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+
+      <!-- 2: BUY2 Offer -->
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+        </div>
+        <div>
+          <div class="step-title">Flat 15% off when you buy 2 items</div>
+          <div class="step-desc">
+            Use Code : - <span class="coupon-code copy-code" data-code="BUY2">BUY2</span>
+          </div>
+        </div>
+        <img 
+          src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_8.png?v=1755496755"
+          alt="BUY2 artwork"
+          style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+
+      <!-- 3: Sitewide Info -->
+      <div class="modal-step">
+        <div class="step-icon-wrap">
+          <div class="step-dot"></div>
+          <div class="step-line last"></div>
+        </div>
+        <div>
+          <div class="step-title">All offers applicable sitewide on all products</div>
+        </div>
+        <img 
+          src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Rectangle_10.png?v=1755496755"
+          alt="Sitewide info artwork"
+          style="width:83px;height:auto;display:block;margin-left:auto;flex:0 0 83px;">
+      </div>
+    </div>
+    <button class="modal-continue">Continue Shopping</button>
+  </div>
+</div>
+
+
+<style>
+
+/* Full-width note above the CTA in Return modal only */
+.modal-note{
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  background: #fff8d8;
+  border: 1px dashed #f1c40f;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  text-align: center;
+}
+
+.modal-note{
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  background: #fff8d8;
+  border: 1px dashed #f1c40f;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  text-align: center;
+}
+
+
+
+
 
 
 @media (min-width: 900px) {
@@ -613,3 +1302,4 @@ Hide Meesho-style Return Policy Section for:
 
 
 {% comment %} {% endunless %} {% endcomment %}
+{% comment %}  NEW CODE INCLUDING BUY 3 GET 1 END{% endcomment %}

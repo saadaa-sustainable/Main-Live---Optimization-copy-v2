@@ -23,79 +23,87 @@
 
 
 <style>
-  /* Hide by default (desktop/tablet) */
+  /* Show by default (desktop/tablet) */
   #breadcrumbs { display: block !important; }
 
-  /* Show on mobile only */
+  /* Hide on mobile only */
   @media (max-width: 767px) {
     #breadcrumbs { display: none !important; }
   }
 </style>
 
-
-
-
-
-
-
 {%- capture product_form_id -%}product-form-{{ product.id }}-{{ section.id }}{%- endcapture -%}
 
 <safe-sticky class="product-info {% if center_basic_info %}product-info--center{% endif %}">
   <div class="product-info__block-list">
+
 <div class="product_belongs_collection" id="breadcrumbs">
-  <span>
-    <a href="/">Home</a>
-    /
-  </span>
+  <span><a href="/">Home</a> /</span>
 
-  {% assign special_collections = "AIRY-LINEN SHORTS,MEN AIRY-LINEN SHORT KURTAS,AIRY LINEN PANTS,THE FORMAL PANTS,EVERYDAY COTTON TOP,THE FORMAL SHIRTS" | split: "," %}
-  {% assign special_collections1 = "Women Plus Size Wide Leg Pant,Women Plus Size Viscose Palazzo Pant,Women Plus Size Sleeveless Top,Women Plus Size Pleated Top,Women Plus Size Formal Pant,Women Plus Size Cotton Pant,Women Plus Size Airy-Linen Shirt,Women Plus Size Airy Linen Short Kurta" | split: "," %}
- 
-  {% comment %}
-      {% assign special_collections2 = "Women Straight Fit Formal Pant" | split: "," %}
-  {% endcomment %}
-  
+  {%- comment -%} Normalize current title {%- endcomment -%}
+  {% assign selected_title = selected_collection.title | default: '' | strip | downcase %}
 
+  {%- comment -%} Define lists (downcased; we’ll trim items during compare) {%- endcomment -%}
+  {% assign special_collections = "MEN AIRY-LINEN SHORT KURTAS deprecated,Men Formal Shirts,Women Airy Linen Shorts,Women Everyday Cotton Top,Women Formal Pants,Women 4-way scretchable pants" | downcase | split: "," %}
+  {% assign special_collections1 = "
+    Women Plus Size Wide Leg Pant,
+    Women Plus Size Viscose Palazzo Pant,
+    Women Plus Size Sleeveless Top,
+    Women Plus Size Pleated Top,
+    Women Plus Size Formal Pant,
+    Women Plus Size Cotton Pant,
+    Women Plus Size Airy-Linen Shirt,
+    Women Plus Size Airy Linen Short Kurta,
+    Women Plus Size Straight Fit Formal Pants,
+    Men Plus Size Formal Shirts
+  " | downcase | split: "," %}
 
-  {% if special_collections contains selected_collection.title %}
-    <span>
-      <a href="/collections/goodbye-edition">Goodbye Edition</a> /
-    </span>
-  {% elsif special_collections2 contains selected_collection.title %}
-    <span>
-      <a href="/pages/exclusive-community-launch-straight-fit-formal-pant">Community Exclusive Launch</a>
-      
-    </span>
-  {% elsif special_collections1 contains selected_collection.title %}
-    <span>
-      <a href="/collections/women-plus-size">Plus Edition</a> /
-    </span>
+  {%- comment -%}
+    If needed later:
+    {% assign special_collections2 = "Women Straight Fit Formal Pant" | downcase | split: "," %}
+  {%- endcomment -%}
+
+  {%- comment -%} Compute membership flags using trimmed equality {%- endcomment -%}
+  {% assign is_goodbye = false %}
+  {% for raw in special_collections %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}{% assign is_goodbye = true %}{% break %}{% endif %}
+  {% endfor %}
+
+  {% assign is_plus = false %}
+  {% for raw in special_collections1 %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}{% assign is_plus = true %}{% break %}{% endif %}
+  {% endfor %}
+
+  {%- comment -%}
+  {% assign is_special2 = false %}
+  {% for raw in special_collections2 %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}{% assign is_special2 = true %}{% break %}{% endif %}
+  {% endfor %}
+  {%- endcomment -%}
+
+  {% if is_goodbye %}
+    <span><a href="/collections/goodbye-edition">Goodbye Edition</a> /</span>
+
+  {%- comment -%}
+  {% elsif is_special2 %}
+    <span><a href="/pages/exclusive-community-launch-straight-fit-formal-pant">Community Exclusive Launch</a> /</span>
+  {% endcomment -%}
+
+  {% elsif is_plus %}
+    <span><a href="/collections/plus-edition">Plus Edition</a> /</span>
   {% else %}
     {% for collection in product.collections %}
       {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" %}
-        <span>
-          <a href="{{ collection.url }}">{{ collection.title }}</a> /
-        </span>
+        <span><a href="{{ collection.url }}">{{ collection.title }}</a> /</span>
       {% endif %}
     {% endfor %}
   {% endif %}
 
- {% comment %}
- {%- unless selected_collection.title == "Women Straight Fit Formal Pant" -%}
-  {% endcomment %}
-  
- 
-    <span>
-      <a href="{{ selected_collection.url }}">{{ selected_collection.title | capitalize }}</a>
-    </span>
-
-  {% comment %}
-  {%- endunless -%}
- {% endcomment %}
-  
+  <span><a href="{{ selected_collection.url }}">{{ selected_collection.title | capitalize }}</a></span>
 </div>
-
-
 
     {%- liquid
       assign inside_block_group_context = false
@@ -215,15 +223,15 @@
             {%- endif -%}
             <div class="v-stack">
               <div class='h-stack gap-1.5'>
-               {% assign variant = product.selected_or_first_available_variant %}
+               {% comment %} {% assign variant = product.selected_or_first_available_variant %}
 {% if variant.compare_at_price and variant.compare_at_price > variant.price %}
   <compare-at-price class="{{ compare_at_price_classes }}" id="compare-at-price">
     <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
     {{ variant.compare_at_price | money_without_trailing_zeros }}
   </compare-at-price>
-{% endif %}
+{% endif %} {% endcomment %}
 
-              <sale-price {% if form_id %}form="{{ product_form_id }}"{% endif %} class=" h4 {% if variant.compare_at_price > variant.price %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+              {% comment %} <sale-price {% if form_id %}form="{{ product_form_id }}"{% endif %} class=" h4 {% if variant.compare_at_price > variant.price %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
                 <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
 
                 {%- if settings.currency_code_enabled -%}
@@ -231,9 +239,525 @@
                 {%- else -%}
                   {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros -}}
                 {%- endif -%}
-              </sale-price>
+              </sale-price> {% endcomment %}
+
+
+
  
          
+             {% comment %} New Price code Optiphoenix start{% endcomment %}
+
+
+
+
+              {% comment %} {% assign product_mappings = "
+                AIRY LINEN FLARED DRESS|359900|179900;
+                AIRY LINEN PANT|239900|119900;
+                AIRY LINEN SHIRT|239900|119900;
+                Airy Linen Straight Pants|239900|119900;
+                AIRY LINEN WIDE LEG PANT|259800|129900;
+                Women Everyday Cotton Pants|159900|79900;
+                EVERYDAY COTTON TOP|199900|99900;
+                AIRY LINEN LONG KURTA|199900|99900;
+                AIRY LINEN PANT|169900|89900;
+                AIRY LINEN SHORTS|139900|59900;
+                AIRY LINEN SHORT KURTA|159900|79900;
+                MENS SHORT KURTA|99900|99900;
+                PALAZZO|159900|79900;
+                VISCOSE PLEATED TOP|259900|129900;
+                RAYON SLEEVELESS TOP|159900|79900;
+                FORMAL PANT|399900|149900;
+                STRAIGHT FIT FORMAL PANTS|299900|159900;
+                4-WAY STRETCHABLE PANT|299900|149900;
+                TOTE BAG|99900|59900;
+                VISCOSE NOTCH COLLAR SHIRT|0|0; 
+                VISCOSE PALAZZO|159900|79900;
+                WIDE LEG PANTS|399900|199900;
+                MENS COTTON PANT|199900|99900;
+                MENS AIRY LINEN LONG KURTA|259900|129900;
+                MENS AIRY LINEN SHORT KURTA|199900|99900;
+                MENS HALF SLEEVE 100% LINEN SHIRT|439900|219900;
+                MENS LINEN PANTS|0|0; 
+                MENS 100% LINEN SHIRT|499900|249900;
+                MENS SATIN FORMAL SHIRT|299900|149900
+              " | split: ";" %}
+
+              {% assign matched_mrp = 0 %}
+              {% assign matched_selling_price = 0 %}
+
+              {% comment %} Loop through mappings to find a match {% endcomment %}
+              {% for mapping in product_mappings %}
+                {% assign parts = mapping | strip | split: "|" %}
+                
+                {% comment %} <!-- Debug: Full mapping string -->
+                <p>Current Mapping: {{ mapping }}</p>
+                
+                <!-- Debug: Parts array -->
+                <p>Parts (after split): {{ parts | join: ', ' }}</p>
+                <p>Parts Size: {{ parts.size }}</p>
+                 {% endcomment %}
+
+                {% if parts.size == 3 %}
+                  {% assign map_name = parts[0] | strip %}
+                  {% assign map_mrp = parts[1] | strip | times: 1 %}
+                  {% assign map_selling = parts[2] | strip | times: 1 %}
+                  
+                  <!-- Normalize to uppercase for case-insensitive comparison -->
+                  {% assign normalized_title = product.title | upcase %}
+                  {% assign normalized_map_name = map_name | upcase %}
+                  
+                  {% comment %} <!-- Debug: Assigned and normalized variables -->
+                  <p>Map Name: {{ map_name }}</p>
+                  <p>Normalized Map Name: {{ normalized_map_name }}</p>
+                  <p>Normalized Product Title: {{ normalized_title }}</p>
+                  <p>Map MRP: {{ map_mrp }}</p>
+                  <p>Map Selling: {{ map_selling }}</p>
+                  <p>Product Price: {{ product.price }}</p> {% endcomment %}
+                  
+                  {% if normalized_title contains normalized_map_name and product.price == map_selling %}
+                    {% assign matched_mrp = map_mrp %}
+                    {% assign matched_selling_price = map_selling %}
+                    
+                    {% comment %} <!-- Debug: Match found and matched variables -->
+                    <p>*** Match Found ***</p>
+                    <p>Matched Name: {{ map_name }}</p>
+                    <p>Matched MRP: {{ matched_mrp }}</p>
+                    <p>Matched Selling Price: {{ matched_selling_price }}</p> {% endcomment %}
+                    
+                    {% break %}  
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+{% comment %} 
+              <!-- Debug: Overall product details outside the loop -->
+              <p>Product Title: {{ product.title }}</p>
+              <p>Product Price: {{ product.price }}</p> {% endcomment %}
+              
+
+                {% comment %} Display prices and save percentage if matched {% endcomment %}
+               <div class="product-prices">
+                {% if matched_mrp > 0 and matched_mrp > matched_selling_price %}
+                  {% assign save_amount = matched_mrp | minus: matched_selling_price %}
+                  {% assign save_percentage = save_amount | times: 100 | divided_by: matched_mrp | round %}
+                  
+                  <span class="selling-price">{{ matched_selling_price | money_without_trailing_zeros }}</span>
+                  <span class="compare-at-price-wrap">MRP <span class="compare-at-price">{{ matched_mrp | money_without_trailing_zeros }}</span></span>
+                  {% comment %} <span class="save-percentage">{{ save_percentage }}% OFF</span> {% endcomment %}
+                {% else %}
+                  {% assign variant = product.selected_or_first_available_variant %}
+                  <sale-price {% if form_id %}form="{{ product_form_id }}"{% endif %} class=" h4 {% if variant.compare_at_price > variant.price %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}">
+                    <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+                    {%- if settings.currency_code_enabled -%}
+                      {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros -}}
+                    {%- else -%}
+                      {{- product.selected_or_first_available_variant.price | money_without_trailing_zeros -}}
+                    {%- endif -%}
+                  </sale-price>
+                  {% if variant.compare_at_price and variant.compare_at_price > variant.price %}
+                    <compare-at-price class="{{ compare_at_price_classes }}" id="compare-at-price">
+                      MRP
+                      <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+                      <span class="c-price">{{ variant.compare_at_price | money_without_trailing_zeros }}</span>
+                    </compare-at-price>
+                  {% endif %}
+                {% endif %}
+              </div> {% endcomment %}
+
+
+
+              {% comment %} New Price code Optiphoenix end{% endcomment %}
+
+
+
+{% comment %} NEW CODE FOR PRE LAUNCH AFTERWARDS UNCOMMENT THE ABOVE CODE START {% endcomment %}
+
+
+
+
+
+
+{%- comment -%} ====== PRICE LOGIC (no UI changes) ====== {%- endcomment -%}
+
+ {%- assign product_mappings = "
+WOMEN|AIRY LINEN FLARED DRESS|359900|179900;
+WOMEN|AIRY LINEN PANT|239900|119900;
+WOMEN|AIRY-LINEN SHIRT|239900|119900;
+WOMEN|AIRY LINEN STRAIGHT PANT|239900|119900;
+WOMEN|AIRY LINEN WIDE LEG PANT|199800|99900;
+WOMEN|COTTON PANT|159900|79900;
+WOMEN|COTTON TOP|0|0;
+WOMEN|AIRY LINEN LONG KURTA|199900|99900;
+WOMEN|AIRY LINEN PANT|169900|89900;
+WOMEN|AIRY-LINEN SHORTS|139900|59900;
+WOMEN|AIRY LINEN SHORT KURTA|159900|79900;
+WOMEN|PALAZZO|159900|79900;
+WOMEN|VISCOSE PLEATED TOP|259900|129900;
+WOMEN|V-NECK SLEEVELESS TOP|159900|79900;
+WOMEN|FORMAL PANT|199900|149900;
+WOMEN|STRAIGHT FIT FORMAL PANTS|299900|159900;
+WOMEN|4-WAY STRETCHABLE PANT|299800|149900;
+UNISEX|TOTE BAG|99900|49900;
+WOMEN|VISCOSE PALAZZO|159900|79900;
+WOMEN|WIDE LEG PANTS|399900|199900;
+MEN|COTTON PANT|179800|89900;
+MEN|AIRY LINEN LONG KURTA|0|0;
+MEN|AIRY LINEN SHORT KURTA|199900|99900;
+MEN|LINEN HALF SLEEVE SHIRT|439900|219900;
+MEN|100% LINEN SHIRT|499900|249900;
+MEN|FORMAL SHIRTS|279800|139900;
+MEN|PURE LINEN FULL SLEEVE|499800|249900;
+MEN|PURE LINEN SHORT SLEEVE|439800|219900;
+WOMEN|PURE LINEN SHIRT|499800|249900;
+WOMEN|PURE LINEN NOTCH COLLAR SHIRT|439800|219900;
+WOMEN|COTTON REGULAR PANT|159900|79900;
+WOMEN|COTTON STRAIGHT PANT|159800|79900;
+WOMEN|SPLIT NECK SHORT KURTA|139800|69900;
+WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|199800|99900;
+WOMEN|COTTON CAMISOLE TOP|99800|49900;
+" | split: ";" -%}
+
+
+{%- assign variant = product.selected_or_first_available_variant -%}
+{%- assign normalized_title = product.title | upcase -%}
+
+
+{%- assign title_padded = ' ' | append: normalized_title | append: ' ' -%}
+{%- assign detected_category = '' -%}
+{%- if title_padded contains ' MEN ' or title_padded contains ' MENS ' or title_padded contains " MEN'S " -%}
+  {%- assign detected_category = 'MEN' -%}
+{%- elsif title_padded contains ' WOMEN ' or title_padded contains " WOMEN'S " -%}
+  {%- assign detected_category = 'WOMEN' -%}
+{%- endif -%}
+
+{%- assign matched_mrp = 0 -%}
+{%- assign matched_selling_price = 0 -%}
+
+
+{%- for mapping in product_mappings -%}
+  {%- assign parts = mapping | strip | split: "|" -%}
+  {%- if parts.size == 4 -%}
+    {%- assign map_cat  = parts[0] | strip | upcase -%}
+    {%- assign map_name = parts[1] | strip -%}
+    {%- assign map_mrp  = parts[2] | strip | times: 1 -%}
+    {%- assign map_sell = parts[3] | strip | times: 1 -%}
+    {%- assign normalized_map_name = map_name | upcase -%}
+
+    {%- assign cat_ok = false -%}
+    {%- if map_cat == 'UNISEX' -%}
+      {%- assign cat_ok = true -%}
+    {%- elsif detected_category != '' and map_cat == detected_category -%}
+      {%- assign cat_ok = true -%}
+    {%- endif -%}
+
+    {%- if cat_ok and normalized_title contains normalized_map_name and variant.price == map_sell and map_sell > 0 -%}
+      {%- assign matched_mrp = map_mrp -%}
+      {%- assign matched_selling_price = map_sell -%}
+      {%- break -%}
+    {%- endif -%}
+
+  {%- elsif parts.size == 3 -%}
+    {%- comment -%} Legacy rows without category (kept for safety) {%- endcomment -%}
+    {%- assign map_name = parts[0] | strip -%}
+    {%- assign map_mrp  = parts[1] | strip | times: 1 -%}
+    {%- assign map_sell = parts[2] | strip | times: 1 -%}
+    {%- assign normalized_map_name = map_name | upcase -%}
+    {%- if normalized_title contains normalized_map_name and variant.price == map_sell and map_sell > 0 -%}
+      {%- assign matched_mrp = map_mrp -%}
+      {%- assign matched_selling_price = map_sell -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+
+{%- assign display_price_cents   = variant.price -%}
+{%- assign display_compare_cents = variant.compare_at_price | default: 0 -%}
+
+{%- if matched_selling_price > 0 and matched_mrp > 0 -%}
+  {%- assign display_price_cents   = matched_selling_price -%}
+  {%- assign display_compare_cents = matched_mrp -%}
+{%- else -%}
+
+{% comment %} the below code is for pre launch fake price {% endcomment %}
+
+
+   {%- if product.tags contains 'SMFLK' -%}
+    {%- assign display_price_cents   = 129900 -%}
+    {%- assign display_compare_cents = 259800 -%}
+
+
+    {%- elsif product.tags contains 'SMFS' -%}
+    {%- assign display_price_cents   = 139900 -%}
+    {%- assign display_compare_cents = 279800 -%}
+
+    {% comment %} {%- elsif product.tags contains 'SDECT' -%}
+    {%- assign display_price_cents   = 69900 -%}
+    {%- assign display_compare_cents = 99900 -%} {% endcomment %}
+
+  {% comment %} {%- elsif product.tags contains 'SDLNS' -%}
+    {%- assign display_price_cents   = 169900 -%}
+    {%- assign display_compare_cents = 219900 -%}
+  {%- elsif product.tags contains 'SDLS' -%}
+    {%- assign display_price_cents   = 199900 -%}
+    {%- assign display_compare_cents = 249900 -%}
+  {%- elsif product.tags contains 'SMLSS' -%}
+    {%- assign display_price_cents   = 169900 -%}
+    {%- assign display_compare_cents = 219900 -%} {% endcomment %}
+  {%- endif -%} 
+
+
+
+{% comment %} the below code is for pre launch fake price {% endcomment %}
+
+{%- endif -%} 
+
+
+{% comment %} NEW CODE BY SAADAA DEV {% endcomment %}
+
+
+
+{% comment %} 
+{%- assign product_mappings = "
+WOMEN|AIRY LINEN FLARED DRESS|359900|179900;
+WOMEN|AIRY LINEN PANT|239900|119900;
+WOMEN|AIRY-LINEN SHIRT|239900|119900;
+WOMEN|AIRY LINEN STRAIGHT PANT|239900|119900;
+WOMEN|AIRY LINEN WIDE LEG PANT|259800|129900;
+WOMEN|COTTON PANT|159900|79900;
+WOMEN|COTTON TOP|199900|99900;
+WOMEN|AIRY LINEN LONG KURTA|199900|99900;
+WOMEN|AIRY LINEN PANT|169900|89900;
+WOMEN|AIRY-LINEN SHORTS|139900|59900;
+WOMEN|AIRY LINEN SHORT KURTA|159900|79900;
+WOMEN|PALAZZO|159900|79900;
+WOMEN|VISCOSE PLEATED TOP|259900|129900;
+WOMEN|V-NECK SLEEVELESS TOP|159900|79900;
+WOMEN|FORMAL PANT|399900|149900;
+WOMEN|STRAIGHT FIT FORMAL PANTS|299900|159900;
+WOMEN|4-WAY STRETCHABLE PANT|299900|149900;
+UNISEX|TOTE BAG|99900|49900;
+WOMEN|VISCOSE PALAZZO|159900|79900;
+WOMEN|WIDE LEG PANTS|399900|199900;
+MEN|COTTON PANT|179800|89900;
+MEN|AIRY LINEN LONG KURTA|259900|129900;
+MEN|AIRY LINEN SHORT KURTA|199900|99900;
+MEN|LINEN HALF SLEEVE SHIRT|439900|219900;
+MEN|100% LINEN SHIRT|499900|249900;
+MEN|FORMAL SHIRT|299900|149900;
+MEN|PURE LINEN FULL SLEEVE|499800|249900;
+MEN|PURE LINEN SHORT SLEEVE|439800|219900;
+WOMEN|PURE LINEN SHIRT|499800|249900;
+WOMEN|PURE LINEN NOTCH COLLAR SHIRT|439800|219900;
+WOMEN|COTTON REGULAR PANT|159900|79900;
+WOMEN|COTTON STRAIGHT PANT|159900|79900;
+WOMEN|SPLIT NECK SHORT KURTA|139800|69900;
+WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|179800|89900;
+WOMEN|COTTON CAMISOLE TOP|99800|49900;
+" | split: ";" -%}
+
+
+
+
+
+
+{%- assign variant = product.selected_or_first_available_variant -%}
+{%- assign normalized_title = product.title | upcase -%}
+
+
+{%- assign title_padded = ' ' | append: normalized_title | append: ' ' -%}
+{%- assign detected_category = '' -%}
+{%- if title_padded contains ' MEN ' or title_padded contains ' MENS ' or title_padded contains " MEN'S " -%}
+  {%- assign detected_category = 'MEN' -%}
+{%- elsif title_padded contains ' WOMEN ' or title_padded contains " WOMEN'S " -%}
+  {%- assign detected_category = 'WOMEN' -%}
+{%- endif -%}
+
+{%- assign matched_mrp = 0 -%}
+{%- assign matched_selling_price = 0 -%}
+
+
+{%- for mapping in product_mappings -%}
+  {%- assign parts = mapping | strip | split: "|" -%}
+  {%- if parts.size == 4 -%}
+    {%- assign map_cat  = parts[0] | strip | upcase -%}
+    {%- assign map_name = parts[1] | strip -%}
+    {%- assign map_mrp  = parts[2] | strip | times: 1 -%}
+    {%- assign map_sell = parts[3] | strip | times: 1 -%}
+    {%- assign normalized_map_name = map_name | upcase -%}
+
+    {%- assign cat_ok = false -%}
+    {%- if map_cat == 'UNISEX' -%}
+      {%- assign cat_ok = true -%}
+    {%- elsif detected_category != '' and map_cat == detected_category -%}
+      {%- assign cat_ok = true -%}
+    {%- endif -%}
+
+    {%- if cat_ok and normalized_title contains normalized_map_name and variant.price == map_sell and map_sell > 0 -%}
+      {%- assign matched_mrp = map_mrp -%}
+      {%- assign matched_selling_price = map_sell -%}
+      {%- break -%}
+    {%- endif -%}
+
+  {%- elsif parts.size == 3 -%}
+    {%- comment -%} Legacy rows without category (kept for safety) {%- endcomment -%}
+    {%- assign map_name = parts[0] | strip -%}
+    {%- assign map_mrp  = parts[1] | strip | times: 1 -%}
+    {%- assign map_sell = parts[2] | strip | times: 1 -%}
+    {%- assign normalized_map_name = map_name | upcase -%}
+    {%- if normalized_title contains normalized_map_name and variant.price == map_sell and map_sell > 0 -%}
+      {%- assign matched_mrp = map_mrp -%}
+      {%- assign matched_selling_price = map_sell -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+
+{%- assign display_price_cents   = variant.price -%}
+{%- assign display_compare_cents = variant.compare_at_price | default: 0 -%}
+
+{%- if matched_selling_price > 0 and matched_mrp > 0 -%}
+  {%- assign display_price_cents   = matched_selling_price -%}
+  {%- assign display_compare_cents = matched_mrp -%}
+{%- endif -%} {% endcomment %}
+
+{% comment %} NEW CODE BY SAADAA DEV {% endcomment %}
+
+
+{%- comment -%}
+UI BELOW IS UNCHANGED:
+- If a mapping matched, we keep your original “span” rendering.
+- Otherwise we keep your original <sale-price> / <compare-at-price> markup, just feeding the computed values.
+{%- endcomment -%}
+
+<div class="product-prices">
+  {%- if matched_mrp > 0 and matched_mrp > matched_selling_price -%}
+    <span class="selling-price">{{ display_price_cents | money_without_trailing_zeros }}</span>
+    <span class="compare-at-price-wrap">MRP <span class="compare-at-price">{{ display_compare_cents | money_without_trailing_zeros }}</span></span>
+  {%- else -%}
+    <sale-price {% if form_id %}form="{{ product_form_id }}"{% endif %} class=" h4 {% if display_compare_cents > display_price_cents %}{{ on_sale_price_classes }}{% else %}{{ regular_price_classes }}{% endif %}" style="font-size: 20px;">
+      <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+      {{ display_price_cents | money_without_trailing_zeros }}
+    </sale-price>
+    {%- if display_compare_cents and display_compare_cents > display_price_cents -%}
+      <compare-at-price class="{{ compare_at_price_classes }}" id="compare-at-price">
+        MRP
+        <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+        <span class="c-price">{{ display_compare_cents | money_without_trailing_zeros }}</span>
+      </compare-at-price>
+    {%- endif -%}
+  {%- endif -%}
+
+
+
+    {%- comment -%} % OFF badge (driven by computed display_* values) {%- endcomment -%}
+  {%- assign _p = display_price_cents | times: 1 -%}
+  {%- assign _c = display_compare_cents | times: 1 -%}
+  {%- assign _pct = 0 -%}
+  {%- if _c > _p and _p > 0 -%}
+    {%- assign _pct = _c | minus: _p | times: 100 | divided_by: _c | round -%}
+  {%- endif -%}
+
+  <span
+    id="discountBadge-{{ product.id }}"
+    class="discount-badge"
+    data-price-cents="{{ _p }}"
+    data-compare-cents="{{ _c }}"
+    {% unless _pct > 0 %}hidden{% endunless %}
+  >
+    {{ _pct }}% OFF
+  </span> 
+
+</div>
+
+<script>
+(() => {
+  const badge = document.getElementById('discountBadge-{{ product.id }}');
+  if (!badge) return;
+
+  function render(priceCents, compareCents){
+    const p = Number(priceCents) || 0;
+    const c = Number(compareCents) || 0;
+    if (c > p && p > 0) {
+      const pct = Math.round(((c - p) * 100) / c);
+      badge.textContent = pct + '% OFF';
+      badge.hidden = false;
+    } else {
+      badge.hidden = true;
+    }
+    badge.dataset.priceCents = p;
+    badge.dataset.compareCents = c;
+  }
+
+  // Initial state from Liquid
+  render(badge.dataset.priceCents, badge.dataset.compareCents);
+
+  // Update from theme variant events
+  function updateFromVariant(v){
+    if (!v) return;
+    render(v.price, v.compare_at_price || 0);
+  }
+
+  document.addEventListener('variant:change', e => updateFromVariant(e?.detail?.variant));
+  document.addEventListener('product:variant-change', e => updateFromVariant(e?.detail?.variant));
+
+  // Fallback: observe the variant <select> using Product JSON
+  const variantSelect = document.querySelector('form[action*="/cart/add"] [name="id"]');
+  const jsonEl = document.querySelector('script[id^="ProductJson-"]') || document.getElementById('ProductJson-Manual');
+  let productJson = null;
+  if (jsonEl?.textContent) { try { productJson = JSON.parse(jsonEl.textContent); } catch(e){} }
+
+  if (variantSelect && productJson?.variants?.length) {
+    variantSelect.addEventListener('change', () => {
+      const id = String(variantSelect.value);
+      const v  = productJson.variants.find(x => String(x.id) === id);
+      updateFromVariant(v);
+    });
+  }
+})();
+</script>
+
+
+<style>
+
+/* % OFF angled badge + shine */
+.discount-badge{
+  position:relative;
+  display:inline-block;
+  margin-left:8px;
+  padding:5px 14px;
+  font-size:12px; font-weight:800; color:#000;
+  line-height:1.2;
+  background:linear-gradient(90deg,#fff9d6 0%, #ffeb3b 100%);
+  clip-path:polygon(0 0,100% 0,86% 100%,0% 100%);
+  overflow:hidden; /* prevent scrollbars */
+}
+
+.discount-badge::before{
+  content:"";
+  position:absolute; top:0; bottom:0; left:-50%;
+  width:40%;
+  background:linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.75) 50%, rgba(255,255,255,0) 100%);
+  transform:skewX(-20deg);
+  animation:badge-shine 2.2s ease-in-out infinite;
+}
+
+@keyframes badge-shine{
+  0%   { left:-50%; }
+  100% { left:110%; }
+}
+
+</style>
+
+
+
+{% comment %} NEW CODE FOR PRE LAUNCH AFTERWARDS UNCOMMENT THE ABOVE CODE END {% endcomment %}
+
+
+
+
+
   
               </div>
           <div style="margin-top: 3px;">Inclusive of all taxes</div>
@@ -396,8 +920,8 @@
 
 <!-- Meesho-style Return Policy Section Start -->
 
-
-{% render 'Meesho-trust-badges' %}
+{% comment %} 
+{% render 'Meesho-trust-badges' %} {% endcomment %}
 
 
 <!-- Meesho-style Return Policy Section End -->
@@ -409,7 +933,7 @@
 
 
 <!-- Order Timeline (scoped) -->
-<div class="ot" aria-label="Order status timeline">
+{% comment %} <div class="ot" aria-label="Order status timeline">
   <div class="ot-card">
     <div class="ot-tl">
       <!-- Step 1 -->
@@ -574,12 +1098,188 @@
     update();
     setInterval(update, 15*60*1000);
   })();
-</script>
+</script> {% endcomment %}
 
 
 
 {% comment %} DILEVERY / DISPATCH / ORDER BY END {% endcomment %}
 
+
+
+
+
+{% comment %} NEW OVERLAY BANNER BUY 3 GET 1 FREE START {% endcomment %}
+
+
+{% comment %} <style>
+.desktop-banner {
+  display: block;
+  width: 100%;
+}
+.mobile-banner {
+  display: none;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .desktop-banner { display: none; }
+  .mobile-banner { display: block; }
+}
+
+
+.payday-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: none;                
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.payday-overlay.is-open { display: flex; }
+
+
+.payday-modal {
+  width: min(85vw, 680px);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  padding: clamp(18px, 3.5vw, 28px);
+  text-align: center;
+  position: relative;
+}
+
+/* Close button */
+.payday-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 18px;
+    height: 18px;
+  
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+.payday-close:focus { outline: 2px solid #222; outline-offset: 2px; }
+
+/* Heading + sub */
+.payday-title {
+  font-size: clamp(17px, 4.6vw, 28px);
+  line-height: 1.25;
+  margin: 6px 0 10px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #111;
+}
+.payday-sub {
+  font-size: clamp(13px, 3.6vw, 16px);
+  color: #444;
+  margin: 0 0 18px;
+}
+
+/* CTA */
+.payday-cta {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid #111;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform .1s ease, box-shadow .2s ease, background .2s ease;
+  background: #111; color: #fff;
+}
+.payday-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+.payday-cta:focus { outline: 2px solid #000; outline-offset: 3px; }
+
+/* Prevent body scroll when modal is open */
+body.payday-lock { overflow: hidden; }
+</style>
+
+<!-- Banner -->
+<a id="payday-banner-link" href="https://saadaa.in/pages/payday-sale" aria-label="Open Payday Sale details">
+  <!-- Desktop Banner Image -->
+  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-31T192057.502.webp?v=1761918686" alt="Banner" class="desktop-banner" />
+  <!-- Mobile Banner Image -->
+  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-31T192057.502.webp?v=1761918686" alt="Banner" class="mobile-banner" />
+</a>
+
+<!-- Modal (hidden by default) -->
+<div class="payday-overlay" id="payday-overlay" role="dialog" aria-modal="true" aria-labelledby="payday-title" aria-hidden="true">
+  <div class="payday-modal">
+    <button class="payday-close" type="button" aria-label="Close">✕</button>
+
+    <h2 class="payday-title" id="payday-title">
+      Choose any 3 and get the 4th free.Our way to help you save!
+    </h2>
+
+    <p class="payday-sub">
+      Automatically applied at checkout. Sitewide.
+    </p>
+
+    <a id="payday-cta" class="payday-cta" href="#" role="button">
+    Discover more products →
+    </a>
+  </div>
+</div>
+
+<script>
+(function() {
+  var link   = document.getElementById('payday-banner-link');
+  var overlay= document.getElementById('payday-overlay');
+  var closeB = overlay.querySelector('.payday-close');
+  var cta    = document.getElementById('payday-cta');
+  var lastFocused = null;
+
+  // Open modal
+  function openModal(event) {
+    if (event) event.preventDefault();
+    // Use the banner's href for the CTA
+    var targetHref = link.getAttribute('href') || '#';
+    cta.setAttribute('href', targetHref);
+
+    overlay.classList.add('is-open');
+    document.body.classList.add('payday-lock');
+    overlay.setAttribute('aria-hidden', 'false');
+
+    // focus management
+    lastFocused = document.activeElement;
+    closeB.focus();
+
+    // trap focus (simple)
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  // Close modal
+  function closeModal() {
+    overlay.classList.remove('is-open');
+    document.body.classList.remove('payday-lock');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.removeEventListener('keydown', onKeydown);
+    if (lastFocused) lastFocused.focus();
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Escape') closeModal();
+  }
+
+  // Clicks
+  link.addEventListener('click', openModal);
+  closeB.addEventListener('click', closeModal);
+
+  // Click outside modal content to close
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeModal();
+  });
+})();
+</script> {% endcomment %}
+
+{% comment %} NEW OVERLAY BANNER BUY 3 GET 1 FREE START END  {% endcomment %}
+
+
+
+{% render 'Meesho-trust-badges' %}
 
 
         
@@ -1208,7 +1908,7 @@
           <a
             href="{{product.url  }}"
             {% if product.url contains 'cotton-trouser' %}
-              data-collection="EVERYDAY COTTON PANTS"
+              data-collection="Women Everyday Cotton Pants"
             {% endif %}
           >
 
@@ -1253,6 +1953,8 @@
 <style>
  #compare-at-price{
    color:#7C7C7C;
+   margin-left:10px;
+
  }
 
 

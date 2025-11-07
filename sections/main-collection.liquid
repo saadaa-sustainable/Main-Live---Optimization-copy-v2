@@ -573,6 +573,21 @@
 
 
 
+
+{% comment %} Sorting of product code on the basis of high to low inventory on collection pages Start {% endcomment %}
+
+{%- assign skip_sort = false -%}
+{%- if collection -%}
+  {%- if collection.handle == 'women-airy-linen-short-kurtas' -%}
+    {%- assign skip_sort = true -%}
+  {%- elsif collection.title == 'Women Airy Linen Short Kurtas' -%}
+    {%- assign skip_sort = true -%}
+  {%- elsif collection.title == 'Women Everyday Cotton Pants' -%}
+    {%- assign skip_sort = true -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- unless skip_sort -%}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   const productList = document.querySelector('.product-list');
@@ -596,4 +611,11 @@ document.addEventListener("DOMContentLoaded", function() {
   items.forEach(el => productList.appendChild(el));
 });
 </script>
+{%- endunless -%}
+
+
+
+
+{% comment %} Sorting of product code on the basis of high to low inventory on collection pages End {% endcomment %}
+
 

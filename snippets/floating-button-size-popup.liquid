@@ -1,3 +1,7 @@
+{% comment %} 
+
+{% comment %} OLD SIZE SWATCH CODE WITHOUT KIWI INTEGRATION START {% endcomment %}
+
 <style>
   @media (max-width: 768px) {
     /* ---------- STICKY CART BAR ---------- */
@@ -94,8 +98,8 @@
   }
 
   .variant-container {
-    padding-top: 5px;
-    padding-bottom: 8px;
+    padding-top: 10px;
+    padding-bottom: 25px;
     display: flex;
     flex-wrap: wrap;
     gap: 11px;
@@ -527,3 +531,753 @@ if (navElem) {
   navElem.addEventListener('transitionend', () => { updateATCBarPosition(); updateSizeOverlayPosition(); });
 }
 </script>
+
+{% comment %} OLD SIZE SWATCH CODE WITHOUT KIWI INTEGRATION END {% endcomment %} {% endcomment %}
+
+
+
+
+
+{%- assign is_kurta_combo = false -%}
+{%- if template.suffix == 'kurta-set-combo' or product.template_suffix == 'kurta-set-combo' -%}
+  {%- assign is_kurta_combo = true -%}
+{%- endif -%}
+
+
+
+
+<!-- =================== saadaa FLOATING CTA (Sticky ATC) — Mobile Only  =================== -->
+
+
+{% comment %} NEW SIZE SWATCH CODE WITH KIWI INTEGRATION START {% endcomment %} 
+
+{%- comment -%} ===== Mirror main ATC "Size:" label logic (namespaced to avoid collisions) ===== {%- endcomment -%}
+{%- assign saadaa_haystack = '' -%}
+{%- assign saadaa_haystack = saadaa_haystack
+  | append: product.type | append: ','
+  | append: product.title | append: ','
+  | append: product.vendor | append: ','
+  | append: product.handle | append: ','
+  | append: product.tags | join: ','
+  | downcase -%}
+
+{%- assign saadaa_is_bottom = false -%}
+{%- assign saadaa_bottoms = 'bottomwear|bottom wear|trouser|trousers|pant|pants|jean|jeans|jogger|joggers|chino|chinos|legging|leggings|palazzo|skirt|culotte|cargo pant|cargo pants|track pant|track pants|shorts|bermuda|capri' | split: '|' -%}
+{%- for kw in saadaa_bottoms -%}
+  {%- if saadaa_haystack contains kw -%}
+    {%- assign saadaa_is_bottom = true -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign saadaa_is_top = false -%}
+{%- if saadaa_haystack contains 'topwear'
+   or saadaa_haystack contains 'top wear'
+   or saadaa_haystack contains 'shirt'
+   or saadaa_haystack contains 't-shirt'
+   or saadaa_haystack contains 'tshirt'
+   or saadaa_haystack contains 'tee'
+   or saadaa_haystack contains 'kurta'
+   or saadaa_haystack contains 'blouse'
+   or saadaa_haystack contains 'sweatshirt'
+   or saadaa_haystack contains 'hoodie'
+   or saadaa_haystack contains 'jacket'
+   or saadaa_haystack contains 'top'
+   or saadaa_haystack contains 'dress' -%}
+   {%- assign saadaa_is_top = true -%}
+{%- endif -%}
+
+{%- assign saadaa_is_women = false -%}
+{%- if saadaa_haystack contains 'women'
+   or saadaa_haystack contains "women's"
+   or saadaa_haystack contains 'womens'
+   or saadaa_haystack contains 'ladies'
+   or saadaa_haystack contains 'female'
+   or saadaa_haystack contains 'girl' -%}
+   {%- assign saadaa_is_women = true -%}
+{%- endif -%}
+
+{%- assign saadaa_is_men = false -%}
+{%- if saadaa_haystack contains 'men '
+   or saadaa_haystack contains "men's"
+   or saadaa_haystack contains 'mens'
+   or saadaa_haystack contains 'gents'
+   or saadaa_haystack contains 'male'
+   or saadaa_haystack contains 'boy' -%}
+   {%- assign saadaa_is_men = true -%}
+{%- endif -%}
+
+{%- assign saadaa_size_label = 'Size' -%}
+{%- if saadaa_is_bottom -%}
+  {%- assign saadaa_size_label = 'Waist Size' -%}
+{%- elsif saadaa_is_top and saadaa_is_women -%}
+  {%- assign saadaa_size_label = 'Bust Size' -%}
+{%- elsif saadaa_is_top and saadaa_is_men -%}
+  {%- assign saadaa_size_label = 'Chest Size' -%}
+{%- endif -%}
+
+
+{% unless is_kurta_combo %}
+
+<style>
+  @media (max-width: 768px) {
+    /* ---------- STICKY CART BAR ---------- */
+    #saadaa-sticky-cart-bar {
+      position: fixed; bottom: 0; left: 0; width: 100vw;
+      background: #fff; z-index: 11110; box-shadow: 0 -2px 10px rgba(0,0,0,.10);
+      display: none; transition: transform .3s; padding: 11px;
+    }
+    #saadaa-sticky-cart-bar .saadaa-scb-wrap { display: flex; width: 100%; }
+    #saadaa-sticky-cart-bar .saadaa-scb-main-btn {
+      flex: 1; margin: 0 16px; padding: 16px 0; border: none;
+      font-size: 15px; font-weight: 600; cursor: pointer; text-align: center;
+      background: #111; color: #fff; border-radius: 45px; letter-spacing: 1px;
+      transition: background .2s, transform .1s; display: flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap;
+    }
+    #saadaa-sticky-cart-bar .saadaa-scb-main-btn:active { transform: scale(.97); }
+    #saadaa-sticky-cart-bar .saadaa-scb-main-btn[disabled] { opacity: 1; pointer-events: none; }
+
+    /* ---------- BACKDROP ---------- */
+    #saadaa-modal-backdrop {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 56px;
+      background: rgba(0,0,0,.5); z-index: 11100;
+    }
+
+    /* ---------- SIZE OVERLAY ---------- */
+    #saadaa-size-overlay {
+      position: fixed; left: 0; right: 0; bottom: 0; background: #fff;
+      z-index: 11200; display: none; padding: 10px 16px 0 16px; animation: saadaaFadeInUp .2s;
+    }
+    @keyframes saadaaFadeInUp { 0% { transform: translateY(60px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+
+    #saadaa-size-overlay .saadaa-overlay-close {
+      position: absolute; right: 18px; top: 1px; background: none; border: none; font-size: 1.5rem; color: #000; cursor: pointer;
+    }
+    #saadaa-size-overlay .saadaa-overlay-instruction {
+      margin: 0 0 16px 0; font-size: .9rem; font-style: italic; color: #000; text-align: left;
+      padding-bottom: 8px; border-bottom: 1px solid #ddd;
+    }
+    #saadaa-size-overlay .saadaa-overlay-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    }
+    #saadaa-size-overlay .saadaa-overlay-title { font-size: 13px; color: #222; text-transform: uppercase; font-weight: 600; }
+  }
+  @media (min-width: 769px) {
+    #saadaa-sticky-cart-bar, #saadaa-modal-backdrop, #saadaa-size-overlay, #saadaa-ksc-backdrop, #saadaa-ksc-modal { display: none !important; }
+  }
+
+  /* ===== Overlay swatches (match main) ===== */
+  #saadaa-size-overlay .saadaa-variant-container { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; width: 100%; padding-bottom: 10px; margin-top: 0; }
+  @media (max-width: 640px){ #saadaa-size-overlay .saadaa-variant-container { grid-template-columns: repeat(5, minmax(0,1fr)); gap:10px; } }
+  #saadaa-size-overlay .saadaa-variant-wrapper { position: relative; min-height: 44px; }
+
+  #saadaa-size-overlay .saadaa-variant-btn {
+    margin-bottom: 8px; width: 100%; height: auto; padding: 4px 0;
+    border-radius: 0; border: 1px solid #111; background: #fff; color: #111;
+    display: grid; grid-template-rows: auto auto; justify-items: center; align-items: center; gap: 6px; line-height: 1.15;
+    cursor: pointer; position: relative; transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  #saadaa-size-overlay .saadaa-variant-btn .saadaa-sz-code { font-size: 12.5px; font-weight: 600; letter-spacing: .2px; text-transform: uppercase; }
+  #saadaa-size-overlay .saadaa-variant-btn .saadaa-sz-extra { font-size: 11.5px; opacity: .95; white-space: nowrap; }
+
+  /* Selected swatch — like main */
+  #saadaa-size-overlay .saadaa-variant-btn.saadaa-selected {
+    background: #fff8a5;
+  }
+
+  /* OOS diagonal slash */
+  #saadaa-size-overlay .saadaa-variant-btn.saadaa-oos,
+  #saadaa-size-overlay .saadaa-variant-btn[disabled] { opacity: .55; cursor: not-allowed; }
+  #saadaa-size-overlay .saadaa-variant-btn.saadaa-oos::before,
+  #saadaa-size-overlay .saadaa-variant-btn[disabled]::before {
+    content:""; position:absolute; top:-11px; bottom:6px; left:48%; width:1px; background:#111; transform:rotate(55deg); height:67px;
+  }
+
+  /* Stock message under selected */
+  #saadaa-size-overlay .saadaa-stock-message { position: absolute; top: 100%; width: 100%; font-size: 8px; margin-top: 0; font-weight: 700; text-align: center; line-height: 0.2; display: none; }
+  #saadaa-size-overlay .saadaa-variant-btn.saadaa-selected ~ .saadaa-stock-message { display: block; }
+  .saadaa-few-left { color: orange; }
+  .saadaa-only-left { color: red; }
+
+  /* Readout chips */
+  .saadaa-inline-size-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:10px; color:#111; background:#f2f4f7; border:0; border-radius:6px; padding:6px 8px; margin:12px 0 12px 0; justify-content:center; }
+  .saadaa-inline-size-meta .saadaa-kv-pill { display:inline-block; padding:4px 2px; border:0; border-radius:6px; line-height:1; white-space:nowrap; }
+  .saadaa-inline-size-meta .saadaa-kv-key { font-weight:700; margin-right:4px; }
+  .saadaa-inline-size-meta .saadaa-kv-pill:not(:last-child)::after { content:" | "; color:#555; margin:0 4px; }
+
+  /* Size Chart trigger */
+  .saadaa-ks-open-btn { display:inline-flex; align-items:center; gap:6px; font-size:12px; text-transform:uppercase; color:#111; background:transparent; border:0; cursor:pointer; text-decoration:underline; padding:4px 2px; }
+  .saadaa-ks-open-btn .saadaa-ks-pen { width:16px; height:16px; display:inline-block; }
+
+  /* Guarantee */
+  .saadaa-guarantee-hstack { display:flex; align-items:center; justify-content:center; }
+  .saadaa-guarantee-gap { gap: .375rem; }
+  .saadaa-guarantee-tooltip { position:relative; display:inline-block; cursor:pointer; }
+  .saadaa-guarantee-tooltip .saadaa-guarantee-tooltip-text{
+    position:absolute; bottom:calc(100% + 8px); left:-376%; transform:translateX(-50%);
+    background:#fff; color:#000; border:1px solid rgba(0,0,0,.1); box-shadow:0 4px 12px rgba(0,0,0,.15);
+    padding:8px 12px; border-radius:6px; width:234px; text-align:center; font-size:11px; line-height:1.4;
+    visibility:hidden; opacity:0; transition:opacity .2s ease-in-out; z-index:1000;
+  }
+  .saadaa-guarantee-tooltip .saadaa-guarantee-tooltip-text::before{ content:""; position:absolute; top:100%; left:74%; transform:translateX(-50%); border:8px solid transparent; border-top-color:rgba(0,0,0,.1); }
+  .saadaa-guarantee-tooltip .saadaa-guarantee-tooltip-text::after{ content:""; position:absolute; top:calc(100% - 1px); left:74%; transform:translateX(-50%); border:7px solid transparent; border-top-color:#fff; }
+  .saadaa-guarantee-tooltip.saadaa-guarantee-active .saadaa-guarantee-tooltip-text{ visibility:visible; opacity:1; }
+
+  /* Bag icon alignment */
+  #saadaa-sticky-cart-bar .saadaa-bag-icon svg { vertical-align: middle; }
+
+  /* === saadaa size-chart modal UI = main === */
+  #saadaa-ksc-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 11300; }
+  #saadaa-ksc-modal { position: fixed; left: 50%; top: 43%; transform: translate(-50%, -50%); width: min(680px, 92vw); background: #fff; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.25); z-index: 11310; }
+  #saadaa-ksc-modal .saadaa-ksc-head { padding: 16px 18px 10px; text-align: center; border-bottom: 1px solid #ddd; }
+  #saadaa-ksc-title { font-weight: 700; font-size: 15px; line-height: 1.25; margin: 0 26px; }
+  #saadaa-ksc-modal .saadaa-ksc-sub { font-size: 14px; color: #555; margin-top: 4px; }
+  #saadaa-ksc-modal .saadaa-ksc-body { padding: 10px 16px 10px; }
+  #saadaa-ksc-modal .saadaa-ksc-table-wrap { overflow: auto; border-radius: 2px; }
+  #saadaa-ksc-modal .saadaa-ksc-foot { padding: 10px 16px 16px; }
+  #saadaa-ksc-add { width: 100%; padding: 8px 0; border: none; border-radius: 999px; background: #111; color: #fff; font-weight: 700; letter-spacing: 1px; cursor: pointer; font-size: 15px; }
+  .saadaa-ksc-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .saadaa-ksc-table th, .saadaa-ksc-table td { border: 1px solid #888188; padding: 4px 4px; text-align: center; white-space: nowrap; font-size: 11px; color: #000; }
+  .saadaa-ksc-table th { font-weight: 700; background: #fafafa; }
+  .saadaa-ksc-radio { width: 30px; text-align: center; }
+  .saadaa-ksc-table tr[aria-disabled="true"] { opacity: .55; }
+  .saadaa-ksc-table tr.selected, .saadaa-ksc-table tr.saadaa-selected { outline: 2px solid #111; outline-offset: -2px; }
+  #saadaa-ksc-modal .saadaa-ksc-close { position: absolute; right: 3px; top: 0; background: transparent; border: 0; cursor: pointer; font-size: 23px; line-height: 1; width: 38px; height: 38px; }
+  #saadaa-ksc-note { margin: 10px 2px 0; font-size: 13px; font-weight: 700; color: #111; }
+  body.saadaa-modal-open, body.modal-open { overflow: hidden; }
+  @media (max-width: 768px){ #saadaa-ksc-modal { width: 93vw; max-height: 78vh; overflow: auto; } }
+  @media (min-width: 768px){ #saadaa-ksc-modal { top: 53%; } .saadaa-ksc-table th, .saadaa-ksc-table td { font-size: 15px; } }
+</style>
+
+{% unless product.title contains 'combo' or product.title contains 'Combo' or product.title contains 'Tote' or product.template_suffix contains 'flybundles' or product.template_suffix contains 'color-size-combo' %}
+<!-- Sticky Bar -->
+<div id="saadaa-sticky-cart-bar" role="region" aria-label="Sticky add to cart bar">
+  <div class="saadaa-scb-wrap">
+    <button class="saadaa-scb-main-btn" aria-label="Add to bag">
+      <span class="saadaa-bag-icon" style="display:inline-block;vertical-align:middle;margin-right:8px;">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="position:relative;bottom:3px;">
+          <path d="M4.75 8.25A.75.75 0 0 0 4 9L3 19.125c0 1.418 1.207 2.625 2.625 2.625h12.75c1.418 0 2.625-1.149 2.625-2.566L20 9a.75.75 0 0 0-.75-.75H4.75Zm2.75 0v-1.5a4.5 4.5 0 0 1 4.5-4.5v0a4.5 4.5 0 0 1 4.5 4.5v1.5" />
+        </svg>
+      </span>
+      ADD TO BAG
+    </button>
+  </div>
+
+  <div class="saadaa-guarantee-hstack saadaa-guarantee-gap" style="margin-top:10px;">
+    <svg stroke="rgb(34, 197, 160)" fill="rgb(34, 197, 160)" stroke-width="0" viewBox="0 0 16 16" role="presentation" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
+    </svg>
+    <span style="font-size:13px;position: relative;top: 1px;">7-Day Money Back Guarantee</span>
+    <div class="saadaa-guarantee-tooltip">
+      <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_2.svg?v=1747286143" alt="info" style="width:13px;height:13px;display:block;">
+      <div class="saadaa-guarantee-tooltip-text">Return or exchange within 7 days of delivery. Product must be unused with original packaging intact.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop for Overlay -->
+<div id="saadaa-modal-backdrop" aria-hidden="true"></div>
+
+<!-- Overlay (hidden initially) -->
+<div id="saadaa-size-overlay" role="dialog" aria-modal="true" aria-label="Select size to add to bag">
+  <button class="saadaa-overlay-close" aria-label="Close">&times;</button>
+  <p class="saadaa-overlay-instruction">Please select a size to add product to bag</p>
+
+  <div class="saadaa-overlay-header">
+    <span class="saadaa-overlay-title">{{ saadaa_size_label }}:</span>
+
+    <!-- Namespaced trigger opens namespaced modal -->
+    <button type="button" class="saadaa-ks-open-btn" data-saadaa-ks-context="overlay">
+      <svg class="saadaa-ks-pen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002"><path d="M509.502 104.908L407.097 2.502c-3.337-3.337-8.73-3.337-12.067 0L2.502 395.03c-3.337 3.337-3.337 8.73 0 12.067l102.405 102.405c1.596 1.604 3.772 2.5 6.033 2.5s4.43-.896 6.033-2.5L509.5 116.975c1.604-1.596 2.5-3.772 2.5-6.033s-.894-4.43-2.498-6.034zM110.94 491.402l-90.338-90.338 380.46-380.46L491.4 110.94 110.94 491.4zm298.7-414.605c-14.115 0-25.6 11.486-25.6 25.6s11.486 25.6 25.6 25.6 25.6-11.486 25.6-25.6-11.486-25.6-25.6-25.6zm0 34.135c-4.7 0-8.534-3.832-8.534-8.534s3.823-8.534 8.534-8.534 8.534 3.832 8.534 8.534-3.823 8.534-8.534 8.534z"></path></svg>
+      SIZE CHART
+    </button>
+
+    <!-- Hidden Kiwi trigger (optional) -->
+    <div id="saadaaKiwiSizingChartOverlay" data-display-mode="2" style="display:none"></div>
+  </div>
+
+  <!-- compact readout chips -->
+  <div class="saadaa-inline-size-meta" aria-live="polite" hidden></div>
+
+  <!-- Size swatches -->
+  <div class="saadaa-variant-container">
+    {% for variant in product.variants %}
+      <div class="saadaa-variant-wrapper">
+        <button
+          type="button"
+          class="saadaa-variant-btn{% if variant.inventory_quantity == 0 %} saadaa-oos{% endif %}"
+          {% if variant.inventory_quantity == 0 %}disabled aria-disabled="true"{% endif %}
+          data-value="{{ variant.option1 }}"
+          data-variant-id="{{ variant.id }}"
+          data-quantity="{{ variant.inventory_quantity }}"
+        >
+          <span class="saadaa-sz-code">{{ variant.option1 }}</span>
+          <span class="saadaa-sz-extra"></span>
+        </button>
+
+        <p class="saadaa-stock-message">
+          {% if variant.inventory_quantity > 5 and variant.inventory_quantity <= 8 %}
+            <span class="saadaa-few-left">Only Few Left!</span>
+          {% elsif variant.inventory_quantity <= 5 and variant.inventory_quantity > 0 %}
+            <span class="saadaa-only-left">Only {{ variant.inventory_quantity }} Left!</span>
+          {% endif %}
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endunless %}
+
+<!-- ===== Namespaced Size Chart Modal (parses Kiwi tables, matches main UI) ===== -->
+<div id="saadaa-ksc-backdrop" style="display:none;"></div>
+<div id="saadaa-ksc-modal" role="dialog" aria-modal="true" aria-labelledby="saadaa-ksc-title" style="display:none;">
+  <button class="saadaa-ksc-close" aria-label="Close">&times;</button>
+  <div class="saadaa-ksc-head">
+    <h3 id="saadaa-ksc-title">Size Chart</h3>
+    <div class="saadaa-ksc-sub">Size Charts</div>
+  </div>
+  <div class="saadaa-ksc-body">
+    <div class="saadaa-ksc-table-wrap"><table class="saadaa-ksc-table"></table></div>
+    <div class="saadaa-ksc-note" id="saadaa-ksc-note" hidden></div>
+  </div>
+  <div class="saadaa-ksc-foot">
+    <button class="saadaa-ksc-add" id="saadaa-ksc-add">ADD TO CART</button>
+  </div>
+</div>
+
+<script>
+/* =================== saadaa Floating CTA — Core =================== */
+(function(){
+  const productForm = document.querySelector('form[action^="/cart/add"]');
+  if (!productForm) return;
+
+  const variantInput  = productForm.querySelector('[name="id"]');
+  const stickyBar     = document.getElementById('saadaa-sticky-cart-bar');
+  const mainBtn       = stickyBar?.querySelector('.saadaa-scb-main-btn');
+  const sizeOverlay   = document.getElementById('saadaa-size-overlay');
+  const modalBackdrop = document.getElementById('saadaa-modal-backdrop');
+  const closeOverlay  = sizeOverlay?.querySelector('.saadaa-overlay-close');
+
+  const getAddHTML = () =>
+    '<span class="saadaa-bag-icon" style="display:inline-block;vertical-align:middle;margin-right:8px;">' +
+    '<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="position:relative;bottom:3px;">' +
+    '<path d="M4.75 8.25A.75.75 0 0 0 4 9L3 19.125c0 1.418 1.207 2.625 2.625 2.625h12.75c1.418 0 2.625-1.149 2.625-2.566L20 9a.75.75 0 0 0-.75-.75H4.75Zm2.75 0v-1.5a4.5 4.5 0 0 1 4.5-4.5v0a4.5 4.5 0 0 1 4.5 4.5v1.5" />' +
+    '</svg></span>ADD TO BAG';
+  if (mainBtn) mainBtn.innerHTML = getAddHTML();
+
+  // Show sticky after scrolling past main action row
+  const buyRow = document.querySelector('.action-row');
+  let threshold = 0;
+  function computeThreshold(){
+    if (!buyRow){ threshold = 0; return; }
+    const rect = buyRow.getBoundingClientRect();
+    threshold = rect.top + window.scrollY + rect.height;
+  }
+  function updateSticky(){
+    if (window.innerWidth > 768) { stickyBar.style.display = 'none'; return; }
+    stickyBar.style.display = window.scrollY > threshold ? 'block' : 'none';
+  }
+  window.addEventListener('scroll', updateSticky);
+  window.addEventListener('resize', () => { computeThreshold(); updateSticky(); });
+  computeThreshold(); updateSticky();
+
+  // Overlay selection state
+  let selectedVariantId = null;
+
+  // Bind overlay swatches
+  sizeOverlay.querySelectorAll('.saadaa-variant-btn').forEach(btn=>{
+    btn.addEventListener('click', function(){
+      if (this.classList.contains('saadaa-oos') || this.disabled) return;
+      sizeOverlay.querySelectorAll('.saadaa-variant-btn').forEach(b=>b.classList.remove('saadaa-selected'));
+      this.classList.add('saadaa-selected');
+      selectedVariantId = this.getAttribute('data-variant-id');
+
+      if (variantInput && variantInput.value !== selectedVariantId){
+        variantInput.value = selectedVariantId;
+        variantInput.dispatchEvent(new Event('change', {bubbles:true}));
+      }
+      mainBtn.innerHTML = getAddHTML();
+      mainBtn.classList.add('saadaa-ready');
+    });
+  });
+
+  // CTA click
+  mainBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    if (!selectedVariantId){
+      sizeOverlay.style.display = 'block';
+      modalBackdrop.style.display = 'block';
+      document.body.style.overflowY = 'hidden';
+      if (window.saadaaHydrateOverlayKiwi) window.saadaaHydrateOverlayKiwi();
+      return;
+    }
+    if (variantInput && variantInput.value !== selectedVariantId){
+      variantInput.value = selectedVariantId;
+      variantInput.dispatchEvent(new Event('change', {bubbles:true}));
+    }
+    productForm.requestSubmit ? productForm.requestSubmit() : productForm.submit();
+    hideOverlay();
+  });
+
+  function hideOverlay(){
+    sizeOverlay.style.display = 'none';
+    modalBackdrop.style.display = 'none';
+    document.body.style.overflowY = '';
+    mainBtn.innerHTML = getAddHTML();
+    if (selectedVariantId) mainBtn.classList.add('saadaa-ready'); else mainBtn.classList.remove('saadaa-ready');
+  }
+  closeOverlay.addEventListener('click', hideOverlay);
+  document.addEventListener('mousedown', function(ev){
+    if (sizeOverlay.style.display === 'block' && !sizeOverlay.contains(ev.target) && !mainBtn.contains(ev.target)){
+      hideOverlay();
+    }
+  });
+
+  // Guarantee tooltip (namespaced)
+  document.querySelectorAll('.saadaa-guarantee-tooltip').forEach(tt=>{
+    tt.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      document.querySelectorAll('.saadaa-guarantee-tooltip').forEach(o=>{ if (o!==tt) o.classList.remove('saadaa-guarantee-active'); });
+      tt.classList.toggle('saadaa-guarantee-active');
+    });
+  });
+  document.addEventListener('click', ()=>{ document.querySelectorAll('.saadaa-guarantee-tooltip').forEach(tt=>tt.classList.remove('saadaa-guarantee-active')); });
+
+  // Sync FROM main selectors → overlay (watch hidden id)
+  if (variantInput){
+    variantInput.addEventListener('change', function(){
+      const newId = variantInput.value;
+      selectedVariantId = newId;
+      sizeOverlay.querySelectorAll('.saadaa-variant-btn').forEach(b=>b.classList.remove('saadaa-selected'));
+      const overlayBtn = sizeOverlay.querySelector('.saadaa-variant-btn[data-variant-id="'+newId+'"]');
+      if (overlayBtn && !overlayBtn.disabled && !overlayBtn.classList.contains('saadaa-oos')){
+        overlayBtn.classList.add('saadaa-selected');
+      } else {
+        const firstAvail = sizeOverlay.querySelector('.saadaa-variant-btn:not(.saadaa-oos):not([disabled])');
+        if (firstAvail) firstAvail.classList.add('saadaa-selected');
+      }
+      mainBtn.innerHTML = getAddHTML();
+      if (selectedVariantId) mainBtn.classList.add('saadaa-ready'); else mainBtn.classList.remove('saadaa-ready');
+    });
+  }
+
+  // Keep sticky bar above a bottom nav if present
+  function updateBarPos(){
+    const nav = document.querySelector('.fixed_nav');
+    const bar = document.getElementById('saadaa-sticky-cart-bar');
+    if (!nav || !bar) return;
+    const navStyles = window.getComputedStyle(nav);
+    const navVisible = navStyles.display !== 'none' && !nav.classList.contains('hide-nav');
+    bar.style.bottom = navVisible ? (nav.offsetHeight + 'px') : '0';
+  }
+  function updateOverlayPos(){
+    const bar = document.getElementById('saadaa-sticky-cart-bar');
+    const ov  = document.getElementById('saadaa-size-overlay');
+    if (!bar || !ov) return;
+    const rect = bar.getBoundingClientRect();
+    const dist = window.innerHeight - rect.top;
+    ov.style.bottom = dist + 'px';
+  }
+  document.addEventListener('DOMContentLoaded', updateBarPos);
+  window.addEventListener('resize', ()=>{ updateBarPos(); updateOverlayPos(); });
+  window.addEventListener('scroll', ()=>{ updateBarPos(); updateOverlayPos(); });
+  window.addEventListener('bottomNavVisibilityChanged', ()=>{ updateBarPos(); updateOverlayPos(); });
+  const navElem = document.querySelector('.fixed_nav');
+  if (navElem){ navElem.addEventListener('transitionend', ()=>{ updateBarPos(); updateOverlayPos(); }); }
+})();
+</script>
+
+<script>
+/* =================== saadaa Kiwi → Enrich overlay swatches + chips + modal =================== */
+(function(){
+  const overlay = document.getElementById('saadaa-size-overlay');
+  if (!overlay) return;
+
+  const SIZE_LOOKUP = ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL'];
+
+  const CACHE_KEY = 'saadaaKiwiMap:' + ({{ product.handle | json }} || location.pathname);
+  const CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
+
+  const readoutEl = overlay.querySelector('.saadaa-inline-size-meta');
+
+  const kscBackdrop = document.getElementById('saadaa-ksc-backdrop');
+  const kscModal    = document.getElementById('saadaa-ksc-modal');
+  const kscTable    = kscModal.querySelector('.saadaa-ksc-table');
+  const kscTitle    = document.getElementById('saadaa-ksc-title');
+  const kscNote     = document.getElementById('saadaa-ksc-note');
+  const kscAddBtn   = document.getElementById('saadaa-ksc-add');
+
+  const productTitle = {{ product.title | json }};
+  const form = document.querySelector('form[action^="/cart/add"]');
+  const variantInput = form && (form.querySelector('#variantId') || form.querySelector('[name="id"]'));
+
+  /* map size -> variant id using overlay buttons */
+  const sizeToVariant = {};
+  const sizeOOS = {};
+  overlay.querySelectorAll('.saadaa-variant-btn').forEach(b=>{
+    const sz = (b.getAttribute('data-value') || b.textContent || '').trim().toUpperCase();
+    sizeToVariant[sz] = b.getAttribute('data-variant-id') || null;
+    sizeOOS[sz] = b.classList.contains('saadaa-oos') || b.disabled;
+  });
+
+  /* ---------- utils ---------- */
+  const norm  = t => (t||'').replace(/\s+/g,' ').trim();
+  const upper = t => norm(t).toUpperCase();
+  const pickFirstHeader = (headers, patterns) => { for (const rx of patterns){ const h = headers.find(H => rx.test(H)); if (h) return h; } return null; };
+  const readCache = () => { try{ const raw=localStorage.getItem(CACHE_KEY); if(!raw) return null; const obj=JSON.parse(raw); if(!obj||!obj.rows||!obj.headers||!obj.ts) return null; if(Date.now()-obj.ts>CACHE_TTL) return null; return obj; }catch(_){ return null; } };
+  const writeCache = (payload) => { try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ts:Date.now(), ...payload})); }catch(_){ } };
+
+  function findKiwiTables(){
+    const roots = [
+      document.querySelector('#KiwiSizingModal'),
+      document.querySelector('.kiwiSizingModal'),
+      ...document.querySelectorAll('[class*="Kiwi"][class*="Modal"], [class*="kiwi"][class*="modal"]'),
+      document
+    ].filter(Boolean);
+    const tables = [];
+    for (const r of roots){
+      tables.push(...r.querySelectorAll('table'));
+      if (tables.length) break;
+    }
+    return Array.from(new Set(tables));
+  }
+  function getHeaderCells(t){
+    const thead = t.querySelector('thead');
+    if (thead) return Array.from(thead.querySelectorAll('th,td')).map(th=>upper(th.textContent));
+    const first = t.querySelector('tr');
+    if (!first) return [];
+    return Array.from(first.children).map(td=>upper(td.textContent));
+  }
+  function buildRowsFromTable(t){
+    const headersRaw = getHeaderCells(t);
+    if (headersRaw.length < 2) return {headers:[], rows:{}};
+    const headers = headersRaw.map(h=>h.replace(/\s+/g,' ').trim());
+
+    let sizeCol = headers.findIndex(h=>/^SIZE$/.test(h));
+    if (sizeCol < 0) sizeCol = 0;
+
+    const bodyRows = t.querySelectorAll('tbody tr');
+    const rowsEls = bodyRows.length ? bodyRows : t.querySelectorAll('tr');
+
+    const rowsMap = {};
+    rowsEls.forEach((tr, idx)=>{
+      if (!bodyRows.length && idx===0) return;
+      const cells = Array.from(tr.children).map(td=>norm(td.textContent));
+      if (!cells.length) return;
+
+      const sizeKey = upper(cells[sizeCol] || '');
+      if (!SIZE_LOOKUP.includes(sizeKey)) return;
+
+      const rec = {};
+      headers.forEach((h,i)=>{ if (i!==sizeCol){ const v=cells[i] || ''; if (v) rec[h]=v; }});
+      rowsMap[sizeKey] = rec;
+    });
+
+    return {headers, rows: rowsMap};
+  }
+  function chooseBestPayload(){
+    const tables = findKiwiTables();
+    let best = {headers:[], rows:{}}, score = -1;
+    for (const t of tables){
+      const p = buildRowsFromTable(t);
+      const s = Object.keys(p.rows).length;
+      if (s > score){ score = s; best = p; }
+    }
+    return best;
+  }
+  async function ensureKiwiLoaded(){
+    if (findKiwiTables().length) return;
+    (document.querySelector('#KiwiSizingChart') || document.querySelector('#saadaaKiwiSizingChartOverlay'))?.click();
+    await new Promise(r=>setTimeout(r, 500));
+    document.querySelectorAll('.ks-modal, .kiwiSizingModal, [id*="Kiwi"][class*="Modal"]').forEach(el=>{ el.style.display='none'; });
+  }
+
+  /* ---------- Enrich overlay buttons + dataset for chips ---------- */
+  function applyToOverlay(payload){
+    const {rows, headers} = payload;
+    const btns = overlay.querySelectorAll('.saadaa-variant-btn');
+
+    // Prefer CHEST → WAIST → BUST → HIPS → LENGTH/INSEAM for second line
+    const firstDataHeader =
+      pickFirstHeader(headers, [/\bCHEST\b/, /\bWAIST\b/, /\bBUST\b/, /\bHIPS?\b/, /\b(LENGTH|INSEAM)\b/]) ||
+      headers.find((h, idx) => idx !== 0) || '';
+
+    btns.forEach(btn=>{
+      const size = upper(btn.getAttribute('data-value') || btn.textContent);
+      const row  = rows[size] || {};
+      const val  = row[firstDataHeader] || '';
+
+      const codeEl  = btn.querySelector('.saadaa-sz-code');
+      const extraEl = btn.querySelector('.saadaa-sz-extra');
+      if (codeEl) codeEl.textContent = size;
+      if (extraEl) extraEl.textContent = val;
+      else if (val){ btn.innerHTML = '<span class="saadaa-sz-code">'+size+'</span><span class="saadaa-sz-extra">'+val+'</span>'; }
+
+      const bustKey  = pickFirstHeader(headers, [/\bBUST\b/, /\bCHEST\b/]);
+      const waistKey = pickFirstHeader(headers, [/\bWAIST\b/]);
+      const hipKey   = pickFirstHeader(headers, [/\bHIPS?\b/]);
+      const lenKey   = pickFirstHeader(headers, [/\b(LENGTH|INSEAM)\b/]);
+
+      if (bustKey)  { btn.dataset.saadaaBust    = row[bustKey]  || ''; btn.dataset.saadaaBustKey  = bustKey; }
+      if (waistKey) { btn.dataset.saadaaWaist   = row[waistKey] || ''; btn.dataset.saadaaWaistKey = waistKey; }
+      if (hipKey)   { btn.dataset.saadaaHip     = row[hipKey]   || ''; btn.dataset.saadaaHipKey   = hipKey; }
+      if (lenKey)   { btn.dataset.saadaaLen     = row[lenKey]   || ''; btn.dataset.saadaaLenKey   = lenKey; }
+    });
+  }
+
+  /* ---------- Chips rendering ---------- */
+  function renderChipsFrom(btn){
+    if (!readoutEl) return;
+    const pill = (k,v) => (k && v) ? '<span class="saadaa-kv-pill"><span class="saadaa-kv-key">'+k+':</span> '+v+'</span>' : '';
+    const html = [
+      pill(btn.dataset.saadaaBustKey,  btn.dataset.saadaaBust),
+      pill(btn.dataset.saadaaWaistKey, btn.dataset.saadaaWaist),
+      pill(btn.dataset.saadaaHipKey,   btn.dataset.saadaaHip),
+      pill(btn.dataset.saadaaLenKey,   btn.dataset.saadaaLen),
+    ].filter(Boolean).join('');
+    if (html){ readoutEl.innerHTML = html; readoutEl.hidden = false; }
+    else { readoutEl.innerHTML = ''; readoutEl.hidden = true; }
+  }
+
+  /* ---------- Hydration flow ---------- */
+  function hydrateOnce(){
+    const cached = readCache();
+    if (cached && Object.keys(cached.rows||{}).length){
+      applyToOverlay(cached);
+    } else {
+      const payload = chooseBestPayload();
+      if (Object.keys(payload.rows).length){
+        writeCache(payload);
+        applyToOverlay(payload);
+      } else {
+        ensureKiwiLoaded().then(()=>{
+          const again = chooseBestPayload();
+          if (Object.keys(again.rows).length){
+            writeCache(again);
+            applyToOverlay(again);
+          }
+        });
+      }
+    }
+    const sel = overlay.querySelector('.saadaa-variant-btn.saadaa-selected');
+    if (sel) renderChipsFrom(sel);
+  }
+  window.saadaaHydrateOverlayKiwi = hydrateOnce;
+
+  // Update chips on overlay swatch click
+  overlay.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.saadaa-variant-btn');
+    if (!btn || btn.classList.contains('saadaa-oos') || btn.disabled) return;
+    renderChipsFrom(btn);
+  });
+
+  // Update chips when main variant changes programmatically
+  if (variantInput){
+    variantInput.addEventListener('change', function(){
+      const btn = overlay.querySelector('.saadaa-variant-btn[data-variant-id="'+this.value+'"]');
+      if (btn) renderChipsFrom(btn);
+    });
+  }
+
+  /* ---------- Namespaced Modal logic (renders from Kiwi tables) ---------- */
+  function opensaadaaModal(){ kscBackdrop.style.display='block'; kscModal.style.display='block'; document.body.classList.add('saadaa-modal-open'); }
+  function closesaadaaModal(){ kscBackdrop.style.display='none'; kscModal.style.display='none'; document.body.classList.remove('saadaa-modal-open'); }
+  kscBackdrop.addEventListener('click', closesaadaaModal);
+  kscModal.querySelector('.saadaa-ksc-close').addEventListener('click', closesaadaaModal);
+
+  function rendersaadaaModal(payload){
+    kscTitle.textContent = productTitle || 'Size Chart';
+    kscTable.innerHTML = '';
+    if (!payload || !payload.rows || !Object.keys(payload.rows).length){
+      kscTable.innerHTML = '<tr><td style="padding:16px;">Size chart unavailable.</td></tr>';
+      kscNote.hidden = true; return;
+    }
+
+    // Remove empty columns, keep SIZE first
+    const allHeaders = (payload.headers || []).map(h => (h||'').trim()).filter(h => h && upper(h) !== 'SIZE');
+    const filtered = allHeaders.filter(h => Object.keys(payload.rows).some(sz => (payload.rows[sz][h] || '').trim().length > 0));
+
+    const thead = document.createElement('thead');
+    const trh = document.createElement('tr');
+    const thRadio = document.createElement('th'); thRadio.className = 'saadaa-ksc-radio'; trh.appendChild(thRadio);
+    const thSize = document.createElement('th'); thSize.textContent='SIZE'; trh.appendChild(thSize);
+    filtered.forEach(h=>{ const th=document.createElement('th'); th.textContent=h; trh.appendChild(th); });
+    thead.appendChild(trh); kscTable.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    Object.keys(payload.rows).forEach(size=>{
+      const rec = payload.rows[size] || {};
+      const tr = document.createElement('tr');
+
+      const tdR = document.createElement('td'); tdR.className='saadaa-ksc-radio';
+      const input = document.createElement('input'); input.type='radio'; input.name='saadaaKscSize'; input.value=size; input.setAttribute('aria-label', size);
+      tdR.appendChild(input); tr.appendChild(tdR);
+
+      const tdS = document.createElement('td'); tdS.textContent = size; tr.appendChild(tdS);
+      filtered.forEach(h=>{ const td=document.createElement('td'); td.textContent = rec[h] || ''; td.style.textAlign='center'; kscTable.style.color='#000'; td.style.color='#000'; tr.appendChild(td); });
+
+      const vid = ({{ product.variants | json }} || []).find(v => (v.option1||'').toUpperCase() === size)?.id || null;
+      const disabled = !vid || !!(overlay.querySelector('.saadaa-variant-btn[data-variant-id="'+vid+'"]')?.classList.contains('saadaa-oos'));
+      if (disabled){ input.disabled = true; tr.setAttribute('aria-disabled','true'); }
+
+      function selectRow(){
+        if (input.disabled) return;
+        kscTable.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('selected','saadaa-selected'));
+        input.checked = true; tr.classList.add('selected');
+      }
+      tr.addEventListener('click', selectRow);
+      input.addEventListener('change', selectRow);
+
+      const currentId = variantInput && variantInput.value;
+      if (vid && currentId && String(vid) === String(currentId)){ setTimeout(selectRow, 0); }
+
+      tbody.appendChild(tr);
+    });
+    kscTable.appendChild(tbody);
+
+    // note
+    const kiwiNote = document.querySelector('.ks-chart-individual .ks-html-content')?.textContent?.trim() || '';
+    if (kiwiNote){ kscNote.textContent = kiwiNote.replace(/\s+/g,' ').trim(); kscNote.hidden = false; }
+    else { kscNote.hidden = true; }
+  }
+
+  // Open modal on namespaced trigger
+  document.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('.saadaa-ks-open-btn');
+    if (!btn) return;
+    await ensureKiwiLoaded();
+    let payload = readCache();
+    if (!payload || !Object.keys(payload.rows||{}).length){
+      payload = chooseBestPayload();
+      if (Object.keys(payload.rows).length) writeCache(payload);
+    }
+    rendersaadaaModal(payload);
+    opensaadaaModal();
+  });
+
+  // Add to cart from modal
+  kscAddBtn.addEventListener('click', function(){
+    let choice = kscTable.querySelector('input[name="saadaaKscSize"]:checked');
+    if (!choice){
+      choice = kscTable.querySelector('input[name="saadaaKscSize"]:not(:disabled)');
+      if (choice) choice.checked = true;
+    }
+    if (!choice) return;
+
+    const size = choice.value;
+    const vid = ({{ product.variants | json }} || []).find(v => (v.option1||'').toUpperCase() === size)?.id;
+    if (!vid || !variantInput) return;
+
+    variantInput.disabled = false;
+    variantInput.value = vid;
+    try{ variantInput.dispatchEvent(new Event('change', {bubbles:true})); }catch(_){}
+    if (form){ form.requestSubmit ? form.requestSubmit() : form.submit(); }
+    closesaadaaModal();
+  });
+})();
+</script>
+
+
+{% comment %} NEW SIZE SWATCH CODE WITH KIWI INTEGRATION END {% endcomment %} 
+
+{% endunless %}

@@ -131,7 +131,7 @@
         <!-- the red dot -->
         <span class="badge-dot" id="discount-dot" aria-hidden="true"></span>
       </span>
-      <span class="icon_name"> Discounts </span>
+      <span class="icon_name"> Offers </span>
     </a>
   </div>
 </div>
@@ -233,13 +233,13 @@
   transition: transform 0.35s cubic-bezier(.4,0,.2,1);
 }
 .row-nav {
-  margin: 0;
-  padding: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: center;
-  gap:5%;
+    margin: 0;
+    padding: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 5%;
 }
 .item--box {
   position: relative;
@@ -541,7 +541,7 @@
   .offer-item h3 { margin: 0; font-size: 1rem; font-weight: bold; color: #333; }
   .offer-item p.subtitle {
     margin: 0.25rem 0 0.75rem;
-    font-size: 0.875rem; color: #696c7b; font-style: italic;
+    font-size: 0.875rem; color: #777; font-style: italic;
   }
   .offer-item .offer-code {
     display: flex; justify-content: space-between;
@@ -626,7 +626,67 @@
     }
 }
 
+
+.offer-image img {
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+      margin: 15px 0;
+
+}
+
+
+
+
+
+
+
+
+
+/* ===== Savings Pill (above bottom nav) ===== */
+.savings-pill {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 65px;
+    padding: 8px 16px;
+    background: #16b39a;
+    color: #fff;
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 1;
+    border-radius: 999px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+    z-index: 10005;
+  pointer-events: auto;       /* was none */
+  cursor: pointer;
+  text-decoration: none;      /* no underline */
+  color:#fff;      
+    white-space: nowrap;
+}
+.savings-pill::before,
+.savings-pill::after{
+  content:"";
+  position:absolute;
+  top: 50%;
+  width: 12px; height: 12px;
+  border-radius: 999px;
+  background:#16b39a;
+  transform: translateY(-50%);
+}
+.savings-pill::before{ left: -6px; }
+.savings-pill::after{  right: -6px; }
+
+.savings-pill.is-hidden{ display:none !important; }
+
+@media (min-width:769px){
+  .savings-pill{ display:none; }   /* mobile-only */
+}
+
+
+
 </style>
+
 
 <!-- OFFERS DRAWER -->
 <div id="offersSlider" class="offer-slider" aria-hidden="true">
@@ -653,7 +713,7 @@
 
     <div class="offer-item" data-code="BUY2">
       <h3>BUY ANY 2 PRODUCTS & GET FLAT 15% OFF</h3>
-      <p class="subtitle">Because simplicity should come easy.</p>
+      <p class="subtitle">Applicable on all products sitewide.</p>
       <div class="offer-code">
         <span>Use Code: <strong>BUY2</strong></span>
         <button class="copy-btn" aria-label="Copy BUY2">
@@ -662,32 +722,38 @@
       </div>
     </div>
 
-    <div class="offer-item" data-code="BUY4">
-      <h3>BUY ANY 4 OR MORE PRODUCTS & GET FLAT 25% OFF</h3>
-      <p class="subtitle">Because simplicity should come easy.</p>
-      <div class="offer-code">
-        <span>Use Code: <strong>BUY4</strong></span>
-        <button class="copy-btn" aria-label="Copy BUY4">
-          <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Apply_1.png?v=1745061951" alt="Copy code"/>
-        </button>
-      </div>
-    </div>
+ <div class="offer-image">
+   <a href="https://saadaa.in/pages/buy-3-get-1" target="_self">
+  <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_-_2025-10-31T192057.502.webp?v=1761918686" 
+       alt="Buy 4 Offer" style="width:100%; border-radius:4px;     padding: 0px 20px;" />
+  </a>
+</div>
+
 
     <div class="slider-upi">GET 5% EXTRA ON UPI</div>
 <div class="slider-footer toggle-note" id="footerToggle">
   APPLICABLE SITEWIDE | ALL PRODUCT | ALL COLLECTION
-  <span class="star">*</span>
+  {% comment %} <span class="star">*</span> {% endcomment %}
 </div>
 
-<div class="slider-note" id="offerNote">
+{% comment %} <div class="slider-note" id="offerNote">
   Note :- Not Applicable on goodbye edition & pre-launch products
-</div>
+</div> {% endcomment %}
 
 
     <a id="offerContinueBtn" class="offer-cta">Continue Shopping</a>
   </div>
 </div>
 <div id="sliderOverlay" class="offer-slider__overlay"></div>
+<!-- SAVINGS PILL (sits above the bottom nav) -->
+{% comment %} <a id="savingsPill"
+   class="savings-pill"
+   href="https://saadaa.in/pages/buy-3-get-1"
+   aria-label="Add 3 & Get 1 Free — learn more">
+  Add 3 & Get 1 Free
+</a> {% endcomment %}
+
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function(){

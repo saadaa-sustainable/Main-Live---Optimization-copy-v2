@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Category Carousels – Vanilla, Smart Arrows</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{ --sticky-offset: 120px; }
+
+    /* ——— Toggles (horizontal, vanilla scroll) ——— */
+    .toggle-row {
+      display: flex; gap: 10px; align-items: center;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding: 8px 10px; scroll-snap-type: x mandatory; background: #f6f3f1;
+    }
+    .toggle-row::-webkit-scrollbar{ display:none; }
+    .toggle-btn {
+      background: #fff; color: #222; border: none; outline: none; border-radius: 8px;
+      font-size: 11px; font-weight: 500; padding: 6px 14px; cursor: pointer;
+      transition: background-color .22s cubic-bezier(.44,1.34,.38,1.11),
+        color .22s cubic-bezier(.44,1.34,.38,1.11),
+        transform .23s cubic-bezier(.44,1.34,.38,1.11),
+        box-shadow .22s cubic-bezier(.44,1.34,.38,1.11);
+      white-space: nowrap; position: relative; z-index: 1; scroll-snap-align: center;
+    }
+    .toggle-btn.active { background: #000; color: #fff; transform: scale(1.06); box-shadow: 0 1px 4px rgba(195,106,78,.13); }
+    #sticky-toggle-row {
+      position: sticky; top: 76px; z-index: 1; background: #f6f3f1;
+      padding: 12px 0; transition: box-shadow .15s; border-bottom: 1px solid rgba(0,0,0,.06); padding-left: 15px;
+      justify-content: center;
+    }
+    @media (min-width: 701px){ .toggle-btn{ font-size: 16px; } }
+
+    /* ——— Category Heading ——— */
+    .banner-row{ scroll-margin-top: calc(var(--sticky-offset) + 8px); }
+    .banner-text{
+      display:block; width: 100%; background: #f6f3f1; color:#222;
+      padding: 6px 14px; font-size: 20px; font-weight:700; letter-spacing:.2px;
+    }
+    @media (min-width: 701px){ .banner-text{ font-size:18px; padding:14px 16px; } }
+
+    /* ——— Card look (unchanged) ——— */
+    .pc-product-image-wrapper { position: relative; width: 100%; overflow: hidden; height: auto; }
+    .pc-product-image-wrapper img { display: block; width: 100%; height: auto; }
+    .pc-grid-item {
+      border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+      cursor: pointer; transition: box-shadow .2s;
+    }
+
+    /* —— SAVE pill (kept; hidden by default) —— */
+    .pc-save-pill{
+      position: absolute; left: 6px; top: 5px; z-index: 0; background: #209020; color: #fff;
+      padding: 0px 5px; border-radius: 4px; font-size: 10px; font-weight: 800; letter-spacing: .3px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.12); text-transform: uppercase; display:none;
+    }
+
+    /* ——— Title & Price ——— */
+    .pc-product-title {
+      padding: 8px 10px 10px;
+      font-size: 10px;
+      line-height: 1.3;
+      color: #000;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 2.6em;
+      font-weight: 500;
+    }
+    @media (min-width: 701px){ .pc-product-title{ font-size: 15px; letter-spacing: .5px; } }
+
+    .pc-product-price {
+      font-size: 12px;
+      line-height: 1.2;
+      color: #111;
+      font-weight: 700;
+      /* padding removed in override below; kept here for fallback */
+      padding-bottom: 10px;
+    }
+    @media (min-width: 701px){ .pc-product-price{ font-size: 14px; } }
+
+    /* ——— Section shell ——— */
+    .pc-grid-section { padding: 0 0 2rem 0; background: #f6f3f1; }
+    .pc-grid-outer { position: relative; top:7px; }
+
+    /* ——— Vanilla product carousel ——— */
+    .pc-carousel{ position: relative; }
+    .pc-carousel-track{
+      display: flex; gap: 8px; padding: 0 10px; margin: 0;
+      overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      margin-left: 14px;
+    }
+    .pc-carousel-track::-webkit-scrollbar{ height: 6px; }
+    .pc-carousel-track::-webkit-scrollbar-thumb{ background: rgba(0,0,0,.15); border-radius: 4px; }
+    .pc-carousel-item{ flex: 0 0 39%; scroll-snap-align: start; }
+    @media (min-width: 701px){
+      .pc-carousel-track{ gap: 12px; padding: 0 16px; }
+      .pc-carousel-item{ flex: 0 0 15.5%; } /* ~6 per view desktop */
+    }
+
+    /* ——— Arrows (hidden on mobile, smart hide on edges) ——— */
+    .pc-nav-btn{
+      position: absolute; top: 40%; transform: translateY(-50%);
+      background: #fff; border: 1px solid rgba(0,0,0,.12); border-radius: 50%;
+      width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer;
+      box-shadow: 0 3px 12px rgba(0,0,0,.10); z-index: 2; transition: opacity .18s;
+    }
+    .pc-nav-prev{ left: 6px; }
+    .pc-nav-next{ right: 6px; }
+    .pc-nav-btn.is-hidden{ opacity: 0; pointer-events: none; }
+
+    /* Hide arrows entirely on mobile */
+    @media (max-width: 700px){
+      .pc-nav-btn{ display: none; }
+      #sticky-toggle-row { justify-content: flex-start; }
+    }
+
+    /* Utils */
+    .pc-grid-empty { padding:2em;text-align:center;color:#b08065;font-size:13px; }
+    body{ padding-bottom: 0; }
+    a.pc-grid-link { text-decoration: none; color: inherit; display: block; }
+
+    /* ——— NEW: Price row with red slashed compare (2×) ——— */
+   .pc-price-row {
+    display: flex;
+    align-items: baseline;
+    padding: 0 10px 10px;
+    gap: 8px;
+    justify-content: center;
+}
+    .pc-product-price{
+      padding: 0;           /* override earlier padding */
+      font-size: 12px;
+      line-height: 1.2;
+      color: #111;
+      font-weight: 700;
+    }
+    @media (min-width: 701px){
+      .pc-product-price{ font-size: 14px; }
+    }
+    .pc-product-compare{
+      font-size: 12px;
+      line-height: 1.2;
+      color: #e01e37;
+      text-decoration: line-through;
+      font-weight: 700;
+      opacity: .95;
+    }
+    @media (min-width: 701px){
+      .pc-product-compare{ font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toggle Carousel (sticky) -->
+  <div class="toggle-row" id="sticky-toggle-row" aria-label="Category toggles">
+    <button class="toggle-btn active" data-cat="women-bottomwear">Women Bottomwear</button>
+    <button class="toggle-btn" data-cat="women-topwear">Women Topwear</button>
+    <button class="toggle-btn" data-cat="men-bottomwear">Men Bottomwear</button>
+    <button class="toggle-btn" data-cat="men-topwear">Men Topwear</button>
+  </div>
+
+  <!-- SECTION: Women Bottomwear (7 cards) -->
+  <div class="banner-row" id="women-bottomwear-banner"><span class="banner-text">Women Bottomwear</span></div>
+  <div class="pc-grid-section">
+    <div class="pc-grid-outer">
+      <div class="pc-carousel" data-carousel="women-bottomwear">
+        <button class="pc-nav-btn pc-nav-prev is-hidden" aria-label="Previous">&#10094;</button>
+        <div class="pc-carousel-track"></div>
+        <button class="pc-nav-btn pc-nav-next" aria-label="Next">&#10095;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Women Topwear (9 cards) -->
+  <div class="banner-row" id="women-topwear-banner"><span class="banner-text">Women Topwear</span></div>
+  <div class="pc-grid-section">
+    <div class="pc-grid-outer">
+      <div class="pc-carousel" data-carousel="women-topwear">
+        <button class="pc-nav-btn pc-nav-prev is-hidden" aria-label="Previous">&#10094;</button>
+        <div class="pc-carousel-track"></div>
+        <button class="pc-nav-btn pc-nav-next" aria-label="Next">&#10095;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Men Bottomwear (1 card) -->
+  <div class="banner-row" id="men-bottomwear-banner"><span class="banner-text">Men Bottomwear</span></div>
+  <div class="pc-grid-section">
+    <div class="pc-grid-outer">
+      <div class="pc-carousel" data-carousel="men-bottomwear">
+        <button class="pc-nav-btn pc-nav-prev is-hidden" aria-label="Previous">&#10094;</button>
+        <div class="pc-carousel-track"></div>
+        <button class="pc-nav-btn pc-nav-next" aria-label="Next">&#10095;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Men Topwear (4 cards) -->
+  <div class="banner-row" id="men-topwear-banner"><span class="banner-text">Men Topwear</span></div>
+  <div class="pc-grid-section">
+    <div class="pc-grid-outer">
+      <div class="pc-carousel" data-carousel="men-topwear">
+        <button class="pc-nav-btn pc-nav-prev is-hidden" aria-label="Previous">&#10094;</button>
+        <div class="pc-carousel-track"></div>
+        <button class="pc-nav-btn pc-nav-next" aria-label="Next">&#10095;</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  /* ——— Fill these arrays with your products ———
+     Each item: { link:'/products/handle-or-url', image:'IMAGE_URL', title:'Product Title', price:1999 }
+     Counts lock to your spec: 7 / 9 / 1 / 4
+  */
+  const DATA = {
+
+
+{% comment %} WOMEN BOTTOMWEAR {% endcomment %}
+
+    'women-bottomwear': [
+  { 
+    link:'https://saadaa.in/products/women-english-blue-airy-linen-wide-leg-pant', 
+    image:'https://saadaa.in/cdn/shop/files/1_dd5f6154-d0b8-4774-a5e9-4289ba028df0.webp?v=1755861078&width=1000', 
+    title:'Airy Linen Wide Leg Pants', 
+    price:1199 
+  },
+  { 
+    link:'https://saadaa.in/products/rose-taupe-airy-linen-straight-pants', 
+    image:'https://saadaa.in/cdn/shop/files/1_8fe69233-839a-4637-a4c8-eb7e9774d526.webp?v=1753104766&width=1000', 
+    title:'Airy Linen Straight Pants', 
+    price:1199 
+  },
+  { 
+    link:'https://saadaa.in/products/women-beige-straight-fit-cotton-pant', 
+    image:'https://saadaa.in/cdn/shop/files/1_45906f39-0ba0-4653-9809-1a3b2ac5b3c3.webp?v=1759750482&width=1000', 
+    title:'Cotton Straight Pant', 
+    price:999 
+  },
+  { 
+    link:'https://saadaa.in/products/black-solid-regular-fit-cotton-trouser', 
+    image:'https://saadaa.in/cdn/shop/files/1_3d5f7f38-fdfb-4dc9-b2e5-6d809faf345c_1.webp?v=1757741992&width=1000', 
+    title:'Everyday Cotton Pant', 
+    price:799 
+  },
+  { 
+    link:'https://saadaa.in/products/beige-wide-leg-pants-1', 
+    image:'https://saadaa.in/cdn/shop/files/1_216d766a-d9eb-4cfb-ab35-741997240c47.webp?v=1757913797&width=1000', 
+    title:'Wide Leg Pants', 
+    price:1999 
+  },
+  { 
+    link:'https://saadaa.in/products/olive-green-straight-fit-formal-pants', 
+    image:'https://saadaa.in/cdn/shop/files/1_abdd4223-0dc6-4a44-8e2a-a1e250413f32.webp?v=1756454336&width=1000', 
+    title:'Straight Fit Formal Pants', 
+    price:1599 
+  },
+  { 
+    link:'https://saadaa.in/products/navy-blue-viscose-palazzo-pant', 
+    image:'https://saadaa.in/cdn/shop/files/1_a8fafbd9-a1ec-4372-89fb-ef2d7c682d3d.webp?v=1757756440&width=1000', 
+    title:'Viscose Palazzo Pant', 
+    price:799 
+  },
+  
+    { 
+    link:'https://saadaa.in/products/mint-green-4-way-stretchable-pants', 
+    image:'https://saadaa.in/cdn/shop/files/1_14d933c4-e760-41af-b363-a5422c0cc66d.webp?v=1757754146&width=1000', 
+    title:'4-Way Stretchable Pants', 
+    price:799 
+  },
+
+],
+
+
+{% comment %} WOMEN TOPWEAR {% endcomment %}
+
+'women-topwear': [
+  {
+    link:'https://saadaa.in/products/women-light-pink-100-linen-notch-collar-shirt',
+    image:'https://saadaa.in/cdn/shop/files/1.1_5712a4f1-ee82-477e-acef-14583c4d2268.webp?v=1759310179&width=1000',
+    title:'Pure Linen Notch Collar Shirts',
+    price:2199
+  },
+  {
+    link:'https://saadaa.in/products/maroon-airy-linen-long-kurta',
+    image:'https://saadaa.in/cdn/shop/files/1_f00be7bb-12ae-4b25-9e40-4fef08cfcd97.webp?v=1759922095&width=1000',
+    title:'Airy Linen Long Kurta',
+    price:999
+  },
+  {
+    link:'https://saadaa.in/products/women-ecru-airy-linen-mid-thigh-length-kurta',
+    image:'https://saadaa.in/cdn/shop/files/6_0411bd68-d8b8-4b2a-bacf-023a9a93a3ec.webp?v=1759746257&width=1000',
+    title:'Airy Linen Mid Thigh Length Kurta',
+    price:999
+  },
+  {
+    link:'https://saadaa.in/products/lilac-airy-linen-short-kurta',
+    image:'https://saadaa.in/cdn/shop/files/1_6a8d46a5-0396-4efa-9438-04fd57d521fc.webp?v=1757745849&width=1000',
+    title:'Airy Linen Short Kurta',
+    price:799
+  },
+  {
+    link:'https://saadaa.in/products/women-white-airy-linen-split-neck-short-kurta',
+    image:'https://saadaa.in/cdn/shop/files/1.1_42c6e8c0-b909-4d8e-b387-04152085cf56.webp?v=1759576985&width=1000',
+    title:'Airy Linen Split Neck Short Kurta',
+    price:899
+  },
+  {
+    link:'https://saadaa.in/products/women-light-blue-100-linen-shirt',
+    image:'https://saadaa.in/cdn/shop/files/1.2_c096de3f-a995-41ad-abec-a2fca653ae6d.webp?v=1759346577&width=1000',
+    title:'Pure Linen Shirts',
+    price:2499
+  },
+
+    {
+    link:'https://saadaa.in/products/women-salmon-pink-airy-linen-shirt',
+    image:'https://saadaa.in/cdn/shop/files/1_6b146cb1-2215-49ce-b25d-470f1d2f2f38.webp?v=1755860826&width=1000',
+    title:'Airy-Linen Shirt',
+    price:1199
+  },
+  {
+    link:'https://saadaa.in/products/navy-blue-viscose-pleated-top',
+    image:'https://saadaa.in/cdn/shop/files/1_e4abc390-453a-45c1-a6c4-b42b1ea4379a.webp?v=1757917562&width=1000',
+    title:'Viscose Pleated Tops',
+    price:1299
+  },
+
+  {
+    link:'https://saadaa.in/products/rose-v-neck-sleeveless-top',
+    image:'https://saadaa.in/cdn/shop/files/1_b2a6d7e9-99f2-4f4f-acab-54ec210cf493.webp?v=1757758235&width=1000',
+    title:'V-Neck Sleeveless Tops',
+    price:799
+  },
+],
+
+
+{% comment %} MEN BOTTOMWEAR {% endcomment %}
+
+'men-bottomwear': [
+  {
+    link:'https://saadaa.in/products/men-white-cotton-pant',
+    image:'https://saadaa.in/cdn/shop/files/1_a79455d6-38bc-48be-9d92-052b9a2396b0.webp?v=1756386028&width=1000',
+    title:'White Cotton Pant',
+    price:999
+  },
+  {
+    link:'https://saadaa.in/products/men-coffee-brown-cotton-pant',
+    image:'https://saadaa.in/cdn/shop/files/SMCP_CB5.webp?v=1759747007&width=1000',
+    title:'Coffee Brown Cotton Pant',
+    price:999
+  },
+ 
+  {
+    link:'https://saadaa.in/products/men-black-cotton-pant',
+    image:'https://saadaa.in/cdn/shop/files/1_910ab6fa-26d1-4e11-a1f2-634ed850de75.webp?v=1756386028&width=1000',
+    title:'Black Cotton Pant',
+    price:999
+  },
+  {
+    link:'https://saadaa.in/products/men-beige-cotton-pant',
+    image:'https://saadaa.in/cdn/shop/files/1_751a33a9-f87e-4691-8d40-fe3499583054.webp?v=1756210083&width=1000',
+    title:'Beige Cotton Pant',
+    price:999
+  },
+  {
+    link:'https://saadaa.in/products/men-grey-cotton-pant',
+    image:'https://saadaa.in/cdn/shop/files/1_f1b4a53d-88cc-4d3b-996f-f7dc74925dc9.jpg?v=1756386028&width=1000',
+    title:'Grey Cotton Pant',
+    price:999
+  },
+  {
+    link:'https://saadaa.in/products/men-navy-blue-cotton-pant',
+    image:'https://saadaa.in/cdn/shop/files/3_b20991bd-2394-4618-a2a2-39bd7bbcf7cb.webp?v=1756386028&width=1000',
+    title:'Navy Blue Cotton Pant',
+    price:999
+  },
+],
+
+
+{% comment %} MEN TOPWEAR {% endcomment %}
+
+  'men-topwear': [
+  {
+    link:'https://saadaa.in/products/men-taupe-full-sleeve-linen-shirt',
+    image:'https://saadaa.in/cdn/shop/files/1.1_f512c477-b93c-448b-8b02-a95663fd10bf.webp?v=1759309308&width=1000',
+    title:'Pure Linen Full Sleeve Shirt',
+    price:2499
+  },
+  {
+    link:'https://saadaa.in/products/sky-blue-airy-linen-long-kurta-1',
+    image:'https://saadaa.in/cdn/shop/files/1_bf5678f4-df7c-4659-be1e-91cb363717e7.webp?v=1756473416&width=1000',
+    title:'Airy Linen Long Kurta',
+    price:1299
+  },
+  {
+    link:'https://saadaa.in/products/ecru-airy-linen-short-kurta-1',
+    image:'https://saadaa.in/cdn/shop/files/1.1_7d6ccaa9-1ee0-4f82-9dea-58b4c881727e.webp?v=1756471222&width=1000',
+    title:'Airy Linen Short Kurta',
+    price:999
+  },
+  {
+    link:'https://saadaa.in/products/men-light-blue-linen-half-sleeve-shirt',
+    image:'https://saadaa.in/cdn/shop/files/1.1_3a9c5729-966c-4ce2-a758-b5f8350335f7.webp?v=1759308874&width=1000',
+    title:'Pure Linen Short Sleeve Shirt',
+    price:2199
+  },
+],
+
+  };
+
+  const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+
+  function escapeHtml(str = "") {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  /* Sticky offset for precise scroll-to */
+  function computeStickyOffset(){
+    const stickyToggle = document.getElementById('sticky-toggle-row');
+    const stickyH = stickyToggle ? stickyToggle.getBoundingClientRect().height : 0;
+    const candidates = document.querySelectorAll('header, .site-header, .shopify-section-header-sticky, .announcement-bar');
+    let topFixed = 0;
+    candidates.forEach(el => {
+      const cs = getComputedStyle(el);
+      if ((cs.position === 'fixed' || cs.position === 'sticky')) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 1) topFixed += rect.height;
+      }
+    });
+    const total = Math.round(stickyH + topFixed + 12);
+    document.documentElement.style.setProperty('--sticky-offset', total + 'px');
+  }
+  function getStickyOffsetPx(){
+    const v = getComputedStyle(document.documentElement).getPropertyValue('--sticky-offset') || '0';
+    return parseInt(v, 10) || 0;
+  }
+
+  /* ——— UPDATED: includes red slashed compare price (2×) ——— */
+  function buildCardHTML(item){
+    const img = item.image || '';
+    const title = escapeHtml(item.title || '');
+    const priceNum = Number(item.price);
+    const rupees = Number.isFinite(priceNum) ? inr.format(Math.round(priceNum)) : '';
+    const compare = Number.isFinite(priceNum) ? inr.format(Math.round(priceNum * 2)) : ''; // 2×
+    const link = item.link || '#';
+    return `
+      <a class="pc-grid-link" href="${escapeHtml(link)}">
+        <div class="pc-grid-item">
+          <div class="pc-product-image-wrapper">
+            <span class="pc-save-pill">SAVE</span>
+            <img src="${img}" alt="${title}" loading="lazy" />
+          </div>
+          <div class="pc-product-title">${title}</div>
+          <div class="pc-price-row">
+            <div class="pc-product-price">₹${rupees}</div>
+            <div class="pc-product-compare">₹${compare}</div>
+          </div>
+        </div>
+      </a>
+    `;
+  }
+
+  function renderCarousel(name){
+    const wrapper = document.querySelector(`.pc-carousel[data-carousel="${name}"]`);
+    if(!wrapper) return;
+    const track = wrapper.querySelector('.pc-carousel-track');
+    const items = DATA[name] || [];
+    track.innerHTML = items.length
+      ? items.map(buildCardHTML).map(html => `<div class="pc-carousel-item">${html}</div>`).join('')
+      : `<div class="pc-grid-empty" style="width:100%;">No products yet.</div>`;
+  }
+
+  /* ——— Smart arrow visibility (vanilla) ———
+     - Left arrow hidden by default
+     - Shows after you scroll right
+     - Right arrow hides at end
+     - Arrows hidden on mobile via CSS
+  */
+  function attachCarouselNav(){
+    document.querySelectorAll('.pc-carousel').forEach(carousel => {
+      const track = carousel.querySelector('.pc-carousel-track');
+      const prev = carousel.querySelector('.pc-nav-prev');
+      const next = carousel.querySelector('.pc-nav-next');
+
+      // Left hidden by default
+      prev.classList.add('is-hidden');
+
+      const updateArrows = () => {
+        const max = Math.max(0, track.scrollWidth - track.clientWidth);
+        const x = Math.round(track.scrollLeft);
+        if (x > 0) prev.classList.remove('is-hidden'); else prev.classList.add('is-hidden');
+        if (x >= max - 2) next.classList.add('is-hidden'); else next.classList.remove('is-hidden');
+      };
+
+      const scrollAmount = () => Math.max(track.clientWidth * 0.9, 320);
+
+      prev.addEventListener('click', () => {
+        track.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+      });
+      next.addEventListener('click', () => {
+        track.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', updateArrows, { passive: true });
+      setTimeout(updateArrows, 0);
+      window.addEventListener('resize', updateArrows);
+    });
+  }
+
+  // ——— Toggle logic: scroll to section & highlight
+  function scrollToCategory(cat){
+    const el = document.getElementById(`${cat}-banner`);
+    if(!el) return;
+    const rect = el.getBoundingClientRect();
+    const absoluteTop = rect.top + window.pageYOffset;
+    window.scrollTo({ top: Math.max(absoluteTop - getStickyOffsetPx(), 0), behavior: 'smooth' });
+  }
+  function setActiveToggle(cat){
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.toggle-btn[data-cat="${cat}"]`);
+    if (btn) btn.addClass?.('active'); // defensive
+    if (btn) btn.classList.add('active');
+  }
+  let manualLockUntil = 0;
+  function nowMs(){ return (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now(); }
+  function onToggleClick(e){
+    const cat = e.currentTarget.getAttribute('data-cat');
+    manualLockUntil = nowMs() + 800;
+    setActiveToggle(cat);
+    scrollToCategory(cat);
+    setTimeout(syncActiveOnScroll, 850);
+  }
+  function syncActiveOnScroll(){
+    if (nowMs() < manualLockUntil) return;
+    const keys = ['women-bottomwear','women-topwear','men-bottomwear','men-topwear'];
+    const banners = keys.map(k => document.getElementById(`${k}-banner`)).filter(Boolean);
+    const offset = getStickyOffsetPx();
+    const hysteresis = 6;
+    const idx = banners.findIndex(h => (h.getBoundingClientRect().top - offset) > hysteresis);
+    let currentIdx;
+    if (idx === -1) currentIdx = banners.length - 1;
+    else if (idx === 0) currentIdx = 0;
+    else currentIdx = idx - 1;
+    const cat = banners[currentIdx].id.replace('-banner','');
+    setActiveToggle(cat);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    computeStickyOffset();
+
+    // Render carousels
+    ['women-bottomwear','women-topwear','men-bottomwear','men-topwear'].forEach(renderCarousel);
+
+    attachCarouselNav();
+
+    // Toggle clicks
+    document.querySelectorAll('.toggle-btn').forEach(btn => btn.addEventListener('click', onToggleClick));
+
+    // Scroll sync
+    window.addEventListener('scroll', syncActiveOnScroll, { passive: true });
+    window.addEventListener('resize', () => { computeStickyOffset(); syncActiveOnScroll(); });
+
+    syncActiveOnScroll();
+  });
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
- {% comment %} <style>
+{% comment %} <style>
 .action-row {
   display: flex;
   align-items: center;
@@ -185,11 +185,7 @@
     visibility: visible;
     opacity: 1;
   }
-@media (max-width: 767px){
-#tooltip{
-  display:none;
-}
-}
+
 
 </style>
 
@@ -245,7 +241,7 @@
 
 
 
-  <div class="guarantee-hstack guarantee-gap" id="tooltip" style="margin-top:10px;">
+  <div class="guarantee-hstack guarantee-gap" style="margin-top:10px;">
     <svg stroke="rgb(34, 197, 160)" fill="rgb(34, 197, 160)" stroke-width="0"
          viewBox="0 0 16 16" role="presentation" height="20px" width="20px"
          xmlns="http://www.w3.org/2000/svg">
@@ -270,9 +266,6 @@
     </div>
   </div>
 </div>
-
-
-
 
 <script>
 (function () {
@@ -401,16 +394,15 @@
 
 {% comment %} NEW CODE THAT FETCHES VALUE FROM KIWI {% endcomment %}
 
+{%- assign is_kurta_combo = false -%}
+{%- if template.suffix == 'kurta-set-combo' or product.template_suffix == 'kurta-set-combo' -%}
+  {%- assign is_kurta_combo = true -%}
+{%- endif -%}
 
 
 
 
-{%- comment -%} ===== Dynamic size label rules =====
-Bottomwear (any gender)  -> Waist Size
-Women topwear            -> Bust Size
-Men topwear              -> Chest Size
-Fallback                 -> Size
-{%- endcomment -%}
+
 {%- assign haystack = '' -%}
 {%- assign haystack = haystack
   | append: product.type | append: ','
@@ -473,6 +465,13 @@ Fallback                 -> Size
   {%- assign size_label = 'Chest Size' -%}
 {%- endif -%}
 
+{%- if is_kurta_combo -%}
+  {%- assign size_label = 'Size' -%}
+{%- endif -%}
+
+
+
+
 
 
 <style>
@@ -508,11 +507,12 @@ Fallback                 -> Size
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 7px;
+  margin-bottom: 15px;
 }
 
 .inline-size-atc .overlay-title {
   font-size: 14px;
+  text-transform: uppercase;
   color: #222;
   font-weight: 600;
 }
@@ -699,7 +699,7 @@ Fallback                 -> Size
   position: absolute;
   top: 100%;
   width: 100%;
-  font-size: 9px;
+  font-size: 7px;
   font-weight: 700;
   text-align: center;
   line-height: 0.2;
@@ -729,7 +729,7 @@ Fallback                 -> Size
   border-radius: 6px;
   padding: 6px 8px;
   margin: 12px 0 12px 0;
-   justify-content: center;
+  justify-content:center;
 }
 
 .inline-size-meta .kv-pill {
@@ -889,6 +889,15 @@ Fallback                 -> Size
     max-height: 78vh;
     overflow: auto;
   }
+
+ 
+}
+
+
+.variant-btn.selected {
+    background-color: #fff8a5;
+    color: #000;
+    border-color: #000;
 }
 
 /* Disable background scroll when modal is open */
@@ -901,18 +910,22 @@ body.modal-open { overflow: hidden; }
   }
   .ksc-modal { top: 53%; }
   .ksc-table th, .ksc-table td { font-size: 15px; }
-
-
-  .inline-size-meta {
-    
-    font-size: 12px;
- 
-}
 }
 </style>
 
+
+{% if is_kurta_combo %}
+  <style>
+    /* hide the second line on swatches (measurements) */
+    .inline-size-atc .variant-btn .sz-extra { display: none !important; }
+    /* hide the selected-size readout bar above the swatches */
+    .inline-size-meta { display: none !important; }
+  </style>
+{% endif %}
+
+
 <div class="inline-size-atc atc-main" data-cache-key="{{ product.handle | default: request.path | escape }}">
-  <div class="inline-size-label-row">
+  {% comment %} <div class="inline-size-label-row">
     <span class="overlay-title">{{ size_label }}:</span>
 
     <button type="button" class="ks-open-btn" data-ks-context="main">
@@ -921,7 +934,29 @@ body.modal-open { overflow: hidden; }
     </button>
     <!-- hidden kiwi trigger so we can force-load content if needed -->
     <div id="KiwiSizingChart" data-display-mode="2" style="display:none"></div>
-  </div>
+  </div> {% endcomment %}
+
+<div class="inline-size-label-row">
+  <span class="overlay-title">{{ size_label }}:</span>
+
+  {% if is_kurta_combo %}
+   
+    <div id="KiwiSizingChart" data-display-mode="2"></div>
+  {% else %}
+
+    <button type="button" class="ks-open-btn" data-ks-context="main">
+      <svg class="ks-pen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002"><path d="M509.502 104.908L407.097 2.502c-3.337-3.337-8.73-3.337-12.067 0L2.502 395.03c-3.337 3.337-3.337 8.73 0 12.067l102.405 102.405c1.596 1.604 3.772 2.5 6.033 2.5s4.43-.896 6.033-2.5L509.5 116.975c1.604-1.596 2.5-3.772 2.5-6.033s-.894-4.43-2.498-6.034zM110.94 491.402l-90.338-90.338 380.46-380.46L491.4 110.94 110.94 491.4zm298.7-414.605c-14.115 0-25.6 11.486-25.6 25.6s11.486 25.6 25.6 25.6 25.6-11.486 25.6-25.6-11.486-25.6-25.6-25.6zm0 34.135c-4.7 0-8.534-3.832-8.534-8.534s3.823-8.534 8.534-8.534 8.534 3.832 8.534 8.534-3.823 8.534-8.534 8.534z"></path></svg>
+      SIZE CHART
+    </button>
+    <div id="KiwiSizingChart" data-display-mode="2" style="display:none"></div>
+  {% endif %}
+</div>
+
+
+
+
+
+
 
   <div class="inline-size-meta" aria-live="polite" hidden></div>
 
@@ -968,17 +1003,24 @@ body.modal-open { overflow: hidden; }
     </div>
   </div>
 
-  {% comment %} <div class="guarantee-hstack guarantee-gap" style="margin-top:10px;">
-    <svg stroke="rgb(34, 197, 160)" fill="rgb(34, 197, 160)" stroke-width="0" viewBox="0 0 16 16" role="presentation" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
-    </svg>
-    <span style="font-size:13px;position: relative;top: 1px;">7-Day Money Back Guarantee</span>
-    <div class="guarantee-tooltip">
-      <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_2.svg?v=1747286143" alt="info" style="width:13px;height:13px;display:block;">
-      <div class="guarantee-tooltip-text">Return or exchange within 7 days of delivery. Product must be unused with original packaging intact.</div>
-    </div>
+<style>
+  /* Hide the block on tablets & phones */
+  @media (max-width: 1024px) {
+    .desktop-only { display: none !important; }
+  }
+</style>
+
+<div class="guarantee-hstack guarantee-gap desktop-only" style="margin-top:10px; margin-bottom:10px;">
+  <svg stroke="rgb(34, 197, 160)" fill="rgb(34, 197, 160)" stroke-width="0" viewBox="0 0 16 16" role="presentation" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
+  </svg>
+  <span style="font-size:13px;position: relative;top: 1px;">7-Day Money Back Guarantee</span>
+  <div class="guarantee-tooltip">
+    <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_2.svg?v=1747286143" alt="info" style="width:13px;height:13px;display:block;">
+    <div class="guarantee-tooltip-text">Return or exchange within 7 days of delivery. Product must be unused with original packaging intact.</div>
   </div>
-</div> {% endcomment %}
+</div>
+
 
 <!-- Modal -->
 <div class="ksc-backdrop" id="ksc-backdrop"></div>
@@ -1062,6 +1104,8 @@ body.modal-open { overflow: hidden; }
 })();
 </script>
 
+
+{% unless is_kurta_combo %}
 <script>
 /* ===== Kiwi -> swatch enrichment + selected-size readout ===== */
 /* ***** CHANGES HERE: preference order: WAIST → CHEST → BUST → HIP/HIPS → LENGTH/INSEAM ***** */
@@ -1183,13 +1227,13 @@ body.modal-open { overflow: hidden; }
     // NEW preference order for the extra line:
     // WAIST → CHEST → BUST → HIP/HIPS → LENGTH/INSEAM
     const firstDataHeader =
-      pickFirstHeader(headers, [
-        /\bWAIST\b/,
-        /\bCHEST\b/,
-        /\bBUST\b/,
-        /\bHIPS?\b/,
-        /\b(LENGTH|INSEAM)\b/
-      ]) || headers.find((h, idx) => idx !== 0) || '';
+  pickFirstHeader(headers, [
+    /\bCHEST\b/,
+    /\bWAIST\b/,
+    /\bBUST\b/,
+    /\bHIPS?\b/,
+    /\b(LENGTH|INSEAM)\b/
+  ]) || headers.find((h, idx) => idx !== 0) || '';
 
     btns.forEach(btn=>{
       const size = upper(btn.getAttribute('data-value') || btn.textContent);
@@ -1324,6 +1368,9 @@ body.modal-open { overflow: hidden; }
 })();
 </script>
 
+{% endunless %}
+
+
 <!-- Instant-click booster -->
 <style>.inline-size-atc .variant-btn{pointer-events:auto !important}</style>
 <script>
@@ -1371,6 +1418,7 @@ body.modal-open { overflow: hidden; }
 })();
 </script>
 
+{% unless is_kurta_combo %}
 <script>
 /* ===== Size-chart modal fed from Kiwi tables ===== */
 (function(){
@@ -1495,11 +1543,14 @@ body.modal-open { overflow: hidden; }
       noteEl.hidden = true;
       return;
     }
+{% comment %} the below code " const measHeadersAll "  is to remove empty columns from the size chart {% endcomment %}
+    const measHeadersAll = (payload.headers || [])
+  .map(h => (h || '').trim())
+  .filter(h => h && upper(h) !== 'SIZE');
 
-   const measHeaders = payload.headers
-  .filter(h => h && h.trim() !== '')      // drop empty headers
-  .filter(h => upper(h) !== 'SIZE');       // keep only measurement columns
-
+const measHeaders = measHeadersAll.filter(h =>
+  (payload.rows || []).some(rec => (rec[h] || '').trim().length > 0)
+);
     const thead = document.createElement('thead');
     const trh = document.createElement('tr');
     const thRadio = document.createElement('th'); thRadio.className='ksc-radio';
@@ -1616,5 +1667,6 @@ body.modal-open { overflow: hidden; }
     });
   });
 })();
-</script> 
+</script>
 
+{% endunless %}
