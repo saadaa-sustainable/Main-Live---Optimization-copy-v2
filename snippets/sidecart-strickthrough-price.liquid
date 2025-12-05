@@ -71,7 +71,7 @@
           category: 'Men', name: 'COTTON PANT', originalPrice: '1,798', discountedPrice: 899, discount: '50%'
       },
      {
-          category: 'Men', name: 'AIRY LINEN LONG KURTA', originalPrice: '2,599', discountedPrice: 1299, discount: '50%'
+          category: 'Men', name: 'AIRY LINEN LONG KURTA', originalPrice: '2,598', discountedPrice: 1299, discount: '50%'
       }, 
       {
           category: 'Men', name: 'AIRY LINEN SHORT KURTA', originalPrice: '1,999', discountedPrice: 999, discount: '50%'
@@ -111,6 +111,15 @@
       },
       {
           category: 'Women', name: 'COTTON CAMISOLE TOP', originalPrice: '998', discountedPrice: 499, discount: '50%'
+      },
+      {
+          category: 'Unisex', name: 'PULLOVER FLEECE HOODIE', originalPrice: '2998', discountedPrice: 1499, discount: '50%'
+      },
+      {
+          category: 'Unisex', name: 'ROUND NECK SWEATSHIRT', originalPrice: '1998', discountedPrice: 999, discount: '50%'
+      },
+      {
+          category: 'Unisex', name: 'ZIP NECK SWEATSHIRT', originalPrice: '2998', discountedPrice: 1499, discount: '50%'
       }
   ];
 
@@ -225,6 +234,9 @@
 
 
 
+
+
+
     `
   };
 
@@ -255,7 +267,8 @@
           if (itemPrice) {
             const priceEle = itemPrice.querySelector(':scope > span');
             if (priceEle) {
-              const price = parseInt(priceEle.textContent.replace('₹', '').trim(), 10);
+              const price = parseRupees(priceEle.textContent);
+
 
               discountedProductData.forEach((data) => {
                 const ifCategoryMatch = firstWord.toLowerCase() === data.category.toLowerCase();
@@ -316,7 +329,8 @@
                       const ifProductNameMatch = productName.toLowerCase().includes(item.name.toLowerCase());
                       const priceSpan = priceEle.querySelector('span');
                       if (!priceSpan) return;
-                      const price = parseInt(priceSpan.textContent.replace('₹', '').trim(), 10);
+                      const price = parseRupees(priceSpan.textContent);
+
 
                       if ((ifCategoryMatch || item.category === 'Shorts') && ifProductNameMatch && price === item.discountedPrice) {
                         if (!checkIfCategoryAndColorExist(productName) && !priceEle.querySelector('.sd38_originalPrice')) {

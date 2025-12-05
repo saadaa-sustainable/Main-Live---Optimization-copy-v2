@@ -227,10 +227,17 @@ window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
     width: 32px;
     margin-right: 12px;
 }
-  .home-nav-badge-new {
-    background: green; padding: .2px 3px 0px 3px; border-radius: 2px;
-    color: white; letter-spacing: .3px; font-size: 9px; margin-right: 10px;
-  }
+ .home-nav-badge-new {
+  background: #06c167; /* default green */
+  color: #fff;
+  padding: 0.5px 4px;
+  border-radius: 2px;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  margin-left: 5px; /* ensures spacing from label */
+  align-self: center;
+  display: inline-flex;
+}
   summary::-webkit-details-marker {display: none;}
   .saadaa-accordion-section {
     border-bottom: 1px solid #f3f3f3;
@@ -369,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
-                  <li><a href="/collections/women-straight-fit-cotton-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3_bcda2abc-4cdc-4aeb-90c0-e0d31175117e.png?v=1760348751" class="menu-img" alt="">Everyday Cotton Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+                  {% comment %} <li><a href="/collections/women-straight-fit-cotton-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3_bcda2abc-4cdc-4aeb-90c0-e0d31175117e.png?v=1760348751" class="menu-img" alt="">Everyday Cotton Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li> {% endcomment %}
                   <li><a href="/collections/straight-fit-formal-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_10.webp?v=1753441076" class="menu-img" alt="">Straight Fit Formal Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   {% comment %} <li><a href="/collections/4-way-stretchable-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/2_2.webp?v=1753165204" class="menu-img" alt="">4-Way Stretchable Pants</a></li> {% endcomment %}
@@ -406,7 +413,16 @@ document.addEventListener('DOMContentLoaded', function () {
             </li>
           
             <li>
-              <a href="/collections/all-whites" class="header-sidebar__linklist-button" style="padding: 0px 3px;">
+              <a href="/pages/shop-all-kurta-sets" class="header-sidebar__linklist-button" style="padding: 2px 3px;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_27.webp?v=1762580295" class="menu-img" alt="">
+                All Kurta Sets
+<span class="home-nav-badge-new" style="background-color:#ffee03; color:#000;font-weight:600; margin-left:5px;">NEWLY LAUNCHED</span>
+
+              </a>
+            </li>
+
+             <li>
+              <a href="/collections/all-whites" class="header-sidebar__linklist-button" style="padding: 2px 3px;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/download.webp?v=1752564952" class="menu-img" alt="">
                 All Whites
               </a>
@@ -472,10 +488,22 @@ document.addEventListener('DOMContentLoaded', function () {
       <!-- SECONDARY LINKS - Accordions -->
       <div class="header-sidebar__group-list">
 
+        {% comment %} <div class="saadaa-accordion-section">
+           <a href="/pages/shop-all-kurta-sets"><button class="saadaa-accordion-title">SHOP KURTA SETS<span class="home-nav-badge-new" style="background-color:#ffee03; color:#000;">NEWLY LAUNCHED</span></button></a>
+          
+        </div> {% endcomment %}
+
           <div class="saadaa-accordion-section">
-           <a href="/pages/buy-3-get-1"><button class="saadaa-accordion-title">BUY 3 GET 1<span class="home-nav-badge-new" style="background-color:#ffee03; color:#000;">ENDING SOON</span></button></a>
+           <a href="/pages/a-little-warmth"><button class="saadaa-accordion-title">WINTER WEAR<span class="home-nav-badge-new" style="background-color:#ffee03; color:#000;">NEW LAUNCH ALERT</span></button></a>
           
         </div>
+
+          <div class="saadaa-accordion-section">
+           <a href="/pages/buy-3-get-1"><button class="saadaa-accordion-title">BUY 3 GET 1<span class="home-nav-badge-new">NEW</span></button></a>
+          
+        </div>
+
+
 
         <div class="saadaa-accordion-section">
            <a href="/collections/pure-linen"><button class="saadaa-accordion-title">PURE LINEN<span class="home-nav-badge-new">NEW</span></button></a>
@@ -484,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         <div class="saadaa-accordion-section">
-           <a href="/collections/shop-the-look"><button class="saadaa-accordion-title">BUNDLES<span class="home-nav-badge-new">NEW</span></button></a>
+           <a href="/collections/shop-the-look"><button class="saadaa-accordion-title">BUNDLES</button></a>
           
         </div> 
 
@@ -492,10 +520,10 @@ document.addEventListener('DOMContentLoaded', function () {
           <a href="/collections/plus-edition"><button class="saadaa-accordion-title">PLUS EDITION</button></a>
           
         </div> 
-         {% comment %} <div class="saadaa-accordion-section">
+        <div class="saadaa-accordion-section">
            <a href="/collections/goodbye-edition"><button class="saadaa-accordion-title">THE GOODBYE EDITION </button></a>
           
-        </div> {% endcomment %}
+        </div> 
 
           
 {% comment %} 
@@ -612,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <svg viewBox="0 0 24 24" class="star"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.4L12 16.9 6 19.9l1.5-6.4-5-4.4 6.6-.6L12 2.5z"/></svg>
       <svg viewBox="0 0 24 24" class="star"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.4L12 16.9 6 19.9l1.5-6.4-5-4.4 6.6-.6L12 2.5z"/></svg>
     </div>
-    <span class="trust-badge__text">Loved by 6,00,000+ customers </span>
+    <span class="trust-badge__text">Loved by 7,00,000+ customers </span>
   </div>
 </div>
 

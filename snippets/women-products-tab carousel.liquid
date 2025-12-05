@@ -116,9 +116,14 @@
       justify-content: center;
     }
     @media (max-width: 768px) {
-      .toggle-buttons-wrapper .toggle-button:first-of-type {
-        margin-left: 160px;
+       .toggle-buttons-wrapper .toggle-button:first-of-type {
+        margin-left: 10px;
       }
+
+         .toggle-buttons-wrapper {
+     
+      justify-content: flex-start;
+    }
     }
     .menu-item {
       flex: 0 0 calc(20% - 20px);
@@ -150,7 +155,7 @@
     }
     @media (min-width: 769px) {
       .menu-item img {
-        height: 300px;
+        height: auto;
         object-fit: cover;
       }
     }
@@ -159,7 +164,7 @@
         flex: 0 0 calc(34% - 12px);
       }
       .menu-item img {
-        height: 150px;
+        height: auto;
         object-fit: cover;
       }
       .menu-items-container {
@@ -289,8 +294,15 @@
 <body>
   <div class="toggle-menu-container">
     <div class="toggle-buttons-wrapper">
+
+
+        <!-- NEW: WINTER WEAR (Static) -->
+  <button class="toggle-button active badged" data-category="winter">
+    Winter Wear
+  </button>
+
       <!-- Category toggles -->
-      <button class="toggle-button active badged" data-category="bottoms">
+      <button class="toggle-button badged" data-category="bottoms">
         Bottom Wear
         {% comment %} <span class="toggle-badge-dot" aria-hidden="true"></span> {% endcomment %}
       </button>
@@ -353,6 +365,30 @@
       "Cotton Camisole Top"
 
     ];
+
+
+    // ─────────── Hard-coded HTML for Winter Wear ───────────
+const winterwearHTML =
+  '<div class="menu-item">' +
+    '<a href="/products/unisex-black-pullover-fleece-hoodie">' +
+      '<img src="https://saadaa.in/cdn/shop/files/207_1791303e-c665-4a68-955b-95059a8dc428.webp?v=1764068794&width=1000" alt="Winter Item 3"/>' +
+      '<p>Unisex Pullover Fleece Hoodie</p>' +
+    '</a>' +
+  '</div>' +
+
+    '<div class="menu-item">' +
+    '<a href="/products/unisex-beige-round-neck-sweatshirt">' +
+      '<img src="https://saadaa.in/cdn/shop/files/194_a65350bb-815f-4eef-8c25-11d3fafd2acf.webp?v=1764069366&width=10003" alt="Winter Item 3" />' +
+      '<p>Unisex Round Neck Sweatshirt</p>' +
+    '</a>' +
+  '</div>'+
+  '<div class="menu-item">' +
+    '<a href="/products/unisex-white-zip-neck-sweatshirt">' +
+      '<img src="https://saadaa.in/cdn/shop/files/186_1af1ff04-299b-4e50-86c5-3ea3c201bf61.webp?v=1764069051&width=1000" alt="Winter Item 3" />' +
+      '<p>Unisex Zip Neck Sweatshirt</p>' +
+    '</a>' +
+  '</div>';
+
 
     // ─────────── Hard‐coded HTML for Bottom Wear and Top Wear ───────────
     const bottomsHTML =
@@ -479,6 +515,7 @@
 
     // ─────────── VIEW ALL link per category ───────────
     const viewAllLinks = {
+      winter:      "https://saadaa.in/pages/a-little-warmth",   // NEW
       bottoms:     "https://saadaa.in/collections/shop-all-bottoms",
       bestsellers: "https://saadaa.in/collections/best-sellers-women",
       new:         "https://saadaa.in/collections/best-sellers-women",
@@ -660,6 +697,12 @@
           renderProducts(topwearHTML, key);
           return;
         }
+        // NEW STATIC CATEGORY → Winter Wear
+if (key === "winter") {
+  renderProducts(winterwearHTML, key);
+  return;
+}
+
 
         // 4) Otherwise (bestsellers / new), render from cache immediately
         if (key === "bestsellers" || key === "new") {
@@ -700,10 +743,13 @@
 
     // ─────────── Initial load: “Bottom Wear” by default ───────────
     (async () => {
-      const defaultKey = "bottoms";
+      {% comment %} const defaultKey = "bottoms"; {% endcomment %}
+       const defaultKey = "winter";
       document.querySelector(`.toggle-button[data-category="${defaultKey}"]`).classList.add("active");
       viewAllLinkElm.href = viewAllLinks[defaultKey];
-      renderProducts(bottomsHTML, defaultKey);
+      {% comment %} renderProducts(bottomsHTML, defaultKey); {% endcomment %}
+       renderProducts(winterwearHTML, defaultKey);
+
     })();
   </script>
 </body>

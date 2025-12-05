@@ -1,5 +1,7 @@
 
-{% unless template.name == 'product' %}
+{% unless template.name == 'product' 
+   or request.path contains '/apps/box-builder' %}
+
 
 
 {% # Kwikpass changes - [Starts] %}

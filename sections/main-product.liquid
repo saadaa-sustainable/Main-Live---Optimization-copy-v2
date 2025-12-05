@@ -69,6 +69,11 @@ or collection.title contains 'Women Plus Size Airy-Linen Shirt'
 or collection.title contains 'Women Plus Size Airy Linen Short Kurta'
 or collection.title contains 'Women Plus Size Straight Fit Formal Pants'
 or collection.title contains 'Men Plus Size Formal Shirts'
+
+
+or collection.title contains 'Unisex Zip Neck Sweatshirts'
+or collection.title contains 'Unisex Round Neck Sweatshirts'
+or collection.title contains 'Unisex Pullover Fleece Hoodies'
  
     
  %}
@@ -84,7 +89,7 @@ or collection.title contains 'Men Plus Size Formal Shirts'
   {%- comment -%} Normalize current title {%- endcomment -%}
   {% assign selected_title = selected_collection.title | strip | downcase %}
 
-  {%- comment -%} Define lists (may be multiline) {%- endcomment -%}
+  {%- comment -%} Define lists {%- endcomment -%}
   {% assign special_collections = "MEN AIRY-LINEN SHORT KURTAS deprecated,Men Formal Shirts,Women Airy Linen Shorts,Women Everyday Cotton Top,Women Formal Pants,Women 4-way scretchable pants" | downcase | split: "," %}
   {% assign special_collections1 = "
     Women Plus Size Wide Leg Pant,
@@ -99,12 +104,7 @@ or collection.title contains 'Men Plus Size Formal Shirts'
     Men Plus Size Formal Shirts
   " | downcase | split: "," %}
 
-  {%- comment -%}
-    If you need this list, uncomment and it will work the same way:
-    {% assign special_collections2 = "Women Straight Fit Formal Pant" | downcase | split: "," %}
-  {%- endcomment -%}
-
-  {%- comment -%} Compute membership flags using trimmed equality {%- endcomment -%}
+  {%- comment -%} Compute membership flags {%- endcomment -%}
   {% assign is_goodbye = false %}
   {% for raw in special_collections %}
     {% assign item = raw | strip %}
@@ -117,27 +117,53 @@ or collection.title contains 'Men Plus Size Formal Shirts'
     {% if item == selected_title %}{% assign is_plus = true %}{% break %}{% endif %}
   {% endfor %}
 
-  {%- comment -%}
-  {% assign is_special2 = false %}
-  {% for raw in special_collections2 %}
-    {% assign item = raw | strip %}
-    {% if item == selected_title %}{% assign is_special2 = true %}{% break %}{% endif %}
+  {%- comment -%} ✅ NEW LOGIC: Kurta Set condition {%- endcomment -%}
+  {% assign is_kurta_set = false %}
+  {% for tag in product.tags %}
+    {% assign tag_lc = tag | downcase %}
+    {% if tag_lc == 'short kurta set' or tag_lc == 'long kurta set' %}
+      {% assign is_kurta_set = true %}
+      {% break %}
+    {% endif %}
   {% endfor %}
-  {%- endcomment -%}
 
+
+
+    {%- comment -%} NEW: Winter Wear collections {%- endcomment -%}
+  {% assign winter_collections = "
+    Unisex Pullover Fleece Hoodies,
+    Unisex Round Neck Sweatshirts,
+    Unisex Zip Neck Sweatshirts
+  " | downcase | split: "," %}
+
+  {% assign is_winter = false %}
+  {% assign winter_match = "" %}
+
+  {% for wc in winter_collections %}
+    {% assign wc_clean = wc | strip %}
+    {% if wc_clean == selected_title %}
+      {% assign is_winter = true %}
+      {% assign winter_match = selected_collection.title %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {%- comment -%} Determine breadcrumb path {%- endcomment -%}
   {% if is_goodbye %}
     <span><a href="/collections/goodbye-edition">Goodbye Edition</a> /</span>
 
-  {%- comment -%}
-  {% elsif is_special2 %}
-    <span><a href="/pages/exclusive-community-launch-straight-fit-formal-pant">Community Exclusive Launch</a> /</span>
-  {% endcomment -%}
-
   {% elsif is_plus %}
     <span><a href="/collections/plus-edition">Plus Edition</a> /</span>
+
+  {% elsif is_kurta_set %}
+    <span><a href="/pages/shop-all-kurta-sets">Shop All Kurta Sets</a></span>
+
+   {% elsif is_winter %}
+    <span><a href="/pages/a-little-warmth">Winter Wear</a> /</span>
+
   {% else %}
     {% for collection in product.collections %}
-      {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" %}
+      {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" and collection.title != "Unisex Shop All" %}
         <span><a href="{{ collection.url }}">{{ collection.title }}</a> /</span>
       {% endif %}
     {% endfor %}
@@ -148,10 +174,10 @@ or collection.title contains 'Men Plus Size Formal Shirts'
 
 <style>
   /* Mobile-only breadcrumbs */
-  #breadcrumbs1 { display: none !important; }
+  #breadcrumbs1 { display: none ; }
   @media (max-width: 767px) {
     #breadcrumbs1 {
-      display: block !important;
+      display: block;
       margin: 10px 0 10px 10px;
     }
   }

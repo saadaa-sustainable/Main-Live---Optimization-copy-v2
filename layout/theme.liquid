@@ -6,7 +6,20 @@
   dir="{% render 'direction' %}"
 >
   <head>
-<script src="//d1liekpayvooaz.cloudfront.net/apps/customizery/customizery.js?shop={{shop.permanent_domain}}"></script>
+<script src='https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js' async></script>
+
+
+    {% comment %} Tectonic custom code starts {% endcomment %}
+
+    {{ 'tt_heimdall.js' | asset_url | script_tag }}
+
+    {% comment %} Tectonic custom code ends {% endcomment %}
+
+    
+{% comment %} <script src="//d1liekpayvooaz.cloudfront.net/apps/customizery/customizery.js?shop={{shop.permanent_domain}}"></script> {% endcomment %}
+
+
+
  {% comment %} <!-- Start of Async Affiniv Code -->
  <script type="text/javascript">
  (function (w, d, s, o, f, js, fjs) {
@@ -153,102 +166,6 @@
     {% comment %}
       <script src="{{ 'gokwik-sidecart.js' | asset_url }}" defer></script>
     {% endcomment %}
-
-    {% comment %} Kwikpass Start {% endcomment %}
-
-    <script>
-
-      (()=>{
-        let q=[]
-        let playQ=()=>{
-          q.forEach(eve=>{
-              window?.fbq?.('trackCustom', 'pv_cust_2');
-              window?.fbq?.('trackCustom', 'pv_cust_2_q');
-          })
-          q.length=0;
-        }
-        function alphaNumeric(len) {
-          const p='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-          return Array.from({ length: len }, () => p[Math.floor(Math.random() * p.length)]).join('');
-        }
-        const GK_BASE = "https://gkx.gokwik.co/ka/api/v1/e/op2";
-        const GK_BASE_2='https://gkx.gokwik.co/ka/api/v1/e/op4'
-        const GK_HEADERS = {
-          "content-type": "application/json",
-          "gk-merchant-id": "19g6ila23ecj7",
-          "kp-integration-type": "PLUGIN",
-        };
-        function sendEventWithCAPI(eventName,sendPixel=true) {
-          const eventID = `Gokwik_${alphaNumeric(28)}`;
-          if(sendPixel){
-            window?.fbq?.('trackCustom', eventName, { eventID });
-          }
-          let BASE_URL=sendPixel ? GK_BASE : GK_BASE_2
-          fetch(GK_BASE, {
-            method: "POST",
-            headers: GK_HEADERS,
-            body: JSON.stringify([{
-              event_name: eventName,
-              event_id: eventID,
-              user_data: {},
-              custom_data: {},
-            }]),
-          })
-          .then(res => {
-            {% comment %} if (!res.ok) console.warn("⚠️ CAPI event failed:", res.status); {% endcomment %}
-          })
-           .catch(err => {});
-        }
-  
-        window.addEventListener("kp_script_init",()=>{
-          //kwikpass script initialized
-          //replay queue mechanism here
-          playQ();
-  
-        })
-  
-        window.addEventListener('message', (event) => {
-          const type = event?.data?.type;
-          switch (type) {
-            case 'kp_pv_custom':
-            if(!window?.fbq){
-                q.push(event);
-            }else
-            {
-              window?.fbq?.('trackCustom', 'pv_cust_2');
-              {% comment %} sendEventWithCAPI('pv_cust_5',false) {% endcomment %}
-              {% comment %} sendEventWithCAPI('pv_cust_3'); {% endcomment %}
-              if(window?.__kp_scr_load){
-                    window.parent.postMessage({
-                      type: 'kp_pv_redirect',
-                      }, '*');
-              }else{
-              {% comment %} send data from store front as kp is not loaded {% endcomment %}
-              window?.fbq?.('trackCustom', 'pv_cust_4'); //somewhat same with pv_cust_4
-              }
-            }
-            break;
-            case 'kp_vc_custom':
-              window?.fbq?.('trackCustom', 'vc_cust_2');
-              {% comment %} sendEventWithCAPI('vc_cust_5',false) {% endcomment %}
-              {% comment %} sendEventWithCAPI('vc_cust_3'); {% endcomment %}
-              if(window?.__kp_scr_load){
-                    window.parent.postMessage({
-                      type: 'kp_vc_redirect',
-                      }, '*');
-              }else{
-              {% comment %} send data from store front as kp is not loaded {% endcomment %}
-              window?.fbq?.('trackCustom', 'vc_cust_4');
-              }
-  
-              break;
-          }
-        });
-      
-      
-      })()
-    </script>
-    {% comment %} Kwikpass End {% endcomment %}
     {%- if page_description -%}
       <meta name="description" content="{{ page_description | escape }}">
     {%- endif -%}
@@ -483,7 +400,7 @@ _affiniv('init', { companyId: '5997284636811215795',
     <script type="module" src="{{ 'theme.js' | asset_url }}"></script>
 
     {% include 'kwikpass' %}
-    {% comment %} {% render 'returnprime_js' %} {% endcomment %}
+    {% render 'returnprime_js' %}
     {% if request.page_type == 'product' %}
       <script>
           function makeXhr(method, url, data, domain) {
@@ -663,5 +580,5 @@ _affiniv('init', { companyId: '5997284636811215795',
 
   <script async src="https://app.kiwisizing.com/web/js/dist/kiwiSizing/plugin/SizingPlugin.prod.js?v=323"></script>
 
-  {% render 'homepage-price-update' %}
+  {% render 'Fittora-homepage-price-update' %}
 </html>

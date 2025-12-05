@@ -568,6 +568,9 @@ WOMEN|COTTON STRAIGHT PANT|159800|79900;
 WOMEN|SPLIT NECK SHORT KURTA|139800|69900;
 WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|199800|99900;
 WOMEN|COTTON CAMISOLE TOP|99800|49900;
+UNISEX|PULLOVER FLEECE HOODIE|299800|149900;
+UNISEX|ROUND NECK SWEATSHIRT|199800|99900;
+UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
 " | split: ";" -%}
 
   {%- comment -%} Core refs {%- endcomment -%}
@@ -667,12 +670,22 @@ WOMEN|COTTON CAMISOLE TOP|99800|49900;
   {%- endif -%} {% endcomment %}
 
 
-
+{% comment %} 
     {%- if matched_selling_price == 0 -%}
-    {%- if product.tags contains 'SMFLK' -%}
+    {%- if product.tags contains 'SURNS' -%}
+      {%- assign override_active = true -%}
+      {%- assign override_price_cents = 89900 -%}
+      {%- assign override_compare_cents = 99900 -%}
+
+       {%- elsif product.tags contains 'SUZNS' -%}
       {%- assign override_active = true -%}
       {%- assign override_price_cents = 129900 -%}
-      {%- assign override_compare_cents = 259800 -%}
+      {%- assign override_compare_cents = 149900 -%}
+
+       {%- elsif product.tags contains 'SUPFH' -%}
+      {%- assign override_active = true -%}
+      {%- assign override_price_cents = 129900 -%}
+      {%- assign override_compare_cents = 149900 -%}
 
 
       {%- elsif product.tags contains 'SMFS' -%}
@@ -685,7 +698,7 @@ WOMEN|COTTON CAMISOLE TOP|99800|49900;
       {%- assign override_price_cents = 69900 -%}
       {%- assign override_compare_cents = 99900 -%} {% endcomment %}
     {%- endif -%}
-  {%- endif -%}
+  {%- endif -%} {% endcomment %}
 
   {%- comment -%} ============ RENDERING ============ {%- endcomment -%}
   <div class="product-prices">
@@ -697,7 +710,7 @@ WOMEN|COTTON CAMISOLE TOP|99800|49900;
         {{ matched_selling_price | money_without_trailing_zeros }}
       </span>
       <span class="compare-at-price-wrap" style="color:#777;">
-        MRP <span class="compare-at-price">{{ matched_mrp | money_without_trailing_zeros }}</span>
+        MRP <span class="compare-at-price"style="color:red;">{{ matched_mrp | money_without_trailing_zeros }}</span>
       </span>
      
 

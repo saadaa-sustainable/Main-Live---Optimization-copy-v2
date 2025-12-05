@@ -1,0 +1,366 @@
+<div id="saadaa-survey" class="saadaa-survey-root">
+
+  <!-- SURVEY TITLE -->
+  <div class="saadaa-title-banner">
+    <h1>Fabric Feedback Survey</h1>
+    <p>Your thoughts help us perfect the Behtar Collection.</p>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="sa-progress">
+    <div class="sa-progress-inner"></div>
+    <div class="sa-progress-label">Let’s begin</div>
+  </div>
+
+  <!-- STEP 0 – INTRO -->
+  <section class="sa-step is-active" data-step="0">
+    <div class="sa-card sa-card-intro">
+      <h1 class="sa-title">You're a part of Saadaa Family!</h1>
+      <p class="sa-subtitle">
+        Help us perfect our <strong>Behtar Collection</strong>.  
+        Answer a few quick questions & unlock an exclusive reward.
+      </p>
+      <button type="button" class="sa-btn sa-btn-primary" data-action="start">Start</button>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="sa-step" data-step="1">
+    <div class="sa-card">
+      <h2 class="sa-question">Have you purchased this product before?</h2>
+      <div class="sa-options">
+        <button class="sa-option" data-field="purchasedBefore" data-value="Yes">Yes</button>
+        <button class="sa-option" data-field="purchasedBefore" data-value="No">No</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="sa-step" data-step="2">
+    <div class="sa-card">
+      <h2 class="sa-question">What do you feel about the fabric?</h2>
+      <div class="sa-options">
+        <button class="sa-option" data-field="fabricFeel" data-value="Looks/Feels better now">Looks/Feels better now</button>
+        <button class="sa-option" data-field="fabricFeel" data-value="No noticeable change">Doesn't feel any different</button>
+        <button class="sa-option" data-field="fabricFeel" data-value="Fabric was better before">Fabric was better before</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="sa-step" data-step="3">
+    <div class="sa-card">
+      <h2 class="sa-question">How would you rate this Saadaa product?</h2>
+
+      <div class="sa-scale-labels">
+        <span>Poor</span>
+        <span>Excellent</span>
+      </div>
+
+      <div class="sa-options sa-options-inline">
+        <button class="sa-option" data-field="fabricRating" data-value="1">1</button>
+        <button class="sa-option" data-field="fabricRating" data-value="2">2</button>
+        <button class="sa-option" data-field="fabricRating" data-value="3">3</button>
+        <button class="sa-option" data-field="fabricRating" data-value="4">4</button>
+        <button class="sa-option" data-field="fabricRating" data-value="5">5</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4 – EMAIL -->
+  <section class="sa-step" data-step="4">
+    <div class="sa-card">
+      <h2 class="sa-question">Almost done! Please enter your email.</h2>
+
+      <form id="saadaa-text-step">
+        <input id="feedbackEmail" type="email" class="sa-textarea" placeholder="yourname@example.com" required>
+        <button type="submit" class="sa-btn sa-btn-primary sa-btn-block" id="saadaa-submit-btn">Submit</button>
+      </form>
+
+      <p class="sa-hint" id="saadaa-status"></p>
+    </div>
+  </section>
+
+  <!-- STEP 5 – THANK YOU -->
+  <section class="sa-step" data-step="5">
+    <div class="sa-card sa-card-center">
+      <h2 class="sa-title">Thank you for your feedback!</h2>
+      <p class="sa-subtitle">
+        As a thank-you gift, here’s your reward:<br><br>
+        <span class="sa-code">BEHTAR300</span>  
+        <br><br>
+        Get <strong>₹300 OFF</strong> on your next Saadaa purchase.
+      </p>
+
+      <div class="sa-final-actions">
+        <a href="/collections/all" class="sa-btn sa-btn-primary sa-btn-inline">Shop now</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<style>
+
+
+    p {
+    margin: 9px;
+    margin-bottom: 23px;
+    padding: 0;
+
+    }
+
+/* ---- BASE WRAPPER (IDENTICAL TO POST PURCHASE UI) ---- */
+
+.saadaa-survey-root {
+  --sa-bg: #f9f3ea;
+  --sa-bg-soft: rgba(249,243,234,0.88);
+  --sa-ink: #2a231c;
+  --sa-muted: #7e6d5e;
+  --sa-border: rgba(46,37,29,0.06);
+  --sa-accent: #b88b5d;
+  --sa-accent-soft: rgba(184,139,93,0.09);
+
+  max-width: 960px;
+  margin: min(0vh, 60px) auto;
+  padding: 28px 16px 64px;
+  min-height: 70vh;
+  position: relative;
+  background-image: url('https://via.placeholder.com/1600x900/ece6dd/ffffff?text=Saadaa+survey+bg');
+  background-size: cover;
+  background-position: center;
+  color: var(--sa-ink);
+}
+
+.saadaa-survey-root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(249,243,234,0.9));
+  backdrop-filter: blur(8px);
+  z-index: 0;
+}
+
+.sa-step { display: none; position: relative; z-index: 1; }
+.sa-step.is-active { display: block; animation: sa-step-in 0.35s ease; }
+
+/* ---- CARD ---- */
+
+.sa-card {
+  background: rgba(255,255,255,0.96);
+  border-radius: 20px;
+  padding: 24px 20px 28px;
+  border: 1px solid var(--sa-border);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+}
+
+.sa-title { font-size: 19px; margin-bottom: 10px; }
+.sa-question { font-size: 20px; margin-bottom: 20px; }
+
+/* ---- OPTIONS ---- */
+
+.sa-options { display: flex; flex-direction: column; gap: 10px; }
+.sa-options-inline { flex-direction: row; justify-content: center; flex-wrap: wrap; }
+
+.sa-option {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid #e4d7c8;
+  background: #fffcf7;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background .2s, border-color .2s;
+}
+
+.sa-option:hover {
+  background: var(--sa-accent-soft);
+  border-color: var(--sa-accent);
+}
+
+/* ---- BUTTONS ---- */
+
+.sa-btn {
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.sa-btn-primary {
+  background: #15110d;
+  color: #fff;
+}
+
+.sa-btn-primary:hover { background: #25201a; }
+
+.sa-btn-block { width: 100%; margin-top: 14px; }
+
+/* ---- INPUT ---- */
+
+.sa-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid #e1d3c4;
+  background: #fffcf7;
+  font-size: 14px;
+}
+
+/* ---- PROGRESS BAR ---- */
+
+.sa-progress { margin-bottom: 20px; }
+
+.sa-progress::before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 999px;
+}
+
+.sa-progress-inner {
+  height: 4px;
+  background: linear-gradient(90deg, #e0b88c, #c08b58);
+  width: 0%;
+  transition: .25s;
+  border-radius: 999px;
+}
+
+.sa-progress-label {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--sa-muted);
+}
+
+/* ---- SCALE LABELS ---- */
+
+.sa-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--sa-muted);
+  margin-bottom: 6px;
+}
+
+/* ---- REWARD CODE ---- */
+
+.sa-code {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f6eadb;
+  border: 1px dashed #c29a70;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* ---- ANIMATION ---- */
+@keyframes sa-step-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+/* FIX: Show Title + Progress Bar (same as Post Purchase UI) */
+.saadaa-title-banner {
+    position: relative;
+    z-index: 3;
+    font-size: 12px;
+}
+
+.sa-progress {
+  position: relative;
+  z-index: 3;
+}
+
+.sa-step {
+  position: relative;
+  z-index: 4;
+}
+
+</style>
+
+<script>
+(function() {
+
+  if (window.SAADAA_FABRIC_SURVEY) return;
+  window.SAADAA_FABRIC_SURVEY = true;
+
+  const surveyRoot = document.getElementById('saadaa-survey');
+  const steps = surveyRoot.querySelectorAll('.sa-step');
+  const totalQuestionSteps = 4;
+
+  const surveyData = {
+    formType: "fabric_feedback",
+    pageUrl: window.location.href,
+    customerId: {{ customer.id | json }},
+    customerEmail: {{ customer.email | json }},
+    customerPhone: {{ customer.default_address.phone | json }}
+  };
+
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcFM_SokNXuobEJU_FquvRzgZ_bL67kGwE8lh_54UMvm4JBZjZWOBs9nB8D0p5s7RY/exec";
+
+  let currentStep = 0;
+
+  function updateProgress(stepIndex) {
+    const bar = surveyRoot.querySelector('.sa-progress-inner');
+    const label = surveyRoot.querySelector('.sa-progress-label');
+    const q = Math.min(Math.max(stepIndex - 1, 0), totalQuestionSteps);
+
+    bar.style.width = (q / totalQuestionSteps * 100) + "%";
+    label.textContent = q === 0 ? "Let’s begin" : `Question ${q} of ${totalQuestionSteps}`;
+  }
+
+  function goToStep(i) {
+    steps.forEach((s, idx) => s.classList.toggle("is-active", idx === i));
+    currentStep = i;
+    updateProgress(i);
+  }
+
+  surveyRoot.querySelector('[data-action="start"]')
+    .addEventListener("click", () => goToStep(1));
+
+  surveyRoot.querySelectorAll('.sa-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      surveyData[btn.dataset.field] = btn.dataset.value;
+      goToStep(currentStep + 1);
+    });
+  });
+
+  const form = document.getElementById('saadaa-text-step');
+  const emailInput = document.getElementById('feedbackEmail');
+  const submitBtn = document.getElementById('saadaa-submit-btn');
+  const statusEl = document.getElementById('saadaa-status');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    surveyData.finalEmail = emailInput.value.trim();
+
+    submitBtn.textContent = "Submitting...";
+    submitBtn.disabled = true;
+
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(surveyData),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(() => goToStep(5))
+    .catch(() => {
+      statusEl.textContent = "Something went wrong, but we appreciate your effort.";
+    })
+    .finally(() => {
+      submitBtn.textContent = "Submit";
+      submitBtn.disabled = false;
+    });
+  });
+
+  goToStep(0);
+
+})();
+</script>

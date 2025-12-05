@@ -674,7 +674,23 @@ Hide Meesho-style Return Policy Section for:
 {% unless hide_policy %} {% endcomment %}
 
 
+{% assign skip_policy = false %}
 
+{%- comment -%} Template-based skip {%- endcomment -%}
+{% if product.template_suffix contains 'tote-bag-addtocart' or product.template_suffix contains 'goodbye-edition' or product.template_suffix contains 'pre-launch' %}
+  {% assign skip_policy = true %}
+{% endif %}
+
+{%- comment -%} ✅ Tag-based skip for Kurta Set {%- endcomment -%}
+{% for tag in product.tags %}
+  {% assign tag_lc = tag | downcase %}
+  {% if tag_lc contains 'kurta set' %}
+    {% assign skip_policy = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% unless skip_policy %}
 
 
 
@@ -1299,7 +1315,7 @@ Hide Meesho-style Return Policy Section for:
   });
 </script>
 
-
+{% endunless %}
 
 {% comment %} {% endunless %} {% endcomment %}
 {% comment %}  NEW CODE INCLUDING BUY 3 GET 1 END{% endcomment %}

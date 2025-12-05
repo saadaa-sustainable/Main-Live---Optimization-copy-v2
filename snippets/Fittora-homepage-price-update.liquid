@@ -1,0 +1,270 @@
+
+
+{% comment %} NEW CODE FOR FITTORA ROUNDEL CHANGES START {% endcomment %}
+
+<script>
+
+{% comment %} console.log('-----devworkign-------') {% endcomment %}
+
+// Inline all utilities and configs for self-contained vanilla JS
+
+// From utilities_newVersion.js
+const waitForElements = (selector, parent = document, timeout = 10000) => new Promise((resolve, reject) => {
+    const existingElements = parent.querySelectorAll(selector);
+    if (existingElements.length > 0) {
+        resolve([...existingElements]);
+        return;
+    }
+
+    let timeoutId;
+
+    const observer = new MutationObserver((mutationsList, observer) => {
+        const targetElements = parent.querySelectorAll(selector);
+        if (targetElements.length > 0) {
+            clearTimeout(timeoutId);
+            resolve([...targetElements]);
+            observer.disconnect();
+        }
+    });
+
+    const config = { childList: true, subtree: true };
+
+    observer.observe(parent, config);
+
+    timeoutId = setTimeout(() => {
+        observer.disconnect();
+        reject(new Error('Timeout: Elements not found.'));
+    }, timeout);
+});
+
+const defineOptiReady = () => {
+    const listeners = [];
+    const doc = window.document;
+    const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+    let observer;
+
+    function ready(selector, fn) {
+        listeners.push({
+            selector,
+            fn
+        });
+        if (!observer) {
+            observer = new MutationObserver(check);
+            observer.observe(doc.documentElement, {
+                childList: true,
+                subtree: true
+            });
+        }
+        check();
+    }
+
+    function check() {
+        for (let i = 0, len = listeners.length, listener, elements; i < len; i++) {
+            listener = listeners[i];
+            elements = doc.querySelectorAll(listener.selector);
+            for (let j = 0, jLen = elements.length, element; j < jLen; j++) {
+                element = elements[j];
+                if (!element.ready) {
+                    element.ready = [];
+                }
+                if (!element.ready[i]) {
+                    element.ready[i] = true;
+                    listener.fn.call(element, element);
+                }
+            }
+        }
+    }
+
+    window.optiReady = ready;
+};
+
+// From url-observer.util.js
+const UrlObserver = (fn) => {
+    let lastUrl = window.location.href;
+    new MutationObserver(() => {
+        const url = window.location.href;
+        if (url !== lastUrl) {
+            lastUrl = url;
+            setTimeout(() => {
+                fn();
+            }, 1000);
+        }
+    }).observe(document, {
+        subtree: true,
+        childList: true
+    });
+};
+
+// From observe-layout-change.util.js
+const observeLayoutChange = (fn) => {
+    waitForElements('product-list [collection-mobile-layout]').then((mobileLayoutElem) => {
+        if (mobileLayoutElem) {
+            const config = { attributes: true, attributeFilter: ['collection-mobile-layout'] };
+
+            const callback = (mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'attributes') {
+                        fn();
+                    }
+                }
+            };
+
+            const observer = new MutationObserver(callback);
+            observer.observe(mobileLayoutElem, config);
+        } else {
+            console.log('Element with [collection-mobile-layout] not found yet.');
+        }
+    });
+};
+
+// Inject CSS on load
+const style = document.createElement('style');
+style.textContent = sdConfig.css;
+document.head.appendChild(style);
+
+{% comment %} new code below added by saadaa dev {% endcomment %}
+
+// ✅ Force `.sd38_originalPrice` to be red everywhere it appears
+const sd38Style = document.createElement('style');
+sd38Style.textContent = `
+  .sd38_originalPrice,
+  .sd38_originalPrice *,
+  .sd38_originalPrice span,
+  .sd38_originalPrice i {
+    color: red !important;
+  }
+`;
+document.head.appendChild(sd38Style);
+
+
+
+/* ---------------------------------------------------
+   Winter wear fake base price (homepage roundels only)
+   SURNS  → Round Neck Sweatshirt   → MRP 999,  PL 899
+   SUZNS  → Zip Neck Sweatshirt     → MRP 1499, PL 1299
+   SUPFH  → Pullover Fleece Hoodie  → MRP 1499, PL 1299
+--------------------------------------------------- */
+
+{% comment %} const winterWearConfig = [
+  { keyword: 'round neck sweatshirt',   mrp: 999,  prelaunch: 899  }, // SURNS
+  { keyword: 'zip neck sweatshirt',     mrp: 1499, prelaunch: 1299 }, // SUZNS
+  { keyword: 'pullover fleece hoodie',  mrp: 1499, prelaunch: 1299 }  // SUPFH
+]; {% endcomment %}
+
+const applyWinterWearPrelaunchPrice = (productElem) => {
+  const productName = productElem.textContent.trim().toLowerCase();
+  const match = winterWearConfig.find(item =>
+    productName.includes(item.keyword)
+  );
+  if (!match) return;
+
+  // Scope to that roundel card only
+  const cardRoot = productElem.closest('div');
+  if (!cardRoot || cardRoot.classList.contains('sd38_winterApplied')) return;
+
+  const priceWrapper = productElem.nextElementSibling;
+  if (!priceWrapper) return;
+
+  const priceSpan = priceWrapper.querySelector('span');
+  if (!priceSpan) return;
+
+  // Mark so we don’t double-apply on re-renders
+  cardRoot.classList.add('sd38_winterApplied');
+
+  // ✅ Force the visible price to be the PRE-LAUNCH price
+  priceSpan.textContent = `₹${match.prelaunch}`;
+
+  // Remove any old original-price elements inside this price wrapper
+  priceWrapper.querySelectorAll('.sd38_originalPrice').forEach(el => el.remove());
+
+  // ✅ Add fake MRP as slashed/base price
+  priceSpan.insertAdjacentHTML(
+    'afterend',
+    `<span class="sd38_originalPrice sd38_winterOriginalPrice">
+       MRP <i>₹${match.mrp}</i>
+     </span>`
+  );
+};
+
+
+{% comment %} // Main code (extracted and inlined)
+const productsData = [
+    { category: 'Airy Linen Flared Dress', color: 'Maroon', gender: 'Women' },
+    ...
+]; {% endcomment %}
+
+const customSliderPriceUpdate = () => {
+    waitUntil(() => document.querySelector('.sd_34-new-inserted-section[class*="men-block"]')).then(() => {
+        window.optiReady('.sd_34-new-inserted-section[class*="men-block"] .sd_34-custom-slider .menu-item', (menuItemElems) => {
+            const productNameElem = menuItemElems.querySelector('a > p');
+            const productName = productNameElem.textContent.trim();
+            const words = productName.split(' ');
+            const firstWord = words[0];
+
+            discountedProductData.forEach((item) => {
+                const ifCategoryMatch = firstWord.toLowerCase() === item.category.toLowerCase();
+                const ifProductNameMatch = productName.toLowerCase().includes(item.name.toLowerCase());
+                if ((ifCategoryMatch || item.category === 'Shorts') && ifProductNameMatch && !checkIfCategoryAndColorExist(productName)) {
+                    menuItemElems.classList.add('sd38_discountedPrice');
+                    const priceElem = menuItemElems.querySelector('.price-amount');
+                    const salePrice = parseInt(priceElem.textContent.replace(/[₹,\s]/g, '').trim(), 10);
+
+                    if (salePrice < item.originalPrice.replace(/[₹,\s]/g, '') && !menuItemElems.querySelector('.sd38_originalPrice')) {
+                        priceElem.insertAdjacentHTML(
+                          'afterend',
+                          `<div class="sd38_originalPrice">MRP <span>₹${item.originalPrice}</span></div>`
+                        );
+                    }
+                }
+            });
+        });
+    });
+};
+
+const homePageProductPriceUpdate = () => {
+    waitForElements('#fittora-personaliser-root div > p > span', document, 60000).then(() => {
+        window.optiReady('#fittora-personaliser-root div > p', (productElem) => {
+            const productName = productElem.textContent.trim();
+            const words = productName.split(' ');
+            const firstWord = words[0];
+
+            // EXISTING LOGIC (leave as-is for non-winter products)
+            discountedProductData.forEach((item) => {
+                const ifCategoryMatch = firstWord.toLowerCase() === item.category.toLowerCase();
+                const ifProductNameMatch = productName.toLowerCase().includes(item.name.toLowerCase());
+                ifCategoryMatch ? productElem.closest('div').classList.add('sd38_productItem') : '';
+                const priceElem = productElem.nextElementSibling && productElem.nextElementSibling.querySelector('span');
+                const productItem = productElem.closest('.sd38_productItem');
+                if (!checkIfCategoryAndColorExist(productName) && ifCategoryMatch && ifProductNameMatch && productItem && !productItem.querySelector('.sd38_originalPrice')) {
+                    productItem.classList.add('sd38_discountedPrice');
+                    priceElem.insertAdjacentHTML(
+                      'afterend',
+                      `<span class="sd38_originalPrice">MRP <i>₹${item.originalPrice}</i></span>`
+                    );
+                }
+            });
+
+            // NEW: winter wear fake base price (homepage roundels only)
+            applyWinterWearPrelaunchPrice(productElem);
+        });
+    });
+};
+
+const updateDiscountedPriceHomepage = (bodyElem) => {
+    if (!window.optiReady) defineOptiReady();
+    bodyElem.classList.add('sd38_homepage');
+    homePageProductPriceUpdate();
+    UrlObserver(homePageProductPriceUpdate);
+    observeLayoutChange(homePageProductPriceUpdate);
+    customSliderPriceUpdate();
+};
+
+// Auto-run on homepage load (vanilla JS script execution)
+if (window.location.pathname === '/') {
+    updateDiscountedPriceHomepage(document.body);
+}
+
+</script>
+
+
+{% comment %} NEW CODE FOR FITTORA ROUNDEL CHANGES END {% endcomment %}

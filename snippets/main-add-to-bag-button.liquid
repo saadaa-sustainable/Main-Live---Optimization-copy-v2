@@ -497,7 +497,7 @@
 .inline-size-atc__row {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
   margin-bottom: 18px;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -617,7 +617,7 @@
   gap: 12px;
   width: 100%;
   margin-top: 0px;
-  padding-bottom: 10px;
+  {% comment %} padding-bottom: 10px; {% endcomment %}
 }
 
 @media (max-width: 640px) {
@@ -988,6 +988,18 @@ body.modal-open { overflow: hidden; }
 
     <div id="out-of-stock-alert" style="display:none; color:red; font-size:14px; font-weight:600; text-align:center;"></div>
 
+
+    {% comment %} ADDED FOR VIRTUAL INVENTORY START {% endcomment %}
+
+        {% if product.tags contains 'SMCP' %}
+  <div id="smcp-msg" style="display:none; margin-bottom:10px; font-size:13px; font-weight:600; color:#d35400;">
+    ⚠️ High-Demand Alert! Dispatch is handled on a first-order basis, and delivery may exceed our standard timeline.
+  </div>
+{% endif %}
+
+
+{% comment %} ADDED FOR VIRTUAL INVENTORY END {% endcomment %}
+
     <div class="action-row">
       <form action="/cart/add" method="post" enctype="multipart/form-data" class="atc-form" style="margin:0;">
         <input type="hidden" name="id" id="variantId" value="" disabled>
@@ -1010,7 +1022,7 @@ body.modal-open { overflow: hidden; }
   }
 </style>
 
-<div class="guarantee-hstack guarantee-gap desktop-only" style="margin-top:10px; margin-bottom:10px;">
+{% comment %} <div class="guarantee-hstack guarantee-gap desktop-only" style="margin-top:10px; margin-bottom:10px;">
   <svg stroke="rgb(34, 197, 160)" fill="rgb(34, 197, 160)" stroke-width="0" viewBox="0 0 16 16" role="presentation" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg">
     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
   </svg>
@@ -1019,7 +1031,7 @@ body.modal-open { overflow: hidden; }
     <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/Group_2.svg?v=1747286143" alt="info" style="width:13px;height:13px;display:block;">
     <div class="guarantee-tooltip-text">Return or exchange within 7 days of delivery. Product must be unused with original packaging intact.</div>
   </div>
-</div>
+</div> {% endcomment %}
 
 
 <!-- Modal -->
@@ -1081,6 +1093,16 @@ body.modal-open { overflow: hidden; }
         if(this.classList.contains('out-of-stock')||this.disabled)return;
         block.querySelectorAll('.variant-btn').forEach(b=>b.classList.remove('selected'));
         this.classList.add('selected');
+
+        {% comment %} ADDED FOR VIRTUAL INVENTORY START {% endcomment %}
+
+        {% if product.tags contains 'SMCP' %}
+      const smcpMsg = document.getElementById('smcp-msg');
+      if (smcpMsg) smcpMsg.style.display = 'block';
+    {% endif %}
+
+{% comment %} ADDED FOR VIRTUAL INVENTORY END {% endcomment %}
+
         const id=this.getAttribute('data-variant-id');
         variantInput.disabled=false;variantInput.value=id;mainBtn.disabled=false;mainBtn.removeAttribute('aria-disabled');
         variantInput.dispatchEvent(new Event('change',{bubbles:true}));

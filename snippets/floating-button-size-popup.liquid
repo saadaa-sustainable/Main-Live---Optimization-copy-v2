@@ -539,7 +539,7 @@ if (navElem) {
 
 
 {%- assign is_kurta_combo = false -%}
-{%- if template.suffix == 'kurta-set-combo' or product.template_suffix == 'kurta-set-combo' -%}
+{%- if template.suffix contains 'kurta-set-combo' or product.template_suffix contains 'pick-any-3-winter-wear'  -%}
   {%- assign is_kurta_combo = true -%}
 {%- endif -%}
 
@@ -749,9 +749,9 @@ if (navElem) {
   @media (min-width: 768px){ #saadaa-ksc-modal { top: 53%; } .saadaa-ksc-table th, .saadaa-ksc-table td { font-size: 15px; } }
 </style>
 
-{% unless product.title contains 'combo' or product.title contains 'Combo' or product.title contains 'Tote' or product.template_suffix contains 'flybundles' or product.template_suffix contains 'color-size-combo' %}
+{% unless product.title contains 'combo' or product.title contains 'Combo' or product.title contains 'Tote' or product.template_suffix contains 'flybundles' or product.template_suffix contains 'color-size-combo' or product.template_suffix contains 'pick-any-5-color-size'%}
 <!-- Sticky Bar -->
-<div id="saadaa-sticky-cart-bar" role="region" aria-label="Sticky add to cart bar">
+<div id="saadaa-sticky-cart-bar" role="region" aria-label="Sticky add to cart bar" class="stickybar">
   <div class="saadaa-scb-wrap">
     <button class="saadaa-scb-main-btn" aria-label="Add to bag">
       <span class="saadaa-bag-icon" style="display:inline-block;vertical-align:middle;margin-right:8px;">
@@ -799,6 +799,7 @@ if (navElem) {
   <!-- compact readout chips -->
   <div class="saadaa-inline-size-meta" aria-live="polite" hidden></div>
 
+ 
   <!-- Size swatches -->
   <div class="saadaa-variant-container">
     {% for variant in product.variants %}
@@ -825,6 +826,21 @@ if (navElem) {
       </div>
     {% endfor %}
   </div>
+
+  {% comment %} ADDED FOR VIRTUAL INVENTORY START {% endcomment %}
+
+  {% if product.tags contains 'SMCP' %}
+  <div id="saadaa-smcp-msg" 
+       style="display:none; margin-bottom:10px; font-size:13px; font-weight:600; color:#d35400; ">
+     ⚠️ High-Demand Alert! Dispatch is handled on a first-order basis, and delivery may exceed our standard timeline.
+  </div>
+{% endif %}
+
+
+ {% comment %} ADDED FOR VIRTUAL INVENTORY END {% endcomment %}
+
+
+
 </div>
 {% endunless %}
 
@@ -840,6 +856,9 @@ if (navElem) {
     <div class="saadaa-ksc-table-wrap"><table class="saadaa-ksc-table"></table></div>
     <div class="saadaa-ksc-note" id="saadaa-ksc-note" hidden></div>
   </div>
+
+
+  
   <div class="saadaa-ksc-foot">
     <button class="saadaa-ksc-add" id="saadaa-ksc-add">ADD TO CART</button>
   </div>
@@ -891,6 +910,17 @@ if (navElem) {
       sizeOverlay.querySelectorAll('.saadaa-variant-btn').forEach(b=>b.classList.remove('saadaa-selected'));
       this.classList.add('saadaa-selected');
       selectedVariantId = this.getAttribute('data-variant-id');
+
+
+       {% comment %} ADDED FOR VIRTUAL INVENTORY START {% endcomment %}
+
+{% if product.tags contains 'SMCP' %}
+  const smcpMsgMobile = document.getElementById('saadaa-smcp-msg');
+  if (smcpMsgMobile) smcpMsgMobile.style.display = 'block';
+{% endif %}
+
+
+        {% comment %} ADDED FOR VIRTUAL INVENTORY END {% endcomment %}
 
       if (variantInput && variantInput.value !== selectedVariantId){
         variantInput.value = selectedVariantId;

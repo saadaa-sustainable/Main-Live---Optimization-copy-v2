@@ -15,15 +15,16 @@
       position: relative;
       overflow: hidden;
     }
-    .unique-unique-pw-pw-slider {
-      display: flex;
-      gap: 0.5rem;
-      will-change: transform;
-      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
-      cursor: grab;
-      user-select: none;
-      touch-action: pan-y;
-    }
+.unique-unique-pw-pw-slider {
+  display: flex;
+  gap: 0.5rem;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+}
+
     .unique-unique-pw-pw-slider.grabbing {
       cursor: grabbing;
       transition: none;
@@ -34,6 +35,7 @@
     .unique-unique-pw-pw-item {
       flex: 0 0 auto;
       width: 285px;
+      position:relative;
     }
     @media (max-width: 768px) {
       .unique-unique-pw-pw-item {
@@ -106,6 +108,19 @@
       opacity: 1 !important;
       pointer-events: all !important;
     }
+
+
+.product-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;   /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3.2em;       /* Adjust based on your font-size (usually 1.6em * 2 lines) */
+}
+
+
+
     .product-card__figure .nav-badge-new1 {
       top: 355px;
       left: 0px;
@@ -157,153 +172,172 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const outer = document.querySelector('.unique-unique-pw-pw-wrapper');
-      const track = document.querySelector('.unique-unique-pw-pw-slider');
-      const slides = track ? Array.from(track.children) : [];
-      const prevBtn = document.querySelector('.unique-prev');
-      const nextBtn = document.querySelector('.unique-next');
-      if (!track || !outer || !slides.length) return;
+  document.addEventListener('DOMContentLoaded', () => {
+    const outer = document.querySelector('.unique-unique-pw-pw-wrapper');
+    const track = document.querySelector('.unique-unique-pw-pw-slider');
+    const slides = track ? Array.from(track.children) : [];
+    const prevBtn = document.querySelector('.unique-prev');
+    const nextBtn = document.querySelector('.unique-next');
+    if (!track || !outer || !slides.length) return;
 
-      let currentIndex = 0;
-      let slideWidth = 0;
-      let gap = 0;
-      let perView = 1;
+    let currentIndex = 0;
+    let slideWidth = 0;
+    let gap = 0;
+    let perView = 1;
 
-      function calculateDimensions() {
-        if (!slides.length) return;
-        const style = window.getComputedStyle(track);
-        gap = parseFloat(style.gap) || 0;
-        slideWidth = slides[0].getBoundingClientRect().width;
-        perView = Math.floor(outer.clientWidth / (slideWidth + gap)) || 1;
-      }
+  function calculateDimensions() {
+  // fixed perView to ensure full jump movement
+  if (window.innerWidth > 768) {
+    perView = 3; // desktop
+  } else {
+    perView = 2; // mobile
+  }
 
-      function updateTransform() {
-        const rawOffset = currentIndex * (slideWidth + gap);
-        const maxOffset = Math.max(track.scrollWidth - outer.clientWidth, 0);
-        const offset = Math.min(rawOffset, maxOffset);
-        track.style.transform = `translateX(-${offset}px)`;
+  const style = window.getComputedStyle(track);
+  gap = parseFloat(style.gap) || 0;
+  slideWidth = slides[0].getBoundingClientRect().width;
+}
 
-        // Show/hide arrows based on position
-        if (prevBtn) {
-          if (currentIndex > 0) {
-            prevBtn.classList.add('visible');
-          } else {
-            prevBtn.classList.remove('visible');
-          }
-        }
-        if (nextBtn) {
-          if (currentIndex >= slides.length - perView) {
-            nextBtn.style.opacity = '0';
-            nextBtn.style.pointerEvents = 'none';
-          } else {
-            // Right arrow is visible only on hover, so reset styles to allow that
-            nextBtn.style.opacity = '';
-            nextBtn.style.pointerEvents = '';
-          }
-        }
-      }
 
+    function clampIndex(index) {
+      const maxIndex = Math.max(slides.length - perView, 0);
+      return Math.min(Math.max(index, 0), maxIndex);
+    }
+
+    function updateTransform() {
+      currentIndex = clampIndex(currentIndex);
+      const rawOffset = currentIndex * (slideWidth + gap);
+      const maxOffset = Math.max(track.scrollWidth - outer.clientWidth, 0);
+      const offset = Math.min(rawOffset, maxOffset);
+      track.style.transform = `translateX(-${offset}px)`;
+
+      // Show/hide arrows based on position
       if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          if (currentIndex > 0) {
-            currentIndex--;
-            updateTransform();
-          }
-        });
+        if (currentIndex > 0) {
+          prevBtn.classList.add('visible');
+        } else {
+          prevBtn.classList.remove('visible');
+        }
       }
       if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          if (currentIndex < slides.length - perView) {
-            currentIndex++;
-            updateTransform();
-          }
-        });
+        if (currentIndex >= slides.length - perView) {
+          nextBtn.style.opacity = '0';
+          nextBtn.style.pointerEvents = 'none';
+        } else {
+          // Right arrow is visible only on hover, so reset styles to allow that
+          nextBtn.style.opacity = '';
+          nextBtn.style.pointerEvents = '';
+        }
+      }
+    }
+
+
+// === ARROW CLICKS — jump to start/end ===
+if (prevBtn) {
+  prevBtn.addEventListener('click', () => {
+    currentIndex = 0; // Jump to beginning
+    updateTransform();
+  });
+}
+
+if (nextBtn) {
+  nextBtn.addEventListener('click', () => {
+    currentIndex = slides.length; // Jump to very end
+    updateTransform();
+  });
+}
+
+    window.addEventListener('resize', () => {
+      const oldPerView = perView;
+      calculateDimensions();
+      // Keep us roughly on the same “page” after resize
+      if (oldPerView !== perView) {
+        currentIndex = clampIndex(Math.round(currentIndex / oldPerView) * perView);
+      }
+      updateTransform();
+    });
+
+    calculateDimensions();
+    updateTransform();
+
+    // === TOUCH SWIPE — also move by perView ===
+    let startX = null;
+    track.addEventListener('touchstart', (e) => {
+      if (!e.touches.length) return;
+      startX = e.touches[0].clientX;
+    });
+    track.addEventListener('touchend', (e) => {
+      if (startX === null) return;
+      const endX = e.changedTouches[0].clientX;
+      const diff = endX - startX;
+      if (diff > 50) {
+        // swipe right → previous "page"
+        currentIndex = clampIndex(currentIndex - perView);
+      } else if (diff < -50) {
+        // swipe left → next "page"
+        currentIndex = clampIndex(currentIndex + perView);
+      }
+      updateTransform();
+      startX = null;
+    });
+
+    // === MOUSE DRAG (desktop) ===
+    let mouseDown = false;
+    let mouseStartX = 0;
+    let lastTransform = 0;
+
+    track.addEventListener('mousedown', (e) => {
+      mouseDown = true;
+      mouseStartX = e.pageX;
+      const style = window.getComputedStyle(track);
+      const matrix = style.transform;
+      lastTransform = 0;
+      if (matrix && matrix !== 'none') {
+        lastTransform = parseFloat(matrix.split(',')[4]);
+      }
+      track.style.transition = 'none';
+      track.classList.add('grabbing');
+      document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!mouseDown) return;
+      const dx = e.pageX - mouseStartX;
+      const minTranslate = -((slides.length - perView) * (slideWidth + gap));
+      let next = lastTransform + dx;
+      if (next > 0) next = next * 0.3;
+      if (next < minTranslate) next = minTranslate + (next - minTranslate) * 0.3;
+      track.style.transform = `translateX(${next}px)`;
+    });
+
+    document.addEventListener('mouseup', (e) => {
+      if (!mouseDown) return;
+      mouseDown = false;
+      track.style.transition = 'transform 0.25s cubic-bezier(.4,0,.2,1)';
+      track.classList.remove('grabbing');
+      document.body.style.userSelect = '';
+      const dx = e.pageX - mouseStartX;
+
+      // Decide direction and move by perView
+      if (dx > 50) {
+        currentIndex = clampIndex(currentIndex - perView);
+      } else if (dx < -50) {
+        currentIndex = clampIndex(currentIndex + perView);
       }
 
-      window.addEventListener('resize', () => {
-        calculateDimensions();
-        if (currentIndex > slides.length - perView) {
-          currentIndex = Math.max(slides.length - perView, 0);
-        }
-        updateTransform();
-      });
-
-      calculateDimensions();
       updateTransform();
+    });
 
-      // Touch drag/swipe handlers
-      let startX = null;
-      track.addEventListener('touchstart', (e) => {
-        if (!e.touches.length) return;
-        startX = e.touches[0].clientX;
-      });
-      track.addEventListener('touchend', (e) => {
-        if (startX === null) return;
-        const endX = e.changedTouches[0].clientX;
-        const diff = endX - startX;
-        if (diff > 50 && currentIndex > 0) {
-          currentIndex--;
-        } else if (diff < -50 && currentIndex < slides.length - perView) {
-          currentIndex++;
-        }
-        updateTransform();
-        startX = null;
-      });
-
-      // Mouse drag handlers for desktop UX
-      let mouseDown = false;
-      let mouseStartX = 0;
-      let lastTransform = 0;
-
-      track.addEventListener('mousedown', (e) => {
-        mouseDown = true;
-        mouseStartX = e.pageX;
-        const style = window.getComputedStyle(track);
-        const matrix = style.transform;
-        lastTransform = 0;
-        if (matrix && matrix !== 'none') {
-          lastTransform = parseFloat(matrix.split(',')[4]);
-        }
-        track.style.transition = 'none';
-        track.classList.add('grabbing');
-        document.body.style.userSelect = 'none';
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (!mouseDown) return;
-        const dx = e.pageX - mouseStartX;
-        const minTranslate = -((slides.length - perView) * (slideWidth + gap));
-        let next = lastTransform + dx;
-        if (next > 0) next = next * 0.3;
-        if (next < minTranslate) next = minTranslate + (next - minTranslate) * 0.3;
-        track.style.transform = `translateX(${next}px)`;
-      });
-
-      document.addEventListener('mouseup', (e) => {
-        if (!mouseDown) return;
+    document.addEventListener('mouseleave', () => {
+      if (mouseDown) {
         mouseDown = false;
-        track.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+        track.style.transition = 'transform 0.25s cubic-bezier(.4,0,.2,1)';
         track.classList.remove('grabbing');
         document.body.style.userSelect = '';
-        const dx = e.pageX - mouseStartX;
-        if (dx > 50 && currentIndex > 0) {
-          currentIndex--;
-        } else if (dx < -50 && currentIndex < slides.length - perView) {
-          currentIndex++;
-        }
         updateTransform();
-      });
-
-      document.addEventListener('mouseleave', () => {
-        if (mouseDown) {
-          mouseDown = false;
-          track.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
-          track.classList.remove('grabbing');
-          document.body.style.userSelect = '';
-          updateTransform();
-        }
-      });
+      }
     });
-  </script>
+  });
+</script>
+
 {% endif %}

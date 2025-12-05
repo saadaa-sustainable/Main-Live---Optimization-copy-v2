@@ -24,11 +24,11 @@
 
 <style>
   /* Show by default (desktop/tablet) */
-  #breadcrumbs { display: block !important; }
+  #breadcrumbs { display: block ; }
 
   /* Hide on mobile only */
   @media (max-width: 767px) {
-    #breadcrumbs { display: none !important; }
+    #breadcrumbs { display: none ; }
   }
 </style>
 
@@ -40,10 +40,10 @@
 <div class="product_belongs_collection" id="breadcrumbs">
   <span><a href="/">Home</a> /</span>
 
-  {%- comment -%} Normalize current title {%- endcomment -%}
+  {%- comment -%} Normalize current collection title {%- endcomment -%}
   {% assign selected_title = selected_collection.title | default: '' | strip | downcase %}
 
-  {%- comment -%} Define lists (downcased; we’ll trim items during compare) {%- endcomment -%}
+  {%- comment -%} Define special lists {%- endcomment -%}
   {% assign special_collections = "MEN AIRY-LINEN SHORT KURTAS deprecated,Men Formal Shirts,Women Airy Linen Shorts,Women Everyday Cotton Top,Women Formal Pants,Women 4-way scretchable pants" | downcase | split: "," %}
   {% assign special_collections1 = "
     Women Plus Size Wide Leg Pant,
@@ -58,45 +58,71 @@
     Men Plus Size Formal Shirts
   " | downcase | split: "," %}
 
-  {%- comment -%}
-    If needed later:
-    {% assign special_collections2 = "Women Straight Fit Formal Pant" | downcase | split: "," %}
-  {%- endcomment -%}
+  {%- comment -%} Winter wear list {%- endcomment -%}
+  {% assign winter_collections = "
+    Unisex Pullover Fleece Hoodies,
+    Unisex Round Neck Sweatshirts,
+    Unisex Zip Neck Sweatshirts
+  " | downcase | split: "," %}
 
-  {%- comment -%} Compute membership flags using trimmed equality {%- endcomment -%}
+  {%- comment -%} Flags {%- endcomment -%}
   {% assign is_goodbye = false %}
+  {% assign is_plus = false %}
+  {% assign is_winter = false %}
+  {% assign is_kurta_set = false %}
+
+  {%- comment -%} Goodbye edition detection {%- endcomment -%}
   {% for raw in special_collections %}
     {% assign item = raw | strip %}
-    {% if item == selected_title %}{% assign is_goodbye = true %}{% break %}{% endif %}
+    {% if item == selected_title %}
+      {% assign is_goodbye = true %}
+      {% break %}
+    {% endif %}
   {% endfor %}
 
-  {% assign is_plus = false %}
+  {%- comment -%} Plus edition detection {%- endcomment -%}
   {% for raw in special_collections1 %}
     {% assign item = raw | strip %}
-    {% if item == selected_title %}{% assign is_plus = true %}{% break %}{% endif %}
+    {% if item == selected_title %}
+      {% assign is_plus = true %}
+      {% break %}
+    {% endif %}
   {% endfor %}
 
-  {%- comment -%}
-  {% assign is_special2 = false %}
-  {% for raw in special_collections2 %}
+  {%- comment -%} Winter wear detection {%- endcomment -%}
+  {% for raw in winter_collections %}
     {% assign item = raw | strip %}
-    {% if item == selected_title %}{% assign is_special2 = true %}{% break %}{% endif %}
+    {% if item == selected_title %}
+      {% assign is_winter = true %}
+      {% break %}
+    {% endif %}
   {% endfor %}
-  {%- endcomment -%}
 
+  {%- comment -%} Kurta set detection {%- endcomment -%}
+  {% for tag in product.tags %}
+    {% assign tag_lc = tag | downcase %}
+    {% if tag_lc == 'short kurta set' or tag_lc == 'long kurta set' %}
+      {% assign is_kurta_set = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {%- comment -%} Output breadcrumb path {%- endcomment -%}
   {% if is_goodbye %}
     <span><a href="/collections/goodbye-edition">Goodbye Edition</a> /</span>
 
-  {%- comment -%}
-  {% elsif is_special2 %}
-    <span><a href="/pages/exclusive-community-launch-straight-fit-formal-pant">Community Exclusive Launch</a> /</span>
-  {% endcomment -%}
-
   {% elsif is_plus %}
     <span><a href="/collections/plus-edition">Plus Edition</a> /</span>
+
+  {% elsif is_winter %}
+    <span><a href="/pages/a-little-warmth">Winter Wear</a> /</span>
+
+  {% elsif is_kurta_set %}
+    <span><a href="/pages/shop-all-kurta-sets">Shop All Kurta Sets</a> /</span>
+
   {% else %}
     {% for collection in product.collections %}
-      {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" %}
+      {% if collection.title contains 'Shop All' and collection.title != "Women Shop All" and collection.title != "Men Shop All" and collection.title != "Unisex Shop All" %}
         <span><a href="{{ collection.url }}">{{ collection.title }}</a> /</span>
       {% endif %}
     {% endfor %}
@@ -104,6 +130,9 @@
 
   <span><a href="{{ selected_collection.url }}">{{ selected_collection.title | capitalize }}</a></span>
 </div>
+
+
+
 
     {%- liquid
       assign inside_block_group_context = false
@@ -401,7 +430,7 @@ UNISEX|TOTE BAG|99900|49900;
 WOMEN|VISCOSE PALAZZO|159900|79900;
 WOMEN|WIDE LEG PANTS|399900|199900;
 MEN|COTTON PANT|179800|89900;
-MEN|AIRY LINEN LONG KURTA|0|0;
+MEN|AIRY LINEN LONG KURTA|129900|259800;
 MEN|AIRY LINEN SHORT KURTA|199900|99900;
 MEN|LINEN HALF SLEEVE SHIRT|439900|219900;
 MEN|100% LINEN SHIRT|499900|249900;
@@ -415,6 +444,9 @@ WOMEN|COTTON STRAIGHT PANT|159800|79900;
 WOMEN|SPLIT NECK SHORT KURTA|139800|69900;
 WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|199800|99900;
 WOMEN|COTTON CAMISOLE TOP|99800|49900;
+UNISEX|PULLOVER FLEECE HOODIE|299800|149900;
+UNISEX|ROUND NECK SWEATSHIRT|199800|99900;
+UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
 " | split: ";" -%}
 
 
@@ -482,9 +514,19 @@ WOMEN|COTTON CAMISOLE TOP|99800|49900;
 {% comment %} the below code is for pre launch fake price {% endcomment %}
 
 
-   {%- if product.tags contains 'SMFLK' -%}
+   {% comment %} {%- if product.tags contains 'SURNS' -%}
+    {%- assign display_price_cents   = 89900 -%}
+    {%- assign display_compare_cents = 99900 -%}
+
+
+    {%- elsif product.tags contains 'SUZNS' -%}
     {%- assign display_price_cents   = 129900 -%}
-    {%- assign display_compare_cents = 259800 -%}
+    {%- assign display_compare_cents = 149900 -%}
+
+
+    {%- elsif product.tags contains 'SUPFH' -%}
+    {%- assign display_price_cents   = 129900 -%}
+    {%- assign display_compare_cents = 149900 -%}
 
 
     {%- elsif product.tags contains 'SMFS' -%}
@@ -504,7 +546,7 @@ WOMEN|COTTON CAMISOLE TOP|99800|49900;
   {%- elsif product.tags contains 'SMLSS' -%}
     {%- assign display_price_cents   = 169900 -%}
     {%- assign display_compare_cents = 219900 -%} {% endcomment %}
-  {%- endif -%} 
+  {%- endif -%}  {% endcomment %}
 
 
 
@@ -920,8 +962,8 @@ UI BELOW IS UNCHANGED:
 
 <!-- Meesho-style Return Policy Section Start -->
 
-{% comment %} 
-{% render 'Meesho-trust-badges' %} {% endcomment %}
+
+{% render 'Meesho-trust-badges' %} 
 
 
 <!-- Meesho-style Return Policy Section End -->
@@ -930,10 +972,12 @@ UI BELOW IS UNCHANGED:
 
 {% comment %} DILEVERY / DISPATCH / ORDER BY START {% endcomment %}
 
+{% unless product.template_suffix contains 'pre-launch' or product.template_suffix contains 'pick-any-3-winter-wear' %}
+ 
 
 
 <!-- Order Timeline (scoped) -->
-{% comment %} <div class="ot" aria-label="Order status timeline">
+<div class="ot" aria-label="Order status timeline">
   <div class="ot-card">
     <div class="ot-tl">
       <!-- Step 1 -->
@@ -1098,8 +1142,10 @@ UI BELOW IS UNCHANGED:
     update();
     setInterval(update, 15*60*1000);
   })();
-</script> {% endcomment %}
+</script>
 
+
+{% endunless %}
 
 
 {% comment %} DILEVERY / DISPATCH / ORDER BY END {% endcomment %}
@@ -1279,7 +1325,7 @@ body.payday-lock { overflow: hidden; }
 
 
 
-{% render 'Meesho-trust-badges' %}
+{% comment %} {% render 'Meesho-trust-badges' %} {% endcomment %}
 
 
         

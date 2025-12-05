@@ -475,35 +475,63 @@ Supported variables
 -%} {% endcomment %}
 
 
-{%- liquid
-  assign has_SMLFS = false
- assign has_SMFS = false
+{% comment %} {%- liquid
+  assign has_SURNS = false
+ assign has_SUZNS = false
+  assign has_SUPFH = false
+   assign has_SMFS = false
 
 
  if product
-    if product.tags contains 'SMFLK'
-      assign has_SMFLK = true
+    if product.tags contains 'SURNS'
+      assign has_SURNS = true
+    
+    elsif product.tags contains 'SUZNS'
+      assign has_SUZNS = true
+
+    elsif product.tags contains 'SUPFH'
+      assign has_SUPFH = true
 
       elsif product.tags contains 'SDFS'
-      assign has_SMFS = true
+      assign has_SDFS = true
 
     endif
   elsif line_item and line_item.product
-    if line_item.product.tags contains 'SMFLK'
-      assign has_SMFLK = true
+    if line_item.product.tags contains 'SURNS'
+      assign has_SURNS = true
+
+      elsif line_item.product.tags contains 'SUZNS'
+      assign has_SUZNS = true
+
+
+      elsif line_item.product.tags contains 'SUPFH'
+      assign has_SUPFH = true
+
 
        elsif line_item.product.tags contains 'SDFS'
-      assign has_SMFS = true
+      assign has_SDFS = true
 
  
     endif
   endif 
 
   assign override_active = false
-  if has_SMFLK
+  if has_SURNS
     assign override_active        = true
-    assign override_price_cents   = 99900
-    assign override_compare_cents = 129900
+    assign override_price_cents   = 89900
+    assign override_compare_cents = 99900
+
+    elsif has_SUZNS
+    assign override_active        = true
+    assign override_price_cents   = 129900
+    assign override_compare_cents = 149900
+
+    elsif has_SUPFH
+    assign override_active        = true
+    assign override_price_cents   = 129900
+    assign override_compare_cents = 149900
+
+    
 
       elsif has_SMFS
     assign override_active        = true
@@ -511,7 +539,7 @@ Supported variables
     assign override_compare_cents = 149900
 
   endif
--%}
+-%} {% endcomment %}
 
 
 
