@@ -472,7 +472,7 @@ Supported variables
     assign override_price_cents   = 169900
     assign override_compare_cents = 219900
   endif
--%} {% endcomment %}
+-%}  {% endcomment %}
 
 
 {% comment %} {%- liquid
@@ -544,7 +544,45 @@ Supported variables
 
 
 
+{% comment %} {%- liquid
+  assign has_SDSLP = false
+  assign has_SMFLK = false
 
+
+ if product
+    if product.tags contains 'SDSLP'
+      assign has_SDSLP = true
+
+     elsif product.tags contains 'SMFLK'
+      assign has_SMFLK = true
+
+    endif
+  elsif line_item and line_item.product
+    if line_item.product.tags contains 'SDSLP'
+      assign has_SDSLP = true
+
+    elsif line_item.product.tags contains 'SMFLK'
+      assign has_SMFLK = true
+
+
+ 
+    endif
+  endif 
+
+  assign override_active = false
+  if has_SDSLP
+    assign override_active        = true
+    assign override_price_cents   = 99900
+    assign override_compare_cents = 149900
+
+    elsif has_SMFLK
+    assign override_active        = true
+    assign override_price_cents   = 99900
+    assign override_compare_cents = 129900
+
+  endif
+
+  -%} {% endcomment %}
 
 
 
