@@ -532,8 +532,8 @@ WOMEN|COTTON CAMISOLE TOP|99800|49900;
       else we show the real variant price/compare_at_price.
   {%- endcomment -%}
 
-  {%- assign product_mappings = "
-WOMEN|AIRY LINEN FLARED DRESS|359900|179900;
+ {%- assign product_mappings = "
+WOMEN|AIRY LINEN FLARED DRESS|359800|179900;
 WOMEN|AIRY LINEN PANT|239900|119900;
 WOMEN|AIRY-LINEN SHIRT|239900|119900;
 WOMEN|AIRY LINEN STRAIGHT PANT|239900|119900;
@@ -555,10 +555,15 @@ WOMEN|PURE LINEN NOTCH COLLAR SHIRT|439800|219900;
 WOMEN|COTTON REGULAR PANT|159900|79900;
 WOMEN|COTTON STRAIGHT PANT|159800|79900;
 WOMEN|SPLIT NECK SHORT KURTA|139800|69900;
-WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|199800|99900;
+WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|179800|89900;
 WOMEN|COTTON CAMISOLE TOP|99800|49900;
 WOMEN|VISCOSE PALAZZO|159900|79900;
 WOMEN|WIDE LEG PANTS|399900|199900;
+WOMEN|LINEN BLEND KNOT BLOUSE|199800|99900;
+WOMEN|LINEN BLEND PLEATED TOP|199800|99900;
+
+WOMEN|LINEN BLEND WAIST COAT|299800|149900;
+WOMEN|LINEN BLEND WIDE LEG PANT|319800|159900;
 
 
 MEN|COTTON PANT|179800|89900;
@@ -569,13 +574,25 @@ MEN|100% LINEN SHIRT|499900|249900;
 MEN|PURE LINEN FULL SLEEVE|499800|249900;
 MEN|PURE LINEN SHORT SLEEVE|439800|219900;
 MEN|FORMAL SHIRT|279800|139900;
+MEN|LINEN BLEND MANDARIN COLLAR|279800|139900;
+MEN|LINEN BLEND SHORT SLEEVE SHIRT|239800|119900;
 
+
+MEN|LINEN BLEND PANT|359800|179900;
+MEN|FLAT KNIT COLLARED T-SHIRT|339800|169900;
+MEN|FLAT KNIT ROUND NECK T-SHIRT|299800|149900;
 
 UNISEX|TOTE BAG|99900|49900;
-UNISEX|PULLOVER FLEECE HOODIE|299800|149900;
+
+
+UNISEX|PULLOVER FLEECE HOODIE|0|0;
+
+
+
 UNISEX|ROUND NECK SWEATSHIRT|199800|99900;
 UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
 " | split: ";" -%}
+
 
   {%- comment -%} Core refs {%- endcomment -%}
   {%- assign variant = product.selected_or_first_available_variant -%}
@@ -653,26 +670,38 @@ UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
   {%- assign override_active = false -%}
   {%- assign override_price_cents = 0 -%}
   {%- assign override_compare_cents = 0 -%}
-  {% comment %} {%- if matched_selling_price == 0 -%}
-    {%- if product.tags contains 'SMLFS' -%}
+  {%- if matched_selling_price == 0 -%}
+    {%- if product.tags contains 'SDELPT' -%}
       {%- assign override_active = true -%}
-      {%- assign override_price_cents = 199900 -%}
-      {%- assign override_compare_cents = 249900 -%}
-    {%- elsif product.tags contains 'SDLNS' -%}
+      {%- assign override_price_cents = 89900 -%}
+      {%- assign override_compare_cents = 99900 -%}
+      
+    {%- elsif product.tags contains 'SDELKB' -%}
       {%- assign override_active = true -%}
-      {%- assign override_price_cents = 169900 -%}
-      {%- assign override_compare_cents = 219900 -%}
-    {%- elsif product.tags contains 'SDLS' -%}
-      {%- assign override_active = true -%}
-      {%- assign override_price_cents = 199900 -%}
-      {%- assign override_compare_cents = 249900 -%}
-    {%- elsif product.tags contains 'SMLSS' -%}
-      {%- assign override_active = true -%}
-      {%- assign override_price_cents = 169900 -%}
-      {%- assign override_compare_cents = 219900 -%}
-    {%- endif -%}
-  {%- endif -%} {% endcomment %}
+      {%- assign override_price_cents = 89900 -%}
+      {%- assign override_compare_cents = 99900 -%}
 
+    {%- elsif product.tags contains 'SMELSS' -%}
+      {%- assign override_active = true -%}
+      {%- assign override_price_cents = 99900 -%}
+      {%- assign override_compare_cents = 119900 -%}
+
+    {%- elsif product.tags contains 'SMELMS' -%}
+      {%- assign override_active = true -%}
+      {%- assign override_price_cents = 119900 -%}
+      {%- assign override_compare_cents = 139900 -%}
+
+
+
+
+
+
+    {%- elsif product.tags contains 'SUPFH' -%}
+      {%- assign override_active = true -%}
+      {%- assign override_price_cents = 129900 -%}
+      {%- assign override_compare_cents = 149900 -%}
+    {%- endif -%}
+  {%- endif -%} 
 
 {% comment %} 
     {%- if matched_selling_price == 0 -%}
@@ -709,22 +738,22 @@ UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
 
 
     {%- if matched_selling_price == 0 -%}
-    {%- if product.tags contains 'SDSLP' -%}
+    {% comment %} {%- if product.tags contains 'SDAFD' -%}
       {%- assign override_active = true -%}
-      {%- assign override_price_cents = 99900 -%}
-      {%- assign override_compare_cents = 149900 -%}
+      {%- assign override_price_cents = 159900 -%}
+      {%- assign override_compare_cents = 179900 -%}
 
 
-    {%- elsif product.tags contains 'SMFLK' -%}
+    {%- elsif product.tags contains 'SMFSK2' -%}
       {%- assign override_active = true -%}
-      {%- assign override_price_cents = 99900 -%}
-      {%- assign override_compare_cents = 129900 -%}
+      {%- assign override_price_cents = 69900 -%}
+      {%- assign override_compare_cents = 89900 -%} {% endcomment %}
 
         {% comment %} {%- elsif product.tags contains 'SDECT' -%}
       {%- assign override_active = true -%}
       {%- assign override_price_cents = 69900 -%}
       {%- assign override_compare_cents = 99900 -%} {% endcomment %}
-    {%- endif -%}
+    {% comment %} {%- endif -%} {% endcomment %}
   {%- endif -%}
 
   {%- comment -%} ============ RENDERING ============ {%- endcomment -%}
@@ -795,20 +824,7 @@ UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
 
               {%- endif -%}
 
-              {%- if show_rating -%}
-                <div class="looxReview smallcaps text-xxs text-subdued">
-                  <div
-                    class="loox-rating"
-                    data-id="{{ product.id }}"
-                    data-rating="{{ product.metafields.loox.avg_rating  }}"
-                    data-raters="{{ product.metafields.loox.num_reviews }}"
-                    data-pattern="([rating])"
-                  ></div>
-                </div>
-                {% comment %}
-                  {%- render 'product-rating', product: product, show_empty: settings.show_product_rating_if_empty, display_mode: settings.product_rating_mode -%}
-                {% endcomment %}
-              {%- endif -%}
+              {% render 'nectorcustom_review_rating', product: product, customer: customer, shop: shop %}
 
               {%- form 'product', product, is: 'product-form' -%}
                 <!-- Hidden input for the selected variant -->

@@ -146,6 +146,22 @@
       --------------------------------------------------------------------------------------------------------------------
     {%- endcomment -%}
 
+    {% if product %}
+      {% assign nector_product_id = product.id %}
+      {% assign nector_countsum_count = product.metafields.nector.countsum.value.count | plus: 0 %}
+      {% assign nector_countsum_sum = product.metafields.nector.countsum.value.sum | plus: 0.0 %}
+      {% assign nector_countsum_avg = 0 %}
+
+      {% if nector_countsum_count > 0 %}
+        {% assign nector_countsum_avg = nector_countsum_sum | divided_by: nector_countsum_count %}
+      {% endif %}
+    {% endif %}
+
+    {% assign fill = '#F5A624' %}
+    {% assign size = 12 %}
+    {% assign count = nector_countsum_count %}
+    {% assign rating = nector_countsum_avg | round: 1 %}
+
     <div class="product-card__info empty:hidden">
       {%- assign text_class = '' -%}
 
@@ -178,12 +194,12 @@
                 {%- render 'price-list', product: product, context: 'card' -%}
               {%- endif -%}
               {%- if show_rating -%}
-                <div class="looxReview smallcaps text-xxs text-subdued">
+                <div class="looxReview nector smallcaps text-xxs text-subdued">
                   <div
                     class="loox-rating"
                     data-id="{{ product.id }}"
-                    data-rating="{{ product.metafields.loox.avg_rating  }}"
-                    data-raters="{{ product.metafields.loox.num_reviews }}"
+                    data-rating="{{ rating }}"
+                    data-raters="{{ count }}"
                     data-pattern="([rating])"
                   ></div>
                 </div>

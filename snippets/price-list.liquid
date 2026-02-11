@@ -585,6 +585,83 @@ Supported variables
   -%} {% endcomment %}
 
 
+  {% comment %} {%- liquid
+  assign has_SDAFD = false
+  assign has_SMFSK2 = false
+
+
+ if product
+    if product.tags contains 'SDAFD'
+      assign has_SDAFD = true
+
+     elsif product.tags contains 'SMFSK2'
+      assign has_SMFSK2 = true
+
+    endif
+  elsif line_item and line_item.product
+    if line_item.product.tags contains 'SDAFD'
+      assign has_SDAFD = true
+
+    elsif line_item.product.tags contains 'SMFSK2'
+      assign has_SMFSK2 = true
+
+
+ 
+    endif
+  endif 
+
+  assign override_active = false
+  if has_SDAFD
+    assign override_active        = true
+    assign override_price_cents   = 159900
+    assign override_compare_cents = 179900
+
+    elsif has_SMFSK2
+    assign override_active        = true
+    assign override_price_cents   = 79900
+    assign override_compare_cents = 99900
+
+  endif
+
+  -%} {% endcomment %}
+
+
+
+
+
+
+
+
+
+{%- liquid
+  
+  assign has_SUPFH = false
+
+
+ if product
+    if product.tags contains 'SUPFH'
+      assign has_SUPFH = true
+
+    endif
+
+
+
+  elsif line_item and line_item.product
+    if ine_item.product.tags contains 'SUPFH'
+      assign has_SUPFH = true
+ 
+    endif
+  endif 
+
+  assign override_active = false
+  if has_SUPFH
+    assign override_active        = true
+    assign override_price_cents   = 129900
+    assign override_compare_cents = 149900
+
+  endif
+  -%}
+
 
 <price-list {% if form_id %}role="region" aria-live="polite"{% endif %} class="price-list {% if context == 'product' %}price-list--product{% endif %}">
   {%- if variant != blank -%}

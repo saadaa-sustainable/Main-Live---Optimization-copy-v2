@@ -1,18 +1,28 @@
-{% if product %}
+{% if all_reviews %}
+  {% assign nector_countsum_count = shop.metafields.nector.store_countsum.value.count  | plus: 0 %}
+  {% assign nector_countsum_sum = shop.metafields.nector.store_countsum.value.sum | plus: 0.0 %}
+  {% assign nector_countsum_avg = 0 %}
+  {% if nector_countsum_count > 0 %}
+    {% assign nector_countsum_avg = nector_countsum_sum | divided_by: nector_countsum_count | round: 1 %}
+  {% endif %}
+{% elsif product %}
   {% assign nector_product_id = product.id %}
   {% assign nector_countsum_count = product.metafields.nector.countsum.value.count | plus: 0 %}
   {% assign nector_countsum_sum = product.metafields.nector.countsum.value.sum | plus: 0.0 %}
   {% assign nector_countsum_avg = 0 %}
-
+  {% if nector_countsum_count == 0 and fetch_all_reviews_if_not_found %}
+    {% assign nector_countsum_count = shop.metafields.nector.store_countsum.value.count  | plus: 0 %}
+    {% assign nector_countsum_sum = shop.metafields.nector.store_countsum.value.sum | plus: 0.0 %}
+  {% endif %}
   {% if nector_countsum_count > 0 %}
-    {% assign nector_countsum_avg = nector_countsum_sum | divided_by: nector_countsum_count %}
+    {% assign nector_countsum_avg = nector_countsum_sum | divided_by: nector_countsum_count | round: 1 %}
   {% endif %}
 {% endif %}
 
-{% if nector_product_id and nector_countsum_avg > 0 %}
+{% if nector_countsum_count and nector_countsum_avg > 0 %}
   <div style="padding: 0px 0px; text-align: left; font-weight: normal;">
-    {% assign fill = '#000' %}
-    {% assign size = 12 %}
+    {% assign fill = '#ED8A00' %}
+    {% assign size = 13 %}
     {% assign count = nector_countsum_count %}
     {% assign rating = nector_countsum_avg | round: 1 %}
     {% assign view_type = 'full' %}
@@ -85,8 +95,8 @@
               </svg>
             {% endif %}
           {% endfor %}
-          <span style="color: {{ fill }}; font-size: {{ size }}px; display: inline-block; margin-left: 5px; vertical-align: text-bottom;"
-            >({{ count }})</span
+          <span style="color: black; font-size: 14px; display: inline-block; margin-left: 5px; vertical-align: text-bottom;"
+            >{{rating}} ( {{ count }} )</span
           >
         </div>
       {% endif %}

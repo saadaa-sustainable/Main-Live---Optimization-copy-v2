@@ -168,7 +168,10 @@
           <label for="b2b_cityPostal">City & Postal Code <span style="color:red">*</span></label>
           <input type="text" id="b2b_cityPostal" name="cityPostal" placeholder="e.g. Mumbai, 400001" required>
           <small style="color:red;font-size:10px"></small>
+          <input type="hidden" id="b2b_datestamp" name="datestamp">
         </div>
+
+        
         <div class="row-flex">
           <div class="v-stack">
             <label for="b2b_phone">Phone <span style="color:red">*</span></label>
@@ -251,6 +254,22 @@ document.getElementById("bulkB2BForm").addEventListener("submit", function (e) {
   if (!f("b2b_productQuantity").value.trim()) { showErrorBelowInput(f("b2b_productQuantity")); valid = false; }
 
   if (!valid) return;
+
+
+  // --- NEW CODE STARTS HERE ---
+  // Capture current date and time
+  const now = new Date();
+  const formattedDate = now.toLocaleString('en-IN', { 
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  document.getElementById("b2b_datestamp").value = formattedDate;
+  // --- NEW CODE ENDS HERE ---
 
   // Show message
   const msgDiv = document.getElementById("b2b-message");

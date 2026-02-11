@@ -1,0 +1,367 @@
+{% schema %}
+{
+  "name": "Happening Now",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Happening NOW!"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Main Banner Image"
+    },
+    {
+      "type": "textarea",
+      "id": "tags",
+      "label": "Product Tags (Comma Separated)",
+      "info": "Enter tags. One product will be shown per tag (highest inventory, unique color). E.g: 'SDCP, SDCSP, SDELPT'",
+      "default": "SDCP, SDCSP"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "NEW LAUNCH!"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg",
+      "label": "Badge Background Color",
+      "default": "#a18262"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge Text Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Happening Now"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  /* Scoped Section Styles */
+  #shopify-section-{{ section.id }} {
+    --hn-badge-bg: {{ section.settings.badge_bg }};
+    --hn-badge-text: {{ section.settings.badge_text_color }};
+  }
+
+  .hn-container {
+    max-width: 1200px;
+    margin: 0px auto;
+    padding: 0 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* ——— HEADER & BANNER ——— */
+  .hn-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .hn-heading {
+    font-size: 26px;
+    font-weight: 500;
+    color: #111;
+    margin: 0;
+  }
+
+  .hn-banner-wrapper {
+    width: 100%;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .hn-banner-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* ——— CAROUSEL ——— */
+  .hn-carousel {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -webkit-overflow-scrolling: touch;
+  }
+  .hn-carousel::-webkit-scrollbar { display: none; }
+
+  /* ——— PRODUCT CARD ——— */
+  .hn-card {
+    flex: 0 0 260px; /* Wider card for desktop */
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  @media(max-width: 768px) {
+    .hn-card { flex: 0 0 180px; }
+    .hn-heading { font-size: 22px; }
+  }
+
+  .hn-image-wrap {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    background-color: #f4f4f4;
+  }
+  .hn-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ——— BADGE ——— */
+  .hn-badge {
+    position: absolute;
+    top: 7px;
+    left: 6px;
+    background-color: var(--hn-badge-bg);
+    color: var(--hn-badge-text);
+    font-size: 7.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 4px;
+    border-radius: 5px;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  /* ——— INFO ——— */
+  .hn-info {
+    padding: 0 4px;
+  }
+  .hn-title {
+    font-size: 13px;
+    color: #222;
+    margin-bottom: 6px;
+    line-height: 1.4;
+    min-height: 44px; /* Align heights */
+  }
+  .hn-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 15px;
+  }
+  .hn-compare-at {
+    color: #ff5a5a;
+    text-decoration: line-through;
+    font-size: 13px;
+  }
+  .hn-price {
+    font-weight: 700;
+    color: #000;
+  }
+
+  .hn-loading { width: 100%; text-align: center; padding: 30px; color: #666; font-size: 14px; }
+{% endstyle %}
+
+<div class="hn-container" id="hn-section-{{ section.id }}">
+  
+  <div class="hn-header">
+    <h2 class="hn-heading">{{ section.settings.heading }}</h2>
+  </div>
+
+  {% if section.settings.banner_image != blank %}
+    <div class="hn-banner-wrapper">
+      <img src="{{ section.settings.banner_image | image_url: width: 1200 }}" 
+           alt="{{ section.settings.heading }}" 
+           loading="lazy">
+    </div>
+  {% endif %}
+
+  <div class="hn-carousel" id="hn-track-{{ section.id }}">
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const sectionId = "{{ section.id }}";
+    const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+    const tagsRaw = "{{ section.settings.tags | escape }}";
+    const badgeText = "{{ section.settings.badge_text | escape }}";
+
+    async function init() {
+      const track = document.getElementById(`hn-track-${sectionId}`);
+      if (!tagsRaw.trim()) {
+        track.innerHTML = '<div class="hn-loading">No tags configured.</div>';
+        return;
+      }
+
+      track.innerHTML = '<div class="hn-loading">Loading new launches...</div>';
+
+      const tagsList = tagsRaw.split(',').map(t => t.trim()).filter(t => t !== '');
+      const products = await fetchProductsMulti(tagsList);
+
+      if (products.length === 0) {
+        track.innerHTML = '<div class="hn-loading">No products found.</div>';
+        return;
+      }
+
+      renderProducts(track, products);
+    }
+
+    function renderProducts(track, products) {
+      track.innerHTML = products.map(p => `
+        <a class="hn-card" href="${p.link}">
+          <div class="hn-image-wrap">
+            ${badgeText ? `<div class="hn-badge">${badgeText}</div>` : ''}
+            <img src="${p.image}" alt="${p.title}" loading="lazy">
+          </div>
+          <div class="hn-info">
+            <div class="hn-title">${p.title}</div>
+            <div class="hn-price-row">
+              <span class="hn-price">Rs ${inr.format(p.price)}</span>
+              <span class="hn-compare-at">Rs ${inr.format(p.compare)}</span>
+            </div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    async function fetchProductsMulti(tags) {
+      let queryParts = [];
+      tags.forEach((tag, index) => {
+        // Fetch top 10 to find best stock/unique color
+        queryParts.push(`
+          t${index}: products(first: 10, query: "tag:'${tag}'") {
+            edges {
+              node {
+                title
+                handle
+                onlineStoreUrl
+                totalInventory
+                variantName: metafield(namespace: "custom", key: "product_variant_name") { value }
+                images(first: 1) { edges { node { url } } }
+                variants(first: 25) {
+                  edges {
+                    node {
+                      price { amount }
+                      compareAtPrice { amount }
+                      selectedOptions { name value }
+                      quantityAvailable
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `);
+      });
+
+      const fullQuery = `{ ${queryParts.join('\n')} }`;
+
+      try {
+        const response = await fetch("https://saadaa-design.myshopify.com/api/2024-07/graphql.json", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json", 
+            "X-Shopify-Storefront-Access-Token": "388bd37219d8ab7daee1c58a23c03cc8" 
+          },
+          body: JSON.stringify({ query: fullQuery })
+        });
+        
+        const json = await response.json();
+        if (json.errors || !json.data) return [];
+
+        let finalProducts = [];
+        let usedHandles = new Set();
+        let usedColors = new Set(); // To check for duplicate colors
+
+        tags.forEach((tag, index) => {
+          const aliasKey = `t${index}`;
+          const edges = json.data[aliasKey]?.edges || [];
+          
+          if(edges.length > 0) {
+            
+            // 1. Helper to Sum Variant Quantities
+            const getVariantStock = (p) => {
+              return p.variants.edges.reduce((sum, v) => sum + (v.node.quantityAvailable || 0), 0);
+            };
+
+            // 2. Sort by Highest Real Inventory
+            const candidates = edges.map(e => e.node).sort((a, b) => {
+               return getVariantStock(b) - getVariantStock(a);
+            });
+
+            // 3. Logic: Unique Handle + Unique Color
+            let winner = null;
+            for (let c of candidates) {
+               const h = c.handle;
+               const col = c.variantName?.value || "Unknown";
+               
+               if (usedHandles.has(h)) continue; // Skip duplicate handle
+               if (usedColors.has(col)) continue; // Skip duplicate color
+               
+               winner = c; 
+               break;
+            }
+
+            // 4. Fallback: If all colors are taken, just pick highest stock unique product
+            if (!winner) {
+               winner = candidates.find(c => !usedHandles.has(c.handle));
+            }
+
+            if (winner) {
+               usedHandles.add(winner.handle);
+               if (winner.variantName?.value) {
+                 usedColors.add(winner.variantName.value);
+               }
+               finalProducts.push(normalizeProduct(winner));
+            }
+          }
+        });
+
+        return finalProducts;
+
+      } catch (err) {
+        console.error("Fetch error", err);
+        return [];
+      }
+    }
+
+    function normalizeProduct(p) {
+      const variants = p.variants.edges.map(e => e.node);
+      const firstVariant = variants[0];
+      
+      // ——— TITLE LOGIC: KEEP Gender, REMOVE Color ———
+      let displayTitle = p.title;
+      if (p.variantName?.value) {
+         const re = new RegExp(`\\b${p.variantName.value}\\b`, 'gi');
+         displayTitle = displayTitle.replace(re, "");
+      }
+      displayTitle = displayTitle.replace(/\s+/g, ' ').trim();
+      // ——————————————————————————————————————————————
+
+      const backendPrice = parseFloat(firstVariant?.price?.amount || 0);
+      
+      return {
+        title: displayTitle,
+        link: p.onlineStoreUrl || `https://saadaa.in/products/${p.handle}`,
+        image: p.images.edges[0]?.node?.url || "",
+        price: backendPrice,
+        compare: backendPrice * 2 // Force calculate 2x
+      };
+    }
+
+    init();
+  })();
+</script>

@@ -1,0 +1,101 @@
+{% comment %}
+  Hermes Analytics Theme Snippet
+  V1: Theme + Pixel Coordination
+
+  This snippet initializes the HermesSDK in your Shopify theme.
+  The SDK will:
+  - Initialize fingerprinting (optional)
+  - Initialize PostHog analytics
+  - Store session/distinct_id in localStorage for pixel coordination
+
+  Installation:
+  1. Add this snippet to your theme's snippets folder
+  2. Include it in theme.liquid: {% render 'hermes-analytics' %}
+  3. Configure via shop metafields or replace the config values below
+
+  Configuration via Metafields (recommended):
+  - hermes.org: Organization ID
+  - hermes.posthog_token: PostHog API token
+  - hermes.api_host: API host URL
+  - hermes.fingerprint_enabled: Enable fingerprinting (true/false)
+  - hermes.debug: Enable debug logging (true/false)
+{% endcomment %}
+
+{% comment %} Skip in theme editor preview {% endcomment %}
+{% unless request.design_mode %}
+  {% comment %} Configuration - use metafields or hardcode values {% endcomment %}
+  {% assign hermes_org = shop.metafields.hermes.org | default: 'saadaa' %}
+  {% assign hermes_token = shop.metafields.hermes.posthog_token | default: 'hs_4f80aa3b05276a52e48e0942c70640c2196d7dfc' %}
+  {% assign hermes_api_host = shop.metafields.hermes.api_host | default: 'https://hermes-pixel.tectonic.so' %}
+  {% assign hermes_fingerprint = shop.metafields.hermes.fingerprint_enabled | default: true %}
+  {% assign hermes_debug = shop.metafields.hermes.debug | default: false %}
+
+  {% if hermes_org != blank and hermes_token != blank %}
+    <script>
+      window.__hermes_config = {
+        org: '{{ hermes_org }}',
+        token: '{{ hermes_token }}',
+        api_host: '{{ hermes_api_host }}',
+        fingerprint_enabled: {{ hermes_fingerprint }},
+        debug: {{ hermes_debug }}
+      };
+    </script>
+    <script src="{{ hermes_api_host }}/sdk/{{ hermes_org }}/tracker.js" async></script>
+    <script>
+      (function () {
+        var config = window.__hermes_config;
+        if (!config || !config.org || !config.token) {
+          console.warn('[HermesTheme] Missing required config (org or token)');
+          return;
+        }
+
+        // Wait for SDK to load, then initialize
+        function initSDK() {
+          if (typeof HermesSDK !== 'undefined') {
+            try {
+              HermesSDK.init({
+                org: config.org,
+                api_host: config.api_host,
+                fingerprint: {
+                  enabled: config.fingerprint_enabled !== false,
+                  debug: config.debug,
+                },
+                analytics: {
+                  token: config.token,
+                  debug: config.debug,
+                  // Capture $initialised event on SDK init (theme only)
+                  capture_initialised: false,
+                  // Rich capture features (theme only - sandboxed pixel keeps defaults)
+                  capture_pageview: true,
+                  autocapture: false,
+                  capture_dead_clicks: true,
+                  capture_pageleave: true,
+                  capture_exceptions: true,
+                  capture_performance: true,
+                  rageclick: true,
+                },
+              });
+
+              if (config.debug) {
+                console.log('[HermesTheme] SDK initialized for org:', config.org);
+              }
+            } catch (error) {
+              console.error('[HermesTheme] SDK initialization failed:', error);
+            }
+          } else {
+            // Retry in 50ms if SDK not loaded yet
+            setTimeout(initSDK, 50);
+          }
+        }
+
+        // Start initialization
+        initSDK();
+      })();
+    </script>
+  {% else %}
+    {% comment %} Debug: Log missing configuration {% endcomment %}
+    <script>
+      console.warn('[HermesTheme] Missing configuration. Set shop metafields: hermes.org and hermes.posthog_token');
+    </script>
+  {% endif %}
+{% endunless %}

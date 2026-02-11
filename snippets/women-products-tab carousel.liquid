@@ -120,10 +120,9 @@
         margin-left: 10px;
       }
 
-         .toggle-buttons-wrapper {
-     
-      justify-content: flex-start;
-    }
+      .toggle-buttons-wrapper {
+        justify-content: flex-start;
+      }
     }
     .menu-item {
       flex: 0 0 calc(20% - 20px);
@@ -272,22 +271,20 @@
       }
     }
 
-
-
     /* ---- Offer note under VIEW ALL ---- */
-.view-all-offer-note {
-    margin-top: 34px;
-    background: #000;
-    color: #fff;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 14px 10px;
-}
+    .view-all-offer-note {
+      margin-top: 34px;
+      background: #000;
+      color: #fff;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 14px 10px;
+    }
 
-.view-all-offer-note strong {
-  color : White;
-}
+    .view-all-offer-note strong {
+      color : White;
+    }
 
   </style>
 </head>
@@ -295,19 +292,13 @@
   <div class="toggle-menu-container">
     <div class="toggle-buttons-wrapper">
 
+      <!-- ✅ Best Sellers FIRST -->
+      <button class="toggle-button active" data-category="bestsellers">Best Sellers</button>
 
-        <!-- NEW: WINTER WEAR (Static) -->
-  <button class="toggle-button active badged" data-category="winter">
-    Winter Wear
-  </button>
-
-      <!-- Category toggles -->
       <button class="toggle-button badged" data-category="bottoms">
         Bottom Wear
         {% comment %} <span class="toggle-badge-dot" aria-hidden="true"></span> {% endcomment %}
       </button>
-
-      <button class="toggle-button" data-category="bestsellers">Best Sellers</button>
 
       <button class="toggle-button badged" data-category="new">
         New Arrival
@@ -318,18 +309,20 @@
         Top Wear
         {% comment %} <span class="toggle-badge-dot" aria-hidden="true"></span> {% endcomment %}
       </button>
-    </div>
-    <div id="itemsContainer" class="menu-items-container"></div>
-   <div class="view-all-bar">
-  <a id="viewAllLink" class="toggle-button"
-     href="https://saadaa.in/collections/shop-bottoms">
-    VIEW ALL ➝
-  </a>
-  {% comment %} <div class="view-all-offer-note">
-  <strong>BUY 3 GET 1 FREE</strong> – Automatically applied at checkout
-</div> {% endcomment %}
-</div>
 
+    </div>
+
+    <div id="itemsContainer" class="menu-items-container"></div>
+
+    <div class="view-all-bar">
+      <a id="viewAllLink" class="toggle-button"
+         href="https://saadaa.in/collections/best-sellers-women">
+        VIEW ALL ➝
+      </a>
+      {% comment %} <div class="view-all-offer-note">
+      <strong>BUY 3 GET 1 FREE</strong> – Automatically applied at checkout
+      </div> {% endcomment %}
+    </div>
   </div>
 
   <script>
@@ -358,41 +351,15 @@
       "Women Pure Linen Notch Collar Shirt",
       "Women Cotton Camisole Top",
       "Cotton Straight Pants",
-      "Airy-Linen Split Neck Kurtas",
-      "Airy-Linen Mid Length Kurtas",
       "Pure Linen Shirt",
       "Pure Linen Notch Collar Shirt",
-      "Cotton Camisole Top"
-
+      "Linen Blend Knot Blouse",
+      "Linen Blend Pleated Top"
     ];
-
-
-    // ─────────── Hard-coded HTML for Winter Wear ───────────
-const winterwearHTML =
-  '<div class="menu-item">' +
-    '<a href="/products/unisex-black-pullover-fleece-hoodie">' +
-      '<img src="https://saadaa.in/cdn/shop/files/207_1791303e-c665-4a68-955b-95059a8dc428.webp?v=1764068794&width=1000" alt="Winter Item 3"/>' +
-      '<p>Unisex Pullover Fleece Hoodie</p>' +
-    '</a>' +
-  '</div>' +
-
-    '<div class="menu-item">' +
-    '<a href="/products/unisex-beige-round-neck-sweatshirt">' +
-      '<img src="https://saadaa.in/cdn/shop/files/194_a65350bb-815f-4eef-8c25-11d3fafd2acf.webp?v=1764069366&width=10003" alt="Winter Item 3" />' +
-      '<p>Unisex Round Neck Sweatshirt</p>' +
-    '</a>' +
-  '</div>'+
-  '<div class="menu-item">' +
-    '<a href="/products/unisex-white-zip-neck-sweatshirt">' +
-      '<img src="https://saadaa.in/cdn/shop/files/186_1af1ff04-299b-4e50-86c5-3ea3c201bf61.webp?v=1764069051&width=1000" alt="Winter Item 3" />' +
-      '<p>Unisex Zip Neck Sweatshirt</p>' +
-    '</a>' +
-  '</div>';
-
 
     // ─────────── Hard‐coded HTML for Bottom Wear and Top Wear ───────────
     const bottomsHTML =
-     '<div class="menu-item">' +
+      '<div class="menu-item">' +
         '<a href="/products/women-beige-straight-fit-cotton-pant">' +
           '<img src="https://saadaa.in/cdn/shop/files/1_45906f39-0ba0-4653-9809-1a3b2ac5b3c3.webp?v=1759750482&width=1000" alt="SSP" />' +
           '<p>Cotton Straight Pants</p>' +
@@ -442,38 +409,52 @@ const winterwearHTML =
       '</div>';
 
     const topwearHTML =
-     '<div class="menu-item">' +
+          '<div class="menu-item">' +
+        '<a href="/products/women-powder-blue-linen-blend-pleated-top">' +
+          '<img src="https://saadaa.in/cdn/shop/files/1_60.webp?v=1769768571&width=1000" ' +
+               'alt="Linen Blend Pleated Top" />' +
+          '<p>Linen Blend Pleated Top</p>' +
+        '</a>' +
+      '</div>' +
+            '<div class="menu-item">' +
+        '<a href="/products/women-blush-pink-linen-blend-knot-blouse">' +
+          '<img src="https://saadaa.in/cdn/shop/files/1_57.webp?v=1769767908&width=1000" ' +
+               'alt="Linen Blend Knot Blouse" />' +
+          '<p>Linen Blend Knot Blouse</p>' +
+        '</a>' +
+      '</div>' +
+      '<div class="menu-item">' +
         '<a href="/products/women-ecru-airy-linen-split-neck-short-kurta">' +
           '<img src="https://saadaa.in/cdn/shop/files/1.1_cff2edb8-22bf-4963-9872-23c274a80683.webp?v=1759576951&width=1000" ' +
                'alt="Airy-Linen Short Kurtas" />' +
           '<p>Airy-Linen Split Neck Kurtas</p>' +
         '</a>' +
       '</div>' +
-     '<div class="menu-item">' +
+      '<div class="menu-item">' +
         '<a href="/products/women-yellow-airy-linen-mid-thigh-length-kurta-copy">' +
           '<img src="https://saadaa.in/cdn/shop/files/6_07223ef7-3a03-412f-9c04-da8ab8082e53.webp?v=1759745934&width=1000" ' +
                'alt="Airy-Linen Short Kurtas" />' +
           '<p>Airy-Linen Mid Length Kurtas</p>' +
         '</a>' +
       '</div>' +
-    '<div class="menu-item">' +
+      '<div class="menu-item">' +
         '<a href="/products/women-light-pink-100-linen-shirt">' +
           '<img src="https://saadaa.in/cdn/shop/files/1.2_8914c6a2-6587-4f5f-b70d-c9295ae9f659.webp?v=1759310018&width=1000" ' +
-               'alt="Airy-Linen Short Kurtas" />' +
+               'alt="Pure Linen Shirt" />' +
           '<p>Pure Linen Shirt</p>' +
         '</a>' +
       '</div>' +
       '<div class="menu-item">' +
         '<a href="/products/women-taupe-100-linen-notch-collar-shirt">' +
           '<img src="https://saadaa.in/cdn/shop/files/1.1_a8dbbbf1-9d3e-4e30-b32b-847ca587ee6e.webp?v=1759310253&width=1000" ' +
-               'alt="Airy-Linen Short Kurtas" />' +
+               'alt="Pure Linen Notch Collar Shirt" />' +
           '<p>Pure Linen Notch Collar Shirt</p>' +
         '</a>' +
       '</div>' +
-       '<div class="menu-item">' +
+      '<div class="menu-item">' +
         '<a href="/products/women-white-cotton-camisole-top">' +
           '<img src="https://saadaa.in/cdn/shop/files/1.1_48f27e5f-9102-4cfc-802d-260bd456a5d2.webp?v=1759308490&width=1000" ' +
-               'alt="Airy-Linen Short Kurtas" />' +
+               'alt="Cotton Camisole Top" />' +
           '<p>Cotton Camisole Top</p>' +
         '</a>' +
       '</div>' +
@@ -515,7 +496,7 @@ const winterwearHTML =
 
     // ─────────── VIEW ALL link per category ───────────
     const viewAllLinks = {
-      winter:      "https://saadaa.in/pages/a-little-warmth",   // NEW
+      winter:      "https://saadaa.in/pages/a-little-warmth",
       bottoms:     "https://saadaa.in/collections/shop-all-bottoms",
       bestsellers: "https://saadaa.in/collections/best-sellers-women",
       new:         "https://saadaa.in/collections/best-sellers-women",
@@ -523,14 +504,8 @@ const winterwearHTML =
     };
 
     // ─────────── Cache for “bestsellers” + “new” ───────────
-    let cache = {
-      bestsellers: [],
-      new: []
-    };
-    let cacheLoaded = {
-      bestsellers: false,
-      new: false
-    };
+    let cache = { bestsellers: [], new: [] };
+    let cacheLoaded = { bestsellers: false, new: false };
 
     // ─────────── Fetch products by Shopify tag (including `publishedAt`) ───────────
     async function fetchProductsByTag(tag) {
@@ -611,8 +586,7 @@ const winterwearHTML =
       reorderBadgedFirst();
     }
 
-    // ─────────── Build HTML snippet from an array of fetched products
-    // Orders: badged first, then others (preserves your earlier #1 sort result order)
+    // ─────────── Build HTML snippet from an array of fetched products ───────────
     function buildFetchedHTML(products) {
       const withBadge = [];
       const withoutBadge = [];
@@ -697,12 +671,6 @@ const winterwearHTML =
           renderProducts(topwearHTML, key);
           return;
         }
-        // NEW STATIC CATEGORY → Winter Wear
-if (key === "winter") {
-  renderProducts(winterwearHTML, key);
-  return;
-}
-
 
         // 4) Otherwise (bestsellers / new), render from cache immediately
         if (key === "bestsellers" || key === "new") {
@@ -741,15 +709,34 @@ if (key === "winter") {
       });
     });
 
-    // ─────────── Initial load: “Bottom Wear” by default ───────────
+    // ─────────── ✅ Initial load: “Best Sellers” by default ───────────
     (async () => {
-      {% comment %} const defaultKey = "bottoms"; {% endcomment %}
-       const defaultKey = "winter";
-      document.querySelector(`.toggle-button[data-category="${defaultKey}"]`).classList.add("active");
-      viewAllLinkElm.href = viewAllLinks[defaultKey];
-      {% comment %} renderProducts(bottomsHTML, defaultKey); {% endcomment %}
-       renderProducts(winterwearHTML, defaultKey);
+      const defaultKey = "bestsellers";
 
+      // set active button
+      toggleButtons.forEach(b => b.classList.remove("active"));
+      document.querySelector(`.toggle-button[data-category="${defaultKey}"]`)?.classList.add("active");
+
+      // view all link
+      viewAllLinkElm.href = viewAllLinks[defaultKey];
+
+      // render bestsellers (cache-aware)
+      if (!cacheLoaded[defaultKey]) {
+        renderProducts(`<div class="no-results">Loading…</div>`, defaultKey);
+        await prefetchCategory(defaultKey);
+      }
+
+      const products = cache[defaultKey].slice();
+      products.sort((a, b) => {
+        const aHas = a.tags.includes("women_home_toggle_best_sellers-#1");
+        const bHas = b.tags.includes("women_home_toggle_best_sellers-#1");
+        if (aHas && !bHas) return -1;
+        if (bHas && !aHas) return 1;
+        return 0;
+      });
+
+      const fetchedHTML = buildFetchedHTML(products);
+      renderProducts(fetchedHTML, defaultKey);
     })();
   </script>
 </body>

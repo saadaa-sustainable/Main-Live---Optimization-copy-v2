@@ -123,7 +123,7 @@ var SHOPIFY_SESSION_TOKEN_NAME = '_shopify_s';
 // below should be modified basis the needs
 // threshold should be 1 - traffic%
 var HEIMDALL_AB_CONFIG = {
-  TEST_MODE: false,
+  TEST_MODE: true,
   ROUTE_DESKTOP_TO_SHOPIFY: false,
   ROUTE_BOTS_TO_SHOPIFY: true,
   ROUTE_ADS_TO_SHOPIFY: false,

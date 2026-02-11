@@ -1,3 +1,5 @@
+{% render 'nectorcustom_review_list', product: product, customer: customer, shop: shop %}
+
 <recently-viewed-products products-count="{{ section.settings.products_count }}" {% if request.page_type == 'product' %}exclude-id="{{ product.id }}"{% endif %}>
   {%- if search.performed and search.results_count > 0 -%}
     <style>

@@ -44,7 +44,7 @@
   {% assign selected_title = selected_collection.title | default: '' | strip | downcase %}
 
   {%- comment -%} Define special lists {%- endcomment -%}
-  {% assign special_collections = "MEN AIRY-LINEN SHORT KURTAS deprecated,Men Formal Shirts,Women Airy Linen Shorts,Women Everyday Cotton Top,Women Formal Pants,Women 4-way scretchable pants" | downcase | split: "," %}
+  {% assign special_collections = "MEN AIRY-LINEN SHORT KURTAS deprecated,Women Airy Linen Shorts" | downcase | split: "," %}
   {% assign special_collections1 = "
     Women Plus Size Wide Leg Pant,
     Women Plus Size Viscose Palazzo Pant,
@@ -65,11 +65,20 @@
     Unisex Zip Neck Sweatshirts
   " | downcase | split: "," %}
 
+  {%- comment -%} Linen Blend list {%- endcomment -%}
+    {% assign behtar_linen = "
+    Women Linen Blend Knot Blouse,
+    Women Linen Blend Pleated Tops,
+    Men Linen Blend Short Sleeve Shirts,
+    Men Linen Blend Mandarin Collar Shirts
+  " | downcase | split: "," %}
+
   {%- comment -%} Flags {%- endcomment -%}
   {% assign is_goodbye = false %}
   {% assign is_plus = false %}
   {% assign is_winter = false %}
   {% assign is_kurta_set = false %}
+  {% assign is_behtar = false %}
 
   {%- comment -%} Goodbye edition detection {%- endcomment -%}
   {% for raw in special_collections %}
@@ -98,6 +107,16 @@
     {% endif %}
   {% endfor %}
 
+
+    {%- comment -%} Winter wear detection {%- endcomment -%}
+  {% for raw in behtar_linen %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}
+      {% assign is_behtar = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
   {%- comment -%} Kurta set detection {%- endcomment -%}
   {% for tag in product.tags %}
     {% assign tag_lc = tag | downcase %}
@@ -116,6 +135,9 @@
 
   {% elsif is_winter %}
     <span><a href="/pages/a-little-warmth">Winter Wear</a> /</span>
+
+  {% elsif is_behtar %}
+    <span><a href="/pages/behtar-linen">Behtar Linen</a> /</span>
 
   {% elsif is_kurta_set %}
     <span><a href="/pages/shop-all-kurta-sets">Shop All Kurta Sets</a> /</span>
@@ -409,7 +431,7 @@
 {%- comment -%} ====== PRICE LOGIC (no UI changes) ====== {%- endcomment -%}
 
  {%- assign product_mappings = "
-WOMEN|AIRY LINEN FLARED DRESS|359900|179900;
+WOMEN|AIRY LINEN FLARED DRESS|359800|179900;
 WOMEN|AIRY LINEN PANT|239900|119900;
 WOMEN|AIRY-LINEN SHIRT|239900|119900;
 WOMEN|AIRY LINEN STRAIGHT PANT|239900|119900;
@@ -431,10 +453,15 @@ WOMEN|PURE LINEN NOTCH COLLAR SHIRT|439800|219900;
 WOMEN|COTTON REGULAR PANT|159900|79900;
 WOMEN|COTTON STRAIGHT PANT|159800|79900;
 WOMEN|SPLIT NECK SHORT KURTA|139800|69900;
-WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|199800|99900;
+WOMEN|AIRY LINEN MID THIGH LENGTH KURTA|179800|89900;
 WOMEN|COTTON CAMISOLE TOP|99800|49900;
 WOMEN|VISCOSE PALAZZO|159900|79900;
 WOMEN|WIDE LEG PANTS|399900|199900;
+WOMEN|LINEN BLEND KNOT BLOUSE|199800|99900;
+WOMEN|LINEN BLEND PLEATED TOP|199800|99900;
+
+WOMEN|LINEN BLEND WAIST COAT|299800|149900;
+WOMEN|LINEN BLEND WIDE LEG PANT|319800|159900;
 
 
 MEN|COTTON PANT|179800|89900;
@@ -445,13 +472,25 @@ MEN|100% LINEN SHIRT|499900|249900;
 MEN|PURE LINEN FULL SLEEVE|499800|249900;
 MEN|PURE LINEN SHORT SLEEVE|439800|219900;
 MEN|FORMAL SHIRT|279800|139900;
+MEN|LINEN BLEND MANDARIN COLLAR|279800|139900;
+MEN|LINEN BLEND SHORT SLEEVE SHIRT|239800|119900;
 
+
+MEN|LINEN BLEND PANT|359800|179900;
+MEN|FLAT KNIT COLLARED T-SHIRT|339800|169900;
+MEN|FLAT KNIT ROUND NECK T-SHIRT|299800|149900;
 
 UNISEX|TOTE BAG|99900|49900;
-UNISEX|PULLOVER FLEECE HOODIE|299800|149900;
+
+
+UNISEX|PULLOVER FLEECE HOODIE|0|0;
+
+
+
 UNISEX|ROUND NECK SWEATSHIRT|199800|99900;
 UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
 " | split: ";" -%}
+
 
 
 {%- assign variant = product.selected_or_first_available_variant -%}
@@ -518,15 +557,12 @@ UNISEX|ZIP NECK SWEATSHIRT|299800|149900;
 {% comment %} the below code is for pre launch fake price {% endcomment %}
 
 
-   {%- if product.tags contains 'SDSLP' -%}
-    {%- assign display_price_cents   = 99900 -%}
+  {%- if product.tags contains 'SUPFH' -%}
+   {%- assign display_price_cents   = 129900 -%}
     {%- assign display_compare_cents = 149900 -%}
 
-    {%- elsif product.tags contains 'SMFLK' -%}
-    {%- assign display_price_cents   = 99900 -%}
-    {%- assign display_compare_cents = 129900 -%}
 
-     {%- endif -%} 
+     {%- endif -%}  
 
 
     {% comment %} {%- elsif product.tags contains 'SUZNS' -%}
@@ -900,6 +936,10 @@ UI BELOW IS UNCHANGED:
             </div>
           </div>
 
+          <div style="margin-top:20px;">
+          {% render 'nectorcustom_review_rating', product: product, customer: customer, shop: shop %}
+          </div>
+
           {%- when 'sku' -%}
           <variant-sku
             class="variant-sku text-sm text-subdued"
@@ -982,7 +1022,7 @@ UI BELOW IS UNCHANGED:
 
 {% comment %} DILEVERY / DISPATCH / ORDER BY START {% endcomment %}
 
-{% unless product.template_suffix contains 'pre-launch' or product.template_suffix contains 'pick-any-3-winter-wear' %}
+{% unless product.template_suffix contains 'pre-launch' or product.template_suffix contains 'pick-any-3-winter-wear' or product.template_suffix contains 'pick-any-new-color-launch' %}
  
 
 
@@ -1828,58 +1868,59 @@ body.payday-lock { overflow: hidden; }
 
 
 
-  {% if selected_collection.metafields.custom.specification_image.value %}
-    <div class="wysb_container ">
-      <h2 class="ps_heading">Why you will love this ?</h2>
-      <div class="floating-controls-container floating-controls-container--inside floating-controls-container--on-hover">
-        {%- assign carousel_id = 'carousel-' | append: section.id -%}
+ {% if selected_collection.metafields.custom.specification_image.value %}
+  <div class="wysb_container">
+    <h2 class="ps_heading">Why you will love this ?</h2>
+    <div class="floating-controls-container floating-controls-container--inside floating-controls-container--on-hover">
+      {%- assign carousel_id = 'carousel-' | append: section.id -%}
 
-        <scroll-carousel
-          id="{{ carousel_id }}"
-          group-cells
-          allow-drag
-          class="collection-list scroll-area bleed lg:unbleed"
-        >
-          {% for image in selected_collection.metafields.custom.specification_image.value %}
-            {% if image != blank %}
-              <div class="image_box">
-                {{ image | image_url: width: 260 | image_tag }}
-              </div>
-            {% endif %}
-          {% endfor %}
-          <div class="image_box">
-            {% assign image_all = section.settings.offer_image %}
-            {{ image_all | image_url: width: 260 | image_tag }}
-          </div>
-        </scroll-carousel>
+      <scroll-carousel
+        id="{{ carousel_id }}"
+        group-cells
+        allow-drag
+        class="collection-list scroll-area bleed lg:unbleed"
+      >
+        {% for image in selected_collection.metafields.custom.specification_image.value %}
+          {% if image != blank %}
+            <div class="image_box">
+              {{ image | image_url: width: 600 | image_tag: widths: '300, 600', loading: 'lazy' }}
+            </div>
+          {% endif %}
+        {% endfor %}
+        
+        <div class="image_box">
+          {% assign image_all = section.settings.offer_image %}
+          {{ image_all | image_url: width: 600 | image_tag: widths: '300, 600', loading: 'lazy' }}
+        </div>
+      </scroll-carousel>
 
-        {%- capture circle_button_style -%}--circle-button-background: {{ section.settings.circle_button_background.rgb }}; --circle-button-text-color: {{ section.settings.circle_button_text_color.rgb }}{%- endcapture -%}
+      {%- capture circle_button_style -%}--circle-button-background: {{ section.settings.circle_button_background.rgb }}; --circle-button-text-color: {{ section.settings.circle_button_text_color.rgb }}{%- endcapture -%}
 
-        <button
-          is="carousel-prev-button"
-          type="button"
-          class="prev-next-button prev-next-button--prev circle-button circle-button--lg hover:animate-icon-inline"
-          aria-controls="{{ carousel_id }}"
-          disabled
-          style="{{ circle_button_style }}"
-        >
-          <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
-          {%- render 'icon' with 'arrow-left', direction_aware: true -%}
-        </button>
+      <button
+        is="carousel-prev-button"
+        type="button"
+        class="prev-next-button prev-next-button--prev circle-button circle-button--lg hover:animate-icon-inline"
+        aria-controls="{{ carousel_id }}"
+        disabled
+        style="{{ circle_button_style }}"
+      >
+        <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+        {%- render 'icon' with 'arrow-left', direction_aware: true -%}
+      </button>
 
-        <button
-          is="carousel-next-button"
-          type="button"
-          class="prev-next-button prev-next-button--next circle-button circle-button--lg hover:animate-icon-inline"
-          aria-controls="{{ carousel_id }}"
-          style="{{ circle_button_style }}"
-        >
-          <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
-          {%- render 'icon' with 'arrow-right', direction_aware: true -%}
-        </button>
-      </div>
+      <button
+        is="carousel-next-button"
+        type="button"
+        class="prev-next-button prev-next-button--next circle-button circle-button--lg hover:animate-icon-inline"
+        aria-controls="{{ carousel_id }}"
+        style="{{ circle_button_style }}"
+      >
+        <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+        {%- render 'icon' with 'arrow-right', direction_aware: true -%}
+      </button>
     </div>
-  {% endif %}
+  </div>
+{% endif %}
 </safe-sticky>
 
     

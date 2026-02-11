@@ -145,11 +145,25 @@ document.head.appendChild(sd38Style);
    SUPFH  → Pullover Fleece Hoodie  → MRP 1499, PL 1299
 --------------------------------------------------- */
 
-{% comment %} const winterWearConfig = [
-  { keyword: 'round neck sweatshirt',   mrp: 999,  prelaunch: 899  }, // SURNS
-  { keyword: 'zip neck sweatshirt',     mrp: 1499, prelaunch: 1299 }, // SUZNS
-  { keyword: 'pullover fleece hoodie',  mrp: 1499, prelaunch: 1299 }  // SUPFH
-]; {% endcomment %}
+/* ---------------------------------------------------
+   Linen Blend & Winter wear fake base price (homepage roundels only)
+   --------------------------------------------------- */
+
+
+const winterWearConfig = [
+  // Winter Wear
+  { keyword: 'pullover fleece hoodie', mrp: 1499, prelaunch: 1299 },
+  
+  // Women's Linen Blend 
+  // Changed "knotted" to "knot" to match screenshot & removed "women" to ensure match regardless of color placement
+  {% comment %} { keyword: 'linen blend knot blouse', mrp: 999, prelaunch: 899 },
+  { keyword: 'linen blend pleated top', mrp: 999, prelaunch: 899 },
+  
+  // Men's Linen Blend
+  // Removed "men" prefix to match cases like "Men Black Linen..."
+  { keyword: 'linen blend short sleeve shirt', mrp: 1199, prelaunch: 999 },
+  { keyword: 'linen blend mandarin collar shirt', mrp: 1399, prelaunch: 1199 } {% endcomment %}
+];
 
 const applyWinterWearPrelaunchPrice = (productElem) => {
   const productName = productElem.textContent.trim().toLowerCase();
@@ -265,6 +279,5 @@ if (window.location.pathname === '/') {
 }
 
 </script>
-
 
 {% comment %} NEW CODE FOR FITTORA ROUNDEL CHANGES END {% endcomment %}

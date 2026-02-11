@@ -54,8 +54,8 @@ Updated: On a specific Page title (e.g., "Light Up Your Style"), show exactly 3 
     {% if _title == 'light up your style' %}
       {{ message1 }}
     {% else %}
-      OUR FIRST WINTER WEAR COLLECTION IS NOW LIVE! -
-      <a href="/pages/a-little-warmth" class="custom-bar-link">SHOP NOW</a>
+      OUR BEHTAR LINEN COLLECTION IS NOW LIVE! -
+      <a href="/pages/behtar-linen" class="custom-bar-link">SHOP NOW</a>
     {% endif %}
   </span>
 </div>
@@ -72,7 +72,7 @@ Updated: On a specific Page title (e.g., "Light Up Your Style"), show exactly 3 
       "{{ message2 | replace: '"', '\"' }}",
       "{{ message3 | replace: '"', '\"' }}"
     {% else %}
-      'OUR FIRST WINTER WEAR COLLECTION IS NOW LIVE! - <a href="/pages/a-little-warmth" class="custom-bar-link">SHOP NOW</a>',
+      'OUR BEHTAR LINEN COLLECTION IS NOW LIVE! - <a href="/pages/behtar-linen" class="custom-bar-link">SHOP NOW</a>',
       {% if current_handle contains 'men' or current_handle contains 'kurta-1' or current_handle contains 'formal-shirt' or current_handle contains 'kurta-2' or current_handle contains 'kurtas-1' %}
         'NEW COLOR LAUNCH OLIVE GREEN COTTON PANT FOR MEN - <a href="/products/white-100-linen-half-sleeve-shirt-men" class="custom-bar-link">SHOP NOW</a>',
       {% else %}

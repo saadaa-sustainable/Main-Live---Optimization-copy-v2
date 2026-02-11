@@ -836,3 +836,9 @@ span.save-percentage {
      text-wrap-mode: nowrap;
   }
 }
+
+@media (max-width: 767px) {
+  a[href="#nector-reviews"] {
+    display: none;
+  }
+}

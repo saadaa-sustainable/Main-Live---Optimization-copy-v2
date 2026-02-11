@@ -1,638 +1,3 @@
-{% comment %} {%- comment -%}
-  Normalize product title:
-{%- endcomment -%}
-{% assign normalized_title = product.title | downcase | replace: '
-', ' ' | replace: '  ', ' ' | replace: '  ', ' ' %}
-
-{%- comment -%}
-  Detect product type (more tolerant)
-{%- endcomment -%}
-{% assign is_shirt = false %}
-{% assign is_full_sleeve = false %}
-{% assign is_half_sleeve = false %}
-{% assign is_kurta = false %}
-{% assign is_short_kurta = false %}
-{% assign is_long_kurta = false %}
-{% assign is_pant = false %}
-{% assign is_straight_pant = false %}
-{% assign is_wide_leg_pant = false %}
-
-{% comment %} /* Shirt detection */ {% endcomment %}
-{% if normalized_title contains 'shirt' %}
-  {% assign is_shirt = true %}
-{% endif %}
-{% if normalized_title contains 'full sleeve' %}
-  {% assign is_full_sleeve = true %}
-{% endif %}
-{% if normalized_title contains 'short sleeve' or normalized_title contains 'half sleeve' %}
-  {% assign is_half_sleeve = true %}
-{% endif %}
-
-{% comment %} /* Kurtas */ {% endcomment %}
-{% if normalized_title contains 'short kurta' %}
-  {% assign is_kurta = true %}{% assign is_short_kurta = true %}
-{% endif %}
-{% if normalized_title contains 'long kurta' %}
-  {% assign is_kurta = true %}{% assign is_long_kurta = true %}
-{% endif %}
-
-{% comment %} /* Pants */ {% endcomment %}
-{% if normalized_title contains 'straight pant' %}
-  {% assign is_pant = true %}{% assign is_straight_pant = true %}
-{% endif %}
-{% if normalized_title contains 'wide leg pant' or normalized_title contains 'wide-leg pant' %}
-  {% assign is_pant = true %}{% assign is_wide_leg_pant = true %}
-{% endif %}
-
-{%- comment -%}
-  Collar detection (Women 100% linen shirt / notch collar shirt)
-{%- endcomment -%}
-{% assign is_regular_collar = false %}
-{% assign is_notch_collar = false %}
-
-{%- comment -%} Notch collar if explicitly mentioned {%- endcomment -%}
-{% if normalized_title contains 'notch collar' and normalized_title contains 'shirt' %}
-  {% assign is_notch_collar = true %}
-{% endif %}
-
-{%- comment -%} Otherwise, any shirt (that isn't notch) is "regular collar" {%- endcomment -%}
-{% if normalized_title contains 'shirt' and is_notch_collar == false %}
-  {% assign is_regular_collar = true %}
-{% endif %}
-
-{%- comment -%}
-  Product reference metafields
-{%- endcomment -%}
-{% assign full_sleeve_product = product.metafields.custom.full_sleeve_toggle_link1.value %}
-{% assign half_sleeve_product = product.metafields.custom.half_sleeve_toggle_link1.value %}
-{% assign short_kurta_product = product.metafields.custom.short_kurta_toggle_link1.value %}
-{% assign long_kurta_product = product.metafields.custom.long_kurta_toggle_link1.value %}
-{% assign straight_pant_product = product.metafields.custom.straight_pant_toggle_product.value %}
-{% assign wide_leg_pant_product = product.metafields.custom.wide_leg_pant_toggle_product.value %}
-
-{%- comment -%} Length metafields (Product references) {%- endcomment -%}
-{% assign short_length_product     = product.metafields.custom.short_length.value %}
-{% assign mid_thigh_length_product = product.metafields.custom.mid_thigh_length.value %}
-
-{%- comment -%} Fit metafields (Product references) {%- endcomment -%}
-{% assign regular_fit_product  = product.metafields.custom.regular_fit_product_toggle.value %}
-{% assign straight_fit_product = product.metafields.custom.straight_fit_product_toggle.value %}
-
-{%- comment -%}
-  Collar metafields
-{%- endcomment -%}
-{% assign regular_collar_product = product.metafields.custom.regular_collar_product_toggles.value %}
-{% assign notch_collar_product = product.metafields.custom.notch_collar_product_toggles.value %}
-
-{%- comment -%}
-  Draft check
-{%- endcomment -%}
-{% assign is_draft = false %}
-{% if product.status and product.status == 'draft' %}{% assign is_draft = true %}{% endif %}
-
-{% assign full_sleeve_is_draft = false %}
-{% if full_sleeve_product and full_sleeve_product.status == 'draft' %}{% assign full_sleeve_is_draft = true %}{% endif %}
-
-{% assign half_sleeve_is_draft = false %}
-{% if half_sleeve_product and half_sleeve_product.status == 'draft' %}{% assign half_sleeve_is_draft = true %}{% endif %}
-
-{% assign short_kurta_is_draft = false %}
-{% if short_kurta_product and short_kurta_product.status == 'draft' %}{% assign short_kurta_is_draft = true %}{% endif %}
-
-{% assign long_kurta_is_draft = false %}
-{% if long_kurta_product and long_kurta_product.status == 'draft' %}{% assign long_kurta_is_draft = true %}{% endif %}
-
-{% assign straight_pant_is_draft = false %}
-{% if straight_pant_product and straight_pant_product.status == 'draft' %}{% assign straight_pant_is_draft = true %}{% endif %}
-
-{% assign wide_leg_pant_is_draft = false %}
-{% if wide_leg_pant_product and wide_leg_pant_product.status == 'draft' %}{% assign wide_leg_pant_is_draft = true %}{% endif %}
-
-{%- comment -%} Length draft flags {%- endcomment -%}
-{% assign short_length_is_draft = false %}
-{% if short_length_product and short_length_product.status == 'draft' %}{% assign short_length_is_draft = true %}{% endif %}
-
-{% assign mid_thigh_length_is_draft = false %}
-{% if mid_thigh_length_product and mid_thigh_length_product.status == 'draft' %}{% assign mid_thigh_length_is_draft = true %}{% endif %}
-
-{%- comment -%} Fit draft flags {%- endcomment -%}
-{% assign regular_fit_is_draft = false %}
-{% if regular_fit_product and regular_fit_product.status == 'draft' %}{% assign regular_fit_is_draft = true %}{% endif %}
-
-{% assign straight_fit_is_draft = false %}
-{% if straight_fit_product and straight_fit_product.status == 'draft' %}{% assign straight_fit_is_draft = true %}{% endif %}
-
-{%- comment -%}
-  Collar draft flags
-{%- endcomment -%}
-{% assign regular_collar_is_draft = false %}
-{% if regular_collar_product and regular_collar_product.status == 'draft' %}{% assign regular_collar_is_draft = true %}{% endif %}
-
-{% assign notch_collar_is_draft = false %}
-{% if notch_collar_product and notch_collar_product.status == 'draft' %}{% assign notch_collar_is_draft = true %}{% endif %}
-
-{%- comment -%}
-  Compute “valid target exists” flags (avoid parentheses in IFs)
-{%- endcomment -%}
-{% assign has_full_valid = false %}
-{% if full_sleeve_product and full_sleeve_is_draft == false %}
-  {% assign has_full_valid = true %}
-{% endif %}
-
-{% assign has_half_valid = false %}
-{% if half_sleeve_product and half_sleeve_is_draft == false %}
-  {% assign has_half_valid = true %}
-{% endif %}
-
-{% assign has_regular_collar_valid = false %}
-{% if regular_collar_product and regular_collar_is_draft == false %}
-  {% assign has_regular_collar_valid = true %}
-{% endif %}
-
-{% assign has_notch_collar_valid = false %}
-{% if notch_collar_product and notch_collar_is_draft == false %}
-  {% assign has_notch_collar_valid = true %}
-{% endif %}
-
-{%- comment -%} Length valid flags {%- endcomment -%}
-{% assign has_short_length_valid = false %}
-{% if short_length_product and short_length_is_draft == false %}
-  {% assign has_short_length_valid = true %}
-{% endif %}
-
-{% assign has_mid_thigh_length_valid = false %}
-{% if mid_thigh_length_product and mid_thigh_length_is_draft == false %}
-  {% assign has_mid_thigh_length_valid = true %}
-{% endif %}
-
-{%- comment -%} Fit valid flags {%- endcomment -%}
-{% assign has_regular_fit_valid = false %}
-{% if regular_fit_product and regular_fit_is_draft == false %}
-  {% assign has_regular_fit_valid = true %}
-{% endif %}
-
-{% assign has_straight_fit_valid = false %}
-{% if straight_fit_product and straight_fit_is_draft == false %}
-  {% assign has_straight_fit_valid = true %}
-{% endif %}
-
-{%- comment -%}
-  Show toggles (shirt shows if at least one side exists)
-{%- endcomment -%}
-{% assign show_shirt_toggle = false %}
-{% assign show_kurta_toggle = false %}
-{% assign show_pant_toggle = false %}
-{% assign show_collar_toggle = false %}
-{% assign show_length_toggle = false %}
-{% assign show_fit_toggle = false %}
-
-{% if is_shirt and is_draft == false %}
-  {% if has_full_valid or has_half_valid %}
-    {% assign show_shirt_toggle = true %}
-  {% endif %}
-{% endif %}
-
-{% if is_kurta
-      and short_kurta_product and short_kurta_is_draft == false
-      and long_kurta_product and long_kurta_is_draft == false
-      and is_draft == false %}
-  {% assign show_kurta_toggle = true %}
-{% endif %}
-
-{% if is_pant
-      and straight_pant_product and straight_pant_is_draft == false
-      and wide_leg_pant_product and wide_leg_pant_is_draft == false
-      and is_draft == false %}
-  {% assign show_pant_toggle = true %}
-{% endif %}
-
-{%- comment -%}
-  Collar toggle visibility (no parentheses)
-{%- endcomment -%}
-{% assign show_collar_toggle = false %}
-{% if is_draft == false %}
-  {%- comment -%} If it's a shirt at all, we are OK to show collar row {%- endcomment -%}
-  {% assign collar_title_ok = false %}
-  {% if is_shirt %}
-    {% assign collar_title_ok = true %}
-  {% endif %}
-
-  {% assign collar_links_ok = false %}
-  {% if has_regular_collar_valid or has_notch_collar_valid %}
-    {% assign collar_links_ok = true %}
-  {% endif %}
-
-  {% if collar_title_ok and collar_links_ok %}
-    {% assign show_collar_toggle = true %}
-  {% endif %}
-{% endif %}
-
-{%- comment -%} Length toggle visibility {%- endcomment -%}
-{% if is_draft == false %}
-  {% if has_short_length_valid or has_mid_thigh_length_valid %}
-    {% assign show_length_toggle = true %}
-  {% endif %}
-{% endif %}
-
-{%- comment -%} Fit toggle visibility {%- endcomment -%}
-{% if is_draft == false %}
-  {% if has_regular_fit_valid or has_straight_fit_valid %}
-    {% assign show_fit_toggle = true %}
-  {% endif %}
-{% endif %}
-
-{%- comment -%}
-  Decide label for the second sleeve toggle:
-  If the linked product OR the current product mentions "half sleeve", use "Half Sleeve".
-  Otherwise use "Short Sleeve".
-{%- endcomment -%}
-{% assign short_label = 'Short Sleeve' %}
-{% if normalized_title contains 'half sleeve' %}
-  {% assign short_label = 'Half Sleeve' %}
-{% elsif half_sleeve_product and half_sleeve_product.title %}
-  {% assign half_title = half_sleeve_product.title | downcase %}
-  {% if half_title contains 'half sleeve' %}
-    {% assign short_label = 'Half Sleeve' %}
-  {% endif %}
-{% endif %}
-
-{% if show_shirt_toggle or show_kurta_toggle or show_pant_toggle or show_collar_toggle or show_length_toggle or show_fit_toggle %}
-<style>
-  .toggle-container { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
-  .toggle-row { margin-top:14px; }
-  .toggle-btn {
-    padding:5px 20px; border:1px solid #ccc; border-radius:5px; cursor:pointer;
-    user-select:none; background:#fff; color:#000; transition:all .3s ease;
-  }
-  .toggle-btn.active { background:#000; color:#fff; border-color:#000; }
-  .toggle-btn.disabled { opacity:.5; pointer-events:none; }
-  @media (min-width:786px){ .toggle-btn { padding:3px 40px; font-size:16px; } }
-</style>
-
-<div>
-  {% if show_shirt_toggle %}
-    <div class="toggle-row">
-      <label>Sleeve :</label>
-      <div class="toggle-container">
-        <button type="button" id="btnFullSleeve"
-          class="toggle-btn {% unless full_sleeve_product %}disabled{% endunless %} {% if is_full_sleeve %}active{% endif %}">
-          Full Sleeve
-        </button>
-        <button type="button" id="btnShortSleeve"
-          class="toggle-btn {% unless half_sleeve_product %}disabled{% endunless %} {% if is_half_sleeve %}active{% endif %}">
-          {{ short_label }}
-        </button>
-      </div>
-    </div>
-  {% endif %}
-
-  {% if show_kurta_toggle %}
-    <div class="toggle-row">
-      <label>Kurta :</label>
-      <div class="toggle-container">
-        <button type="button" id="btnShortKurta" class="toggle-btn">Short Kurta</button>
-        <button type="button" id="btnLongKurta"  class="toggle-btn">Long Kurta</button>
-      </div>
-    </div>
-  {% endif %}
-
-  {% if show_pant_toggle %}
-    <div class="toggle-row">
-      <label>Pant :</label>
-      <div class="toggle-container">
-        <button type="button" id="btnStraightPant" class="toggle-btn">Straight Pant</button>
-        <button type="button" id="btnWideLegPant"  class="toggle-btn">Wide Leg Pant</button>
-      </div>
-    </div>
-  {% endif %}
-
-  {% if show_collar_toggle %}
-    <div class="toggle-row">
-      <label>Product Type :</label>
-      <div class="toggle-container">
-        <button type="button" id="btnRegularCollar"
-          class="toggle-btn {% unless regular_collar_product %}disabled{% endunless %} {% if is_regular_collar %}active{% endif %}">
-          Regular Collar
-        </button>
-        <button type="button" id="btnNotchCollar"
-          class="toggle-btn {% unless notch_collar_product %}disabled{% endunless %} {% if is_notch_collar %}active{% endif %}">
-          Notch Collar
-        </button>
-      </div>
-    </div>
-  {% endif %}
-
-  {% if show_length_toggle %}
-    <div class="toggle-row">
-      <label>Length :</label>
-      <div class="toggle-container">
-        <button type="button" id="btnShortLength"
-          class="toggle-btn {% unless short_length_product %}disabled{% endunless %} {% if short_length_product and short_length_product.id == product.id %}active{% endif %}">
-          Short Length
-        </button>
-        <button type="button" id="btnMidThighLength"
-          class="toggle-btn {% unless mid_thigh_length_product %}disabled{% endunless %} {% if mid_thigh_length_product and mid_thigh_length_product.id == product.id %}active{% endif %}">
-          Mid Thigh Length
-        </button>
-      </div>
-    </div>
-  {% endif %}
-
-  {% if show_fit_toggle %}
-    <div class="toggle-row">
-      <label>Fit :</label>
-      <div class="toggle-container">
-        <button type="button" id="btnRegularFit"
-          class="toggle-btn {% unless regular_fit_product %}disabled{% endunless %} {% if regular_fit_product and regular_fit_product.id == product.id %}active{% endif %}">
-          Regular Fit
-        </button>
-        <button type="button" id="btnStraightFit"
-          class="toggle-btn {% unless straight_fit_product %}disabled{% endunless %} {% if straight_fit_product and straight_fit_product.id == product.id %}active{% endif %}">
-          Straight Fit
-        </button>
-      </div>
-    </div>
-  {% endif %}
-</div>
-
-<script>
-{% raw %}
-  function normalizeTitle(str){ return str.toLowerCase().replace(/\n/g,' ').replace(/  +/g,' ').trim(); }
-
-  const productTitleRaw = "{% endraw %}{{ product.title | escape }}{% raw %}";
-  const productTitle    = normalizeTitle(productTitleRaw);
-
-  const fullSleeveLink   = "{% endraw %}{% if full_sleeve_product %}{{ full_sleeve_product.url }}{% endif %}{% raw %}";
-  const shortSleeveLink  = "{% endraw %}{% if half_sleeve_product %}{{ half_sleeve_product.url }}{% endif %}{% raw %}"; // maps to half_sleeve metafield
-  const shortKurtaLink   = "{% endraw %}{% if short_kurta_product %}{{ short_kurta_product.url }}{% endif %}{% raw %}";
-  const longKurtaLink    = "{% endraw %}{% if long_kurta_product %}{{ long_kurta_product.url }}{% endif %}{% raw %}";
-  const straightPantLink = "{% endraw %}{% if straight_pant_product %}{{ straight_pant_product.url }}{% endif %}{% raw %}";
-  const wideLegPantLink  = "{% endraw %}{% if wide_leg_pant_product %}{{ wide_leg_pant_product.url }}{% endif %}{% raw %}";
-
-  // Collar links
-  const regularCollarLink = "{% endraw %}{% if regular_collar_product %}{{ regular_collar_product.url }}{% endif %}{% raw %}";
-  const notchCollarLink   = "{% endraw %}{% if notch_collar_product %}{{ notch_collar_product.url }}{% endif %}{% raw %}";
-
-  // Length links
-  const shortLengthLink    = "{% endraw %}{% if short_length_product %}{{ short_length_product.url }}{% endif %}{% raw %}";
-  const midThighLengthLink = "{% endraw %}{% if mid_thigh_length_product %}{{ mid_thigh_length_product.url }}{% endif %}{% raw %}";
-
-  // Fit links
-  const regularFitLink  = "{% endraw %}{% if regular_fit_product %}{{ regular_fit_product.url }}{% endif %}{% raw %}";
-  const straightFitLink = "{% endraw %}{% if straight_fit_product %}{{ straight_fit_product.url }}{% endif %}{% raw %}";
-
-  function setActiveToggle(type){
-    var btnFull     = document.getElementById('btnFullSleeve');
-    var btnShortSlv = document.getElementById('btnShortSleeve');
-    var btnShort    = document.getElementById('btnShortKurta');
-    var btnLong     = document.getElementById('btnLongKurta');
-    var btnStraight = document.getElementById('btnStraightPant');
-    var btnWide     = document.getElementById('btnWideLegPant');
-    var btnRegCol   = document.getElementById('btnRegularCollar');
-    var btnNotchCol = document.getElementById('btnNotchCollar');
-
-    if(type==='full' && btnFull && btnShortSlv){ btnFull.classList.add('active'); btnShortSlv.classList.remove('active'); }
-    else if(type==='shortsleeve' && btnFull && btnShortSlv){ btnShortSlv.classList.add('active'); btnFull.classList.remove('active'); }
-    else if(type==='short' && btnShort && btnLong){ btnShort.classList.add('active'); btnLong.classList.remove('active'); }
-    else if(type==='long' && btnShort && btnLong){ btnLong.classList.add('active'); btnShort.classList.remove('active'); }
-    else if(type==='straight' && btnStraight && btnWide){ btnStraight.classList.add('active'); btnWide.classList.remove('active'); }
-    else if(type==='wide' && btnStraight && btnWide){ btnWide.classList.add('active'); btnStraight.classList.remove('active'); }
-    else if(type==='regularcollar' && btnRegCol && btnNotchCol){ btnRegCol.classList.add('active'); btnNotchCol.classList.remove('active'); }
-    else if(type==='notchcollar' && btnRegCol && btnNotchCol){ btnNotchCol.classList.add('active'); btnRegCol.classList.remove('active'); }
-
-    // Length toggles
-    else if(type==='shortlength'){
-      var a=document.getElementById('btnShortLength'), b=document.getElementById('btnMidThighLength');
-      if(a&&b){ a.classList.add('active'); b.classList.remove('active'); }
-    }
-    else if(type==='midthighlength'){
-      var a=document.getElementById('btnShortLength'), b=document.getElementById('btnMidThighLength');
-      if(a&&b){ b.classList.add('active'); a.classList.remove('active'); }
-    }
-
-    // Fit toggles
-    else if(type==='regularfit'){
-      var a=document.getElementById('btnRegularFit'), b=document.getElementById('btnStraightFit');
-      if(a&&b){ a.classList.add('active'); b.classList.remove('active'); }
-    }
-    else if(type==='straightfit'){
-      var a=document.getElementById('btnRegularFit'), b=document.getElementById('btnStraightFit');
-      if(a&&b){ b.classList.add('active'); a.classList.remove('active'); }
-    }
-  }
-
-  // --- Robust URL-based activation helper ---
-  function samePath(urlA, urlB){
-    if(!urlA || !urlB) return false;
-    try{
-      const a = new URL(urlA, location.origin).pathname.replace(/\/+$/,'');
-      const b = new URL(urlB, location.origin).pathname.replace(/\/+$/,'');
-      return a === b;
-    }catch(e){ return false; }
-  }
-
-  // If current page *is* one of the target links, set active immediately (Length)
-  (function activateLengthByURL(){
-    const here = location.pathname.replace(/\/+$/,'');
-    if (samePath(here, shortLengthLink)) {
-      setActiveToggle('shortlength');
-    } else if (samePath(here, midThighLengthLink)) {
-      setActiveToggle('midthighlength');
-    }
-  })();
-
-  // If current page *is* one of the target links, set active immediately (Fit)
-  (function activateFitByURL(){
-    const here = location.pathname.replace(/\/+$/,'');
-    if (samePath(here, regularFitLink)) {
-      setActiveToggle('regularfit');
-    } else if (samePath(here, straightFitLink)) {
-      setActiveToggle('straightfit');
-    }
-  })();
-
-  function updateToggleBasedOnTitle(){
-    const t = productTitle;
-    const isShirt = t.includes('shirt');
-    const hasFull  = t.includes('full sleeve') || t.includes('full-sleeve') || t.includes('100% linen shirt');
-    const hasShort = t.includes('short sleeve') || t.includes('short-sleeve') || t.includes('half sleeve') || t.includes('half-sleeve');
-
-    if(isShirt && hasFull){ setActiveToggle('full'); }
-    else if(isShirt && hasShort){ setActiveToggle('shortsleeve'); }
-    else if(t.includes('short kurta')){ setActiveToggle('short'); }
-    else if(t.includes('long kurta')){ setActiveToggle('long'); }
-    else if(t.includes('straight pant')){ setActiveToggle('straight'); }
-    else if(t.includes('wide leg pant') || t.includes('wide-leg pant')){ setActiveToggle('wide'); }
-
-    // Collar active state (robust)
-    if (t.includes('shirt') && t.includes('notch collar')) {
-      setActiveToggle('notchcollar');
-    } else if (t.includes('shirt')) {
-      // any shirt without "notch collar" is regular collar
-      setActiveToggle('regularcollar');
-    }
-
-    // Length active state
-    if (t.includes('mid thigh length') || t.includes('mid-thigh length')) {
-      setActiveToggle('midthighlength');
-    } else if (t.includes('short length')) {
-      setActiveToggle('shortlength');
-    }
-
-    // Fit active state (fallback to title keywords)
-    if (t.includes('straight fit')) {
-      setActiveToggle('straightfit');
-    } else if (t.includes('regular fit')) {
-      setActiveToggle('regularfit');
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', updateToggleBasedOnTitle);
-  window.addEventListener('load', updateToggleBasedOnTitle);
-
-  // Shirt click handlers
-  var btnFullSleeve  = document.getElementById('btnFullSleeve');
-  var btnShortSleeve = document.getElementById('btnShortSleeve');
-
-  if(btnFullSleeve){
-    btnFullSleeve.addEventListener('click', function(){
-      if(fullSleeveLink && fullSleeveLink.trim()!==''){
-        if(!(productTitle.includes('full sleeve') || productTitle.includes('full-sleeve') || productTitle.includes('100% linen shirt'))){
-          window.location.href = fullSleeveLink;
-        }
-        setActiveToggle('full');
-      }
-    });
-  }
-
-  if(btnShortSleeve){
-    btnShortSleeve.addEventListener('click', function(){
-      if(shortSleeveLink && shortSleeveLink.trim()!==''){
-        if(!(productTitle.includes('short sleeve') || productTitle.includes('short-sleeve') || productTitle.includes('half sleeve') || productTitle.includes('half-sleeve'))){
-          window.location.href = shortSleeveLink;
-        }
-        setActiveToggle('shortsleeve');
-      }
-    });
-  }
-
-  // Kurta handlers
-  if(document.getElementById('btnShortKurta')){
-    document.getElementById('btnShortKurta').addEventListener('click', function(){
-      if(shortKurtaLink && shortKurtaLink.trim()!==''){
-        if(!productTitle.includes('short kurta')){ window.location.href = shortKurtaLink; }
-        setActiveToggle('short');
-      }
-    });
-  }
-  if(document.getElementById('btnLongKurta')){
-    document.getElementById('btnLongKurta').addEventListener('click', function(){
-      if(longKurtaLink && longKurtaLink.trim()!==''){
-        if(!productTitle.includes('long kurta')){ window.location.href = longKurtaLink; }
-        setActiveToggle('long');
-      }
-    });
-  }
-
-  // Pant handlers
-  if(document.getElementById('btnStraightPant')){
-    document.getElementById('btnStraightPant').addEventListener('click', function(){
-      if(straightPantLink && straightPantLink.trim()!==''){
-        if(!productTitle.includes('straight pant')){ window.location.href = straightPantLink; }
-        setActiveToggle('straight');
-      }
-    });
-  }
-  if(document.getElementById('btnWideLegPant')){
-    document.getElementById('btnWideLegPant').addEventListener('click', function(){
-      if(wideLegPantLink && wideLegPantLink.trim()!==''){
-        if(!(productTitle.includes('wide leg pant') || productTitle.includes('wide-leg pant'))){
-          window.location.href = wideLegPantLink;
-        }
-        setActiveToggle('wide');
-      }
-    });
-  }
-
-  // Collar handlers
-  var btnRegularCollar = document.getElementById('btnRegularCollar');
-  var btnNotchCollar   = document.getElementById('btnNotchCollar');
-
-  if (btnRegularCollar){
-    btnRegularCollar.addEventListener('click', function(){
-      if (regularCollarLink && productTitle.includes('notch collar')) {
-        window.location.href = regularCollarLink;
-      }
-      setActiveToggle('regularcollar');
-    });
-  }
-  if (btnNotchCollar){
-    btnNotchCollar.addEventListener('click', function(){
-      if (notchCollarLink && !productTitle.includes('notch collar')) {
-        window.location.href = notchCollarLink;
-      }
-      setActiveToggle('notchcollar');
-    });
-  }
-
-  // Length handlers
-  var btnShortLength    = document.getElementById('btnShortLength');
-  var btnMidThighLength = document.getElementById('btnMidThighLength');
-
-  if (btnShortLength){
-    btnShortLength.addEventListener('click', function(){
-      if (shortLengthLink && shortLengthLink.trim() !== ''){
-        if (!(productTitle.includes('short length'))) {
-          window.location.href = shortLengthLink;
-        }
-        setActiveToggle('shortlength');
-      }
-    });
-  }
-
-  if (btnMidThighLength){
-    btnMidThighLength.addEventListener('click', function(){
-      if (midThighLengthLink && midThighLengthLink.trim() !== ''){
-        if (!(productTitle.includes('mid thigh length') || productTitle.includes('mid-thigh length'))) {
-          window.location.href = midThighLengthLink;
-        }
-        setActiveToggle('midthighlength');
-      }
-    });
-  }
-
-  // Fit handlers
-  var btnRegularFit  = document.getElementById('btnRegularFit');
-  var btnStraightFit = document.getElementById('btnStraightFit');
-
-  if (btnRegularFit){
-    btnRegularFit.addEventListener('click', function(){
-      if (regularFitLink && regularFitLink.trim() !== ''){
-        if (!(productTitle.includes('regular fit'))) {
-          window.location.href = regularFitLink;
-        }
-        setActiveToggle('regularfit');
-      }
-    });
-  }
-
-  if (btnStraightFit){
-    btnStraightFit.addEventListener('click', function(){
-      if (straightFitLink && straightFitLink.trim() !== ''){
-        if (!(productTitle.includes('straight fit'))) {
-          window.location.href = straightFitLink;
-        }
-        setActiveToggle('straightfit');
-      }
-    });
-  }
-
-  // Handle bfcache back/forward navigation
-  window.addEventListener('pageshow', function(e){ if(e.persisted){ updateToggleBasedOnTitle(); }});
-{% endraw %}
-</script>
-{% endif %} {% endcomment %}
-
 {%- comment -%} NEW CODE – pack toggles + hide buttons when metafields empty (syntax-safe) {%- endcomment -%}
 
 {%- comment -%} Normalize product title {%- endcomment -%}
@@ -660,8 +25,11 @@
 {%- comment -%} Collar detection {%- endcomment -%}
 {% assign is_regular_collar = false %}
 {% assign is_notch_collar = false %}
+{% assign is_mandarin_collar = false %}
+
 {% if normalized_title contains 'notch collar' and normalized_title contains 'shirt' %}{% assign is_notch_collar = true %}{% endif %}
-{% if normalized_title contains 'shirt' and is_notch_collar == false %}{% assign is_regular_collar = true %}{% endif %}
+{% if normalized_title contains 'mandarin collar' %}{% assign is_mandarin_collar = true %}{% endif %}
+{% if normalized_title contains 'shirt' and is_notch_collar == false and is_mandarin_collar == false %}{% assign is_regular_collar = true %}{% endif %}
 
 {%- comment -%} Product reference metafields {%- endcomment -%}
 {% assign full_sleeve_product   = product.metafields.custom.full_sleeve_toggle_link1.value %}
@@ -680,6 +48,10 @@
 {%- comment -%} Collar metafields {%- endcomment -%}
 {% assign regular_collar_product = product.metafields.custom.regular_collar_product_toggles.value %}
 {% assign notch_collar_product   = product.metafields.custom.notch_collar_product_toggles.value %}
+
+{%- comment -%} NEW: Mandarin vs Regular Blend Metafields {%- endcomment -%}
+{% assign blend_regular_collar_product = product.metafields.custom.linen_blend_regular_collar_toggle.value %}
+{% assign blend_mandarin_collar_product = product.metafields.custom.linen_blend_mandarin_collar_toggle.value %}
 
 {%- comment -%} Lea / Fabric {%- endcomment -%}
 {% assign lea40_product = product.metafields.custom.lea40_toggle_product.value %}
@@ -738,6 +110,11 @@
 {% assign notch_collar_is_draft = false %}
 {% if notch_collar_product and notch_collar_product.status == 'draft' %}{% assign notch_collar_is_draft = true %}{% endif %}
 
+{% assign blend_regular_collar_is_draft = false %}
+{% if blend_regular_collar_product and blend_regular_collar_product.status == 'draft' %}{% assign blend_regular_collar_is_draft = true %}{% endif %}
+{% assign blend_mandarin_collar_is_draft = false %}
+{% if blend_mandarin_collar_product and blend_mandarin_collar_product.status == 'draft' %}{% assign blend_mandarin_collar_is_draft = true %}{% endif %}
+
 {% assign lea40_is_draft = false %}
 {% if lea40_product and lea40_product.status == 'draft' %}{% assign lea40_is_draft = true %}{% endif %}
 {% assign lea44_is_draft = false %}
@@ -790,6 +167,11 @@
 {% assign show_btn_sfit = false %}{% if straight_fit_product and straight_fit_is_draft == false %}{% assign show_btn_sfit = true %}{% endif %}
 {% assign show_btn_rcollar = false %}{% if regular_collar_product and regular_collar_is_draft == false %}{% assign show_btn_rcollar = true %}{% endif %}
 {% assign show_btn_ncollar = false %}{% if notch_collar_product and notch_collar_is_draft == false %}{% assign show_btn_ncollar = true %}{% endif %}
+
+{%- comment -%} NEW Button Flags: Blend Collars {%- endcomment -%}
+{% assign show_btn_blend_rcollar = false %}{% if blend_regular_collar_product and blend_regular_collar_is_draft == false %}{% assign show_btn_blend_rcollar = true %}{% endif %}
+{% assign show_btn_blend_mcollar = false %}{% if blend_mandarin_collar_product and blend_mandarin_collar_is_draft == false %}{% assign show_btn_blend_mcollar = true %}{% endif %}
+
 {% assign show_btn_lea40 = false %}{% if lea40_product and lea40_is_draft == false %}{% assign show_btn_lea40 = true %}{% endif %}
 {% assign show_btn_lea44 = false %}{% if lea44_product and lea44_is_draft == false %}{% assign show_btn_lea44 = true %}{% endif %}
 {% assign show_btn_single = false %}{% if single_product and single_is_draft == false %}{% assign show_btn_single = true %}{% endif %}
@@ -820,6 +202,10 @@
 
 {% assign any_collar_btn = false %}
 {% if show_btn_rcollar or show_btn_ncollar %}{% assign any_collar_btn = true %}{% endif %}
+
+{%- comment -%} New Row Helper: Blend Collar {%- endcomment -%}
+{% assign any_blend_collar_btn = false %}
+{% if show_btn_blend_rcollar or show_btn_blend_mcollar %}{% assign any_blend_collar_btn = true %}{% endif %}
 
 {% assign any_length_btn = false %}
 {% if show_btn_slen or show_btn_mlen %}{% assign any_length_btn = true %}{% endif %}
@@ -860,6 +246,11 @@
 {% if show_btn_rcollar %}{% assign valid_collar_btn_count = valid_collar_btn_count | plus: 1 %}{% endif %}
 {% if show_btn_ncollar %}{% assign valid_collar_btn_count = valid_collar_btn_count | plus: 1 %}{% endif %}
 
+{%- comment -%} NEW Count: Blend Collar {%- endcomment -%}
+{% assign valid_blend_collar_btn_count = 0 %}
+{% if show_btn_blend_rcollar %}{% assign valid_blend_collar_btn_count = valid_blend_collar_btn_count | plus: 1 %}{% endif %}
+{% if show_btn_blend_mcollar %}{% assign valid_blend_collar_btn_count = valid_blend_collar_btn_count | plus: 1 %}{% endif %}
+
 {% assign valid_length_btn_count = 0 %}
 {% if show_btn_slen %}{% assign valid_length_btn_count = valid_length_btn_count | plus: 1 %}{% endif %}
 {% if show_btn_mlen %}{% assign valid_length_btn_count = valid_length_btn_count | plus: 1 %}{% endif %}
@@ -898,6 +289,10 @@
 {% assign row_collar = false %}
 {% if valid_collar_btn_count >= 2 and is_shirt and is_draft == false %}{% assign row_collar = true %}{% endif %}
 
+{%- comment -%} NEW Row Flag: Blend Collar {%- endcomment -%}
+{% assign row_blend_collar = false %}
+{% if valid_blend_collar_btn_count >= 2 and is_draft == false %}{% assign row_blend_collar = true %}{% endif %}
+
 {% assign row_length = false %}
 {% if valid_length_btn_count >= 2 and is_draft == false %}{% assign row_length = true %}{% endif %}
 
@@ -923,7 +318,7 @@
   {% if half_title contains 'half sleeve' %}{% assign short_label = 'Half Sleeve' %}{% endif %}
 {% endif %}
 
-{% if row_pack or row_shirt or row_kurta or row_pant or row_collar or row_length or row_fit or row_lea or row_slit or row_winter %}
+{% if row_pack or row_shirt or row_kurta or row_pant or row_collar or row_blend_collar or row_length or row_fit or row_lea or row_slit or row_winter %}
 
 <style>
   .toggle-container{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
@@ -935,7 +330,8 @@
         padding: 3px 26px;
         font-size: 14px;
     }
-  </style>
+  }
+</style>
 
 <div>
   {% if row_pack %}
@@ -985,6 +381,17 @@
       <div class="toggle-container">
         {% if show_btn_rcollar %}<button type="button" id="btnRegularCollar" class="toggle-btn">Regular Collar</button>{% endif %}
         {% if show_btn_ncollar %}<button type="button" id="btnNotchCollar"   class="toggle-btn">Notch Collar</button>{% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% comment %} NEW: Blend Collar UI {% endcomment %}
+  {% if row_blend_collar %}
+    <div class="toggle-row">
+      <label>Product Type :</label>
+      <div class="toggle-container">
+        {% if show_btn_blend_rcollar %}<button type="button" id="btnBlendRegularCollar" class="toggle-btn">Regular Collar</button>{% endif %}
+        {% if show_btn_blend_mcollar %}<button type="button" id="btnBlendMandarinCollar" class="toggle-btn">Mandarin Collar</button>{% endif %}
       </div>
     </div>
   {% endif %}
@@ -1066,13 +473,16 @@
   const linkP2            = "{% if show_btn_p2 %}{{ pack2_product.url }}{% endif %}";
   const linkP3            = "{% if show_btn_p3 %}{{ pack3_product.url }}{% endif %}";
   const linkZipNeck       = "{% if show_btn_zip %}{{ zip_neck_product.url }}{% endif %}";
-const linkRoundNeck     = "{% if show_btn_rneck %}{{ round_neck_product.url }}{% endif %}";
-const linkPulloverHoodie = "{% if show_btn_hoodie %}{{ pullover_hoodie_product.url }}{% endif %}";
+  const linkRoundNeck     = "{% if show_btn_rneck %}{{ round_neck_product.url }}{% endif %}";
+  const linkPulloverHoodie = "{% if show_btn_hoodie %}{{ pullover_hoodie_product.url }}{% endif %}";
 
+  // NEW — Blend Links
+  const linkBlendRegularCollar = "{% if show_btn_blend_rcollar %}{{ blend_regular_collar_product.url }}{% endif %}";
+  const linkBlendMandarinCollar = "{% if show_btn_blend_mcollar %}{{ blend_mandarin_collar_product.url }}{% endif %}";
 
   // NEW — Slit links
-  const linkWithSlit      = "{% if show_btn_with_slit %}{{ with_slit_product.url }}{% endif %}";
-  const linkWithoutSlit   = "{% if show_btn_without_slit %}{{ without_slit_product.url }}{% endif %}";
+  const linkWithSlit       = "{% if show_btn_with_slit %}{{ with_slit_product.url }}{% endif %}";
+  const linkWithoutSlit    = "{% if show_btn_without_slit %}{{ without_slit_product.url }}{% endif %}";
 
   function setActiveToggle(type){
     const byId=(id)=>document.getElementById(id);
@@ -1085,6 +495,8 @@ const linkPulloverHoodie = "{% if show_btn_hoodie %}{{ pullover_hoodie_product.u
       wide:['btnWideLegPant','btnStraightPant'],
       regularcollar:['btnRegularCollar','btnNotchCollar'],
       notchcollar:['btnNotchCollar','btnRegularCollar'],
+      blendregular:['btnBlendRegularCollar','btnBlendMandarinCollar'],
+      blendmandarin:['btnBlendMandarinCollar','btnBlendRegularCollar'],
       shortlength:['btnShortLength','btnMidThighLength'],
       midthighlength:['btnMidThighLength','btnShortLength'],
       regularfit:['btnRegularFit','btnStraightFit'],
@@ -1097,7 +509,6 @@ const linkPulloverHoodie = "{% if show_btn_hoodie %}{{ pullover_hoodie_product.u
       winterzip:['btnZipNeck', 'btnRoundNeck', 'btnPulloverHoodie'],
       winterround:['btnRoundNeck', 'btnZipNeck', 'btnPulloverHoodie'],
       winterhoodie:['btnPulloverHoodie', 'btnZipNeck', 'btnRoundNeck'],
-
 
       // NEW — Slit toggle
       withslit:['btnWithSlit','btnWithoutSlit'],
@@ -1129,9 +540,12 @@ const linkPulloverHoodie = "{% if show_btn_hoodie %}{{ pullover_hoodie_product.u
     if (samePath(here, linkP2)) setActiveToggle('pack2');
     if (samePath(here, linkP3)) setActiveToggle('pack3');
     if (samePath(here, linkZipNeck)) setActiveToggle('winterzip');
-if (samePath(here, linkRoundNeck)) setActiveToggle('winterround');
-if (samePath(here, linkPulloverHoodie)) setActiveToggle('winterhoodie');
+    if (samePath(here, linkRoundNeck)) setActiveToggle('winterround');
+    if (samePath(here, linkPulloverHoodie)) setActiveToggle('winterhoodie');
 
+    // NEW — Blend Collars
+    if (samePath(here, linkBlendRegularCollar)) setActiveToggle('blendregular');
+    if (samePath(here, linkBlendMandarinCollar)) setActiveToggle('blendmandarin');
 
     // NEW — slit
     if (samePath(here, linkWithSlit)) setActiveToggle('withslit');
@@ -1148,7 +562,12 @@ if (samePath(here, linkPulloverHoodie)) setActiveToggle('winterhoodie');
     else if (t.includes('wide leg pant')||t.includes('wide-leg pant')) setActiveToggle('wide');
 
     if (t.includes('shirt') && t.includes('notch collar')) setActiveToggle('notchcollar');
+    else if (t.includes('shirt') && t.includes('mandarin collar')) setActiveToggle('blendmandarin');
     else if (t.includes('shirt')) setActiveToggle('regularcollar');
+
+    // Specific logic for Mandarin Blend Toggle
+    if (t.includes('mandarin collar')) setActiveToggle('blendmandarin');
+    else if (t.includes('regular collar') && !t.includes('notch')) setActiveToggle('blendregular');
 
     if (t.includes('mid thigh length')||t.includes('mid-thigh length')) setActiveToggle('midthighlength');
     else if (t.includes('short length')) setActiveToggle('shortlength');
@@ -1161,8 +580,8 @@ if (samePath(here, linkPulloverHoodie)) setActiveToggle('winterhoodie');
     if (t.includes('without slit')) setActiveToggle('withoutslit');
 
     if (t.includes('zip neck')) setActiveToggle('winterzip');
-if (t.includes('round neck')) setActiveToggle('winterround');
-if (t.includes('pullover') || t.includes('hoodie')) setActiveToggle('winterhoodie');
+    if (t.includes('round neck')) setActiveToggle('winterround');
+    if (t.includes('pullover') || t.includes('hoodie')) setActiveToggle('winterhoodie');
 
   }
 
@@ -1179,7 +598,7 @@ if (t.includes('pullover') || t.includes('hoodie')) setActiveToggle('winterhoodi
     });
   }
 
-  bind('btnFullSleeve',  fullSleeveLink,  'full');
+  bind('btnFullSleeve',   fullSleeveLink,  'full');
   bind('btnShortSleeve', shortSleeveLink, 'shortsleeve');
   bind('btnShortKurta',  shortKurtaLink,  'short');
   bind('btnLongKurta',   longKurtaLink,   'long');
@@ -1187,6 +606,11 @@ if (t.includes('pullover') || t.includes('hoodie')) setActiveToggle('winterhoodi
   bind('btnWideLegPant', wideLegPantLink, 'wide');
   bind('btnRegularCollar', regularCollarLink, 'regularcollar');
   bind('btnNotchCollar',   notchCollarLink,   'notchcollar');
+  
+  // NEW — Blend collar bindings
+  bind('btnBlendRegularCollar', linkBlendRegularCollar, 'blendregular');
+  bind('btnBlendMandarinCollar', linkBlendMandarinCollar, 'blendmandarin');
+
   bind('btnShortLength',   shortLengthLink,   'shortlength');
   bind('btnMidThighLength',midThighLengthLink,'midthighlength');
   bind('btnRegularFit',    regularFitLink,    'regularfit');
@@ -1196,8 +620,8 @@ if (t.includes('pullover') || t.includes('hoodie')) setActiveToggle('winterhoodi
   bind('btnSinglePack',    linkSingle,        'singlepack');
   bind('btnPack2',         linkP2,            'pack2');
   bind('btnPack3',         linkP3,            'pack3');
-  bind('btnZipNeck',        linkZipNeck,        'winterzip');
-  bind('btnRoundNeck',      linkRoundNeck,      'winterround');
+  bind('btnZipNeck',       linkZipNeck,       'winterzip');
+  bind('btnRoundNeck',     linkRoundNeck,     'winterround');
   bind('btnPulloverHoodie', linkPulloverHoodie, 'winterhoodie');
 
 
@@ -1211,5 +635,3 @@ if (t.includes('pullover') || t.includes('hoodie')) setActiveToggle('winterhoodi
   });
 </script>
 {% endif %}
-
-

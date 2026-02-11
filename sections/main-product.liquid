@@ -33,6 +33,10 @@ or collection.title contains 'Women Airy Linen Mid Thigh Length Kurta'
 or collection.title contains 'Women Airy Linen Split Neck Short Kurta'
 or collection.title contains 'Women Cotton Straight Pants'
 or collection.title contains 'Women Cotton Regular Pants'
+or collection.title contains 'Women Linen Blend Knot Blouse'
+or collection.title contains 'Women Linen Blend Pleated Tops'
+or collection.title contains 'Women Linen Pant'
+or collection.title contains 'Women Linen Waist Coat'
 
 
 or collection.title contains 'Men Formal Shirts'
@@ -44,6 +48,11 @@ or collection.title contains 'Men 100% Linen Half Sleeve Shirts'
 or collection.title contains 'Men Cotton Pants'
 or collection.title contains 'Men Pure Linen Short Sleeve Shirts'
 or collection.title contains 'Men Pure Linen Full Sleeve Shirts'
+or collection.title contains 'Men Linen Blend Short Sleeve Shirts'
+or collection.title contains 'Men Linen Blend Mandarin Collar Shirts'
+or collection.title contains 'Men Flat Knit Collared T-shirt'
+or collection.title contains 'Men Flat Knit Round Neck T-shirt'
+or collection.title contains 'Men Linen Pant'
 
  
 
@@ -136,14 +145,36 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
     Unisex Zip Neck Sweatshirts
   " | downcase | split: "," %}
 
+
+    {%- comment -%} Linen Blend list {%- endcomment -%}
+    {% assign behtar_linen = "
+    Women Linen Blend Knot Blouse,
+    Women Linen Blend Pleated Tops,
+    Men Linen Blend Short Sleeve Shirts,
+    Men Linen Blend Mandarin Collar Shirts
+  " | downcase | split: "," %}
+
   {% assign is_winter = false %}
+   {% assign is_behtar = false %}
   {% assign winter_match = "" %}
+    {% assign behtar_match = "" %}
+
 
   {% for wc in winter_collections %}
     {% assign wc_clean = wc | strip %}
     {% if wc_clean == selected_title %}
       {% assign is_winter = true %}
       {% assign winter_match = selected_collection.title %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+
+    {% for bl in behtar_linen %}
+    {% assign bl_clean = bl | strip %}
+    {% if bl_clean == selected_title %}
+      {% assign is_behtar = true %}
+      {% assign behtar_match = selected_collection.title %}
       {% break %}
     {% endif %}
   {% endfor %}
@@ -160,6 +191,9 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
 
    {% elsif is_winter %}
     <span><a href="/pages/a-little-warmth">Winter Wear</a> /</span>
+
+  {% elsif is_behtar %}
+    <span><a href="/pages/behtar-linen">Behtar Linen</a> /</span>
 
   {% else %}
     {% for collection in product.collections %}
@@ -182,6 +216,23 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
     }
   }
 </style>
+
+
+{% if product %}
+  {% assign nector_product_id = product.id %}
+  {% assign nector_countsum_count = product.metafields.nector.countsum.value.count | plus: 0 %}
+  {% assign nector_countsum_sum = product.metafields.nector.countsum.value.sum | plus: 0.0 %}
+  {% assign nector_countsum_avg = 0 %}
+
+  {% if nector_countsum_count > 0 %}
+    {% assign nector_countsum_avg = nector_countsum_sum | divided_by: nector_countsum_count %}
+  {% endif %}
+{% endif %}
+
+{% assign fill = '#F5A624' %}
+{% assign size = 12 %}
+{% assign count = nector_countsum_count %}
+{% assign rating = nector_countsum_avg | round: 1 %}
 
 
 
@@ -250,12 +301,12 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
               {% assign pre_p_url = preorder_product | split: '__' %}
              {% if pre_p_url contains product.handle %}
                {% else %}
-          <a class="looxReview" href="#looxReviews">
+          <a class="looxReview" href="#nector-reviews">
             <div
               class="loox-rating"
               data-id="{{ product.id }}"
-              data-rating="{{ product.metafields.loox.avg_rating  }}"
-              data-raters="{{ product.metafields.loox.num_reviews }}"
+              data-rating="{{ rating }}"
+              data-raters="{{ count }}"
               data-pattern='[rating] <span class="review_count">[count]</span>'></div>
           </a>
              {% endif %}

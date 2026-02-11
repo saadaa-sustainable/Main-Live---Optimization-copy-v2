@@ -10,9 +10,8 @@
 
 
     {% comment %} Tectonic custom code starts {% endcomment %}
-
-    {{ 'tt_heimdall.js' | asset_url | script_tag }}
-
+      {{ 'tt_heimdall.js' | asset_url | script_tag }}
+      {% render 'hermes-analytics' %}
     {% comment %} Tectonic custom code ends {% endcomment %}
 
     
@@ -574,6 +573,9 @@ _affiniv('init', { companyId: '5997284636811215795',
       {% render 'codify-order-cancel' %}      
     {%- endif -%}
     <!-- end order-cancel code -->
+
+
+
     
   </body>
 
