@@ -1,0 +1,594 @@
+{%- comment -%}
+==========================
+CATEGORY BANNER CAROUSEL (UPDATED)
+- Progress bar is REAL fill (12% -> 100% as you scroll; stays 12% if not scrollable)
+- Updated progress bar UI
+- Desktop arrows (left/right) for product carousel:
+  • Right arrow visible by default (if scrollable)
+  • Left arrow shows only after scrolling right
+  • Right arrow hides at end
+==========================
+{%- endcomment -%}
+
+{% schema %}
+{
+  "name": "Category Banner Carousel",
+  "max_blocks": 2,
+  "settings": [
+    { "type": "header", "content": "Global Settings" },
+    { "type": "text", "id": "heading", "label": "Section Heading", "default": "Happening NOW!" },
+    { "type": "text", "id": "badge_text", "label": "Badge Text", "default": "NEW LAUNCH!" },
+    { "type": "color", "id": "badge_bg", "label": "Badge Background Color", "default": "#a18262" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge Text Color", "default": "#ffffff" },
+    { "type": "checkbox", "id": "show_gender", "label": "Show Gender in Title", "default": false },
+    { "type": "checkbox", "id": "show_color", "label": "Show Color in Title", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "gender_content",
+      "name": "Gender Content",
+      "settings": [
+        {
+          "type": "select",
+          "id": "gender",
+          "label": "Gender Category",
+          "options": [
+            { "value": "women", "label": "Women" },
+            { "value": "men", "label": "Men" }
+          ],
+          "default": "women"
+        },
+        { "type": "image_picker", "id": "banner_image", "label": "Banner Image" },
+        {
+          "type": "textarea",
+          "id": "tags",
+          "label": "Product Tags (Comma Separated)",
+          "info": "E.g: 'SDCP:14, SDCSP:6'. Format: TAG:Count (Optional Count)",
+          "default": "SDCP:14, SDCSP"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Banner Carousel",
+      "blocks": [
+        { "type": "gender_content", "settings": { "gender": "women" } },
+        { "type": "gender_content", "settings": { "gender": "men" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --cbc-badge-bg: {{ section.settings.badge_bg }};
+    --cbc-badge-text: {{ section.settings.badge_text_color }};
+    margin-bottom: 15px;
+  }
+
+  .cbc-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* ——— HEADER ——— */
+  .cbc-header { text-align: center; margin-bottom: 20px; }
+  .cbc-heading { font-size: 26px; font-weight: 500; color: #111; margin: 0; }
+
+  /* ——— CONTENT BLOCKS ——— */
+  .cbc-gender-block { display: none; animation: cbcFadeIn 0.4s ease; }
+  .cbc-gender-block.is-visible { display: block; }
+  @keyframes cbcFadeIn { from { opacity:0; } to { opacity:1; } }
+
+  /* ——— BANNER ——— */
+  .cbc-banner-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .cbc-banner-wrapper img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* ——— CAROUSEL ——— */
+  .cbc-carousel-wrapper { position: relative; }
+
+  .cbc-carousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .cbc-carousel::-webkit-scrollbar { display: none; }
+
+  /* ——— DESKTOP ARROWS (CBC) ——— */
+  .cbc-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transition: opacity .15s ease, transform .15s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .cbc-nav svg { width: 18px; height: 18px; display: block; }
+  .cbc-nav.is-visible { opacity: 1; pointer-events: auto; }
+  .cbc-nav:hover { transform: translateY(-50%) scale(1.03); }
+
+  .cbc-nav--left { left: -6px; }
+  .cbc-nav--right { right: -6px; }
+
+  /* Desktop only */
+  @media (max-width: 1024px) {
+    .cbc-nav { display: none !important; }
+  }
+
+  /* ——— REAL PROGRESS BAR (FILL) ——— */
+  .cbc-progress-container {
+    width: 220px;
+    height: 4px;
+    background: rgba(0,0,0,0.10);
+    border-radius: 999px;
+    margin: 8px auto 0;
+    overflow: hidden;
+  }
+  .cbc-progress-bar {
+    height: 100%;
+    width: 12%; /* default small fill */
+    background: #000;
+    border-radius: 999px;
+    transition: width 0.12s ease-out;
+  }
+
+  /* ——— PRODUCT CARD UI ——— */
+  .cbc-card {
+    flex: 0 0 260px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+  @media(max-width: 768px) {
+    .cbc-card { flex: 0 0 180px; }
+    .cbc-heading { font-size: 22px; }
+  }
+
+  .cbc-img-wrap {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background-color: #f4f4f4;
+  }
+  .cbc-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .cbc-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 40px 10px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
+    color: #fff;
+    text-align: left;
+  }
+  .cbc-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .cbc-meta {
+    font-size: 10px; opacity: 0.9; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+
+  .cbc-badge {
+    background-color: var(--cbc-badge-bg);
+    color: var(--cbc-badge-text);
+    font-size: 9px; font-weight: 600;
+    padding: 2px 5px; border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .cbc-info { padding: 0 4px; }
+  .cbc-colors { font-size: 11px; color: #666; margin-bottom: 4px; display:none; }
+
+  .cbc-price-row { display: flex; align-items: baseline; gap: 6px; display:none; }
+  .cbc-price { font-weight: 700; font-size: 14px; color: #111; }
+  .cbc-compare { text-decoration: line-through; color: #ff5a5a; font-size: 12px; font-weight: 500; }
+
+  .cbc-loading { width: 100%; text-align: center; padding: 30px; color: #666; font-size: 14px; }
+
+  @media(min-width:780px){
+    .cbc-title { font-size: 18px; }
+    .cbc-meta { font-size: 15px; }
+    .cbc-card { flex: 0 0 240px; }
+  }
+{% endstyle %}
+
+<div class="cbc-container">
+  <div class="cbc-header">
+    <h2 class="cbc-heading">{{ section.settings.heading }}</h2>
+  </div>
+
+  {% for block in section.blocks %}
+    <div class="cbc-gender-block" id="block-{{ block.id }}" data-gender="{{ block.settings.gender | downcase }}">
+      <div class="cbc-banner-wrapper">
+        {% if block.settings.banner_image != blank %}
+          <img
+            src="{{ block.settings.banner_image | image_url: width: 1400 }}"
+            alt="{{ section.settings.heading }}"
+            loading="lazy"
+          >
+        {% else %}
+          <img
+            src="https://via.placeholder.com/1200x400?text={{ block.settings.gender | capitalize }}+Banner"
+            alt="Placeholder"
+          >
+        {% endif %}
+      </div>
+
+      <div class="cbc-carousel-wrapper">
+        <!-- Left Arrow -->
+        <button class="cbc-nav cbc-nav--left" type="button" aria-label="Scroll left" id="cbc-left-{{ block.id }}">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Right Arrow -->
+        <button class="cbc-nav cbc-nav--right" type="button" aria-label="Scroll right" id="cbc-right-{{ block.id }}">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="cbc-carousel" id="cbc-track-{{ block.id }}">
+          <div class="cbc-loading">Loading {{ block.settings.gender }} products...</div>
+        </div>
+
+        <div class="cbc-progress-container">
+          <div class="cbc-progress-bar" id="cbc-bar-{{ block.id }}"></div>
+        </div>
+      </div>
+
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  (function() {
+    const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+    const badgeText = "{{ section.settings.badge_text | escape }}";
+
+    const blocksData = [
+      {% for block in section.blocks %}
+        {
+          id: "{{ block.id }}",
+          gender: "{{ block.settings.gender | downcase }}",
+          tagsRaw: "{{ block.settings.tags | escape }}",
+          loaded: false
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ];
+
+    let currentGlobalGender = window.currentGlobalGender || 'women';
+
+    // ——— DESKTOP ARROWS ———
+    function initDesktopArrows(track, blockId) {
+      const leftBtn = document.getElementById(`cbc-left-${blockId}`);
+      const rightBtn = document.getElementById(`cbc-right-${blockId}`);
+      if (!track || !leftBtn || !rightBtn) return;
+
+      const isDesktop = () => window.matchMedia('(min-width: 1025px)').matches;
+
+      function updateArrows() {
+        if (!isDesktop()) {
+          leftBtn.classList.remove('is-visible');
+          rightBtn.classList.remove('is-visible');
+          return;
+        }
+
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll <= 2) {
+          leftBtn.classList.remove('is-visible');
+          rightBtn.classList.remove('is-visible');
+          return;
+        }
+
+        const atStart = track.scrollLeft <= 2;
+        const atEnd = track.scrollLeft >= (maxScroll - 2);
+
+        // right visible by default
+        if (atStart) {
+          leftBtn.classList.remove('is-visible');
+          rightBtn.classList.add('is-visible');
+          return;
+        }
+
+        leftBtn.classList.add('is-visible');
+        if (atEnd) rightBtn.classList.remove('is-visible');
+        else rightBtn.classList.add('is-visible');
+      }
+
+      function scrollByStep(dir) {
+        const step = Math.round(track.clientWidth * 0.85);
+        track.scrollBy({ left: dir * step, behavior: 'smooth' });
+      }
+
+      if (!track._cbcArrowBound) {
+        track._cbcArrowBound = true;
+
+        leftBtn.addEventListener('click', () => scrollByStep(-1));
+        rightBtn.addEventListener('click', () => scrollByStep(1));
+
+        track.addEventListener('scroll', updateArrows, { passive: true });
+        window.addEventListener('resize', updateArrows);
+      }
+
+      setTimeout(updateArrows, 80);
+    }
+
+    // 1. GENDER TOGGLE LOGIC
+    function updateVisibility() {
+      document.querySelectorAll('.cbc-gender-block').forEach(el => el.classList.remove('is-visible'));
+
+      const targetBlock = blocksData.find(b => b.gender === currentGlobalGender);
+
+      if (targetBlock) {
+        const blockEl = document.getElementById(`block-${targetBlock.id}`);
+        if (blockEl) {
+          blockEl.classList.add('is-visible');
+
+          // Set to default minimum fill on switch
+          const bar = document.getElementById(`cbc-bar-${targetBlock.id}`);
+          if (bar) bar.style.width = '12%';
+
+          if (!targetBlock.loaded) {
+            initBlock(targetBlock);
+            targetBlock.loaded = true;
+          } else {
+            const track = document.getElementById(`cbc-track-${targetBlock.id}`);
+            if (track) {
+              // Refresh progress + arrows
+              setTimeout(() => {
+                // progress refresh
+                const maxScroll = track.scrollWidth - track.clientWidth;
+                if (maxScroll <= 0) {
+                  if (bar) bar.style.width = '12%';
+                } else {
+                  const progress = track.scrollLeft / maxScroll;
+                  const pct = progress * 100;
+                  if (bar) bar.style.width = `${Math.min(100, Math.max(12, pct))}%`;
+                }
+                initDesktopArrows(track, targetBlock.id);
+              }, 80);
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener('moodGenderChanged', (e) => {
+      currentGlobalGender = e.detail.gender;
+      updateVisibility();
+    });
+
+    updateVisibility();
+
+    // 2. FETCH & RENDER LOGIC
+    async function initBlock(block) {
+      const track = document.getElementById(`cbc-track-${block.id}`);
+      if (!block.tagsRaw.trim()) {
+        track.innerHTML = '<div class="cbc-loading">No tags configured.</div>';
+        return;
+      }
+
+      const tagEntries = block.tagsRaw.split(',').map(entry => {
+        const parts = entry.split(':');
+        return { tag: parts[0].trim(), count: parts[1] ? parts[1].trim() : '' };
+      }).filter(e => e.tag !== '');
+
+      const products = await fetchProductsMulti(tagEntries);
+
+      if (products.length === 0) {
+        track.innerHTML = '<div class="cbc-loading">No products found.</div>';
+        return;
+      }
+
+      renderProducts(track, products);
+
+      // Init progress + arrows after render
+      initProgressBar(track, block.id);
+      initDesktopArrows(track, block.id);
+    }
+
+    async function fetchProductsMulti(tagEntries) {
+      let queryParts = [];
+      tagEntries.forEach((entry, index) => {
+        queryParts.push(`
+          t${index}: products(first: 10, query: "tag:'${entry.tag}'") {
+            edges {
+              node {
+                title, handle, onlineStoreUrl, totalInventory
+                variantName: metafield(namespace: "custom", key: "product_variant_name") { value }
+                images(first: 1) { edges { node { url } } }
+                variants(first: 25) {
+                  edges { node {
+                    price { amount }
+                    compareAtPrice { amount }
+                    quantityAvailable
+                    selectedOptions { name, value }
+                  } }
+                }
+              }
+            }
+          }
+        `);
+      });
+
+      const fullQuery = `{ ${queryParts.join('\n')} }`;
+
+      try {
+        const res = await fetch(`https://${window.Shopify.shop}/api/2024-07/graphql.json`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": "388bd37219d8ab7daee1c58a23c03cc8"
+          },
+          body: JSON.stringify({ query: fullQuery })
+        });
+
+        const json = await res.json();
+
+        let finalProducts = [];
+        let usedHandles = new Set();
+        let usedColors = new Set();
+
+        tagEntries.forEach((entry, index) => {
+          const edges = json.data[`t${index}`]?.edges || [];
+
+          const candidates = edges.map(e => e.node).sort((a,b) => {
+            const stockA = a.variants.edges.reduce((s,v)=>s+(v.node.quantityAvailable||0),0);
+            const stockB = b.variants.edges.reduce((s,v)=>s+(v.node.quantityAvailable||0),0);
+            return stockB - stockA;
+          });
+
+          let winner = null;
+          for (let p of candidates) {
+            const col = p.variantName?.value || "Unknown";
+            if (usedHandles.has(p.handle)) continue;
+            if (usedColors.has(col)) continue;
+            winner = p; break;
+          }
+          if (!winner) winner = candidates.find(p => !usedHandles.has(p.handle));
+
+          if (winner) {
+            usedHandles.add(winner.handle);
+            if (winner.variantName?.value) usedColors.add(winner.variantName.value);
+            finalProducts.push(normalize(winner, entry.count));
+          }
+        });
+
+        return finalProducts;
+      } catch(e) {
+        console.error(e);
+        return [];
+      }
+    }
+
+    function normalize(p, countStr) {
+      const v = p.variants.edges[0]?.node;
+      let title = p.title;
+
+      {% unless section.settings.show_gender %}
+        title = title.replace(/\b(Women['’]?s?|Men['’]?s?|Unisex['’]?s?|Women|Men|Unisex)\b/gi, "").trim();
+      {% endunless %}
+
+      {% unless section.settings.show_color %}
+        if (p.variantName?.value) title = title.replace(new RegExp(p.variantName.value, 'gi'), "");
+      {% endunless %}
+
+      title = title.replace(/\s+/g, ' ').trim();
+
+      const sizes = [...new Set(
+        p.variants.edges.flatMap(va =>
+          va.node.selectedOptions
+            .filter(o => o.name.toLowerCase() === 'size')
+            .map(o => o.value)
+        )
+      )];
+
+      const sizeStr = sizes.length > 1 ? `${sizes[0]} - ${sizes[sizes.length-1]}` : (sizes[0] || '');
+
+      return {
+        title,
+        link: p.onlineStoreUrl || `/products/${p.handle}`,
+        image: p.images.edges[0]?.node?.url,
+        price: parseFloat(v?.price?.amount || 0),
+        compare: parseFloat(v?.price?.amount || 0) * 2,
+        size: sizeStr,
+        countInfo: countStr
+      };
+    }
+
+    function renderProducts(track, products) {
+      track.innerHTML = products.map(p => {
+        const colorTxt = p.countInfo ? `Available in ${p.countInfo}+ colors` : 'Available in multiple colors';
+        return `
+          <a class="cbc-card" href="${p.link}">
+            <div class="cbc-img-wrap">
+              <img src="${p.image}" alt="${p.title}" loading="lazy">
+              <div class="cbc-overlay">
+                <div class="cbc-title">${p.title}</div>
+                <div class="cbc-meta">
+                  <span>${p.size}</span>
+                  ${badgeText ? `<span class="cbc-badge">${badgeText}</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <div class="cbc-info">
+              <div class="cbc-colors">${colorTxt}</div>
+              <div class="cbc-price-row">
+                <span class="cbc-price">₹${inr.format(p.price)}</span>
+                <span class="cbc-compare">₹${inr.format(p.compare)}</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // 3. PROGRESS BAR LOGIC (REAL FILL + min 12%)
+    function initProgressBar(track, blockId) {
+      const bar = document.getElementById(`cbc-bar-${blockId}`);
+      if (!track || !bar) return;
+
+      function update() {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+
+        if (maxScroll <= 0) {
+          bar.style.width = '12%';
+          return;
+        }
+
+        const progress = track.scrollLeft / maxScroll; // 0..1
+        const pct = (progress * 100);
+        bar.style.width = `${Math.min(100, Math.max(12, pct))}%`;
+      }
+
+      if (track._cbcProgressBound) {
+        requestAnimationFrame(update);
+        return;
+      }
+      track._cbcProgressBound = true;
+
+      track.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+
+      setTimeout(update, 60);
+    }
+
+  })();
+</script>

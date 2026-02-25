@@ -71,6 +71,9 @@
 {% assign round_neck_product     = product.metafields.custom.round_neck.value %}
 {% assign pullover_hoodie_product = product.metafields.custom.pullover_hoodie.value %}
 
+{%- comment -%} NEW — Flat Knit Neckline Toggles {%- endcomment -%}
+{% assign flat_knit_round_product    = product.metafields.custom.men_flat_knit_round_neckline.value %}
+{% assign flat_knit_collared_product = product.metafields.custom.men_flat_knit_collared_neckline.value %}
 
 {%- comment -%} Tags check for slit toggle {%- endcomment -%}
 {% assign has_slit_tag = false %}
@@ -136,12 +139,17 @@
 {% assign pullover_hoodie_is_draft = false %}
 {% if pullover_hoodie_product and pullover_hoodie_product.status == 'draft' %}{% assign pullover_hoodie_is_draft = true %}{% endif %}
 
-
 {%- comment -%} NEW: Slit draft checks {%- endcomment -%}
 {% assign with_slit_is_draft = false %}
 {% if with_slit_product and with_slit_product.status == 'draft' %}{% assign with_slit_is_draft = true %}{% endif %}
 {% assign without_slit_is_draft = false %}
 {% if without_slit_product and without_slit_product.status == 'draft' %}{% assign without_slit_is_draft = true %}{% endif %}
+
+{%- comment -%} NEW: Flat Knit Neckline draft checks {%- endcomment -%}
+{% assign flat_knit_round_is_draft = false %}
+{% if flat_knit_round_product and flat_knit_round_product.status == 'draft' %}{% assign flat_knit_round_is_draft = true %}{% endif %}
+{% assign flat_knit_collared_is_draft = false %}
+{% if flat_knit_collared_product and flat_knit_collared_product.status == 'draft' %}{% assign flat_knit_collared_is_draft = true %}{% endif %}
 
 {%- comment -%} NEW: Slit button availability {%- endcomment -%}
 {% assign show_btn_with_slit = false %}
@@ -185,6 +193,13 @@
 
 {% assign show_btn_hoodie = false %}
 {% if pullover_hoodie_product and pullover_hoodie_is_draft == false %}{% assign show_btn_hoodie = true %}{% endif %}
+
+{%- comment -%} NEW Button Flags: Flat Knit Neckline {%- endcomment -%}
+{% assign show_btn_fk_round = false %}
+{% if flat_knit_round_product and flat_knit_round_is_draft == false %}{% assign show_btn_fk_round = true %}{% endif %}
+
+{% assign show_btn_fk_collared = false %}
+{% if flat_knit_collared_product and flat_knit_collared_is_draft == false %}{% assign show_btn_fk_collared = true %}{% endif %}
 
 
 {%- comment -%} Row visibility helpers (any-btn flags; kept for flexibility) {%- endcomment -%}
@@ -272,6 +287,11 @@
 {% if show_btn_rneck %}{% assign valid_winter_btn_count = valid_winter_btn_count | plus: 1 %}{% endif %}
 {% if show_btn_hoodie %}{% assign valid_winter_btn_count = valid_winter_btn_count | plus: 1 %}{% endif %}
 
+{%- comment -%} NEW Count: Flat Knit Neckline {%- endcomment -%}
+{% assign valid_fk_neckline_btn_count = 0 %}
+{% if show_btn_fk_round %}{% assign valid_fk_neckline_btn_count = valid_fk_neckline_btn_count | plus: 1 %}{% endif %}
+{% if show_btn_fk_collared %}{% assign valid_fk_neckline_btn_count = valid_fk_neckline_btn_count | plus: 1 %}{% endif %}
+
 
 {%- comment -%} final row flags (using counts as per your preference) {%- endcomment -%}
 {% assign row_pack = false %}
@@ -308,6 +328,9 @@
 {% assign row_winter = false %}
 {% if valid_winter_btn_count >= 2 and is_draft == false %}{% assign row_winter = true %}{% endif %}
 
+{%- comment -%} NEW Row Flag: Flat Knit Neckline {%- endcomment -%}
+{% assign row_fk_neckline = false %}
+{% if valid_fk_neckline_btn_count >= 2 and is_draft == false %}{% assign row_fk_neckline = true %}{% endif %}
 
 {%- comment -%} Label logic: Half vs Short sleeve {%- endcomment -%}
 {% assign short_label = 'Short Sleeve' %}
@@ -318,7 +341,7 @@
   {% if half_title contains 'half sleeve' %}{% assign short_label = 'Half Sleeve' %}{% endif %}
 {% endif %}
 
-{% if row_pack or row_shirt or row_kurta or row_pant or row_collar or row_blend_collar or row_length or row_fit or row_lea or row_slit or row_winter %}
+{% if row_pack or row_shirt or row_kurta or row_pant or row_collar or row_blend_collar or row_length or row_fit or row_lea or row_slit or row_winter or row_fk_neckline %}
 
 <style>
   .toggle-container{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
@@ -445,7 +468,18 @@
       {% if show_btn_hoodie %}<button type="button" id="btnPulloverHoodie" class="toggle-btn">Pullover Hoodie</button>{% endif %}
     </div>
   </div>
-{% endif %}
+  {% endif %}
+
+  {% comment %} NEW: Flat Knit Neckline UI {% endcomment %}
+  {% if row_fk_neckline %}
+  <div class="toggle-row">
+    <label>Neckline :</label>
+    <div class="toggle-container">
+      {% if show_btn_fk_round %}<button type="button" id="btnFKRound" class="toggle-btn">Round Neckline</button>{% endif %}
+      {% if show_btn_fk_collared %}<button type="button" id="btnFKCollared" class="toggle-btn">Collared Neckline</button>{% endif %}
+    </div>
+  </div>
+  {% endif %}
 
 </div>
 
@@ -484,6 +518,10 @@
   const linkWithSlit       = "{% if show_btn_with_slit %}{{ with_slit_product.url }}{% endif %}";
   const linkWithoutSlit    = "{% if show_btn_without_slit %}{{ without_slit_product.url }}{% endif %}";
 
+  // NEW — Flat Knit Neckline links
+  const linkFKRound    = "{% if show_btn_fk_round %}{{ flat_knit_round_product.url }}{% endif %}";
+  const linkFKCollared = "{% if show_btn_fk_collared %}{{ flat_knit_collared_product.url }}{% endif %}";
+
   function setActiveToggle(type){
     const byId=(id)=>document.getElementById(id);
     const pairs={
@@ -513,6 +551,10 @@
       // NEW — Slit toggle
       withslit:['btnWithSlit','btnWithoutSlit'],
       withoutslit:['btnWithoutSlit','btnWithSlit'],
+
+      // NEW — Flat Knit Neckline toggle
+      fkround:['btnFKRound','btnFKCollared'],
+      fkcollared:['btnFKCollared','btnFKRound'],
     };
     const ids=pairs[type]; if(!ids) return;
     ids.forEach((id,i)=>{ const el=byId(id); if(!el) return; if(i===0) el.classList.add('active'); else el.classList.remove('active'); });
@@ -550,6 +592,10 @@
     // NEW — slit
     if (samePath(here, linkWithSlit)) setActiveToggle('withslit');
     if (samePath(here, linkWithoutSlit)) setActiveToggle('withoutslit');
+
+    // NEW — Flat Knit Neckline
+    if (samePath(here, linkFKRound)) setActiveToggle('fkround');
+    if (samePath(here, linkFKCollared)) setActiveToggle('fkcollared');
   })();
 
   function updateToggleBasedOnTitle(){
@@ -582,6 +628,10 @@
     if (t.includes('zip neck')) setActiveToggle('winterzip');
     if (t.includes('round neck')) setActiveToggle('winterround');
     if (t.includes('pullover') || t.includes('hoodie')) setActiveToggle('winterhoodie');
+
+    // NEW — Flat Knit Neckline check
+    if (t.includes('collared neckline') || (t.includes('flat knit') && t.includes('collar'))) setActiveToggle('fkcollared');
+    else if (t.includes('round neckline') || (t.includes('flat knit') && t.includes('round'))) setActiveToggle('fkround');
 
   }
 
@@ -624,10 +674,13 @@
   bind('btnRoundNeck',     linkRoundNeck,     'winterround');
   bind('btnPulloverHoodie', linkPulloverHoodie, 'winterhoodie');
 
-
   // NEW — slit bindings
   bind('btnWithSlit',      linkWithSlit,      'withslit');
   bind('btnWithoutSlit',   linkWithoutSlit,   'withoutslit');
+
+  // NEW — Flat Knit Neckline bindings
+  bind('btnFKRound',       linkFKRound,       'fkround');
+  bind('btnFKCollared',    linkFKCollared,    'fkcollared');
 
   // Handle bfcache
   window.addEventListener('pageshow', function(e){

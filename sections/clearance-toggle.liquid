@@ -1,0 +1,101 @@
+{% schema %}
+{
+  "name": "Clearance Gender Toggle",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "top_offset",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Sticky Top Offset",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Clearance Gender Toggle"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    position: sticky;
+    top: {{ section.settings.top_offset }}px;
+    z-index: 4;
+    background-color: {{ section.settings.bg_color }};
+    padding: 10px 0;
+    padding-top: 17px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: top 0.3s;
+  }
+
+  .sbm-button-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .sbm-toggle-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #000;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-align: center;
+    outline: none;
+  }
+
+  .sbm-toggle-btn:hover {
+    background: #f9f9f9;
+  }
+
+  /* Active State */
+  .sbm-toggle-btn.is-active {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+  }
+{% endstyle %}
+
+<div class="sbm-button-wrapper">
+  <button class="sbm-toggle-btn" id="sbm-btn-women" onclick="window.setClearanceGender('women')">WOMEN</button>
+  <button class="sbm-toggle-btn" id="sbm-btn-men" onclick="window.setClearanceGender('men')">MEN</button>
+</div>
+
+<script>
+  // Global function for Clearance Page
+  window.setClearanceGender = function(gender) {
+    const btnWomen = document.getElementById('sbm-btn-women');
+    const btnMen = document.getElementById('sbm-btn-men');
+    
+    // Update UI
+    if(btnWomen && btnMen) {
+      btnWomen.classList.toggle('is-active', gender === 'women');
+      btnMen.classList.toggle('is-active', gender === 'men');
+    }
+
+    // Broadcast Event
+    const event = new CustomEvent('clearanceGenderChanged', { detail: { gender: gender } });
+    window.dispatchEvent(event);
+  };
+</script>

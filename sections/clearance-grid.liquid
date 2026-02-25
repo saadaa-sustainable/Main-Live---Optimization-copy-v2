@@ -1,0 +1,629 @@
+{% schema %}
+{
+  "name": "Clearance Grid & Filter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Clearance" }
+  ],
+  "blocks": [
+    {
+      "type": "mood",
+      "name": "Category Tag Group",
+      "settings": [
+        {
+          "type": "select",
+          "id": "gender",
+          "label": "Gender Category",
+          "options": [
+            { "value": "women", "label": "Women" },
+            { "value": "men", "label": "Men" }
+          ],
+          "default": "women"
+        },
+        {
+          "type": "textarea",
+          "id": "tag",
+          "label": "Product Tags",
+          "info": "Format: 'TAG:Count' (e.g., CLEARANCE-W:20).",
+          "default": "SALE:20"
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Clearance Grid & Filter" }]
+}
+{% endschema %}
+
+{% style %}
+  /* --- Grid Layout --- */
+  .cl-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px;
+    padding-top:0px;
+    min-height: 80vh;
+  }
+  
+  .cl-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 6px;
+    margin-top: 8px;
+  }
+  
+  @media(max-width: 1024px) {
+    .cl-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media(max-width: 768px) {
+    .cl-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* --- Product Card --- */
+  .p-card { text-decoration: none; color: inherit; display: block; height: 100%; }
+  .p-img-box { position: relative; border-radius: 8px; overflow: hidden; margin-bottom: 10px; background: #f4f4f4; aspect-ratio: 2/3; }
+  .p-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+  .p-card:hover .p-img-box img { transform: scale(1.03); }
+
+  .p-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 40px 10px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+    color: #fff;
+    text-align: left;
+  }
+  .p-ttl { font-size: 11.5px; margin-bottom: 6px; line-height: 1.3;  }
+  .p-meta { font-size: 11px; opacity: 0.9; text-transform: uppercase; }
+
+  .p-info { padding: 0 4px; }
+  .p-colors { font-size: 11px; color: #666; margin-bottom: 4px; }
+  .p-price-box { display: flex; gap: 8px; align-items: baseline; }
+  .p-price { font-weight: 700; font-size: 17px; color: #111; }
+  .p-compare { text-decoration: line-through; color: #ff5a5a; font-size: 14px; font-weight: 500; }
+
+  /* --- Floating Size Filter --- */
+  .cl-size-float {
+    position: fixed;
+    left: 50%; 
+    transform: translateX(-50%); 
+    bottom: 30px; 
+    z-index: 90; /* Lower than popup */
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  }
+
+  /* Mobile Adjustment to clear Bottom Nav */
+  @media(max-width: 768px) {
+    .cl-size-float {
+      bottom: 30px; 
+    }
+  }
+
+  .cl-size-btn {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s;
+  }
+  .cl-size-btn:hover { transform: scale(1.05); }
+
+  .cl-size-dropdown {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    display: none;
+    width: 265px;
+    max-height: 300px;
+    overflow-y: auto;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .cl-size-dropdown.is-open { display: flex; }
+
+  .cl-size-opt {
+    flex: 0 0 43px;
+    text-align: center;
+    padding: 6px 1px;
+    border: 1px solid #eee;
+    font-size: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .cl-size-opt:hover { background: #f5f5f5; }
+  .cl-size-opt.is-selected { background: #000; color: #fff; border-color: #000; }
+
+  .loading-msg { grid-column: 1 / -1; text-align: center; padding: 40px; color: #666; }
+
+  /* --- GOODBYE POPUP STYLES --- */
+  .gb-popup-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .gb-popup-overlay.is-visible { display: flex; }
+  
+  .gb-popup-content {
+    background: #F6F3F1;
+    width: 100%;
+    max-width: 400px;
+    padding: 17px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    text-align: center;
+    animation: gbPopUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes gbPopUp { from { opacity:0; transform: scale(0.9) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
+
+  .gb-title { font-size: 20px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 0.5px; }
+  
+  .gb-section { margin-bottom: 20px; }
+  .gb-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: #888; margin-bottom: 10px; letter-spacing: 1px; }
+  
+  .gb-btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  
+  .gb-opt-btn {
+    padding: 10px 20px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 80px;
+  }
+  .gb-opt-btn:hover { background: #f9f9f9; border-color: #ccc; }
+  .gb-opt-btn.is-selected { background: #000; color: #fff; border-color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+  .gb-size-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .gb-size-btn {
+    padding: 8px 0;
+    border: 1px solid #eee;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .gb-size-btn:hover { background: #f5f5f5; }
+  .gb-size-btn.is-selected { background: #000; color: #fff; border-color: #000; }
+
+  .gb-submit-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+  .gb-submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+{% endstyle %}
+
+<div class="cl-container" id="cl-container-{{ section.id }}">
+  
+  <div class="cl-grid" id="cl-grid-{{ section.id }}">
+    <div class="loading-msg">Loading Clearance Items...</div>
+  </div>
+
+  <div class="cl-size-float">
+    <div class="cl-size-dropdown" id="size-dropdown-{{ section.id }}">
+      </div>
+    <button class="cl-size-btn" id="size-trigger-{{ section.id }}">
+      <span>FILTER SIZE</span>
+      <span id="active-size-label" style="opacity:0.7; font-weight:400; display:none"></span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+  </div>
+</div>
+{% unless product.template_suffix contains 'goodbye-edition-page' %}
+{% comment %} {% if page.template_suffix == 'goodbye-edition-page' %} {% endcomment %}
+<div class="gb-popup-overlay" id="gb-popup">
+  <div class="gb-popup-content">
+    <div class="gb-title">GOODBYE EDITION</div>
+    
+    <div class="gb-section">
+      <span class="gb-label">Select Gender</span>
+      <div class="gb-btn-group">
+        <button class="gb-opt-btn" data-type="gender" data-val="women">WOMEN</button>
+        <button class="gb-opt-btn" data-type="gender" data-val="men">MEN</button>
+      </div>
+    </div>
+
+    <div class="gb-section">
+      <span class="gb-label">Select Size</span>
+      <div class="gb-size-grid">
+        <button class="gb-size-btn" data-type="size" data-val="XS">XS</button>
+        <button class="gb-size-btn" data-type="size" data-val="S">S</button>
+        <button class="gb-size-btn" data-type="size" data-val="M">M</button>
+        <button class="gb-size-btn" data-type="size" data-val="L">L</button>
+        <button class="gb-size-btn" data-type="size" data-val="XL">XL</button>
+        <button class="gb-size-btn" data-type="size" data-val="2XL">2XL</button>
+        <button class="gb-size-btn" data-type="size" data-val="3XL">3XL</button>
+        <button class="gb-size-btn" data-type="size" data-val="4XL">4XL</button>
+      </div>
+    </div>
+
+    <button id="gb-submit" class="gb-submit-btn" disabled>View Products</button>
+  </div>
+</div>
+{% comment %} {% endif %} {% endcomment %}
+
+{% endunless %}
+
+<script>
+(function(){
+  const sectionId = "{{ section.id }}";
+  const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+  
+  // 1. Config & Data
+  const blocks = [
+    {% for block in section.blocks %}
+      {
+        gender: "{{ block.settings.gender | downcase }}",
+        tagsRaw: "{{ block.settings.tag | escape }}"
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
+  let allFetchedProducts = []; 
+  let currentFilter = {
+    gender: 'all', 
+    size: null     
+  };
+
+  // Defined Size Order
+  const sizeOrderMap = {
+    'XXS': 1, 'XS': 2, 'S': 3, 'M': 4, 
+    'L': 5, 'XL': 6, '2XL': 7, '3XL': 8, 
+    '4XL': 9, '5XL': 10
+  };
+
+  const gridEl = document.getElementById(`cl-grid-${sectionId}`);
+  const dropdownEl = document.getElementById(`size-dropdown-${sectionId}`);
+  const sizeTrigger = document.getElementById(`size-trigger-${sectionId}`);
+  const activeSizeLabel = document.getElementById('active-size-label');
+  
+  // POPUP Elements
+  const popupEl = document.getElementById('gb-popup');
+  const popupSubmit = document.getElementById('gb-submit');
+  let popupSelection = { gender: null, size: null };
+
+  // Helper: Shuffle Array
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  // 2. Fetch Logic
+  async function init() {
+    // --- POPUP LOGIC START ---
+    if(popupEl) {
+      // Check LocalStorage
+      const hasSeen = localStorage.getItem('goodbye_popup_seen_v2');
+      if(!hasSeen) {
+        popupEl.classList.add('is-visible');
+        document.body.style.overflow = 'hidden'; // Prevent scroll
+        initPopupEvents();
+      }
+    }
+    // --- POPUP LOGIC END ---
+
+    let promises = [];
+    
+    blocks.forEach((block, index) => {
+      const tagEntries = block.tagsRaw.split(',').map(entry => {
+        const parts = entry.split(':');
+        return { tag: parts[0].trim(), count: parts[1] ? parts[1].trim() : '10' };
+      }).filter(e => e.tag !== '');
+
+      if(tagEntries.length > 0) {
+        promises.push(fetchProductsForBlock(tagEntries, block.gender, index));
+      }
+    });
+
+    const results = await Promise.all(promises);
+    allFetchedProducts = results.flat();
+
+    // MIX PRODUCTS RANDOMLY
+    shuffleArray(allFetchedProducts);
+    
+    // Initial Render
+    updateSizeDropdown();
+    renderGrid();
+  }
+
+  function initPopupEvents() {
+    const genderBtns = popupEl.querySelectorAll('[data-type="gender"]');
+    const sizeBtns = popupEl.querySelectorAll('[data-type="size"]');
+
+    function checkValidity() {
+      if(popupSelection.gender && popupSelection.size) {
+        popupSubmit.disabled = false;
+      } else {
+        popupSubmit.disabled = true;
+      }
+    }
+
+    genderBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        genderBtns.forEach(b => b.classList.remove('is-selected'));
+        btn.classList.add('is-selected');
+        popupSelection.gender = btn.getAttribute('data-val');
+        checkValidity();
+      });
+    });
+
+    sizeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sizeBtns.forEach(b => b.classList.remove('is-selected'));
+        btn.classList.add('is-selected');
+        popupSelection.size = btn.getAttribute('data-val');
+        checkValidity();
+      });
+    });
+
+    popupSubmit.addEventListener('click', () => {
+      if(!popupSubmit.disabled) {
+        // 1. Save state
+        localStorage.setItem('goodbye_popup_seen_v2', 'true');
+        
+        // 2. Hide Popup
+        popupEl.classList.remove('is-visible');
+        document.body.style.overflow = '';
+
+        // 3. Apply Gender (Trigger Global Toggle via Window Function if exists)
+        if(window.setClearanceGender) {
+          window.setClearanceGender(popupSelection.gender);
+        } else {
+          // Fallback if sticky header missing
+          currentFilter.gender = popupSelection.gender;
+        }
+
+        // 4. Apply Size
+        currentFilter.size = popupSelection.size;
+        
+        // 5. Update UI
+        activeSizeLabel.innerText = currentFilter.size ? ` : ${currentFilter.size}` : '';
+        activeSizeLabel.style.display = 'inline';
+        
+        updateSizeDropdown();
+        renderGrid();
+      }
+    });
+  }
+
+  async function fetchProductsForBlock(tagEntries, gender, blockIdx) {
+    let queryParts = [];
+    tagEntries.forEach((entry, idx) => {
+      queryParts.push(`
+        b${blockIdx}_t${idx}: products(first: ${entry.count}, query: "tag:'${entry.tag}'") {
+          edges {
+            node {
+              title, handle, onlineStoreUrl, totalInventory
+              images(first: 1) { edges { node { url } } }
+              variants(first: 50) {
+                edges { node {
+                  price { amount }
+                  compareAtPrice { amount }
+                  availableForSale
+                  quantityAvailable
+                  selectedOptions { name, value }
+                } }
+              }
+            }
+          }
+        }
+      `);
+    });
+
+    const fullQuery = `{ ${queryParts.join('\n')} }`;
+    
+    try {
+      const res = await fetch(`https://${window.Shopify.shop}/api/2024-07/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": "388bd37219d8ab7daee1c58a23c03cc8" 
+        },
+        body: JSON.stringify({ query: fullQuery })
+      });
+      
+      const json = await res.json();
+      let products = [];
+      let usedHandles = new Set();
+
+      Object.keys(json.data || {}).forEach(key => {
+        const edges = json.data[key].edges || [];
+        edges.forEach(edge => {
+          const p = edge.node;
+          
+          if(p.totalInventory <= 0) return; 
+
+          if(!usedHandles.has(p.handle)) {
+            usedHandles.add(p.handle);
+            const normalized = normalizeProduct(p, gender);
+            if(normalized) {
+                products.push(normalized);
+            }
+          }
+        });
+      });
+      return products;
+
+    } catch(e) {
+      console.error("Fetch Error", e);
+      return [];
+    }
+  }
+
+  function normalizeProduct(p, gender) {
+    let v = p.variants.edges.find(e => e.node.quantityAvailable > 0)?.node;
+    if(!v) v = p.variants.edges[0]?.node; 
+
+    const price = parseFloat(v?.price?.amount || 0);
+    const compare = price * 2; 
+
+    const sizes = [...new Set(
+      p.variants.edges
+        .filter(e => e.node.quantityAvailable > 0) 
+        .flatMap(va => 
+          va.node.selectedOptions
+            .filter(o => o.name.toLowerCase() === 'size')
+            .map(o => o.value)
+        )
+    )];
+
+    if(sizes.length === 0 && p.totalInventory > 0) {
+        const hasSizeOption = p.variants.edges[0]?.node.selectedOptions.some(o => o.name.toLowerCase() === 'size');
+        if(hasSizeOption) return null; 
+    }
+
+    return {
+      title: p.title,
+      handle: p.handle,
+      link: p.onlineStoreUrl || `/products/${p.handle}`,
+      image: p.images.edges[0]?.node?.url,
+      price: price,
+      compare: compare, 
+      gender: gender, 
+      sizes: sizes, 
+      displaySize: sizes.length > 1 ? `${sizes[0]} - ${sizes[sizes.length-1]}` : (sizes[0] || '')
+    };
+  }
+
+  // 3. Size Filter Logic
+  function updateSizeDropdown() {
+    const validProducts = allFetchedProducts.filter(p => 
+      currentFilter.gender === 'all' || p.gender === currentFilter.gender
+    );
+
+    const allSizes = new Set();
+    validProducts.forEach(p => p.sizes.forEach(s => allSizes.add(s)));
+    
+    // Sort logic
+    const sizeArr = Array.from(allSizes).sort((a, b) => {
+      const rankA = sizeOrderMap[a] || 99; 
+      const rankB = sizeOrderMap[b] || 99;
+      
+      if (rankA !== rankB) return rankA - rankB;
+      return a.localeCompare(b);
+    });
+
+    dropdownEl.innerHTML = `
+      <div class="cl-size-opt ${currentFilter.size === null ? 'is-selected' : ''}" data-val="all">All Sizes</div>
+      ${sizeArr.map(s => `
+        <div class="cl-size-opt ${currentFilter.size === s ? 'is-selected' : ''}" data-val="${s}">${s}</div>
+      `).join('')}
+    `;
+  }
+
+  // 4. Render Logic
+  function renderGrid() {
+    let filtered = allFetchedProducts;
+
+    // A. Gender Filter
+    if(currentFilter.gender !== 'all') {
+      filtered = filtered.filter(p => p.gender === currentFilter.gender);
+    }
+
+    // B. Size Filter 
+    if(currentFilter.size) {
+      filtered = filtered.filter(p => p.sizes.includes(currentFilter.size));
+    }
+
+    if(filtered.length === 0) {
+      gridEl.innerHTML = '<div class="loading-msg">No products found for this selection.</div>';
+      return;
+    }
+
+    gridEl.innerHTML = filtered.map(p => `
+      <a href="${p.link}" class="p-card">
+        <div class="p-img-box">
+          <img src="${p.image}" loading="lazy" alt="${p.title}">
+          <div class="p-overlay">
+            <div class="p-ttl">${p.title}</div>
+            <div class="p-meta">${p.displaySize}</div>
+          </div>
+        </div>
+        <div class="p-info">
+          <div class="p-price-box">
+            <span class="p-price">₹${inr.format(p.price)}</span>
+            ${p.compare ? `<span class="p-compare">₹${inr.format(p.compare)}</span>` : ''}
+          </div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  // 5. Interactions
+  window.addEventListener('clearanceGenderChanged', (e) => {
+    currentFilter.gender = e.detail.gender;
+    updateSizeDropdown();
+    renderGrid();
+  });
+
+  sizeTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownEl.classList.toggle('is-open');
+  });
+
+  dropdownEl.addEventListener('click', (e) => {
+    if(e.target.classList.contains('cl-size-opt')) {
+      const val = e.target.getAttribute('data-val');
+      currentFilter.size = val === 'all' ? null : val;
+      
+      activeSizeLabel.innerText = currentFilter.size ? ` : ${currentFilter.size}` : '';
+      activeSizeLabel.style.display = currentFilter.size ? 'inline' : 'none';
+      
+      updateSizeDropdown(); 
+      renderGrid();
+      dropdownEl.classList.remove('is-open');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if(!sizeTrigger.contains(e.target) && !dropdownEl.contains(e.target)) {
+      dropdownEl.classList.remove('is-open');
+    }
+  });
+
+  init();
+
+})();
+</script>

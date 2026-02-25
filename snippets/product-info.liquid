@@ -73,12 +73,23 @@
     Men Linen Blend Mandarin Collar Shirts
   " | downcase | split: "," %}
 
+
+    {%- comment -%} Limited Drop list {%- endcomment -%}
+    {% assign limited_drop = "
+    Women Linen Blend Wide Leg Pants,
+    Women Linen Blend Waist Coat,
+    Men Flat Knit Collared T-shirt,
+    Men Flat Knit Round Neck T-shirt,
+    Men Linen Blend Straight Pants
+  " | downcase | split: "," %}
+
   {%- comment -%} Flags {%- endcomment -%}
   {% assign is_goodbye = false %}
   {% assign is_plus = false %}
   {% assign is_winter = false %}
   {% assign is_kurta_set = false %}
   {% assign is_behtar = false %}
+  {% assign is_limiteddrop = false %}
 
   {%- comment -%} Goodbye edition detection {%- endcomment -%}
   {% for raw in special_collections %}
@@ -117,6 +128,16 @@
     {% endif %}
   {% endfor %}
 
+
+      {%- comment -%} Winter wear detection {%- endcomment -%}
+  {% for raw in limited_drop %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}
+      {% assign is_limiteddrop = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
   {%- comment -%} Kurta set detection {%- endcomment -%}
   {% for tag in product.tags %}
     {% assign tag_lc = tag | downcase %}
@@ -138,6 +159,9 @@
 
   {% elsif is_behtar %}
     <span><a href="/pages/behtar-linen">Behtar Linen</a> /</span>
+
+  {% elsif is_limiteddrop %}
+    <span><a href="/pages/limited-drop">Limited Drop</a> /</span>
 
   {% elsif is_kurta_set %}
     <span><a href="/pages/shop-all-kurta-sets">Shop All Kurta Sets</a> /</span>
@@ -431,7 +455,7 @@
 {%- comment -%} ====== PRICE LOGIC (no UI changes) ====== {%- endcomment -%}
 
  {%- assign product_mappings = "
-WOMEN|AIRY LINEN FLARED DRESS|359800|179900;
+WOMEN|AIRY LINEN FLARED DRESS|319800|159900;
 WOMEN|AIRY LINEN PANT|239900|119900;
 WOMEN|AIRY-LINEN SHIRT|239900|119900;
 WOMEN|AIRY LINEN STRAIGHT PANT|239900|119900;
@@ -471,19 +495,19 @@ MEN|LINEN HALF SLEEVE SHIRT|439900|219900;
 MEN|100% LINEN SHIRT|499900|249900;
 MEN|PURE LINEN FULL SLEEVE|499800|249900;
 MEN|PURE LINEN SHORT SLEEVE|439800|219900;
-MEN|FORMAL SHIRT|279800|139900;
+MEN|FORMAL SHIRT|259800|129900;
 MEN|LINEN BLEND MANDARIN COLLAR|279800|139900;
 MEN|LINEN BLEND SHORT SLEEVE SHIRT|239800|119900;
 
 
-MEN|LINEN BLEND PANT|359800|179900;
-MEN|FLAT KNIT COLLARED T-SHIRT|339800|169900;
-MEN|FLAT KNIT ROUND NECK T-SHIRT|299800|149900;
+MEN|LINEN BLEND STRAIGHT PANT|359800|179900;
+MEN|FLAT KNIT COLLARED T-SHIRT|319800|159900;
+MEN|FLAT KNIT ROUND NECK T-SHIRT|279800|139900;
 
 UNISEX|TOTE BAG|99900|49900;
 
 
-UNISEX|PULLOVER FLEECE HOODIE|0|0;
+UNISEX|PULLOVER FLEECE HOODIE|199800|99900;
 
 
 
@@ -933,12 +957,19 @@ UI BELOW IS UNCHANGED:
 
 
               {% comment %} {%- render 'price-list', product: product, variant: product.selected_or_first_available_variant, context: 'product', form_id: product_form_id -%} {% endcomment %}
+            
             </div>
           </div>
 
-          <div style="margin-top:20px;">
-          {% render 'nectorcustom_review_rating', product: product, customer: customer, shop: shop %}
-          </div>
+          {% assign rating = product.metafields.reviews.rating %}
+          {% assign rating_count = product.metafields.reviews.rating_count %}
+
+          {% if rating and rating_count and rating_count > 0 %}
+            <div style="margin-top:10px;">
+            {% render 'nectorcustom_review_rating', product: product, customer: customer, shop: shop %}
+            </div>
+          {% endif %}
+
 
           {%- when 'sku' -%}
           <variant-sku
@@ -949,6 +980,7 @@ UI BELOW IS UNCHANGED:
             {% if product != blank -%}
               {{ product.selected_or_first_available_variant.sku -}}{%- else -%}SK-123AB{%- endif -%}
           </variant-sku>
+          
 
           {%- when 'badges' -%}
           {%- if product != blank -%}
@@ -988,6 +1020,8 @@ UI BELOW IS UNCHANGED:
               {%- endform -%}
             </payment-terms>
           {%- endif -%}
+
+          
 
           {%- when 'rating' -%}
           {%- if product != blank -%}

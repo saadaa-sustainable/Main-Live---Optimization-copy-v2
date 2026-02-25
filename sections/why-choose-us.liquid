@@ -1,0 +1,209 @@
+{% schema %}
+{
+  "name": "Why Choose Us",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Styling"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#faf9f6"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why <strong>SAADAA?</strong>",
+      "info": "Highlight text to make it Bold."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p><em>The essence of Saadaa is to make your life <strong>simpler | better</strong>, as easy as having a cup of chai!</em></p><p><em>We keep it transparent – no surprises, just fair value.</em></p><p><em>Minimal designs that are permanently relevant with exceptional quality that stay with you, forever.</em></p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Column",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon Image"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Label Text",
+          "default": "सच | HONEST"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Choose Us",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": { "text": "सच | HONEST" }
+        },
+        {
+          "type": "feature",
+          "settings": { "text": "सरल | EASY" }
+        },
+        {
+          "type": "feature",
+          "settings": { "text": "सदाबहार | TIMELESS" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding: 40px 20px;
+    color: {{ section.settings.text_color }};
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .wcu-container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  /* ——— HEADINGS ——— */
+  .wcu-heading {
+    font-size: 36px;
+    font-weight: 400;
+    margin-bottom: 25px;
+    line-height: 1.2;
+    color: #000;
+  }
+  .wcu-heading strong {
+    font-weight: 600;
+  }
+
+  /* ——— DESCRIPTION ——— */
+  .wcu-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 30px;
+    font-style: italic; /* Default italic look from image */
+  }
+  .wcu-description p {
+    margin-bottom: 5px;
+  }
+  .wcu-description strong {
+    font-weight: 600;
+    color: #000;
+    font-style: normal;
+  }
+
+  /* ——— ICONS GRID ——— */
+  .wcu-icons-row {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+ 
+  }
+
+  .wcu-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 110px;
+  }
+
+  /* White Circle for Icon */
+  .wcu-icon-circle {
+width: 40px;
+    height: 40px;
+background-color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03); /* Subtle shadow */
+  }
+
+  .wcu-icon-circle img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .wcu-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #222;
+  }
+
+  /* Mobile Tweaks */
+  @media (max-width: 768px) {
+    .wcu-heading { font-size: 28px; }
+    .wcu-description { font-size: 12px; padding: 0 10px; }
+    .wcu-icons-row { gap: 0px; }
+  }
+{% endstyle %}
+
+<div class="wcu-container">
+  
+  {% if section.settings.heading != blank %}
+    <h2 class="wcu-heading">{{ section.settings.heading }}</h2>
+  {% endif %}
+
+  {% if section.settings.description != blank %}
+    <div class="wcu-description">
+      {{ section.settings.description }}
+    </div>
+  {% endif %}
+
+  <div class="wcu-icons-row">
+    {% for block in section.blocks %}
+      <div class="wcu-col">
+        <div class="wcu-icon-circle">
+          {% if block.settings.icon != blank %}
+            <img src="{{ block.settings.icon | image_url: width: 80 }}" 
+                 alt="{{ block.settings.text }}" 
+                 loading="lazy" 
+                 width="35" 
+                 height="35">
+          {% else %}
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          {% endif %}
+        </div>
+        <p class="wcu-label">{{ block.settings.text }}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>

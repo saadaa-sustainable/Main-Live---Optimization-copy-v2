@@ -569,7 +569,7 @@
           const products = await fetchProductsForCategory(cat);
           if (products.length > 0) {
             // Add centering class if fewer than 5 items
-            if(products.length < 5) track.classList.add('is-centered');
+            if(products.length <= 6) track.classList.add('is-centered');
             else track.classList.remove('is-centered');
 
             track.innerHTML = products.map(item => `<div class="pc-carousel-item">${buildCardHTML(item)}</div>`).join('');

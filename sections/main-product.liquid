@@ -35,8 +35,8 @@ or collection.title contains 'Women Cotton Straight Pants'
 or collection.title contains 'Women Cotton Regular Pants'
 or collection.title contains 'Women Linen Blend Knot Blouse'
 or collection.title contains 'Women Linen Blend Pleated Tops'
-or collection.title contains 'Women Linen Pant'
-or collection.title contains 'Women Linen Waist Coat'
+or collection.title contains 'Women Linen Blend Wide Leg Pants'
+or collection.title contains 'Women Linen Blend Waist Coat'
 
 
 or collection.title contains 'Men Formal Shirts'
@@ -52,7 +52,7 @@ or collection.title contains 'Men Linen Blend Short Sleeve Shirts'
 or collection.title contains 'Men Linen Blend Mandarin Collar Shirts'
 or collection.title contains 'Men Flat Knit Collared T-shirt'
 or collection.title contains 'Men Flat Knit Round Neck T-shirt'
-or collection.title contains 'Men Linen Pant'
+or collection.title contains 'Men Linen Blend Straight Pants'
 
  
 
@@ -100,6 +100,7 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
 
   {%- comment -%} Define lists {%- endcomment -%}
   {% assign special_collections = "MEN AIRY-LINEN SHORT KURTAS deprecated,Men Formal Shirts,Women Airy Linen Shorts,Women Everyday Cotton Top,Women Formal Pants,Women 4-way scretchable pants" | downcase | split: "," %}
+  
   {% assign special_collections1 = "
     Women Plus Size Wide Leg Pant,
     Women Plus Size Viscose Palazzo Pant,
@@ -113,17 +114,71 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
     Men Plus Size Formal Shirts
   " | downcase | split: "," %}
 
+  {%- comment -%} Limited Drop list {%- endcomment -%}
+  {% assign limited_drop = "
+    Women Linen Blend Wide Leg Pants,
+    Women Linen Blend Waist Coat,
+    Men Flat Knit Collared T-shirt,
+    Men Flat Knit Round Neck T-shirt,
+    Men Linen Blend Straight Pants
+  " | downcase | split: "," %}
+
+  {%- comment -%} NEW: Winter Wear collections {%- endcomment -%}
+  {% assign winter_collections = "
+    Unisex Pullover Fleece Hoodies,
+    Unisex Round Neck Sweatshirts,
+    Unisex Zip Neck Sweatshirts
+  " | downcase | split: "," %}
+
+  {%- comment -%} Linen Blend list {%- endcomment -%}
+  {% assign behtar_linen = "
+    Women Linen Blend Knot Blouse,
+    Women Linen Blend Pleated Tops,
+    Men Linen Blend Short Sleeve Shirts,
+    Men Linen Blend Mandarin Collar Shirts
+  " | downcase | split: "," %}
+
   {%- comment -%} Compute membership flags {%- endcomment -%}
+  
+  {%- comment -%} Check Goodbye Edition {%- endcomment -%}
   {% assign is_goodbye = false %}
   {% for raw in special_collections %}
     {% assign item = raw | strip %}
     {% if item == selected_title %}{% assign is_goodbye = true %}{% break %}{% endif %}
   {% endfor %}
 
+  {%- comment -%} Check Plus Edition {%- endcomment -%}
   {% assign is_plus = false %}
   {% for raw in special_collections1 %}
     {% assign item = raw | strip %}
     {% if item == selected_title %}{% assign is_plus = true %}{% break %}{% endif %}
+  {% endfor %}
+
+  {%- comment -%} Check Limited Drop {%- endcomment -%}
+  {% assign is_limited = false %}
+  {% for raw in limited_drop %}
+    {% assign item = raw | strip %}
+    {% if item == selected_title %}{% assign is_limited = true %}{% break %}{% endif %}
+  {% endfor %}
+
+  {%- comment -%} Check Winter Wear {%- endcomment -%}
+  {% assign is_winter = false %}
+  {% for wc in winter_collections %}
+    {% assign wc_clean = wc | strip %}
+    {% if wc_clean == selected_title %}
+      {% assign is_winter = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {%- comment -%} Check Behtar Linen {%- endcomment -%}
+  {% assign is_behtar = false %}
+  {% for bl in behtar_linen %}
+    {% assign bl_clean = bl | strip %}
+    {% if bl_clean == selected_title %}
+      {% assign is_behtar = true %}
+      {% break %}
+    {% endif %}
   {% endfor %}
 
   {%- comment -%} ✅ NEW LOGIC: Kurta Set condition {%- endcomment -%}
@@ -136,49 +191,6 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
     {% endif %}
   {% endfor %}
 
-
-
-    {%- comment -%} NEW: Winter Wear collections {%- endcomment -%}
-  {% assign winter_collections = "
-    Unisex Pullover Fleece Hoodies,
-    Unisex Round Neck Sweatshirts,
-    Unisex Zip Neck Sweatshirts
-  " | downcase | split: "," %}
-
-
-    {%- comment -%} Linen Blend list {%- endcomment -%}
-    {% assign behtar_linen = "
-    Women Linen Blend Knot Blouse,
-    Women Linen Blend Pleated Tops,
-    Men Linen Blend Short Sleeve Shirts,
-    Men Linen Blend Mandarin Collar Shirts
-  " | downcase | split: "," %}
-
-  {% assign is_winter = false %}
-   {% assign is_behtar = false %}
-  {% assign winter_match = "" %}
-    {% assign behtar_match = "" %}
-
-
-  {% for wc in winter_collections %}
-    {% assign wc_clean = wc | strip %}
-    {% if wc_clean == selected_title %}
-      {% assign is_winter = true %}
-      {% assign winter_match = selected_collection.title %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
-
-
-    {% for bl in behtar_linen %}
-    {% assign bl_clean = bl | strip %}
-    {% if bl_clean == selected_title %}
-      {% assign is_behtar = true %}
-      {% assign behtar_match = selected_collection.title %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
-
   {%- comment -%} Determine breadcrumb path {%- endcomment -%}
   {% if is_goodbye %}
     <span><a href="/collections/goodbye-edition">Goodbye Edition</a> /</span>
@@ -186,10 +198,14 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
   {% elsif is_plus %}
     <span><a href="/collections/plus-edition">Plus Edition</a> /</span>
 
+  {% elsif is_limited %}
+    {%- comment -%} Update href below if your link is different (e.g. /pages/limited-drop) {%- endcomment -%}
+    <span><a href="/pages/limited-drop">Limited Drop</a> /</span>
+
   {% elsif is_kurta_set %}
     <span><a href="/pages/shop-all-kurta-sets">Shop All Kurta Sets</a></span>
 
-   {% elsif is_winter %}
+  {% elsif is_winter %}
     <span><a href="/pages/a-little-warmth">Winter Wear</a> /</span>
 
   {% elsif is_behtar %}
@@ -301,14 +317,15 @@ or collection.title contains 'Unisex Pullover Fleece Hoodies'
               {% assign pre_p_url = preorder_product | split: '__' %}
              {% if pre_p_url contains product.handle %}
                {% else %}
-          <a class="looxReview" href="#nector-reviews">
+          {% comment %} <a class="looxReview" href="#nector-reviews">
             <div
               class="loox-rating"
               data-id="{{ product.id }}"
               data-rating="{{ rating }}"
               data-raters="{{ count }}"
               data-pattern='[rating] <span class="review_count">[count]</span>'></div>
-          </a>
+          </a> {% endcomment %}
+          {% render 'nectorcustom-card-review-rating', product: product, customer: customer, shop: shop %}
              {% endif %}
           <div class="view_similar_button popup_click md\:hidden" data-service="service_5">
             <img src="{{ "view similar.png" | asset_img_url }}" />

@@ -1,0 +1,492 @@
+{% schema %}
+{
+  "name": "Pill Toggle Menu Two",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pill",
+      "name": "Category Pill",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Pill Title", "default": "Best Sellers" },
+
+        { "type": "header", "content": "Matrix Config (Visibility & Order)" },
+
+        { "type": "checkbox", "id": "show_in_both", "label": "Show in 'Both' View?", "default": true },
+        { "type": "range", "id": "order_both", "label": "Order in 'Both'", "min": 1, "max": 20, "default": 1 },
+
+        { "type": "checkbox", "id": "show_in_women", "label": "Show in 'Women' View?", "default": true },
+        { "type": "range", "id": "order_women", "label": "Order in 'Women'", "min": 1, "max": 20, "default": 1 },
+
+        { "type": "checkbox", "id": "show_in_men", "label": "Show in 'Men' View?", "default": true },
+        { "type": "range", "id": "order_men", "label": "Order in 'Men'", "min": 1, "max": 20, "default": 1 },
+
+        { "type": "header", "content": "Product Settings" },
+
+        { "type": "checkbox", "id": "show_red_dot", "label": "Show Red Notification Dot", "default": false },
+
+        {
+          "type": "textarea",
+          "id": "tags",
+          "label": "Product Tags configuration",
+          "info": "Format: Tag:BadgeText:BgColor:TextColor. Example: 'SDCP:NEW:#008001:#fff'",
+          "default": "bestsellers:HOT:#ff0000:#fff"
+        },
+
+        { "type": "checkbox", "id": "show_all", "label": "Show multiple products per tag", "default": false },
+
+        { "type": "url", "id": "link", "label": "View All Link" },
+
+        { "type": "header", "content": "Title Cleaning" },
+
+        { "type": "checkbox", "id": "show_gender", "label": "Show Gender", "default": false },
+        { "type": "checkbox", "id": "show_color", "label": "Show Color in Title", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Pill Toggle Menu Two" }
+  ]
+}
+{% endschema %}
+
+{% style %}
+#shopify-section-{{ section.id }} {
+  background-color: {{ section.settings.bg_color }};
+  padding: 20px 0;
+}
+
+#shopify-section-{{ section.id }} .ptm2_toggle-menu-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ——— PILL NAVIGATION ——— */
+#shopify-section-{{ section.id }} .ptm2_toggle-buttons-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 25px;
+  justify-content: center;
+}
+
+/* MATRIX LOGIC */
+#shopify-section-{{ section.id }} .ptm2_toggle-button.ptm2_smart-target { display: none; }
+
+body.view-both  #shopify-section-{{ section.id }} .ptm2_toggle-button.ptm2_show-both  { display: block; order: var(--ptm2_order-both); }
+body.view-women #shopify-section-{{ section.id }} .ptm2_toggle-button.ptm2_show-women { display: block; order: var(--ptm2_order-women); }
+body.view-men   #shopify-section-{{ section.id }} .ptm2_toggle-button.ptm2_show-men   { display: block; order: var(--ptm2_order-men); }
+
+/* Fallback: if no view-* class exists, treat as view-both */
+body:not(.view-both):not(.view-women):not(.view-men)
+  #shopify-section-{{ section.id }} .ptm2_toggle-button.ptm2_show-both {
+  display: block;
+  order: var(--ptm2_order-both);
+}
+
+#shopify-section-{{ section.id }} .ptm2_toggle-button {
+  background-color: #f6f3f1;
+  color: #000;
+  border-radius: 12px;
+  padding: 3px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  position: relative;
+  outline: none;
+}
+
+#shopify-section-{{ section.id }} .ptm2_toggle-button.ptm2_active {
+  background-color: #fff;
+  color: #000;
+}
+
+/* RED NOTIFICATION DOT */
+#shopify-section-{{ section.id }} .ptm2_toggle-badge-dot {
+  position: absolute; top: 5px; right: -2px; width: 10px; height: 10px;
+  background: #ff3b30; border-radius: 999px;
+  box-shadow: 0 0 0 2px #f6f3f1; pointer-events: none;
+}
+#shopify-section-{{ section.id }} .ptm2_toggle-button.ptm2_active .ptm2_toggle-badge-dot {
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+/* ——— PRODUCT GRID ——— */
+#shopify-section-{{ section.id }} .ptm2_menu-items-container {
+  display: flex; flex-wrap: wrap; gap: 20px;
+  justify-content: center; min-height: 300px;
+}
+
+#shopify-section-{{ section.id }} .ptm2_menu-item {
+  flex: 0 0 calc(20% - 20px);
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  animation: ptm2_fadeUp 0.5s ease forwards;
+}
+@keyframes ptm2_fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#shopify-section-{{ section.id }} .ptm2_menu-item a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  position: relative;
+}
+
+#shopify-section-{{ section.id }} .ptm2_menu-item img {
+  width: 100%;
+  max-width: 220px;
+  display: block;
+  margin: 0 auto 10px;
+  border-radius: 7px;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  background: #f4f4f4;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #shopify-section-{{ section.id }} .ptm2_menu-item:hover img {
+    transform: scale(1.045) rotateZ(-0.7deg);
+    box-shadow: 0 10px 28px 0 rgba(195,106,78,0.21), 0 2px 8px rgba(195,106,78,0.13);
+  }
+}
+
+/* PRODUCT BADGE */
+#shopify-section-{{ section.id }} .ptm2_product-badge-pill {
+  position: absolute; top: 8px; left: 8px; padding: 3px 7px;
+  background: #008001; border-radius: 4px;
+  font-size: 10px; font-weight: 700;
+  color: #fff; line-height: 1;
+  text-transform: uppercase; pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+#shopify-section-{{ section.id }} .ptm2_menu-item p {
+  font-size: 15px; color: #333; margin: 0;
+}
+
+/* ——— VIEW ALL BUTTON ——— */
+#shopify-section-{{ section.id }} .ptm2_view-all-bar { margin-top: 25px; text-align: center; }
+#shopify-section-{{ section.id }} .ptm2_view-all-btn {
+  display: inline-block; padding: 10px 100px; color: #000;
+  border: 1px solid #1F1F1D; text-decoration: none;
+  transition: all 0.3s;
+}
+#shopify-section-{{ section.id }} .ptm2_view-all-btn:hover {
+  background: #fff8f3; color: #c36a4e; border-color: #c36a4e;
+}
+
+#shopify-section-{{ section.id }} .ptm2_pill-loading {
+  width: 100%; text-align: center; padding: 50px; color: #888;
+}
+
+@media (max-width: 768px) {
+  #shopify-section-{{ section.id }} .ptm2_toggle-buttons-wrapper {
+    flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start;
+    padding: 0 10px; margin-bottom: 15px; scrollbar-width: none;
+  }
+  #shopify-section-{{ section.id }} .ptm2_toggle-buttons-wrapper::-webkit-scrollbar { display: none; }
+  #shopify-section-{{ section.id }} .ptm2_toggle-button { flex: 0 0 auto; }
+  #shopify-section-{{ section.id }} .ptm2_toggle-buttons-wrapper .ptm2_toggle-button:first-of-type { margin-left: 10px; }
+  #shopify-section-{{ section.id }} .ptm2_menu-item { flex: 0 0 calc(34% - 12px); padding-bottom: 5px; }
+  #shopify-section-{{ section.id }} .ptm2_menu-items-container { gap: 6px; justify-content: center; padding: 0 4px; }
+  #shopify-section-{{ section.id }} .ptm2_menu-item p { font-size: 10px; line-height: 0.9rem; }
+  #shopify-section-{{ section.id }} .ptm2_view-all-btn { width: 39%; box-sizing: border-box; padding: 8px 0; }
+}
+{% endstyle %}
+
+<div class="ptm2_toggle-menu-container" id="ptm2-container-{{ section.id }}" style="display:none;">
+  <div class="ptm2_toggle-buttons-wrapper" id="ptm2_pill-buttons-container-{{ section.id }}">
+    {% for block in section.blocks %}
+      {%- liquid
+        assign visibility_classes = "ptm2_smart-target"
+        if block.settings.show_in_both
+          assign visibility_classes = visibility_classes | append: " ptm2_show-both"
+        endif
+        if block.settings.show_in_women
+          assign visibility_classes = visibility_classes | append: " ptm2_show-women"
+        endif
+        if block.settings.show_in_men
+          assign visibility_classes = visibility_classes | append: " ptm2_show-men"
+        endif
+      -%}
+
+      <button
+        type="button"
+        class="ptm2_toggle-button {{ visibility_classes }} {% if forloop.first %}ptm2_active{% endif %} {% if block.settings.show_red_dot %}ptm2_badged{% endif %}"
+        style="
+          --ptm2_order-both: {{ block.settings.order_both }};
+          --ptm2_order-women: {{ block.settings.order_women }};
+          --ptm2_order-men: {{ block.settings.order_men }};
+        "
+        data-index="{{ forloop.index0 }}"
+        data-title="{{ block.settings.title | strip | escape }}"
+      >
+        {{ block.settings.title }}
+        {% if block.settings.show_red_dot %}
+          <span class="ptm2_toggle-badge-dot"></span>
+        {% endif %}
+      </button>
+    {% endfor %}
+  </div>
+
+  <div id="ptm2_pill-grid-{{ section.id }}" class="ptm2_menu-items-container"></div>
+
+  <div class="ptm2_view-all-bar">
+    <a id="ptm2_pill-view-all-{{ section.id }}" class="ptm2_view-all-btn" href="#">VIEW ALL &rarr;</a>
+  </div>
+
+  <script type="application/json" id="ptm2-data-{{ section.id }}">
+    {
+      "pills": [
+        {% for block in section.blocks %}
+          {
+            "index": {{ forloop.index0 }},
+            "title": {{ block.settings.title | strip | json }},
+            "tagsRaw": {{ block.settings.tags | json }},
+            "link": {{ block.settings.link | json }},
+            "showAll": {{ block.settings.show_all | json }},
+            "showGender": {{ block.settings.show_gender | json }},
+            "showColor": {{ block.settings.show_color | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+  </script>
+</div>
+
+<script>
+(function(){
+  const sectionId = "{{ section.id }}";
+  const root = document.getElementById(`ptm2-container-${sectionId}`);
+  if (!root || root.dataset.ptm2Init === "1") return;
+  root.dataset.ptm2Init = "1";
+
+  const dataEl = document.getElementById(`ptm2-data-${sectionId}`);
+  const pills = (dataEl && dataEl.textContent) ? (JSON.parse(dataEl.textContent).pills || []) : [];
+
+  const gridEl = document.getElementById(`ptm2_pill-grid-${sectionId}`);
+  const viewAllBtn = document.getElementById(`ptm2_pill-view-all-${sectionId}`);
+  const btns = Array.from(root.querySelectorAll(".ptm2_toggle-button"));
+
+  let itemsCache = {};
+  let lastActivePillTitle = null;
+
+  function isBtnVisible(btn) {
+    return window.getComputedStyle(btn).display !== "none";
+  }
+
+  async function fetchPillProducts(pillData) {
+    const cacheKey = pillData.tagsRaw || "";
+    if (itemsCache[cacheKey]) return itemsCache[cacheKey];
+
+    const tagEntries = (pillData.tagsRaw || "")
+      .split(",")
+      .map(entry => {
+        const parts = entry.split(":");
+        return {
+          tag: (parts[0] || "").trim(),
+          badgeText: parts[1] ? parts[1].trim() : null,
+          badgeBg: parts[2] ? parts[2].trim() : "#008001",
+          badgeColor: parts[3] ? parts[3].trim() : "#ffffff"
+        };
+      })
+      .filter(item => item.tag !== "");
+
+    if (tagEntries.length === 0) return [];
+
+    const queryParts = tagEntries.map((entry, index) => `
+      t${index}: products(first: 30, query: "tag:'${entry.tag}'") {
+        edges {
+          node {
+            title
+            handle
+            onlineStoreUrl
+            tags
+            variantName: metafield(namespace: "custom", key: "product_variant_name") { value }
+            images(first: 1) { edges { node { url, altText } } }
+            variants(first: 25) { edges { node { quantityAvailable } } }
+          }
+        }
+      }
+    `);
+
+    const fullQuery = `{ ${queryParts.join("\n")} }`;
+
+    try {
+      const response = await fetch("https://saadaa-design.myshopify.com/api/2024-07/graphql.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": "388bd37219d8ab7daee1c58a23c03cc8"
+        },
+        body: JSON.stringify({ query: fullQuery })
+      });
+
+      const json = await response.json();
+      if (json.errors || !json.data) return [];
+
+      let finalProducts = [];
+      let usedHandles = new Set();
+      let usedColors = new Set();
+
+      tagEntries.forEach((entry, index) => {
+        const aliasKey = `t${index}`;
+        const edges = json.data[aliasKey]?.edges || [];
+        if (!edges.length) return;
+
+        const candidates = edges.map(e => e.node).sort((a, b) => {
+          const stockA = (a.variants.edges || []).reduce((sum, v) => sum + (v.node.quantityAvailable || 0), 0);
+          const stockB = (b.variants.edges || []).reduce((sum, v) => sum + (v.node.quantityAvailable || 0), 0);
+          return stockB - stockA;
+        });
+
+        if (pillData.showAll) {
+          for (const p of candidates) {
+            if (usedHandles.has(p.handle)) continue;
+            usedHandles.add(p.handle);
+            finalProducts.push(normalize(p, pillData, entry));
+          }
+        } else {
+          let winner = null;
+          for (const p of candidates) {
+            const color = p.variantName?.value || "Unknown";
+            if (usedHandles.has(p.handle)) continue;
+            if (!usedColors.has(color)) { winner = p; break; }
+          }
+          if (!winner) winner = candidates.find(c => !usedHandles.has(c.handle));
+          if (winner) {
+            usedHandles.add(winner.handle);
+            if (winner.variantName?.value) usedColors.add(winner.variantName.value);
+            finalProducts.push(normalize(winner, pillData, entry));
+          }
+        }
+      });
+
+      itemsCache[cacheKey] = finalProducts.slice(0, 15);
+      return itemsCache[cacheKey];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function normalize(p, pillData, badgeConfig) {
+    let displayTitle = p.title || "";
+
+    if (!pillData.showGender) {
+      displayTitle = displayTitle.replace(/\b(Women['’]?s?|Men['’]?s?|Unisex['’]?s?|Women|Men|Unisex)\b/gi, "").trim();
+    }
+    if (!pillData.showColor && p.variantName?.value) {
+      const re = new RegExp(`\\b${p.variantName.value}\\b`, "gi");
+      displayTitle = displayTitle.replace(re, "");
+    }
+
+    displayTitle = displayTitle.replace(/\s+/g, " ").trim();
+
+    return {
+      title: displayTitle,
+      link: p.onlineStoreUrl || `https://saadaa.in/products/${p.handle}`,
+      image: p.images?.edges?.[0]?.node?.url || "",
+      alt: p.images?.edges?.[0]?.node?.altText || displayTitle,
+      badgeText: badgeConfig.badgeText,
+      badgeBg: badgeConfig.badgeBg,
+      badgeColor: badgeConfig.badgeColor
+    };
+  }
+
+  function render(products) {
+    if (!gridEl) return;
+
+    if (!products.length) {
+      gridEl.innerHTML = '<div class="ptm2_pill-loading">No products found.</div>';
+      return;
+    }
+
+    gridEl.innerHTML = products.map(item => `
+      <div class="ptm2_menu-item">
+        <a href="${item.link}">
+          ${item.badgeText ? `<span class="ptm2_product-badge-pill" style="background-color:${item.badgeBg};color:${item.badgeColor};">${item.badgeText}</span>` : ``}
+          <img src="${item.image}" alt="${item.alt}" loading="lazy" />
+          <p>${item.title}</p>
+        </a>
+      </div>
+    `).join("");
+  }
+
+  async function switchPill(index) {
+    const pillData = pills[index];
+    if (!pillData) return;
+
+    lastActivePillTitle = pillData.title;
+
+    btns.forEach(b => b.classList.remove("ptm2_active"));
+    const activeBtn = btns.find(b => parseInt(b.dataset.index, 10) === index);
+    if (activeBtn) activeBtn.classList.add("ptm2_active");
+
+    if (viewAllBtn) viewAllBtn.href = pillData.link || "#";
+    if (gridEl) gridEl.innerHTML = '<div class="ptm2_pill-loading">Loading...</div>';
+
+    const products = await fetchPillProducts(pillData);
+    render(products);
+  }
+
+  // Bind button clicks
+  btns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.dataset.index, 10);
+      switchPill(idx);
+    });
+  });
+
+  // Initial load: first *visible* pill
+  function initFirstVisible() {
+    const visibleBtns = btns.filter(isBtnVisible);
+    const firstBtn = visibleBtns[0] || btns[0];
+    if (!firstBtn) return;
+    switchPill(parseInt(firstBtn.dataset.index, 10));
+  }
+
+  // Resize: if active becomes hidden, switch to an available one
+  window.addEventListener("resize", () => {
+    window.setTimeout(() => {
+      const visibleBtns = btns.filter(isBtnVisible);
+      if (!visibleBtns.length) return;
+
+      const currentActive = btns.find(b => b.classList.contains("ptm2_active"));
+      const isActiveHidden = !currentActive || !isBtnVisible(currentActive);
+
+      if (isActiveHidden) {
+        let match = null;
+        if (lastActivePillTitle) {
+          match = visibleBtns.find(b => b.getAttribute("data-title") === lastActivePillTitle);
+        }
+        const targetBtn = match || visibleBtns[0];
+        switchPill(parseInt(targetBtn.dataset.index, 10));
+      }
+    }, 50);
+  });
+
+  initFirstVisible();
+
+  // Theme editor support (optional but safe)
+  document.addEventListener("shopify:section:load", function(evt) {
+    if (!evt.detail || !evt.detail.sectionId) return;
+    if (evt.detail.sectionId === sectionId) {
+      root.dataset.ptm2Init = "0";
+    }
+  });
+})();
+</script>

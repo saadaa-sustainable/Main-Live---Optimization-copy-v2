@@ -1,0 +1,109 @@
+{% schema %}
+{
+  "name": "Category Gender Toggle",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "top_offset",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Sticky Top Offset",
+      "default": 60,
+      "info": "Adjust based on your header height to make it sticky."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Gender Toggle"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    position: sticky;
+    top: 72px;
+    z-index: 99;
+    background-color: {{ section.settings.bg_color }};
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: top 0.3s;
+  }
+
+  .sbm-button-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .sbm-toggle-btn {
+    flex: 1;
+    padding: 5px 0;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #000;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-align: center;
+    outline: none;
+  }
+
+  .sbm-toggle-btn:hover {
+    background: #f9f9f9;
+  }
+
+  /* Active State */
+  .sbm-toggle-btn.is-active {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+  }
+{% endstyle %}
+
+<div class="sbm-button-wrapper">
+  <button class="sbm-toggle-btn is-active" id="sbm-btn-women" onclick="window.setGlobalMoodGender('women')">WOMEN</button>
+  <button class="sbm-toggle-btn" id="sbm-btn-men" onclick="window.setGlobalMoodGender('men')">MEN</button>
+</div>
+
+<script>
+  // Global function attached to window to ensure accessibility
+  window.setGlobalMoodGender = function(gender) {
+    // 1. Update UI
+    const btnWomen = document.getElementById('sbm-btn-women');
+    const btnMen = document.getElementById('sbm-btn-men');
+    
+    if(btnWomen && btnMen) {
+      btnWomen.classList.toggle('is-active', gender === 'women');
+      btnMen.classList.toggle('is-active', gender === 'men');
+    }
+
+    // 2. Save state (optional, for persistence across sections)
+    window.currentGlobalGender = gender;
+
+    // 3. Broadcast Event
+    const event = new CustomEvent('moodGenderChanged', { detail: { gender: gender } });
+    window.dispatchEvent(event);
+  };
+
+  // Set default on load if not set
+  if (!window.currentGlobalGender) {
+    window.currentGlobalGender = 'women';
+  }
+</script>

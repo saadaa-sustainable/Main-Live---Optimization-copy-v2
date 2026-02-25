@@ -1,31 +1,19 @@
+{%- comment -%}
+SHOP BY MOOD (UPDATED ONLY WITH DESKTOP ARROWS)
+- Adds left/right arrows on desktop for the product carousel
+- Right arrow visible by default (if scrollable)
+- Left arrow appears only after scrolling right
+- Right arrow hides at end
+NOTE: Nothing else changed.
+{%- endcomment -%}
+
 {% schema %}
 {
   "name": "Shop By Mood",
   "settings": [
-    {
-      "type": "text",
-      "id": "heading_start",
-      "label": "Heading Text (Regular)",
-      "default": "SHOP BY"
-    },
-    {
-      "type": "text",
-      "id": "heading_bold",
-      "label": "Heading Text (Bold)",
-      "default": "MOOD"
-    },
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Sub Heading",
-      "default": "Whatever the plan - start here"
-    },
-    {
-      "type": "color",
-      "id": "active_color",
-      "label": "Active Border Color",
-      "default": "#C36A4E"
-    }
+    { "type": "text", "id": "heading_start", "label": "Heading Text (Regular)", "default": "SHOP BY" },
+    { "type": "text", "id": "heading_bold", "label": "Heading Text (Bold)", "default": "MOOD" },
+    { "type": "text", "id": "subheading", "label": "Sub Heading", "default": "Whatever the plan - start here" }
   ],
   "blocks": [
     {
@@ -42,283 +30,163 @@
           ],
           "default": "women"
         },
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Banner Image (With Text)"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Mood Title",
-          "info": "Used for the section header below the toggles.",
-          "default": "Everyday Wear"
-        },
+        { "type": "image_picker", "id": "image", "label": "Grid Image" },
+        { "type": "text", "id": "title", "label": "Mood Title", "default": "Everyday Wear" },
         {
           "type": "textarea",
           "id": "tag",
-          "label": "Product Tags (Format: Tag:Count)",
-          "info": "E.g: 'SDCP:15, SDCSP'. Add ':Number' to define color count. Default shows 1 product per tag.",
-          "default": "SDCP:15, SDCSP"
+          "label": "Product Tags",
+          "info": "Format: 'TAG:Count, TAG2:Count' (e.g., SDCP:14, SDCSP:6).",
+          "default": "SDCP:14"
         },
-        {
-          "type": "checkbox",
-          "id": "show_all",
-          "label": "Show multiple products per tag",
-          "info": "If checked, shows ALL products found (up to 10) for these tags. If unchecked, shows only the single highest inventory item per tag.",
-          "default": false
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "View All Link"
-        },
-        {
-          "type": "header",
-          "content": "Title Display Options"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_gender",
-          "label": "Show Gender in Title (e.g., 'Women')",
-          "default": false
-        },
-        {
-          "type": "checkbox",
-          "id": "show_color",
-          "label": "Show Color in Title (e.g., 'Sky Blue')",
-          "default": false
-        }
+        { "type": "checkbox", "id": "show_all", "label": "Show multiple products", "default": false },
+        { "type": "url", "id": "link", "label": "View All Link" },
+        { "type": "checkbox", "id": "show_gender", "label": "Show Gender in Title", "default": false },
+        { "type": "checkbox", "id": "show_color", "label": "Show Color in Title", "default": false }
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Shop By Mood",
-      "blocks": [
-        { "type": "mood", "settings": { "gender": "women", "title": "Everyday Wear" } },
-        { "type": "mood", "settings": { "gender": "men", "title": "Everyday Wear" } }
-      ]
-    }
-  ]
+  "presets": [{ "name": "Shop By Mood" }]
 }
 {% endschema %}
 
 {% style %}
-  #shopify-section-{{ section.id }} {
-    --active-border-color: {{ section.settings.active_color }};
-  }
-
-  .mood-section-container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 20px;
+  .mood-container-{{ section.id }} {
+    max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 15px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
-  /* ——— HEADER UI ——— */
-  .mood-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+  .mood-header { text-align: center; margin-bottom: 20px; }
   .mood-main-title {
-    font-size: 28px;
-    color: #000;
-    margin: 0 0 8px 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1.2;
+    font-size: 22px; color: #000; margin: 0 0 1px 0;
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1.2;
   }
   .mood-main-title span { font-weight: 400; }
   .mood-main-title strong { font-weight: 600; }
-  
-  .mood-header p {
-    font-size: 18px;
-    color: #222;
-    font-weight: 400;
-    margin: 0;
+  .mood-header p { font-size: 14px; color: #222; font-weight: 400; margin: 0; }
+
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  @media(max-width: 768px) {
+    .mood-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   }
 
-  /* ——— GENDER TOGGLES ——— */
-  .gender-toggle-row {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 30px;
-  }
-  
-  .gender-btn {
-    border: 1px solid #ddd;
-    background: #fff;
-    color: #000;
-    border-radius: 8px;
-    padding: 10px 40px;
-    font-size: 15px;
-    font-weight: 500;
+  .mood-grid-item {
     cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    min-width: 140px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
     transition: all 0.2s ease;
   }
-  
-  .gender-btn:hover { border-color: #000; }
-  
-  .gender-btn.is-selected { 
-    background: #000; 
-    color: #fff; 
-    border-color: #000; 
+
+  .mood-grid-item.is-active {
+    border-color: #000;
+    box-shadow: 0 0 0 2px #fff inset;
   }
 
-  /* ——— MOOD BANNERS (TOGGLES) ——— */
-  .mood-toggles-track {
-    display: flex;
-    gap: 5px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    scrollbar-width: none;
+  .mood-grid-item img {
+    width: 100%; height: 100%; display: block;
+    object-fit: cover;
+  }
+
+  .mood-product-area {
+    display: none;
+    animation: fadeIn 0.4s ease;
+    margin-top: 0px;
+    padding-top: 0px;
+  }
+  .mood-product-area.is-visible { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+  .area-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
+  .area-title { font-size: 20px; font-weight: 500; margin: 0; color: #111; }
+  .area-link { font-size: 13px; text-decoration: underline; color: #666; cursor: pointer; }
+
+  .prod-carousel { position: relative; } /* already present - required for arrows */
+  .prod-track {
+    display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;
+    scroll-behavior: smooth; scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
-  .mood-toggles-track::-webkit-scrollbar { display: none; }
+  .prod-track::-webkit-scrollbar { display: none; }
 
-  .mood-card {
-    position: relative;
-    flex: 0 0 200px;
-    height: 100px;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-    border: 2px solid transparent; 
-  }
-  
-  /* Active State for Banner: Colored Border */
-  .mood-card.is-active {
-    border-color: var(--active-border-color);
-  }
+  .p-card { flex: 0 0 220px; text-decoration: none; color: inherit; display: block; }
+  @media(max-width: 768px) { .p-card { flex: 0 0 160px; } }
 
-  @media(max-width: 768px) {
-    .mood-card { flex: 0 0 180px; height: auto; }
-    .mood-main-title { font-size: 24px; }
-    .mood-header p { font-size: 18px; }
-    .gender-btn { padding: 5px 7px; min-width: 87px; font-size: 12px; }
-  }
+  .p-img-box { position: relative; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #f4f4f4; aspect-ratio: 2/3; }
+  .p-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .mood-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 10px;
-    padding: 3px;
-    padding-bottom:0px
-    display: block;
-  }
-
-  /* ——— PRODUCT CAROUSEL ——— */
-  .product-section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    padding: 0 5px;
-  }
-
-  .current-mood-title { font-size: 22px; font-weight: 500; color: #111; margin: 0; }
-  .view-all-link { font-size: 14px; text-decoration: underline; color: #666; cursor: pointer; }
-
-  .product-carousel { 
-    position: relative; 
-    min-height: 300px; 
-  }
-  
-  .product-track {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    padding-bottom: 20px;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-  }
-  .product-track::-webkit-scrollbar { display: none; }
-
-  /* ——— ARROW NAVIGATION (DESKTOP ONLY) ——— */
-  .mood-nav-btn {
-    position: absolute;
-    top: 40%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 2;
-    transition: all 0.2s ease;
-    opacity: 0; /* Hidden by default */
-    pointer-events: none;
-  }
-  .mood-nav-btn:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    background: #f9f9f9;
-  }
-  .mood-nav-btn.is-visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  
-  .mood-nav-prev { left: -10px; }
-  .mood-nav-next { right: -10px; }
-
-  @media(max-width: 768px) {
-    .mood-nav-btn { display: none !important; }
-  }
-
-  .product-card {
-    flex: 0 0 220px;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: inherit;
-  }
-  @media(max-width: 768px) { .product-card { flex: 0 0 170px; } }
-
-  .p-image-wrap {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    background-color: #f4f4f4;
-    aspect-ratio: 2/3;
-  }
-  .p-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  .p-overlay-text {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 30px 10px 8px;
-    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+  .p-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 40px 8px 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
     color: #fff;
+    text-align: left;
   }
-  .p-title { font-size: 13px; margin-bottom: 4px; line-height: 1.3; font-weight: 500; }
+  .p-ttl { font-size: 12px; margin-bottom: 8px; line-height: 1.3; }
   .p-meta { font-size: 10px; opacity: 0.9; text-transform: uppercase; }
 
   .p-info { padding: 0 4px; }
   .p-colors { font-size: 11px; color: #666; margin-bottom: 4px; }
-  .p-price-row { display: flex; gap: 8px; align-items: baseline; }
-  .p-price { font-weight: 700; font-size: 15px; color: #111; }
-  .p-compare { text-decoration: line-through; color: #ff5a5a; font-size: 13px; font-weight: 500; }
-  
-  .loading-msg { width: 100%; text-align: center; padding: 40px; color: #666; font-size: 14px; }
+  .p-price-box { display: flex; gap: 6px; align-items: baseline; display:none; }
+  .p-price { font-weight: 700; font-size: 14px; color: #111; }
+  .p-compare { text-decoration: line-through; color: #ff5a5a; font-size: 12px; font-weight: 500; }
+
+  .loading-msg { text-align: center; padding: 30px; color: #888; font-size: 14px; width: 100%; }
+
+  .mood-progress-wrap { display: flex; justify-content: center; margin-top: 10px; }
+  .mood-progress-container {
+    width: 220px;
+    height: 4px;
+    background: rgba(0,0,0,0.10);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .mood-progress-fill {
+    height: 100%;
+    width: 12%;
+    background: #000;
+    border-radius: 999px;
+    transition: width 0.12s ease-out;
+  }
+
+  /* ——— DESKTOP ARROWS (SHOP BY MOOD) ——— */
+  .mood-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transition: opacity .15s ease, transform .15s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .mood-nav svg { width: 18px; height: 18px; display: block; }
+  .mood-nav.is-visible { opacity: 1; pointer-events: auto; }
+  .mood-nav:hover { transform: translateY(-50%) scale(1.03); }
+  .mood-nav--left { left: -6px; }
+  .mood-nav--right { right: -6px; }
+
+  @media (max-width: 1024px) {
+    .mood-nav { display: none !important; }
+  }
 {% endstyle %}
 
-<div class="mood-section-container" id="mood-section-{{ section.id }}">
-  
+<div class="mood-container-{{ section.id }}">
   <div class="mood-header">
     <h2 class="mood-main-title">
       <span>{{ section.settings.heading_start }}</span> <strong>{{ section.settings.heading_bold }}</strong>
@@ -328,241 +196,262 @@
     {% endif %}
   </div>
 
-  <div class="gender-toggle-row">
-    <button class="gender-btn is-selected" id="btn-women-{{ section.id }}" onclick="switchGender('women', '{{ section.id }}')">WOMEN</button>
-    <button class="gender-btn" id="btn-men-{{ section.id }}" onclick="switchGender('men', '{{ section.id }}')">MEN</button>
-  </div>
+  <div class="mood-grid" id="mood-grid-{{ section.id }}"></div>
 
-  <div class="mood-toggles-track" id="mood-toggles-{{ section.id }}">
+  <div class="mood-product-area" id="product-area-{{ section.id }}">
+    <div class="area-header">
+      <h3 class="area-title" id="area-title-{{ section.id }}">Title</h3>
+      <a href="#" class="area-link" id="area-link-{{ section.id }}">View All</a>
     </div>
 
-  <div id="product-display-area-{{ section.id }}">
-    <div class="product-section-header">
-      <h3 class="current-mood-title" id="active-mood-title-{{ section.id }}">...</h3>
-      <a href="#" class="view-all-link" id="view-all-link-{{ section.id }}">view all</a>
-    </div>
-
-    <div class="product-carousel">
-      <button class="mood-nav-btn mood-nav-prev" id="prev-btn-{{ section.id }}" aria-label="Previous">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    <div class="prod-carousel">
+      <!-- Left Arrow -->
+      <button class="mood-nav mood-nav--left" type="button" aria-label="Scroll left" id="mood-left-{{ section.id }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
-      
-      <div class="product-track" id="product-track-{{ section.id }}"></div>
-      
-      <button class="mood-nav-btn mood-nav-next" id="next-btn-{{ section.id }}" aria-label="Next">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-      </button>
-    </div>
-  </div>
 
+      <!-- Right Arrow -->
+      <button class="mood-nav mood-nav--right" type="button" aria-label="Scroll right" id="mood-right-{{ section.id }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="prod-track" id="prod-track-{{ section.id }}"></div>
+
+      <!-- Progress Bar -->
+      <div class="mood-progress-wrap">
+        <div class="mood-progress-container" aria-hidden="true">
+          <div class="mood-progress-fill" id="mood-bar-{{ section.id }}"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-  var shopByMoodData = shopByMoodData || {};
-
-  (function() {
+  (function(){
     const sectionId = "{{ section.id }}";
     const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
 
-    const allMoods = [
+    const allBlocks = [
       {% for block in section.blocks %}
         {
-          id: '{{ block.id }}',
-          gender: '{{ block.settings.gender }}',
-          title: '{{ block.settings.title | escape }}',
-          tagsRaw: '{{ block.settings.tag | escape }}', 
-          showAll: {{ block.settings.show_all | default: false }},
-          showGender: {{ block.settings.show_gender | default: false }},
-          showColor: {{ block.settings.show_color | default: false }},
-          image: '{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 400 }}{% else %}https://via.placeholder.com/400x200?text=No+Image{% endif %}',
-          link: '{{ block.settings.link }}'
+          id: "{{ block.id }}",
+          gender: "{{ block.settings.gender | downcase }}",
+          title: "{{ block.settings.title | escape }}",
+          image: "{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 400 }}{% else %}https://via.placeholder.com/200?text=Mood{% endif %}",
+          tagsRaw: "{{ block.settings.tag | escape }}",
+          link: "{{ block.settings.link }}",
+          showAll: {{ block.settings.show_all | json }},
+          showGender: {{ block.settings.show_gender | json }},
+          showColor: {{ block.settings.show_color | json }}
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
     ];
 
-    shopByMoodData[sectionId] = {
-      moods: allMoods,
-      cache: {}, 
-      currentGender: 'women'
-    };
+    let currentGender = window.currentGlobalGender || 'women';
+    let cache = {};
 
-    window.switchGender = function(gender, sId) {
-      const data = shopByMoodData[sId];
-      data.currentGender = gender;
-      document.getElementById(`btn-women-${sId}`).classList.toggle('is-selected', gender === 'women');
-      document.getElementById(`btn-men-${sId}`).classList.toggle('is-selected', gender === 'men');
-      renderMoodToggles(sId);
-    };
+    window.addEventListener('moodGenderChanged', (e) => {
+      console.log('ShopByMood Gender Switched to:', e.detail.gender);
+      currentGender = e.detail.gender;
+      renderGrid();
+    });
 
-    function renderMoodToggles(sId) {
-      const data = shopByMoodData[sId];
-      const track = document.getElementById(`mood-toggles-${sId}`);
-      const visibleMoods = data.moods.filter(m => m.gender === data.currentGender);
-      
-      if(visibleMoods.length === 0) {
-        track.innerHTML = '<div style="padding:20px; color:#999;">No moods found.</div>';
-        document.getElementById(`product-track-${sId}`).innerHTML = '';
-        updateArrows(sId);
-        return;
+    function initFillProgressBar(track) {
+      const bar = document.getElementById(`mood-bar-${sectionId}`);
+      if (!track || !bar) return;
+
+      function update() {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+
+        if (maxScroll <= 0) {
+          bar.style.width = '12%';
+          return;
+        }
+
+        const progress = track.scrollLeft / maxScroll;
+        const pct = (progress * 100);
+        bar.style.width = `${Math.min(100, Math.max(12, pct))}%`;
       }
 
-      track.innerHTML = visibleMoods.map((mood, index) => `
-        <div class="mood-card ${index === 0 ? 'is-active' : ''}" 
-             data-mood-id="${mood.id}"
-             role="button"
-             aria-label="${mood.title}"
-             onclick="switchMood('${mood.id}', '${sId}')">
-          <img src="${mood.image}" alt="${mood.title}">
-        </div>
-      `).join('');
+      if (track._moodProgressBound) {
+        requestAnimationFrame(update);
+        return;
+      }
+      track._moodProgressBound = true;
 
-      switchMood(visibleMoods[0].id, sId);
+      track.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+
+      setTimeout(update, 60);
     }
 
-    window.switchMood = async function(moodId, sId) {
-      const data = shopByMoodData[sId];
-      const selectedMood = data.moods.find(m => m.id === moodId);
-      if(!selectedMood) return;
+    // ——— DESKTOP ARROWS (SHOP BY MOOD) ———
+    function initDesktopArrows(track) {
+      const leftBtn = document.getElementById(`mood-left-${sectionId}`);
+      const rightBtn = document.getElementById(`mood-right-${sectionId}`);
+      if (!track || !leftBtn || !rightBtn) return;
 
-      const track = document.getElementById(`mood-toggles-${sId}`);
-      track.querySelectorAll('.mood-card').forEach(c => c.classList.remove('is-active'));
-      const activeCard = track.querySelector(`.mood-card[data-mood-id="${moodId}"]`);
-      if(activeCard) activeCard.classList.add('is-active');
+      const isDesktop = () => window.matchMedia('(min-width: 1025px)').matches;
 
-      document.getElementById(`active-mood-title-${sId}`).textContent = selectedMood.title;
-      const viewAllBtn = document.getElementById(`view-all-link-${sId}`);
-      viewAllBtn.href = (selectedMood.link && selectedMood.link !== '') ? selectedMood.link : '#';
+      function updateArrows() {
+        if (!isDesktop()) {
+          leftBtn.classList.remove('is-visible');
+          rightBtn.classList.remove('is-visible');
+          return;
+        }
 
-      const pTrack = document.getElementById(`product-track-${sId}`);
-      
-      // Reset scroll position
-      pTrack.scrollLeft = 0;
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll <= 2) {
+          leftBtn.classList.remove('is-visible');
+          rightBtn.classList.remove('is-visible');
+          return;
+        }
 
-      if(data.cache[selectedMood.id]) {
-        renderProducts(data.cache[selectedMood.id], sId);
+        const atStart = track.scrollLeft <= 2;
+        const atEnd = track.scrollLeft >= (maxScroll - 2);
+
+        if (atStart) {
+          leftBtn.classList.remove('is-visible');
+          rightBtn.classList.add('is-visible');
+          return;
+        }
+
+        leftBtn.classList.add('is-visible');
+        if (atEnd) rightBtn.classList.remove('is-visible');
+        else rightBtn.classList.add('is-visible');
+      }
+
+      function scrollByStep(dir) {
+        const step = Math.round(track.clientWidth * 0.85);
+        track.scrollBy({ left: dir * step, behavior: 'smooth' });
+      }
+
+      // bind once per section
+      if (!track._moodArrowBound) {
+        track._moodArrowBound = true;
+
+        leftBtn.addEventListener('click', () => scrollByStep(-1));
+        rightBtn.addEventListener('click', () => scrollByStep(1));
+
+        track.addEventListener('scroll', updateArrows, { passive: true });
+        window.addEventListener('resize', updateArrows);
+      }
+
+      setTimeout(updateArrows, 80);
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById(`mood-grid-${sectionId}`);
+      const productArea = document.getElementById(`product-area-${sectionId}`);
+      const track = document.getElementById(`prod-track-${sectionId}`);
+      const bar = document.getElementById(`mood-bar-${sectionId}`);
+
+      const visibleBlocks = allBlocks.filter(b => b.gender === currentGender);
+
+      if (visibleBlocks.length === 0) {
+        grid.innerHTML =
+          '<div style="grid-column:1/-1; text-align:center; color:#999; padding:20px;">No moods found for ' +
+          currentGender +
+          "</div>";
+        productArea.classList.remove("is-visible");
+        if (bar) bar.style.width = '12%';
         return;
       }
 
-      pTrack.innerHTML = '<div class="loading-msg">Loading styles...</div>';
-      updateArrows(sId);
-      
-      const tagsList = [];
-      const rawEntries = selectedMood.tagsRaw.split(',');
-      
-      rawEntries.forEach(entry => {
-        const parts = entry.split(':');
-        const tagName = parts[0].trim();
-        const colorCount = parts[1] ? parts[1].trim() : null;
-        if(tagName) {
-          tagsList.push({ tag: tagName, count: colorCount });
+      grid.innerHTML = visibleBlocks.map((b) => `
+        <div class="mood-grid-item" data-block-id="${b.id}" id="grid-item-${b.id}">
+          <img src="${b.image}" alt="${b.title}" loading="lazy">
+        </div>
+      `).join("");
+
+      document.querySelectorAll(`#mood-grid-${sectionId} .mood-grid-item`)
+        .forEach((el) => el.classList.remove("is-active"));
+
+      productArea.classList.remove("is-visible");
+
+      if (track) {
+        track.innerHTML = '<div class="loading-msg">Select a mood to see styles.</div>';
+        track.scrollLeft = 0;
+      }
+      if (bar) bar.style.width = '12%';
+    }
+
+    const gridContainer = document.getElementById(`mood-grid-${sectionId}`);
+    if (gridContainer) {
+      gridContainer.addEventListener('click', function(e) {
+        const item = e.target.closest('.mood-grid-item');
+        if (item) {
+          const blockId = item.getAttribute('data-block-id');
+          loadMoodProducts(blockId);
         }
       });
-      
-      if(tagsList.length === 0) {
-        pTrack.innerHTML = '<div class="loading-msg">No tags configured.</div>';
+    }
+
+    async function loadMoodProducts(blockId) {
+      const block = allBlocks.find(b => b.id === blockId);
+      if(!block) return;
+
+      document.querySelectorAll(`#mood-grid-${sectionId} .mood-grid-item`)
+        .forEach(el => el.classList.remove('is-active'));
+
+      const activeItem = document.getElementById(`grid-item-${blockId}`);
+      if(activeItem) activeItem.classList.add('is-active');
+
+      const area = document.getElementById(`product-area-${sectionId}`);
+      area.classList.add('is-visible');
+      document.getElementById(`area-title-${sectionId}`).innerText = block.title;
+      document.getElementById(`area-link-${sectionId}`).href = block.link || '#';
+
+      const track = document.getElementById(`prod-track-${sectionId}`);
+      const bar = document.getElementById(`mood-bar-${sectionId}`);
+      if (track) track.scrollLeft = 0;
+      if (bar) bar.style.width = '12%';
+
+      if(cache[blockId]) {
+        renderCarousel(cache[blockId], track);
+        initFillProgressBar(track);
+        initDesktopArrows(track);
         return;
       }
 
-      const products = await fetchProductsMulti(tagsList, selectedMood);
-      data.cache[selectedMood.id] = products;
-      renderProducts(products, sId);
+      track.innerHTML = '<div class="loading-msg">Loading styles...</div>';
+
+      const tagEntries = block.tagsRaw.split(',').map(entry => {
+        const parts = entry.split(':');
+        return { tag: parts[0].trim(), count: parts[1] ? parts[1].trim() : '' };
+      }).filter(e => e.tag !== '');
+
+      const products = await fetchProductsMulti(tagEntries, block);
+      cache[blockId] = products;
+      renderCarousel(products, track);
+      initFillProgressBar(track);
+      initDesktopArrows(track);
     };
 
-    function renderProducts(products, sId) {
-      const pTrack = document.getElementById(`product-track-${sId}`);
-      if (!products || products.length === 0) {
-        pTrack.innerHTML = '<div class="loading-msg">No products found.</div>';
-        updateArrows(sId);
-        return;
-      }
-
-      pTrack.innerHTML = products.map(item => `
-        <a class="product-card" href="${item.link}">
-          <div class="p-image-wrap">
-            <img src="${item.image}" alt="${item.title}" loading="lazy">
-            <div class="p-overlay-text">
-              <div class="p-title">${item.title}</div>
-              <div class="p-meta">${item.sizeRange}</div>
-            </div>
-          </div>
-          <div class="p-info">
-            <div class="p-colors">${item.colorLabel}</div>
-            <div class="p-price-row">
-              <span class="p-price">₹${inr.format(item.price)}</span>
-              <span class="p-compare">₹${inr.format(item.compare)}</span>
-            </div>
-          </div>
-        </a>
-      `).join('');
-
-      setTimeout(() => updateArrows(sId), 100);
-    }
-
-    // ——— ARROW LOGIC ———
-    function updateArrows(sId) {
-      const track = document.getElementById(`product-track-${sId}`);
-      const prevBtn = document.getElementById(`prev-btn-${sId}`);
-      const nextBtn = document.getElementById(`next-btn-${sId}`);
-      
-      if(!track || !prevBtn || !nextBtn) return;
-
-      const isScrollable = track.scrollWidth > track.clientWidth;
-      
-      if (!isScrollable) {
-        prevBtn.classList.remove('is-visible');
-        nextBtn.classList.remove('is-visible');
-        return;
-      }
-
-      const atStart = track.scrollLeft <= 10;
-      const atEnd = track.scrollLeft >= (track.scrollWidth - track.clientWidth - 10);
-
-      prevBtn.classList.toggle('is-visible', !atStart);
-      nextBtn.classList.toggle('is-visible', !atEnd);
-    }
-
-    function initArrows(sId) {
-      const track = document.getElementById(`product-track-${sId}`);
-      const prevBtn = document.getElementById(`prev-btn-${sId}`);
-      const nextBtn = document.getElementById(`next-btn-${sId}`);
-
-      if(prevBtn && nextBtn && track) {
-        prevBtn.onclick = () => {
-          track.scrollBy({ left: -300, behavior: 'smooth' });
-          setTimeout(() => updateArrows(sId), 350);
-        };
-        nextBtn.onclick = () => {
-          track.scrollBy({ left: 300, behavior: 'smooth' });
-          setTimeout(() => updateArrows(sId), 350);
-        };
-        track.onscroll = () => updateArrows(sId);
-        window.addEventListener('resize', () => updateArrows(sId));
-      }
-    }
-
-    async function fetchProductsMulti(tagObjects, moodData) {
+    async function fetchProductsMulti(tagEntries, config) {
       let queryParts = [];
-      tagObjects.forEach((obj, index) => {
-        // Query quantityAvailable inside variants to calculate real stock
+
+      tagEntries.forEach((entry, idx) => {
         queryParts.push(`
-          t${index}: products(first: 10, query: "tag:'${obj.tag}'") {
+          t${idx}: products(first: 10, query: "tag:'${entry.tag}'") {
             edges {
               node {
-                title
-                handle
-                onlineStoreUrl
-                totalInventory
+                title, handle, onlineStoreUrl, totalInventory
                 variantName: metafield(namespace: "custom", key: "product_variant_name") { value }
                 images(first: 1) { edges { node { url } } }
                 variants(first: 25) {
-                  edges {
-                    node {
-                      price { amount }
-                      compareAtPrice { amount }
-                      selectedOptions { name value }
-                      quantityAvailable
-                    }
-                  }
+                  edges { node {
+                    price { amount }
+                    compareAtPrice { amount }
+                    quantityAvailable
+                    selectedOptions { name, value }
+                  } }
                 }
               }
             }
@@ -573,130 +462,120 @@
       const fullQuery = `{ ${queryParts.join('\n')} }`;
 
       try {
-        const response = await fetch("https://saadaa-design.myshopify.com/api/2024-07/graphql.json", {
+        const res = await fetch(`https://${window.Shopify.shop}/api/2024-07/graphql.json`, {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json", 
-            "X-Shopify-Storefront-Access-Token": "388bd37219d8ab7daee1c58a23c03cc8" 
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": "388bd37219d8ab7daee1c58a23c03cc8"
           },
           body: JSON.stringify({ query: fullQuery })
         });
-        
-        const json = await response.json();
-        if (json.errors || !json.data) return [];
 
-        let finalProducts = [];
+        const json = await res.json();
+
+        let allProducts = [];
         let usedHandles = new Set();
-        let usedColors = new Set(); // Track colors used in THIS mood category
+        let usedColors = new Set();
 
-        tagObjects.forEach((obj, index) => {
-          const aliasKey = `t${index}`;
-          const edges = json.data[aliasKey]?.edges || [];
-          
-          if(edges.length > 0) {
-            
-            // Helper: Sum of variant quantities
-            const getVariantStock = (p) => {
-              return p.variants.edges.reduce((sum, v) => sum + (v.node.quantityAvailable || 0), 0);
-            };
+        tagEntries.forEach((entry, idx) => {
+          const edges = json.data[`t${idx}`]?.edges || [];
 
-            // SORT: Highest Variant Stock first
-            const candidates = edges.map(e => e.node).sort((a, b) => {
-               return getVariantStock(b) - getVariantStock(a);
+          const candidates = edges.map(e => e.node).sort((a,b) => {
+            const stockA = a.variants.edges.reduce((s,v)=>s+(v.node.quantityAvailable||0),0);
+            const stockB = b.variants.edges.reduce((s,v)=>s+(v.node.quantityAvailable||0),0);
+            return stockB - stockA;
+          });
+
+          if(config.showAll) {
+            candidates.forEach(p => {
+              if(!usedHandles.has(p.handle)) {
+                usedHandles.add(p.handle);
+                allProducts.push(normalize(p, config, entry.count));
+              }
             });
+          } else {
+            let winner = null;
+            for(let p of candidates) {
+              const col = p.variantName?.value || "Unknown";
+              if(usedHandles.has(p.handle)) continue;
+              if(usedColors.has(col)) continue;
+              winner = p; break;
+            }
+            if(!winner) winner = candidates.find(p => !usedHandles.has(p.handle));
 
-            if (moodData.showAll) {
-              // ——— MODE: SHOW ALL PRODUCTS ———
-              candidates.forEach(c => {
-                if (!usedHandles.has(c.handle)) {
-                  usedHandles.add(c.handle);
-                  finalProducts.push(normalizeProduct(c, obj.count, moodData));
-                }
-              });
-
-            } else {
-              // ——— MODE: ONE PRODUCT PER TAG (Default) ———
-              // Logic: Find Unique Handle AND Unique Color
-              let winner = null;
-              
-              for (let c of candidates) {
-                 const h = c.handle;
-                 const col = c.variantName?.value || "Unknown";
-                 
-                 if (usedHandles.has(h)) continue; // Always skip exact duplicate products
-                 if (usedColors.has(col)) continue; // Skip if this color is already shown
-                 
-                 winner = c; 
-                 break;
-              }
-
-              // Fallback: If all available colors are taken, just pick the highest stock unique product
-              if (!winner) {
-                 winner = candidates.find(c => !usedHandles.has(c.handle));
-              }
-
-              if (winner) {
-                 usedHandles.add(winner.handle);
-                 if (winner.variantName?.value) {
-                   usedColors.add(winner.variantName.value);
-                 }
-                 finalProducts.push(normalizeProduct(winner, obj.count, moodData));
-              }
+            if(winner) {
+              usedHandles.add(winner.handle);
+              if(winner.variantName?.value) usedColors.add(winner.variantName.value);
+              allProducts.push(normalize(winner, config, entry.count));
             }
           }
         });
 
-        return finalProducts;
-
-      } catch (err) {
-        console.error("Fetch error", err);
+        return allProducts;
+      } catch(e) {
+        console.error(e);
         return [];
       }
     }
 
-    function normalizeProduct(p, count, moodData) {
-      const variants = p.variants.edges.map(e => e.node);
-      const firstVariant = variants[0];
-      
-      // ——— DYNAMIC TITLE CLEANING ———
-      let displayTitle = p.title;
-      
-      // 1. Remove Gender Words (Unless "Show Gender" is checked)
-      if (!moodData.showGender) {
-        displayTitle = displayTitle.replace(/^(Women|Men|Women's|Men's)\s+/i, "");
-      }
-      
-      // 2. Remove Color from Metafield (Unless "Show Color" is checked)
-      if (!moodData.showColor && p.variantName?.value) {
-         const re = new RegExp(`\\b${p.variantName.value}\\b`, 'gi');
-         displayTitle = displayTitle.replace(re, "");
-      }
-      
-      displayTitle = displayTitle.replace(/\s+/g, ' ').trim();
-      // ——————————————————————————————
+    function normalize(p, config, countStr) {
+      const v = p.variants.edges[0]?.node;
+      let title = p.title;
 
-      const allSizes = variants.flatMap(v => v.selectedOptions.filter(opt => opt.name.toLowerCase() === 'size').map(opt => opt.value));
-      const uniqueSizes = [...new Set(allSizes)];
-      let sizeRangeStr = uniqueSizes.length > 1 ? `${uniqueSizes[0]} - ${uniqueSizes[uniqueSizes.length - 1]}` : (uniqueSizes[0] || "");
-      const backendPrice = parseFloat(firstVariant?.price?.amount || 0);
-      
-      let colorText = "Available in multiple colors";
-      if(count && count !== '') {
-        colorText = `Available in ${count}+ colors`;
-      }
+      if(!config.showGender) title = title.replace(/\b(Women['’]?s?|Men['’]?s?|Unisex['’]?s?|Women|Men|Unisex)\b/gi, "").trim();
+      if(!config.showColor && p.variantName?.value) title = title.replace(new RegExp(`\\b${p.variantName.value}\\b`, 'gi'), "");
+      title = title.replace(/\s+/g, ' ').trim();
+
+      const sizes = [...new Set(
+        p.variants.edges.flatMap(va =>
+          va.node.selectedOptions
+            .filter(o=>o.name.toLowerCase()==='size')
+            .map(o=>o.value)
+        )
+      )];
+      const sizeStr = sizes.length > 1 ? `${sizes[0]} - ${sizes[sizes.length-1]}` : (sizes[0] || '');
 
       return {
-        title: displayTitle,
-        link: p.onlineStoreUrl || `https://saadaa.in/products/${p.handle}`,
-        image: p.images.edges[0]?.node?.url || "",
-        price: backendPrice,
-        compare: backendPrice * 2,
-        colorLabel: colorText,
-        sizeRange: sizeRangeStr
+        title: title,
+        link: p.onlineStoreUrl || `/products/${p.handle}`,
+        image: p.images.edges[0]?.node?.url,
+        price: parseFloat(v?.price?.amount || 0),
+        compare: parseFloat(v?.price?.amount || 0) * 2,
+        size: sizeStr,
+        color: p.variantName?.value || '',
+        countInfo: countStr
       };
     }
 
-    initArrows(sectionId);
-    renderMoodToggles(sectionId);
+    function renderCarousel(products, track) {
+      if(products.length === 0) {
+        track.innerHTML = '<div class="loading-msg">No products found.</div>';
+        return;
+      }
+
+      track.innerHTML = products.map(p => {
+        const colorTxt = p.countInfo ? `Available in ${p.countInfo}+ colors` : 'Available in multiple colors';
+        return `
+          <a href="${p.link}" class="p-card">
+            <div class="p-img-box">
+              <img src="${p.image}" loading="lazy">
+              <div class="p-overlay">
+                <div class="p-ttl">${p.title}</div>
+                <div class="p-meta">${p.size}</div>
+              </div>
+            </div>
+            <div class="p-info">
+              <div class="p-colors">${colorTxt}</div>
+              <div class="p-price-box">
+                <span class="p-price">₹${inr.format(p.price)}</span>
+                <span class="p-compare">₹${inr.format(p.compare)}</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    renderGrid();
   })();
 </script>

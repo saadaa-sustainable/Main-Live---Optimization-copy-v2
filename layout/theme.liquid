@@ -6,12 +6,14 @@
   dir="{% render 'direction' %}"
 >
   <head>
+<script> window.Shopflo = { ...(window.Shopflo ?? {}), autoOnboarding: true} </script>
+
 <script src='https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js' async></script>
 
 
     {% comment %} Tectonic custom code starts {% endcomment %}
-      {{ 'tt_heimdall.js' | asset_url | script_tag }}
-      {% render 'hermes-analytics' %}
+      {% comment %} {{ 'tt_heimdall.js' | asset_url | script_tag }}
+      {% render 'hermes-analytics' %} {% endcomment %}
     {% comment %} Tectonic custom code ends {% endcomment %}
 
     

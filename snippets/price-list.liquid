@@ -633,7 +633,7 @@ Supported variables
 
 
 
-{%- liquid
+{% comment %} {%- liquid
   
   assign has_SUPFH = false
 
@@ -660,7 +660,7 @@ Supported variables
     assign override_compare_cents = 149900
 
   endif
-  -%}
+  -%} {% endcomment %}
 
 
 <price-list {% if form_id %}role="region" aria-live="polite"{% endif %} class="price-list {% if context == 'product' %}price-list--product{% endif %}">

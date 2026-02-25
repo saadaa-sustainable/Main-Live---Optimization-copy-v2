@@ -1,31 +1,35 @@
+{%- comment -%}
+SHOP BY FABRIC (UPDATED - FIXES)
+1) If NO banner image is selected for a fabric block → that fabric card will NOT render (no blank cards).
+   If after filtering there are 0 fabrics → section shows "No fabrics found..." and no extra white space.
+
+Also removes the big blank white gap:
+- The features row is hidden automatically when empty (no icons yet / nothing selected).
+
+2) When switching global gender:
+- If a fabric was selected (eg. Behtar Linen) on Women,
+  switching to Men will auto-select the Men block with the SAME title
+  and load its products automatically.
+
+✅ ADDED:
+- 2 Progress bars:
+  (A) Fabric toggles progress bar (below fabric carousel)
+  (B) Product carousel progress bar (below product cards)
+- Desktop product logic:
+  2–5 products → no progress bar
+  6 products → progress bar ON, arrows OFF
+  7+ products → progress bar ON, arrows ON
+- Mobile: product progress bar ON (not desktop-only)
+{%- endcomment -%}
+
 {% schema %}
 {
   "name": "Shop By Fabric",
   "settings": [
-    {
-      "type": "text",
-      "id": "heading_start",
-      "label": "Heading Text (Regular)",
-      "default": "SHOP BY"
-    },
-    {
-      "type": "text",
-      "id": "heading_bold",
-      "label": "Heading Text (Bold)",
-      "default": "FABRIC"
-    },
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Sub Heading",
-      "default": "Choose what feels right on your skin"
-    },
-    {
-      "type": "color",
-      "id": "active_color",
-      "label": "Active Border Color",
-      "default": "#C36A4E"
-    }
+    { "type": "text", "id": "heading_start", "label": "Heading Text (Regular)", "default": "SHOP BY" },
+    { "type": "text", "id": "heading_bold", "label": "Heading Text (Bold)", "default": "FABRIC" },
+    { "type": "text", "id": "subheading", "label": "Sub Heading", "default": "Choose what feels right on your skin" },
+    { "type": "color", "id": "active_color", "label": "Active Border Color", "default": "#C36A4E" }
   ],
   "blocks": [
     {
@@ -33,88 +37,32 @@
       "name": "Fabric Category",
       "settings": [
         {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Banner Image (No Text)"
+          "type": "select",
+          "id": "gender",
+          "label": "Gender Category",
+          "options": [
+            { "value": "women", "label": "Women" },
+            { "value": "men", "label": "Men" }
+          ],
+          "default": "women"
         },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Fabric Title",
-          "info": "Appears in the header below toggles.",
-          "default": "Pure Linen"
-        },
-        {
-          "type": "textarea",
-          "id": "tag",
-          "label": "Product Tags (Format: Tag:Count)",
-          "info": "E.g: 'Linen:15'. Add ':Number' for color count.",
-          "default": "Linen:15"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_all",
-          "label": "Show multiple products per tag",
-          "default": false
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "View All Link"
-        },
-        {
-          "type": "header",
-          "content": "Title Display Options"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_gender",
-          "label": "Show Gender in Title (e.g., 'Women')",
-          "default": true
-        },
-        {
-          "type": "checkbox",
-          "id": "show_color",
-          "label": "Show Color in Title (e.g., 'Sky Blue')",
-          "default": false
-        },
-        {
-          "type": "header",
-          "content": "Specific Feature Icons"
-        },
-        {
-          "type": "image_picker",
-          "id": "icon_1",
-          "label": "Icon 1 Image"
-        },
-        {
-          "type": "text",
-          "id": "text_1",
-          "label": "Icon 1 Text",
-          "default": "100% LINEN"
-        },
-        {
-          "type": "image_picker",
-          "id": "icon_2",
-          "label": "Icon 2 Image"
-        },
-        {
-          "type": "text",
-          "id": "text_2",
-          "label": "Icon 2 Text",
-          "default": "SKIN FRIENDLY"
-        },
-        {
-          "type": "image_picker",
-          "id": "icon_3",
-          "label": "Icon 3 Image"
-        },
-        {
-          "type": "text",
-          "id": "text_3",
-          "label": "Icon 3 Text",
-          "default": "MADE TO LAST"
-        }
+        { "type": "image_picker", "id": "image", "label": "Banner Image (No Text)" },
+        { "type": "text", "id": "title", "label": "Fabric Title", "info": "Appears in the header below toggles.", "default": "Pure Linen" },
+        { "type": "textarea", "id": "tag", "label": "Product Tags (Format: Tag:Count)", "info": "E.g: 'Linen:15'. Add ':Number' for color count.", "default": "Linen:15" },
+        { "type": "checkbox", "id": "show_all", "label": "Show multiple products per tag", "default": false },
+        { "type": "url", "id": "link", "label": "View All Link" },
+
+        { "type": "header", "content": "Title Display Options" },
+        { "type": "checkbox", "id": "show_gender", "label": "Show Gender in Title (e.g., 'Women')", "default": true },
+        { "type": "checkbox", "id": "show_color", "label": "Show Color in Title (e.g., 'Sky Blue')", "default": false },
+
+        { "type": "header", "content": "Specific Feature Icons" },
+        { "type": "image_picker", "id": "icon_1", "label": "Icon 1 Image" },
+        { "type": "text", "id": "text_1", "label": "Icon 1 Text", "default": "100% LINEN" },
+        { "type": "image_picker", "id": "icon_2", "label": "Icon 2 Image" },
+        { "type": "text", "id": "text_2", "label": "Icon 2 Text", "default": "SKIN FRIENDLY" },
+        { "type": "image_picker", "id": "icon_3", "label": "Icon 3 Image" },
+        { "type": "text", "id": "text_3", "label": "Icon 3 Text", "default": "MADE TO LAST" }
       ]
     }
   ],
@@ -122,8 +70,8 @@
     {
       "name": "Shop By Fabric",
       "blocks": [
-        { "type": "fabric", "settings": { "title": "Pure Linen" } },
-        { "type": "fabric", "settings": { "title": "Cotton" } }
+        { "type": "fabric", "settings": { "title": "Pure Linen", "gender": "women" } },
+        { "type": "fabric", "settings": { "title": "Cotton", "gender": "women" } }
       ]
     }
   ]
@@ -131,253 +79,125 @@
 {% endschema %}
 
 {% style %}
-  #shopify-section-{{ section.id }} {
-    --fabric-active-border: {{ section.settings.active_color }};
-  }
+  #shopify-section-{{ section.id }} { --fabric-active-border: {{ section.settings.active_color }}; }
 
-  .fabric-section-container {
-    max-width: 1200px;
-    margin: 0px auto;
-    padding: 0 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-
-  /* ——— HEADER ——— */
-  .fabric-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .fabric-main-title {
-    font-size: 28px;
-    color: #000;
-    margin: 0 0 8px 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1.2;
-  }
+  .fabric-section-container { max-width: 1200px; margin: 0px auto; padding: 30px 20px; padding-bottom: 15px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .fabric-header { text-align: center; margin-bottom: 20px; }
+  .fabric-main-title { font-size: 28px; color: #000; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
   .fabric-main-title span { font-weight: 400; }
   .fabric-main-title strong { font-weight: 600; }
-  
-  .fabric-header p {
-    font-size: 18px;
-    color: #222;
-    font-weight: 400;
-    margin: 0;
-  }
+  .fabric-header p { font-size: 18px; color: #222; font-weight: 400; margin: 0; }
 
-  /* ——— FABRIC BANNERS ——— */
-  .fabric-toggles-wrapper {
-    position: relative;
-    margin-bottom: 10px;
-  }
+  .fabric-toggles-wrapper { position: relative; margin-bottom: 10px; }
 
   .fabric-toggles-track {
-    display: flex;
-    gap: 5px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-
+    display: flex; gap: 5px; overflow-x: auto;
+    padding-bottom: 0px; margin-bottom: 0px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
   .fabric-toggles-track::-webkit-scrollbar { display: none; }
 
-  .fabric-card {
-    position: relative;
-    flex: 0 0 200px;
-    height: 100px;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-    border: 2px solid transparent; 
-  }
-  
-  .fabric-card.is-active {
-    border-color: var(--fabric-active-border);
-  }
+  .fabric-card { position: relative; flex: 0 0 200px; height: 100px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease; border: 2px solid transparent; }
+  /* .fabric-card.is-active { border-color: var(--fabric-active-border); } */
+  .fabric-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; padding: 3px; display: block; }
 
-  .fabric-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 10px;
-    padding: 3px;
-    display: block;
+  @media(min-width: 769px) { .fabric-toggles-track.is-centered-desktop { justify-content: center; } }
+
+  /* ✅ Fabric toggles progress bar (NEW) */
+  .fabric-toggle-progress-wrap {
+    display: none; justify-content: center; margin: 20px 0;
+  }
+  .fabric-toggle-progress-wrap.is-visible { display: flex; }
+  .fabric-toggle-progress-container {
+    width: 220px; height: 4px; background: rgba(0,0,0,0.10);
+    border-radius: 999px; overflow: hidden;
+  }
+  .fabric-toggle-progress-bar {
+    height: 100%; width: 12%; background: #000;
+    border-radius: 999px; transition: width 0.12s ease-out;
   }
 
   /* ——— DYNAMIC ICONS ROW ——— */
-  .fabric-features-row {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin: 0px 0 20px 0;
-    padding: 10px 0;
-    min-height: 80px;
-  }
+  .fabric-features-row { display: flex; justify-content: center; gap: 40px; margin: 0px 0 20px 0; padding: 10px 0; min-height: 80px; }
+  .fabric-features-row:empty { display: none; min-height: 0; padding: 0; margin: 0; }
 
-  .fabric-feature-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    text-align: center;
-    animation: fadeIn 0.4s ease-out;
-  }
-  
+  .fabric-feature-item { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; animation: fadeIn 0.4s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-  .fabric-feature-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-  }
+  .fabric-feature-icon { width: 45px; height: 45px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #fff; }
+  .fabric-feature-icon img { width: 100%; height: 100%; object-fit: contain; }
 
-  .fabric-feature-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
+  .fabric-feature-text { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #333; max-width: 90px; line-height: 1.2; }
 
-  .fabric-feature-text {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #333;
-    max-width: 90px;
-    line-height: 1.2;
-  }
+  /* ——— PRODUCT CAROUSEL (Hidden Initially) ——— */
+  #fabric-display-area-{{ section.id }} { display: none; animation: fadeIn 0.4s ease; }
+  #fabric-display-area-{{ section.id }}.is-visible { display: block; }
 
-  /* ——— PRODUCT CAROUSEL ——— */
-  .fabric-grid-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    padding: 0 5px;
-    display:none;
-  }
-
+  .fabric-grid-header { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; margin-bottom: 20px; padding: 0 5px; display:none; }
   .fabric-current-title { font-size: 22px; font-weight: 500; color: #111; margin: 0; }
   .fabric-view-all { font-size: 14px; text-decoration: underline; color: #666; cursor: pointer; }
 
   .fabric-carousel { position: relative; min-height: 300px; }
-  
-  .fabric-track {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    padding-bottom: 20px;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-  }
-  .fabric-track::-webkit-scrollbar { display: none; }
 
-  /* Centering modifier for few items */
-  .fabric-track.is-centered {
-    justify-content: center;
-  }
+  .fabric-track { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; scroll-behavior: smooth; scrollbar-width: none; }
+  .fabric-track::-webkit-scrollbar { display: none; }
+  .fabric-track.is-centered { justify-content: center; }
 
   /* ——— ARROW NAVIGATION ——— */
   .fabric-nav-btn {
-    position: absolute;
-    top: 40%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 2;
-    transition: all 0.2s ease;
-    opacity: 0; 
-    pointer-events: none;
+    position: absolute; top: 40%; transform: translateY(-50%);
+    width: 40px; height: 40px; background: #fff; border: 1px solid #eee;
+    border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 2; transition: all 0.2s ease;
+    opacity: 0; pointer-events: none;
   }
-  .fabric-nav-btn:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    background: #f9f9f9;
-  }
-  .fabric-nav-btn.is-visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  
+  .fabric-nav-btn:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); background: #f9f9f9; }
+  .fabric-nav-btn.is-visible { opacity: 1; pointer-events: auto; }
+
   .fabric-nav-prev { left: -15px; }
   .fabric-nav-next { right: -15px; }
+  .fabric-toggle-btn { top: 50%; }
 
-  /* Specific positioning for toggle arrows */
-  .fabric-toggle-btn {
-    top: 50%; 
-  }
+  .fabric-p-card { flex: 0 0 220px; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
 
-  .fabric-p-card {
-    flex: 0 0 220px;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .fp-image-wrap {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    background-color: #f4f4f4;
-    aspect-ratio: 2/3;
-  }
+  .fp-image-wrap { position: relative; border-radius: 8px; overflow: hidden; margin-bottom: 10px; background-color: #f4f4f4; aspect-ratio: 2/3; }
   .fp-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .fp-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 30px 10px 8px;
-    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
-    color: #fff;
-  }
-  .fp-title { font-size: 12px; margin-bottom: 8px; line-height: 1.3;}
+  .fp-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 30px 10px 8px; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%); color: #fff; }
+  .fp-title { font-size: 12px; margin-bottom: 8px; line-height: 1.3; }
   .fp-meta { font-size: 10px; opacity: 0.9; text-transform: uppercase; }
 
   .fp-info { padding: 0 4px; }
   .fp-colors { font-size: 11px; color: #666; margin-bottom: 4px; }
-  .fp-price-row { display: flex; gap: 8px; align-items: baseline; }
+  .fp-price-row { display: flex; gap: 8px; align-items: baseline; display:none;}
   .fp-price { font-weight: 700; font-size: 15px; color: #111; }
   .fp-compare { text-decoration: line-through; color: #ff5a5a; font-size: 13px; font-weight: 500; }
-  
+
   .fp-loading { width: 100%; text-align: center; padding: 40px; color: #666; font-size: 14px; }
+
+  /* Product progress bar UI */
+  .fabric-progress-wrap { display: none; justify-content: center; margin-top: 10px; }
+  .fabric-progress-wrap.is-visible { display: flex; }
+  .fabric-progress-container { width: 220px; height: 4px; background: rgba(0,0,0,0.10); border-radius: 999px; overflow: hidden; }
+  .fabric-progress-bar { height: 100%; width: 12%; background: #000; border-radius: 999px; transition: width 0.12s ease-out; }
 
   @media(max-width: 768px) {
     .fabric-toggles-track { justify-content: flex-start; }
     .fabric-card { flex: 0 0 180px; height: auto; }
     .fabric-main-title { font-size: 24px; }
-    .fabric-header p { font-size: 18px; }
+    .fabric-header p {         font-size: 14px;
+        padding: 0 45px; }
     .fabric-p-card { flex: 0 0 170px; }
-    .fabric-track.is-centered { justify-content: flex-start; } 
-    
-    /* HIDE ARROWS ON MOBILE */
+    .fabric-track.is-centered { justify-content: flex-start; }
     .fabric-nav-btn { display: none !important; }
-
     .fabric-features-row { gap: 47px; }
     .fabric-feature-icon { width: 50px; height: 50px; }
-    .fabric-feature-text { font-size: 9px; }
+    .fabric-feature-text { font-size: 8px; }
   }
 {% endstyle %}
 
 <div class="fabric-section-container" id="fabric-section-{{ section.id }}">
-  
   <div class="fabric-header">
     <h2 class="fabric-main-title">
       <span>{{ section.settings.heading_start }}</span> <strong>{{ section.settings.heading_bold }}</strong>
@@ -399,6 +219,13 @@
     </button>
   </div>
 
+  <!-- ✅ NEW: Fabric toggles progress bar -->
+  <div class="fabric-toggle-progress-wrap" id="fabric-toggle-progress-wrap-{{ section.id }}">
+    <div class="fabric-toggle-progress-container" aria-hidden="true">
+      <div class="fabric-toggle-progress-bar" id="fabric-toggle-bar-{{ section.id }}"></div>
+    </div>
+  </div>
+
   <div class="fabric-features-row" id="fabric-features-{{ section.id }}"></div>
 
   <div id="fabric-display-area-{{ section.id }}">
@@ -417,9 +244,15 @@
       <button class="fabric-nav-btn fabric-nav-next" id="fab-next-{{ section.id }}" aria-label="Next">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </button>
+
+      <!-- ✅ Product progress bar -->
+      <div class="fabric-progress-wrap" id="fabric-progress-wrap-{{ section.id }}">
+        <div class="fabric-progress-container" aria-hidden="true">
+          <div class="fabric-progress-bar" id="fabric-bar-{{ section.id }}"></div>
+        </div>
+      </div>
     </div>
   </div>
-
 </div>
 
 <script>
@@ -433,12 +266,14 @@
       {% for block in section.blocks %}
         {
           id: '{{ block.id }}',
+          gender: '{{ block.settings.gender | downcase }}',
           title: '{{ block.settings.title | escape }}',
-          tagsRaw: '{{ block.settings.tag | escape }}', 
+          tagsRaw: '{{ block.settings.tag | escape }}',
           showAll: {{ block.settings.show_all | default: false }},
           showGender: {{ block.settings.show_gender | default: true }},
           showColor: {{ block.settings.show_color | default: false }},
-          image: '{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 400 }}{% else %}https://via.placeholder.com/400x200?text=No+Image{% endif %}',
+          hasBanner: {% if block.settings.image != blank %}true{% else %}false{% endif %},
+          image: '{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 400 }}{% else %}''{% endif %}',
           link: '{{ block.settings.link }}',
           icons: [
             { img: '{% if block.settings.icon_1 != blank %}{{ block.settings.icon_1 | image_url: width: 100 }}{% endif %}', text: '{{ block.settings.text_1 | escape }}' },
@@ -449,26 +284,227 @@
       {% endfor %}
     ];
 
+    let currentGender = window.currentGlobalGender || 'women';
+
     shopByFabricData[sectionId] = {
       fabrics: allFabrics,
-      cache: {}
+      cache: {},
+      lastSelectedTitle: null
     };
+
+    window.addEventListener('moodGenderChanged', (e) => {
+      currentGender = e.detail.gender;
+      renderFabricToggles(sectionId);
+    });
+
+    function isDesktop() {
+      return window.matchMedia('(min-width: 769px)').matches;
+    }
+
+    function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
+
+    /* -------------------------
+       (A) FABRIC TOGGLES PROGRESS
+    -------------------------- */
+    function setToggleProgressVisible(sId, shouldShow) {
+      const wrap = document.getElementById(`fabric-toggle-progress-wrap-${sId}`);
+      const bar = document.getElementById(`fabric-toggle-bar-${sId}`);
+      if (!wrap || !bar) return;
+
+      wrap.classList.toggle('is-visible', !!shouldShow);
+      bar.style.width = '12%';
+    }
+
+    function bindToggleProgress(sId) {
+      const track = document.getElementById(`fabric-toggles-${sId}`);
+      const wrap = document.getElementById(`fabric-toggle-progress-wrap-${sId}`);
+      const bar = document.getElementById(`fabric-toggle-bar-${sId}`);
+      if (!track || !wrap || !bar) return;
+      if (track._toggleProgressBound) return;
+      track._toggleProgressBound = true;
+
+      function update() {
+        if (!wrap.classList.contains('is-visible')) return;
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll <= 0) { bar.style.width = '12%'; return; }
+        const pct = (track.scrollLeft / maxScroll) * 100;
+        bar.style.width = `${clamp(pct, 12, 100)}%`;
+      }
+
+      track.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      setTimeout(update, 40);
+    }
+
+    /* -------------------------
+       (B) PRODUCT PROGRESS + LOGIC
+    -------------------------- */
+    function setProductProgressVisible(sId, shouldShow) {
+      const wrap = document.getElementById(`fabric-progress-wrap-${sId}`);
+      const bar = document.getElementById(`fabric-bar-${sId}`);
+      if (!wrap || !bar) return;
+
+      wrap.classList.toggle('is-visible', !!shouldShow);
+      bar.style.width = '12%';
+    }
+
+    function initProductProgressBar(sId) {
+      const track = document.getElementById(`fabric-track-${sId}`);
+      const bar = document.getElementById(`fabric-bar-${sId}`);
+      const wrap = document.getElementById(`fabric-progress-wrap-${sId}`);
+      if (!track || !bar || !wrap) return;
+      if (track._fabricProgressBound) return;
+      track._fabricProgressBound = true;
+
+      function update() {
+        if (!wrap.classList.contains('is-visible')) return;
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll <= 0) { bar.style.width = '12%'; return; }
+        const pct = (track.scrollLeft / maxScroll) * 100;
+        bar.style.width = `${clamp(pct, 12, 100)}%`;
+      }
+
+      track.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      setTimeout(update, 40);
+    }
+
+    /* -------------------------
+       ARROWS (PRODUCTS) - with gating logic
+    -------------------------- */
+    function setProductArrowGate(sId, productCount) {
+      const prevBtn = document.getElementById(`fab-prev-${sId}`);
+      const nextBtn = document.getElementById(`fab-next-${sId}`);
+      if (!prevBtn || !nextBtn) return false;
+
+      // Desktop only gating:
+      // 6 => arrows OFF
+      // 7+ => arrows ON
+      // 2-5 => arrows OFF (because progress also off, and usually centered)
+      const allow = isDesktop() && productCount > 6;
+
+      prevBtn.style.display = allow ? '' : 'none';
+      nextBtn.style.display = allow ? '' : 'none';
+
+      if (!allow) {
+        prevBtn.classList.remove('is-visible');
+        nextBtn.classList.remove('is-visible');
+      }
+      return allow;
+    }
+
+    function updateFabricArrows(sId) {
+      const track = document.getElementById(`fabric-track-${sId}`);
+      const prevBtn = document.getElementById(`fab-prev-${sId}`);
+      const nextBtn = document.getElementById(`fab-next-${sId}`);
+      if (!track || !prevBtn || !nextBtn) return;
+
+      if (prevBtn.style.display === 'none') return; // gated off
+
+      const isScrollable = track.scrollWidth > track.clientWidth;
+      if (!isScrollable) {
+        prevBtn.classList.remove('is-visible');
+        nextBtn.classList.remove('is-visible');
+        return;
+      }
+
+      const atStart = track.scrollLeft <= 10;
+      const atEnd = track.scrollLeft >= (track.scrollWidth - track.clientWidth - 10);
+
+      prevBtn.classList.toggle('is-visible', !atStart);
+      nextBtn.classList.toggle('is-visible', !atEnd);
+    }
+
+    function initFabricArrows(sId) {
+      const track = document.getElementById(`fabric-track-${sId}`);
+      const prevBtn = document.getElementById(`fab-prev-${sId}`);
+      const nextBtn = document.getElementById(`fab-next-${sId}`);
+      if (!prevBtn || !nextBtn || !track) return;
+
+      if (track._fabricArrowBound) return;
+      track._fabricArrowBound = true;
+
+      prevBtn.onclick = () => {
+        track.scrollBy({ left: -300, behavior: 'smooth' });
+        setTimeout(() => updateFabricArrows(sId), 350);
+      };
+      nextBtn.onclick = () => {
+        track.scrollBy({ left: 300, behavior: 'smooth' });
+        setTimeout(() => updateFabricArrows(sId), 350);
+      };
+
+      track.addEventListener('scroll', () => updateFabricArrows(sId), { passive: true });
+      window.addEventListener('resize', () => updateFabricArrows(sId));
+    }
+
+    /* -------------------------
+       TOGGLE ARROWS (unchanged)
+    -------------------------- */
+    function updateToggleArrows(sId) {
+      const track = document.getElementById(`fabric-toggles-${sId}`);
+      const prevBtn = document.getElementById(`toggle-prev-${sId}`);
+      const nextBtn = document.getElementById(`toggle-next-${sId}`);
+      if (!track || !prevBtn || !nextBtn) return;
+
+      const isScrollable = track.scrollWidth > track.clientWidth;
+      if (!isScrollable) {
+        prevBtn.classList.remove('is-visible');
+        nextBtn.classList.remove('is-visible');
+        return;
+      }
+
+      const atStart = track.scrollLeft <= 10;
+      const atEnd = track.scrollLeft >= (track.scrollWidth - track.clientWidth - 10);
+
+      prevBtn.classList.toggle('is-visible', !atStart);
+      nextBtn.classList.toggle('is-visible', !atEnd);
+    }
+
+    function initToggleArrows(sId) {
+      const track = document.getElementById(`fabric-toggles-${sId}`);
+      const prevBtn = document.getElementById(`toggle-prev-${sId}`);
+      const nextBtn = document.getElementById(`toggle-next-${sId}`);
+      if (!prevBtn || !nextBtn || !track) return;
+
+      if (track._toggleArrowBound) return;
+      track._toggleArrowBound = true;
+
+      prevBtn.onclick = () => {
+        track.scrollBy({ left: -200, behavior: 'smooth' });
+        setTimeout(() => updateToggleArrows(sId), 350);
+      };
+      nextBtn.onclick = () => {
+        track.scrollBy({ left: 200, behavior: 'smooth' });
+        setTimeout(() => updateToggleArrows(sId), 350);
+      };
+
+      track.addEventListener('scroll', () => updateToggleArrows(sId), { passive: true });
+      window.addEventListener('resize', () => updateToggleArrows(sId));
+    }
 
     function renderFabricToggles(sId) {
       const data = shopByFabricData[sId];
       const track = document.getElementById(`fabric-toggles-${sId}`);
-      
-      if(data.fabrics.length === 0) {
-        track.innerHTML = '<div style="padding:20px; color:#999;">No fabrics found.</div>';
-        document.getElementById(`fabric-track-${sId}`).innerHTML = '';
+
+      const visibleFabrics = data.fabrics
+        .filter(f => f.gender === currentGender)
+        .filter(f => !!f.hasBanner);
+
+      if (visibleFabrics.length === 0) {
+        track.innerHTML = '<div style="padding:20px; color:#999;">No fabrics found for ' + currentGender + '</div>';
+        document.getElementById(`fabric-display-area-${sId}`).classList.remove('is-visible');
         document.getElementById(`fabric-features-${sId}`).innerHTML = '';
+        track.classList.remove('is-centered-desktop');
+
+        setToggleProgressVisible(sId, false);
+        setProductProgressVisible(sId, false);
         updateFabricArrows(sId);
         updateToggleArrows(sId);
         return;
       }
 
-      track.innerHTML = data.fabrics.map((fab, index) => `
-        <div class="fabric-card ${index === 0 ? 'is-active' : ''}" 
+      track.innerHTML = visibleFabrics.map((fab) => `
+        <div class="fabric-card"
              data-fab-id="${fab.id}"
              role="button"
              aria-label="${fab.title}"
@@ -477,28 +513,50 @@
         </div>
       `).join('');
 
-      setTimeout(() => updateToggleArrows(sId), 100);
-      switchFabric(data.fabrics[0].id, sId);
+      if (visibleFabrics.length < 6) track.classList.add('is-centered-desktop');
+      else track.classList.remove('is-centered-desktop');
+
+      // ✅ Toggle progress: show only if scrollable
+      setTimeout(() => {
+        const isScrollable = track.scrollWidth > track.clientWidth + 5;
+        setToggleProgressVisible(sId, isScrollable);
+        bindToggleProgress(sId);
+        updateToggleArrows(sId);
+
+        document.getElementById(`fabric-display-area-${sId}`).classList.remove('is-visible');
+        document.getElementById(`fabric-features-${sId}`).innerHTML = '';
+        setProductProgressVisible(sId, false);
+
+        // auto-select same title on gender switch
+        if (data.lastSelectedTitle) {
+          const match = visibleFabrics.find(f => (f.title || '').toLowerCase() === (data.lastSelectedTitle || '').toLowerCase());
+          if (match) window.switchFabric(match.id, sId);
+        }
+      }, 80);
     }
 
     window.switchFabric = async function(fabId, sId) {
       const data = shopByFabricData[sId];
       const selectedFab = data.fabrics.find(m => m.id === fabId);
-      if(!selectedFab) return;
+      if (!selectedFab) return;
+
+      data.lastSelectedTitle = selectedFab.title;
 
       const track = document.getElementById(`fabric-toggles-${sId}`);
       track.querySelectorAll('.fabric-card').forEach(c => c.classList.remove('is-active'));
       const activeCard = track.querySelector(`.fabric-card[data-fab-id="${fabId}"]`);
-      if(activeCard) activeCard.classList.add('is-active');
+      if (activeCard) activeCard.classList.add('is-active');
 
+      document.getElementById(`fabric-display-area-${sId}`).classList.add('is-visible');
       document.getElementById(`active-fabric-title-${sId}`).textContent = selectedFab.title;
+
       const viewAllBtn = document.getElementById(`fabric-view-all-${sId}`);
       viewAllBtn.href = (selectedFab.link && selectedFab.link !== '') ? selectedFab.link : '#';
 
       const iconContainer = document.getElementById(`fabric-features-${sId}`);
       let iconHTML = '';
       selectedFab.icons.forEach(icon => {
-        if(icon.img && icon.img !== '') {
+        if (icon.img && icon.img !== '') {
           iconHTML += `
             <div class="fabric-feature-item">
               <div class="fabric-feature-icon">
@@ -512,28 +570,31 @@
       iconContainer.innerHTML = iconHTML;
 
       const pTrack = document.getElementById(`fabric-track-${sId}`);
-      
       pTrack.scrollLeft = 0;
 
-      if(data.cache[selectedFab.id]) {
+      // reset UI
+      setProductProgressVisible(sId, false);
+      setProductArrowGate(sId, 0);
+      updateFabricArrows(sId);
+
+      if (data.cache[selectedFab.id]) {
         renderFabricProducts(data.cache[selectedFab.id], sId);
         return;
       }
 
       pTrack.innerHTML = '<div class="fp-loading">Loading styles...</div>';
       pTrack.classList.remove('is-centered');
-      updateFabricArrows(sId);
-      
+
       const tagsList = [];
       const rawEntries = selectedFab.tagsRaw.split(',');
       rawEntries.forEach(entry => {
         const parts = entry.split(':');
         const tagName = parts[0].trim();
         const colorCount = parts[1] ? parts[1].trim() : null;
-        if(tagName) tagsList.push({ tag: tagName, count: colorCount });
+        if (tagName) tagsList.push({ tag: tagName, count: colorCount });
       });
-      
-      if(tagsList.length === 0) {
+
+      if (tagsList.length === 0) {
         pTrack.innerHTML = '<div class="fp-loading">No tags configured.</div>';
         return;
       }
@@ -545,17 +606,30 @@
 
     function renderFabricProducts(products, sId) {
       const pTrack = document.getElementById(`fabric-track-${sId}`);
+
       if (!products || products.length === 0) {
         pTrack.innerHTML = '<div class="fp-loading">No products found.</div>';
+        setProductProgressVisible(sId, false);
+        setProductArrowGate(sId, 0);
         updateFabricArrows(sId);
         return;
       }
 
-      if (products.length < 5) {
-        pTrack.classList.add('is-centered');
-      } else {
-        pTrack.classList.remove('is-centered');
-      }
+      // Desktop logic:
+      // 2–5 => no progress
+      // 6 => progress yes, arrows no
+      // 7+ => progress yes, arrows yes
+      // Mobile => progress yes
+      const count = products.length;
+
+      const showProgress = isDesktop() ? (count > 5) : true;
+      setProductProgressVisible(sId, showProgress);
+      initProductProgressBar(sId);
+
+      const arrowsAllowed = setProductArrowGate(sId, count);
+
+      if (count < 5) pTrack.classList.add('is-centered');
+      else pTrack.classList.remove('is-centered');
 
       pTrack.innerHTML = products.map(item => `
         <a class="fabric-p-card" href="${item.link}">
@@ -576,89 +650,17 @@
         </a>
       `).join('');
 
-      setTimeout(() => updateFabricArrows(sId), 100);
-    }
-
-    function updateFabricArrows(sId) {
-      const track = document.getElementById(`fabric-track-${sId}`);
-      const prevBtn = document.getElementById(`fab-prev-${sId}`);
-      const nextBtn = document.getElementById(`fab-next-${sId}`);
-      
-      if(!track || !prevBtn || !nextBtn) return;
-
-      const isScrollable = track.scrollWidth > track.clientWidth;
-      
-      if (!isScrollable) {
-        prevBtn.classList.remove('is-visible');
-        nextBtn.classList.remove('is-visible');
-        return;
-      }
-
-      const atStart = track.scrollLeft <= 10;
-      const atEnd = track.scrollLeft >= (track.scrollWidth - track.clientWidth - 10);
-
-      prevBtn.classList.toggle('is-visible', !atStart);
-      nextBtn.classList.toggle('is-visible', !atEnd);
-    }
-
-    function initFabricArrows(sId) {
-      const track = document.getElementById(`fabric-track-${sId}`);
-      const prevBtn = document.getElementById(`fab-prev-${sId}`);
-      const nextBtn = document.getElementById(`fab-next-${sId}`);
-
-      if(prevBtn && nextBtn && track) {
-        prevBtn.onclick = () => {
-          track.scrollBy({ left: -300, behavior: 'smooth' });
-          setTimeout(() => updateFabricArrows(sId), 350);
-        };
-        nextBtn.onclick = () => {
-          track.scrollBy({ left: 300, behavior: 'smooth' });
-          setTimeout(() => updateFabricArrows(sId), 350);
-        };
-        track.onscroll = () => updateFabricArrows(sId);
-        window.addEventListener('resize', () => updateFabricArrows(sId));
-      }
-    }
-
-    function updateToggleArrows(sId) {
-      const track = document.getElementById(`fabric-toggles-${sId}`);
-      const prevBtn = document.getElementById(`toggle-prev-${sId}`);
-      const nextBtn = document.getElementById(`toggle-next-${sId}`);
-      
-      if(!track || !prevBtn || !nextBtn) return;
-
-      const isScrollable = track.scrollWidth > track.clientWidth;
-      
-      if (!isScrollable) {
-        prevBtn.classList.remove('is-visible');
-        nextBtn.classList.remove('is-visible');
-        return;
-      }
-
-      const atStart = track.scrollLeft <= 10;
-      const atEnd = track.scrollLeft >= (track.scrollWidth - track.clientWidth - 10);
-
-      prevBtn.classList.toggle('is-visible', !atStart);
-      nextBtn.classList.toggle('is-visible', !atEnd);
-    }
-
-    function initToggleArrows(sId) {
-      const track = document.getElementById(`fabric-toggles-${sId}`);
-      const prevBtn = document.getElementById(`toggle-prev-${sId}`);
-      const nextBtn = document.getElementById(`toggle-next-${sId}`);
-
-      if(prevBtn && nextBtn && track) {
-        prevBtn.onclick = () => {
-          track.scrollBy({ left: -200, behavior: 'smooth' });
-          setTimeout(() => updateToggleArrows(sId), 350);
-        };
-        nextBtn.onclick = () => {
-          track.scrollBy({ left: 200, behavior: 'smooth' });
-          setTimeout(() => updateToggleArrows(sId), 350);
-        };
-        track.onscroll = () => updateToggleArrows(sId);
-        window.addEventListener('resize', () => updateToggleArrows(sId));
-      }
+      // update arrows + progress after render
+      setTimeout(() => {
+        if (arrowsAllowed) updateFabricArrows(sId);
+        if (showProgress) {
+          const wrap = document.getElementById(`fabric-progress-wrap-${sId}`);
+          if (wrap && wrap.classList.contains('is-visible')) {
+            const bar = document.getElementById(`fabric-bar-${sId}`);
+            if (bar) bar.style.width = '12%';
+          }
+        }
+      }, 100);
     }
 
     async function fetchFabricProducts(tagObjects, fabricData) {
@@ -671,9 +673,7 @@
                 title, handle, onlineStoreUrl, totalInventory,
                 variantName: metafield(namespace: "custom", key: "product_variant_name") { value },
                 images(first: 1) { edges { node { url } } },
-                variants(first: 25) {
-                  edges { node { price { amount }, compareAtPrice { amount }, selectedOptions { name, value }, quantityAvailable } }
-                }
+                variants(first: 25) { edges { node { price { amount }, compareAtPrice { amount }, selectedOptions { name, value }, quantityAvailable } } }
               }
             }
           }
@@ -688,7 +688,7 @@
           headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": "388bd37219d8ab7daee1c58a23c03cc8" },
           body: JSON.stringify({ query: fullQuery })
         });
-        
+
         const json = await response.json();
         if (json.errors || !json.data) return [];
 
@@ -699,13 +699,8 @@
         tagObjects.forEach((obj, index) => {
           const aliasKey = `t${index}`;
           const edges = json.data[aliasKey]?.edges || [];
-          if(edges.length > 0) {
-            
-            // Helper: Sum of variant quantities
-            const getVariantStock = (p) => {
-              return p.variants.edges.reduce((sum, v) => sum + (v.node.quantityAvailable || 0), 0);
-            };
-
+          if (edges.length > 0) {
+            const getVariantStock = (p) => p.variants.edges.reduce((sum, v) => sum + (v.node.quantityAvailable || 0), 0);
             const candidates = edges.map(e => e.node).sort((a, b) => getVariantStock(b) - getVariantStock(a));
 
             if (fabricData.showAll) {
@@ -717,25 +712,24 @@
               });
             } else {
               let winner = null;
-              
               for (let c of candidates) {
-                 const h = c.handle;
-                 const col = c.variantName?.value || "Unknown";
-                 if (usedHandles.has(h)) continue; 
-                 if (usedColors.has(col)) continue; // Unique Color Logic
-                 winner = c; break; 
+                const h = c.handle;
+                const col = c.variantName?.value || "Unknown";
+                if (usedHandles.has(h)) continue;
+                if (usedColors.has(col)) continue;
+                winner = c; break;
               }
-
               if (!winner) winner = candidates.find(c => !usedHandles.has(c.handle));
 
               if (winner) {
-                 usedHandles.add(winner.handle);
-                 if(winner.variantName?.value) usedColors.add(winner.variantName.value);
-                 finalProducts.push(normalizeFabricProduct(winner, obj.count, fabricData));
+                usedHandles.add(winner.handle);
+                if (winner.variantName?.value) usedColors.add(winner.variantName.value);
+                finalProducts.push(normalizeFabricProduct(winner, obj.count, fabricData));
               }
             }
           }
         });
+
         return finalProducts;
       } catch (err) { console.error(err); return []; }
     }
@@ -743,25 +737,27 @@
     function normalizeFabricProduct(p, count, fabricData) {
       const variants = p.variants.edges.map(e => e.node);
       const firstVariant = variants[0];
-      
+
       let displayTitle = p.title;
-      
+
       if (!fabricData.showGender) {
         displayTitle = displayTitle.replace(/^(Women|Men|Women's|Men's)\s+/i, "");
       }
-      
+
       if (!fabricData.showColor && p.variantName?.value) {
-         const re = new RegExp(`\\b${p.variantName.value}\\b`, 'gi');
-         displayTitle = displayTitle.replace(re, "");
+        const re = new RegExp(`\\b${p.variantName.value}\\b`, 'gi');
+        displayTitle = displayTitle.replace(re, "");
       }
       displayTitle = displayTitle.replace(/\s+/g, ' ').trim();
 
       const allSizes = variants.flatMap(v => v.selectedOptions.filter(opt => opt.name.toLowerCase() === 'size').map(opt => opt.value));
       const uniqueSizes = [...new Set(allSizes)];
       let sizeRangeStr = uniqueSizes.length > 1 ? `${uniqueSizes[0]} - ${uniqueSizes[uniqueSizes.length - 1]}` : (uniqueSizes[0] || "");
+
       const backendPrice = parseFloat(firstVariant?.price?.amount || 0);
+
       let colorText = "Available in multiple colors";
-      if(count && count !== '') colorText = `Available in ${count}+ colors`;
+      if (count && count !== '') colorText = `Available in ${count}+ colors`;
 
       return {
         title: displayTitle,

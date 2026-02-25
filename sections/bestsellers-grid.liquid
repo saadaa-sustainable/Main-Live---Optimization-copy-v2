@@ -1,0 +1,316 @@
+{% schema %}
+{
+  "name": "Bestsellers Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop Our Bestsellers"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Loved by all. selling out fast"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F6F3F1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Block",
+      "settings": [
+        {
+          "type": "select",
+          "id": "gender",
+          "label": "Gender",
+          "options": [
+            { "value": "women", "label": "Women" },
+            { "value": "men", "label": "Men" }
+          ],
+          "default": "women"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Default Link"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Product Tag (For Stock Check)",
+          "info": "Used to find a replacement product if the default link is out of stock."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bestsellers Grid",
+      "blocks": [
+        { "type": "category", "settings": { "gender": "women" } },
+        { "type": "category", "settings": { "gender": "women" } },
+        { "type": "category", "settings": { "gender": "women" } },
+        { "type": "category", "settings": { "gender": "women" } },
+        { "type": "category", "settings": { "gender": "women" } },
+        { "type": "category", "settings": { "gender": "women" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  /* --- Base Layout --- */
+  #shopify-section-{{ section.id }} .categories-section {
+    margin: 40px auto;
+    max-width: 1600px;
+    padding: 40px 20px;
+    background: {{ section.settings.bg_color }};
+    /* ✅ Prevent iOS scroll jank */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
+  
+  /* Hidden state for filtering */
+  .bs-hidden { display: none !important; }
+
+  .categories-header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .categories-title {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    font-family: inherit;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: #000;
+  }
+  .categories-title strong { font-weight: 900; }
+
+  .categories-subtitle {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #222;
+    opacity: 0.85;
+    margin-bottom: 20px;
+    letter-spacing: 0.01em;
+    font-family: inherit;
+  }
+
+  /* --- Grid Layout --- */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    padding: 0px 15px;
+    padding-bottom: 30px;
+    /* ✅ Prevent grid layout thrashing on iOS */
+    grid-auto-rows: auto;
+  }
+  
+  .category-block {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: transform 0.13s;
+    background: #f5f5f5;
+    aspect-ratio: 7 / 9;
+    display: block;
+    text-decoration: none;
+    /* ✅ iOS Safari fix: Force hardware acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .category-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: scale 0.16s;
+    border-radius: 10px;
+    /* ✅ Critical: Prevent iOS image loading from blocking scroll */
+    content-visibility: auto;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 1000px) {
+    .categories-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .categories-title { font-size: 1.1rem; }
+    .categories-subtitle { font-size: 0.9rem; }
+    .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    #shopify-section-{{ section.id }} .categories-section { padding: 30px 10px; margin: 25px 0;        margin-bottom: 0px; }
+  }
+{% endstyle %}
+
+<section class="categories-section" data-section-id="{{ section.id }}">
+  <div class="categories-header">
+    <div class="categories-title"><strong>{{ section.settings.heading }}</strong></div>
+    {% if section.settings.subheading != blank %}
+      <div class="categories-subtitle">{{ section.settings.subheading }}</div>
+    {% endif %}
+  </div>
+
+  <div class="categories-grid" id="grid-{{ section.id }}">
+    </div>
+</section>
+
+<script>
+  (function(){
+    const sectionId = "{{ section.id }}";
+    
+    // Construct Data from Liquid Blocks
+    const DATA = {
+      women: [
+        {% for block in section.blocks %}
+          {% if block.settings.gender == 'women' %}
+          {
+            tag: "{{ block.settings.tag | escape }}",
+            default_url: "{{ block.settings.link }}",
+            img: "{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 600 }}{% else %}https://via.placeholder.com/600x771?text=Women{% endif %}",
+            alt: "{{ block.settings.image.alt | default: 'Category' | escape }}"
+          },
+          {% endif %}
+        {% endfor %}
+      ],
+      men: [
+        {% for block in section.blocks %}
+          {% if block.settings.gender == 'men' %}
+          {
+            tag: "{{ block.settings.tag | escape }}",
+            default_url: "{{ block.settings.link }}",
+            img: "{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 600 }}{% else %}https://via.placeholder.com/600x771?text=Men{% endif %}",
+            alt: "{{ block.settings.image.alt | default: 'Category' | escape }}"
+          },
+          {% endif %}
+        {% endfor %}
+      ]
+    };
+
+    let currentGender = (window.currentGlobalGender || 'women').toLowerCase();
+
+    // 1. LISTEN TO GLOBAL EVENT
+    window.addEventListener('moodGenderChanged', (e) => {
+      currentGender = (e.detail.gender || 'women').toLowerCase();
+      render();
+    });
+
+    async function isProductAvailable(url) {
+      if(!url || url === '#') return false;
+      try {
+        const res = await fetch(`${url}.js`);
+        if (!res.ok) return false; 
+        const data = await res.json();
+        return data.available;
+      } catch(e) {
+        return false;
+      }
+    }
+
+    async function getHighStockReplacement(tag) {
+      if(!tag) return null;
+      try {
+        const searchUrl = `${window.Shopify.routes.root}search/suggest.json?q=tag:${encodeURIComponent(tag)}&resources[type]=product&resources[limit]=8`;
+        const res = await fetch(searchUrl);
+        const data = await res.json();
+        const products = data.resources?.results?.products || [];
+
+        if (products.length === 0) return null;
+
+        for (const product of products) {
+          const prodRes = await fetch(`${product.url}.js`);
+          const prodData = await prodRes.json();
+          
+          if (prodData.available) {
+            // Prefer items with decent stock
+            const qty = prodData.variants[0].inventory_quantity;
+            if (typeof qty !== 'undefined') {
+               if (qty > 10) return prodData.url;
+            } else {
+               return prodData.url;
+            }
+          }
+        }
+        return null;
+
+      } catch (e) {
+        console.error("Error finding replacement:", tag, e);
+        return null;
+      }
+    }
+
+    function render(){
+      const grid = document.getElementById(`grid-${sectionId}`);
+      const items = DATA[currentGender] || [];
+      
+      if(items.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding: 40px; color:#888;">No ${currentGender} items configured.</div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map((item) => `
+        <a href="${item.default_url || '#'}" class="category-block" data-tag="${item.tag}" data-default="${item.default_url}">
+          <img 
+            src="${item.img}" 
+            alt="${item.alt}" 
+            class="category-img"
+            loading="lazy"
+            decoding="async"
+            width="600"
+            height="771"
+          >
+        </a>
+      `).join('');
+
+      // Run Stock Check asynchronously
+      checkStockForGrid(grid);
+    }
+
+    function checkStockForGrid(gridElement) {
+      const linkElements = gridElement.querySelectorAll('.category-block');
+      
+      linkElements.forEach(async (el) => {
+        const tag = el.dataset.tag;
+        const defaultUrl = el.dataset.default;
+        
+        // If no URL or tag, skip logic
+        if(!tag || !defaultUrl || defaultUrl === '#') return;
+
+        const isDefaultOk = await isProductAvailable(defaultUrl);
+        
+        if (isDefaultOk) {
+          return; // Default is fine
+        }
+
+        // Try to find replacement
+        const replacementUrl = await getHighStockReplacement(tag);
+        
+        if (replacementUrl) {
+          el.setAttribute('href', replacementUrl);
+        }
+      });
+    }
+
+    // Initial Render
+    render();
+
+  })();
+</script>

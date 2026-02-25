@@ -283,54 +283,123 @@ window.addEventListener('user-loggedin', addNoUnderlineToShadowButton);
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  // Handle main accordions (SHOP WOMEN / SHOP MEN)
-  var mains = document.querySelectorAll('.saadaa-accordion-title[data-main]');
-  mains.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var section = btn.closest('.saadaa-accordion-section');
-      var isOpen = section.classList.contains('open');
-      // Close all main accordions
-      document.querySelectorAll('.saadaa-accordion-section[data-main]').forEach(function (s) {
+(function () {
+  function initSidebarAccordions(root) {
+    root = root || document;
+
+    // Make sure sidebar exists
+    const sidebar = root.querySelector('#sidebar-menu') || root.querySelector('header-sidebar');
+    if (!sidebar) return;
+
+    // Delegate clicks (more reliable than attaching many handlers)
+    // Prevent duplicate listeners
+    if (sidebar.__saadaaAccordionBound) return;
+    sidebar.__saadaaAccordionBound = true;
+
+    function setIcon(section, stateOpen) {
+      const btn = section.querySelector('.saadaa-accordion-title');
+      if (!btn) return;
+      const icon = btn.querySelector('.icon');
+      if (!icon) return;
+      icon.textContent = stateOpen ? '−' : '+';
+    }
+
+    function closeMainAccordions(exceptSection) {
+      sidebar.querySelectorAll('.saadaa-accordion-section[data-main]').forEach((s) => {
+        if (exceptSection && s === exceptSection) return;
         s.classList.remove('open');
-        s.querySelector('.icon').textContent = '+';
+        setIcon(s, false);
       });
-      if (!isOpen) {
-        section.classList.add('open');
-        btn.querySelector('.icon').textContent = '−';
-      }
-    });
-  });
+    }
 
-  // Handle secondary accordions (no data-main)
-  var secs = document.querySelectorAll('.saadaa-accordion-title:not([data-main])');
-  secs.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var section = btn.closest('.saadaa-accordion-section');
-      var isOpen = section.classList.contains('open');
-      // Close only this section
-      if (isOpen) {
-        section.classList.remove('open');
-        btn.querySelector('.icon').textContent = '+';
+    function normalizeIcons() {
+      sidebar.querySelectorAll('.saadaa-accordion-section').forEach((section) => {
+        // Only sections that actually behave like accordions (must have content)
+        const content = section.querySelector('.saadaa-accordion-content');
+        const btn = section.querySelector('.saadaa-accordion-title');
+        if (!btn || !content) return;
+        setIcon(section, section.classList.contains('open'));
+      });
+    }
+
+    function ensureDefaultOpen() {
+      const womenSection = sidebar.querySelector('#accordion-shop-women');
+      const menSection = sidebar.querySelector('#accordion-shop-men');
+
+      if (womenSection) {
+        // Open women by default
+        closeMainAccordions(womenSection);
+        womenSection.classList.add('open');
+        setIcon(womenSection, true);
+
+        // Ensure men is closed (if present)
+        if (menSection && menSection !== womenSection) {
+          menSection.classList.remove('open');
+          setIcon(menSection, false);
+        }
       } else {
-        section.classList.add('open');
-        btn.querySelector('.icon').textContent = '−';
+        // Fallback: if women not found, open first main accordion
+        const firstMain = sidebar.querySelector('.saadaa-accordion-section[data-main]');
+        if (firstMain) {
+          closeMainAccordions(firstMain);
+          firstMain.classList.add('open');
+          setIcon(firstMain, true);
+        }
       }
-    });
-  });
+    }
 
-  // Set + for all icons on page load (unless open)
-  document.querySelectorAll('.saadaa-accordion-title .icon').forEach(function (icn) {
-    if (!icn.closest('.open')) icn.textContent = '+';
-  });
+    // Click handling
+    sidebar.addEventListener('click', function (e) {
+      const btn = e.target.closest('.saadaa-accordion-title');
+      if (!btn) return;
 
-  // Default open SHOP WOMEN
-  var womenSection = document.getElementById('accordion-shop-women');
-  if (womenSection) {
-    womenSection.classList.add('open');
-    womenSection.querySelector('.icon').textContent = '−';
+      const section = btn.closest('.saadaa-accordion-section');
+      if (!section) return;
+
+      // Only treat as accordion if it has a content panel
+      const content = section.querySelector('.saadaa-accordion-content');
+      if (!content) return; // IMPORTANT: don't break normal links/buttons
+
+      // Stop button default to avoid weird iOS/Safari behavior
+      e.preventDefault();
+      e.stopPropagation();
+
+      const isMain = section.hasAttribute('data-main');
+      const isOpen = section.classList.contains('open');
+
+      if (isMain) {
+        // Only one main open at a time
+        closeMainAccordions();
+        if (!isOpen) {
+          section.classList.add('open');
+          setIcon(section, true);
+        } else {
+          // If you prefer "main can't close", comment next 2 lines:
+          section.classList.remove('open');
+          setIcon(section, false);
+        }
+      } else {
+        // Secondary accordions toggle individually
+        section.classList.toggle('open');
+        setIcon(section, section.classList.contains('open'));
+      }
+    }, { passive: false });
+
+    // Initial state
+    normalizeIcons();
+    ensureDefaultOpen();
+    normalizeIcons(); // run again after default open
   }
-});
+
+  // Run once on DOM ready
+  document.addEventListener('DOMContentLoaded', function () {
+    initSidebarAccordions(document);
+
+    // In case Shopify injects/replaces sidebar later
+    const obs = new MutationObserver(() => initSidebarAccordions(document));
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+  });
+})();
 </script>
 
 
@@ -354,6 +423,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 </summary>
                 <ul class="sidebar-accordion-list">
 
+
+
+ <li><a href="/collections/women-linen-blend-waist-coat"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_35.webp?v=1771052710" class="menu-img" alt="">Linen Blend Waist Coat<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                    <li><a href="/collections/women-linen-blend-knot-blouse"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_32.webp?v=1769835239" class="menu-img" alt="">Linen Blend Knot Blouse<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                    <li><a href="/collections/women-linen-blend-pleated-top"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_31.webp?v=1769835239" class="menu-img" alt="">Linen Blend Pleated Top<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
 
@@ -380,6 +452,9 @@ document.addEventListener('DOMContentLoaded', function () {
                   <span style="margin-left:auto;">{%- render 'icon' with 'chevron-right', width: 14 -%}</span>
                 </summary>
                 <ul class="sidebar-accordion-list">
+
+<li><a href="/collections/women-linen-blend-wide-leg-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_27_700d3200-1d43-42c0-b47d-6df137800bc9.webp?v=1771052710" class="menu-img" alt="">Linen Blend Wide Leg Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
+
                 <li><a href="/collections/women-straight-fit-cotton-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3_bcda2abc-4cdc-4aeb-90c0-e0d31175117e.png?v=1760348751" class="menu-img" alt="">Everyday Cotton Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/straight-fit-formal-pants"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_10.webp?v=1753441076" class="menu-img" alt="">Straight Fit Formal Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
                   <li><a href="/collections/airy-linen-straight-pant"><img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_3.webp?v=1753246195" class="menu-img" alt="">Airy Linen Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span></a></li>
@@ -401,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </summary>
                 <ul class="sidebar-accordion-list">
                     <li>
-              <a href="/collections/airy-linen-flared-dress"">
+              <a href="/collections/airy-linen-flared-dress">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_13_e079b39b-363d-4582-8449-94e42ebd7e56.webp?v=1756378093" class="menu-img" alt="">
                 Airy Linen Flared Dress<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
               </a>
@@ -444,6 +519,27 @@ document.addEventListener('DOMContentLoaded', function () {
           <ul class="header-sidebar__linklist unstyled-list" role="list">
 
 
+                       <li>
+              <a href="/collections/men-linen-blend-straight-pants" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_28_9a4d0773-45e3-4baa-8a54-152492c05604.webp?v=1771052710" class="menu-img" alt="">
+                Linen Blend Straight Pants<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+              </a>
+            </li>
+
+                                   <li>
+              <a href="/collections/men-flat-knit-round-neck-t-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_29.webp?v=1771052710" class="menu-img" alt="">
+                Flat Knit Round Neck T-shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+              </a>
+            </li>
+
+                                               <li>
+              <a href="/collections/men-flat-knit-collared-t-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
+                <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_30.webp?v=1771052710" class="menu-img" alt="">
+               Flat Knit Collared T-shirt<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+              </a>
+            </li>
+
            <li>
               <a href="/collections/men-linen-blend-short-sleeve-shirt" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_33.webp?v=1769835239" class="menu-img" alt="">
@@ -465,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
            <li>
               <a href="/collections/men-cotton-pant" class="header-sidebar__linklist-button" style="margin-left:auto;">
                 <img src="https://cdn.shopify.com/s/files/1/0450/3476/6485/files/1_12_d76e65a2-1a5e-48cb-a523-1b450e5b4e28.webp?v=1756377574" class="menu-img" alt="">
-                Men Cotton Pant<span class="home-nav-badge-new" style="margin-left:5px;">NEW</span>
+                Men Cotton Pant
               </a>
             </li>
             <li>
@@ -517,9 +613,15 @@ document.addEventListener('DOMContentLoaded', function () {
           
         </div> {% endcomment %}
 
+        
+                          <div class="saadaa-accordion-section">
+           <a href="/pages/limited-drop"><button class="saadaa-accordion-title">LIMITED DROP<span class="home-nav-badge-new" style="background-color:#ffee03; color:#000;">NEW LAUNCH ALERT</span></button></a>
+          
+        </div>
+
 
                           <div class="saadaa-accordion-section">
-           <a href="/pages/behtar-linen"><button class="saadaa-accordion-title">BEHTAR LINEN<span class="home-nav-badge-new" style="background-color:#ffee03; color:#000;">NEW LAUNCH ALERT</span></button></a>
+           <a href="/pages/behtar-linen"><button class="saadaa-accordion-title">BEHTAR LINEN<span class="home-nav-badge-new">NEWLY LAUNCHED</span></button></a>
           
         </div>
 

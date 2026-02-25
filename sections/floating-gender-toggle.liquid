@@ -1,0 +1,189 @@
+{% schema %}
+{
+  "name": "Floating Gender Toggle",
+  "settings": [
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_text",
+      "label": "Button Text",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "active_bg",
+      "label": "Active Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "active_text",
+      "label": "Active Text Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Floating Gender Toggle"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  .gender-floating-container {
+    position: fixed;
+    bottom: 72px; 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    
+    display: flex;
+    width: 94%; 
+    max-width: 600px; 
+    gap: 12px; 
+    
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+  }
+
+  .gender-floating-container.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px); 
+  }
+
+  .gender-wide-btn {
+    flex: 1; 
+    appearance: none;
+    background: {{ section.settings.btn_bg }};
+    color: {{ section.settings.btn_text }};
+    border: 1px solid rgba(0,0,0,0.08); 
+    border-radius: 12px; 
+    padding: 8px 0; 
+    
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-align: center;
+    
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(1);
+    
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .gender-wide-btn.active {
+    background: {{ section.settings.active_bg }};
+    color: {{ section.settings.active_text }};
+    border-color: {{ section.settings.active_bg }};
+    transform: scale(0.98); 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  /* ——— LOGIC CONNECTORS ——— */
+  .banner-smart-wrapper { display: none; }
+
+  body.view-both .banner-smart-wrapper.show-both { 
+    display: block; 
+    order: var(--order-both); 
+    animation: fadeIn 0.5s ease;
+  }
+
+  body.view-women .banner-smart-wrapper.show-women { 
+    display: block; 
+    order: var(--order-women); 
+    animation: fadeIn 0.5s ease;
+  }
+
+  body.view-men .banner-smart-wrapper.show-men { 
+    display: block; 
+    order: var(--order-men); 
+    animation: fadeIn 0.5s ease;
+  }
+  
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+
+<div class="gender-floating-container" id="floatingToggle" style="display:none;">
+  <button class="gender-wide-btn" id="btn-women" onclick="toggleGender('women', this)">Women</button>
+  <button class="gender-wide-btn" id="btn-men" onclick="toggleGender('men', this)">Men</button>
+</div>
+
+<script>
+  // 1. SCROLL VISIBILITY LOGIC
+  let scrollTimeout;
+  const toggleContainer = document.getElementById('floatingToggle');
+
+  window.addEventListener('scroll', () => {
+    toggleContainer.classList.add('is-hidden');
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      toggleContainer.classList.remove('is-hidden');
+    }, 150);
+  }, { passive: true });
+
+
+  // 2. TOGGLE LOGIC
+  function toggleGender(selectedMode, btn) {
+    const body = document.body;
+
+    // ——— SMART SCROLL LOGIC ———
+    // 1. Find the Pill Menu Section
+    const pillSection = document.querySelector('.ptm2_toggle-menu-container');
+    let shouldScrollToTop = true;
+
+    // 2. Check if it is currently visible in the viewport
+    if (pillSection) {
+      const rect = pillSection.getBoundingClientRect();
+      // If the section is overlapping with the screen (top is inside or bottom is inside)
+      // We consider the user "on" that section.
+      const isVisible = (rect.top < window.innerHeight && rect.bottom >= 0);
+      
+      if (isVisible) {
+        shouldScrollToTop = false; // Don't scroll if we are looking at the pills
+      }
+    }
+
+    // 3. Execute Scroll only if not on pill section
+    if (shouldScrollToTop) {
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ——— NORMAL TOGGLE LOGIC ———
+    if (btn.classList.contains('active')) {
+      // DESELECT (Reset to Both)
+      btn.classList.remove('active');
+      body.classList.remove('view-' + selectedMode);
+      body.classList.add('view-both');
+      
+    } else {
+      // SELECT NEW
+      document.querySelectorAll('.gender-wide-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      body.classList.remove('view-both', 'view-men', 'view-women');
+      body.classList.add('view-' + selectedMode);
+    }
+    
+    // Resize Trigger for layout fixes
+    setTimeout(() => {
+       window.dispatchEvent(new Event('resize'));
+    }, 100);
+  }
+
+  // Init
+  (function(){
+    if(!document.body.classList.contains('view-men') && !document.body.classList.contains('view-women')) {
+        document.body.classList.add('view-both');
+    }
+  })();
+</script>
